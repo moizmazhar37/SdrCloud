@@ -307,7 +307,7 @@ function CustomerPreview(location) {
                           fontSize: `${item?.values?.headline1Size}px`,
                         }}
                         variant="h3"
-                      // data-aos="fade-up"
+                        // data-aos="fade-up"
                       >
                         <span
                           style={{
@@ -317,7 +317,7 @@ function CustomerPreview(location) {
                         >
                           Welcome{" "}
                         </span>
-                        {item?.values?.headline1},
+                        {item?.values?.headline1}
                       </Typography>
                       <Typography
                         style={{
@@ -330,7 +330,7 @@ function CustomerPreview(location) {
                           lineHeight: "35px",
                         }}
                         variant="h1"
-                      // data-aos="fade-up"
+                        // data-aos="fade-up"
                       >
                         {item?.values?.headline2}
                       </Typography>
@@ -342,7 +342,7 @@ function CustomerPreview(location) {
                           fontSize: `${item?.values?.bodyTextSize}px`,
                         }}
                         variant="body1"
-                      // data-aos="fade-up"
+                        // data-aos="fade-up"
                       >
                         {item?.values?.bodyText}
                       </Typography>
@@ -362,7 +362,7 @@ function CustomerPreview(location) {
                             )
                           }
                           variant="contained"
-                        // data-aos="fade-up"
+                          // data-aos="fade-up"
                         >
                           {item?.values?.ctaButtonText}
                         </Button>
@@ -398,7 +398,7 @@ function CustomerPreview(location) {
                       sm={7}
                       xs={12}
                       align="center"
-                    // style={{ paddingTop: "50px" }}
+                      // style={{ paddingTop: "50px" }}
                     >
                       <img
                         src={
@@ -423,14 +423,16 @@ function CustomerPreview(location) {
                     style={{ background: item?.values?.bannerColor }}
                     className={classes.LandingSlider}
                   >
-                    { }
+                    {}
                     {Array.from({ length: 18 }).map((_, index) => (
                       <Box
                         sx={{
-                          color: `${item?.values?.bannerTextColor || "#FFF"
-                            } !important`,
-                          fontSize: `${item?.values?.bannerTextSize || "16"
-                            }px !important`,
+                          color: `${
+                            item?.values?.bannerTextColor || "#FFF"
+                          } !important`,
+                          fontSize: `${
+                            item?.values?.bannerTextSize || "16"
+                          }px !important`,
                           paddingTop: "30px",
                           paddingBottom: "30px",
                         }}
@@ -447,14 +449,16 @@ function CustomerPreview(location) {
                     style={{ background: item?.values?.bannerColor }}
                     className={classes.LandingSlider}
                   >
-                    { }
+                    {}
                     {Array.from({ length: 18 }).map((_, index) => (
                       <Box
                         sx={{
-                          color: `${item?.values?.bannerTextColor || "#FFF"
-                            } !important`,
-                          fontSize: `${item?.values?.bannerTextSize || "16"
-                            }px !important`,
+                          color: `${
+                            item?.values?.bannerTextColor || "#FFF"
+                          } !important`,
+                          fontSize: `${
+                            item?.values?.bannerTextSize || "16"
+                          }px !important`,
                           paddingTop: "30px",
                           paddingBottom: "30px",
                         }}
@@ -526,31 +530,6 @@ function CustomerPreview(location) {
                         {" "}
                         {item?.values?.bodyText}
                       </Typography>
-
-                      {/* <Typography
-                    variant="body1"
-                    data-aos="fade-up"
-                    style={{ wordBreak: "break-word" }}
-                  >
-                    {item?.bodyText}
-                  </Typography> */}
-                      {/* <Button
-                    variant="contained"
-                    data-aos="fade-up"
-                    style={{
-                      backgroundColor: item?.values?.ctaButtonColor,
-                      color: item?.values?.ctaButtonTextColor,
-                    }}
-                    onClick={() =>
-                      window.open(
-                        item?.values?.staticUrl
-                          ? item?.values?.staticUrl
-                          : item?.values?.dynamcUrl
-                      )
-                    }
-                  >
-                    {item?.values?.ctaButtonText}
-                  </Button> */}
                     </Grid>
                   </Grid>
                 </Container>
@@ -658,24 +637,6 @@ function CustomerPreview(location) {
                       >
                         {item?.values?.bodyText}
                       </Typography>
-
-                      {/* <Button
-                    onClick={() =>
-                      window.open(
-                        item?.values?.staticUrl
-                          ? item?.values?.staticUrl
-                          : item?.values?.dynamicUrl
-                      )
-                    }
-                    style={{
-                      backgroundColor: item?.values?.ctaButtonColor,
-                      color: item?.values?.ctaButtonTextColor,
-                    }}
-                    variant="contained"
-                    data-aos="fade-up"
-                  >
-                    {item?.values?.ctaButtonText}
-                  </Button> */}
                     </Grid>
                     <Grid item sm={6} xs={12} align="center">
                       <img
@@ -736,38 +697,9 @@ function CustomerPreview(location) {
                         >
                           Sales: {item?.values?.footerLinks?.footerContact}
                         </span>
-                        {/* <Typography
-                        variant="body1"
-                        style={{
-                          color: item?.values?.leftFooterTextColor,
-                          marginTop: "12px",
-                          // fontSize:
-                          //   typeof item?.headline1Size === "number"
-                          //     ? `${item.headline1Size}px`
-                          //     : item?.headline1Size,
-                        }}
-                      >
-                        {item?.values?.leftFooterText2}
-                      </Typography>
-                      <Typography
-                        variant="body1"
-                        style={{
-                          color: item?.values?.leftFooterTextColor,
-                          marginTop: "12px",
-                          // fontSize:
-                          //   typeof item?.headline1Size === "number"
-                          //     ? `${item.headline1Size}px`
-                          //     : item?.headline1Size,
-                        }}
-                      >
-                        {item?.values?.leftFooterText3}
-                      </Typography> */}
 
                         <Box className="iconsContainer">
                           {" "}
-                          {/* {item?.values?.socialIcons?.map((data, index) => (
-                          {data?.socialMediaIcon1=="Instagram"?<FaInstagram className="icons" />:data?.socialMediaIcon1==?<FaLinkedinIn className="icons" />}
-                        ))} */}
                           <a
                             target="_blank"
                             rel="noopener noreferrer"

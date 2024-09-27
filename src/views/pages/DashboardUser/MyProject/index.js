@@ -324,8 +324,8 @@ const useStyles = makeStyles((theme) => ({
 
 const validationSchema = Yup.object().shape({
   customerId: Yup.string().required("Customer Id is required"),
-  firstName: Yup.string().required("First Name is required"),
-  lastName: Yup.string().required("Last Name is required"),
+  firstName: Yup.string().required("First name is required"),
+  lastName: Yup.string().required("Last name is required"),
   // email: Yup.string().required( /^(?!.*\.\.)(?!.*[@.]$)[a-zA-Z0-9][a-zA-Z0-9._+-]{0,252}@(?=[^.]*[A-Za-z])[a-zA-Z0-9-]{2,63}\.[a-zA-Z]{2,63}$/,'Email is required'),
   email: Yup.string()
     .email("Please enter valid email address")
@@ -346,7 +346,7 @@ const validationSchema = Yup.object().shape({
   password: Yup.string()
     .trim()
     .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,16}(?!.*\s)$/,
+      /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[\s\S])[A-Za-z\d\s\S]{8,16}$/,
       "Please enter a valid password. It must contain at least one lowercase letter, one uppercase letter, one digit, one special character, and should be 8-16 characters long without any spaces."
     )
     // .matches(/\s/g, '',"space block")
@@ -375,10 +375,11 @@ function UserProjectList() {
   const [sheetData, setSheetData] = useState();
   console.log("sheetData: ", sheetData);
   const [sheetId, setSheetId] = useState(location?.state?.state?.sheetId);
-
+  const [tempType, setTempType] = useState(
+    location?.state?.state?.tempType || ""
+  );
   const [loading, setLoading] = useState(true);
   const [formLoading, setFormLoading] = useState(false);
-  console.log("loading: ", loading);
   const [open, setOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState("");
@@ -396,14 +397,12 @@ function UserProjectList() {
   const [errorData, setErrorData] = useState("");
 
   const [page, setPage] = useState(1);
-  const [pagesize, setPageSize] = useState(null);
+  const [pagesize, setPageSize] = useState(10);
   const [isFocuseds, setIsFocuseds] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [isImageChanged, setIsImageChanged] = useState(false);
   const [fileName, setFileName] = useState("");
   const [showimagename, setShowImageName] = useState(null);
-  const [search, setSearch] = useState("");
-
   const [showPassword, setShowPassword] = useState(false);
   const handleTogglePassword = () => {
     setShowPassword(!showPassword);
@@ -435,7 +434,13 @@ function UserProjectList() {
     setOpen(false);
   };
   const handleCloseDialog2 = () => {
-    setData();
+    setFieldValue((prevFieldValue) =>
+      prevFieldValue.map((field) => ({
+        ...field,
+        value: "", // Clear the value
+      }))
+    );
+    // setData();
     setOpenDialog(false);
   };
   const handleOpenDialog = (type) => {
@@ -527,7 +532,11 @@ function UserProjectList() {
       );
       serUrlField(
         sheetData
-          .filter((item) => item.dataType.includes("HVO URL (Required)"))
+          .filter(
+            (item) =>
+              item.dataType.includes("HVO URL (Required)") ||
+              item.dataType.includes("Final video URL (Required)")
+          )
           .map((item) => item.value)[0]
       );
     }
@@ -537,25 +546,25 @@ function UserProjectList() {
     getAllSheet();
     userListApi();
   }, [page]);
-  const [data, setData] = useState({
-    customerId: "",
-    firstName: "",
-    lastName: "",
-    email: "",
-    companyUrl: "",
-    image1: "",
-    image2: "",
-    linkedIn: "",
-    twitter: "",
-    password: "",
-    hvoUrl: "",
-    videoUrl: "",
-    customerOrganization: "",
-    phoneNo: "",
-    finalVideoUrl: "",
-    Maps_URL: "",
-    facebook: "",
-  });
+  // const [data, setData] = useState({
+  //   customerId: "",
+  //   firstName: "",
+  //   lastName: "",
+  //   email: "",
+  //   companyUrl: "",
+  //   image1: "",
+  //   image2: "",
+  //   linkedIn: "",
+  //   twitter: "",
+  //   password: "",
+  //   hvoUrl: "",
+  //   videoUrl: "",
+  //   customerOrganization: "",
+  //   phoneNo: "",
+  //   finalVideoUrl: "",
+  //   Maps_URL: "",
+  //   facebook: "",
+  // });
 
   const handleSubmit = (values, { setSubmitting }) => {
     console.log("Form Values Submitted: ", values);
@@ -611,21 +620,6 @@ function UserProjectList() {
     }
   };
 
-  const handleIconClicks = () => {
-    setIsFocuseds(true);
-  };
-  const handleBlur = () => {
-    setIsFocuseds(false);
-  };
-
-  const handleChangeInput = (e, inputName) => {
-    const update = e.target.value;
-    setData((prevData) => ({
-      ...prevData,
-      [inputName]: update,
-    }));
-  };
-
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
     console.log(file);
@@ -638,21 +632,13 @@ function UserProjectList() {
         setFileName(event.target.result);
         setSelectedFile(event.target.result);
         setShowImageName(file?.name);
-        setData((prevUserData) => ({
-          ...prevUserData,
-          LOGO: base64Image,
-        }));
+        // setData((prevUserData) => ({
+        //   ...prevUserData,
+        //   LOGO: base64Image,
+        // }));
       };
       reader.readAsDataURL(file);
     }
-  };
-
-  const handleFileChange = (event, setFieldValue) => {
-    const update = event.target.value;
-    setData((prevData) => ({
-      ...prevData,
-      [setFieldValue]: update,
-    }));
   };
   const onDrop = (acceptedFiles) => {
     const file = acceptedFiles[0];
@@ -673,57 +659,8 @@ function UserProjectList() {
 
   return (
     <>
-      {/* {loading && <FullScreenLoader />} */}
       <Box className={classes.paperContainer}>
         <Box className={classes.uppersection}>
-          {/* <div className={classes.anyDeep}>
-            <div>
-              <Typography variant="outlined" className={classes.filtButton}>
-                Filter
-              </Typography>
-            </div>
-            <div className={classes.dropdownContainer}>
-              <select
-                id="simple-dropdown"
-                value={selectedOption}
-                onChange={handleDropdownChange}
-                className={classes.dropdown}
-              >
-                <option value="">Sort</option>
-                <option value="TEMPLATE"> Template</option>
-                <option value="NAME"> Name </option>
-              </select>
-            </div>
-
-            <div style={{ display: "flex" }}>
-              <TextField
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="start">
-                      <SearchIcon
-                        style={{
-                          color: "black",
-                          width: "20px",
-                          height: "20px",
-                          cursor: "pointer",
-                        }}
-                        onClick={handleIconClicks}
-                      />
-                    </InputAdornment>
-                  ),
-                }}
-                placeholder="Search"
-                onFocus={() => setIsFocuseds(true)}
-                onBlur={handleBlur}
-                onChange={(event) => setSearch(event.target.value)}
-                style={{
-                  border: isFocuseds ? "1px solid " : "1px solid grey",
-                  borderRadius: "5px",
-                  padding: "2px 0px 2px 12px",
-                }}
-              />
-            </div>
-          </div> */}
           <Box>
             {localStorage.getItem("userType") === "USER" && (
               <Button
@@ -751,15 +688,14 @@ function UserProjectList() {
                       <TableRow>
                         <TableCell align="center">Sheet Name</TableCell>
 
-                        <TableCell align="center">Hvo Template Name</TableCell>
-                        {/* <TableCell align="center">
-                          Customer Organization
-                        </TableCell> */}
-
-                        {/* <TableCell align="center">Template Type</TableCell> */}
+                        <TableCell align="center">
+                          {tempType === "VIDEO" ? "Video" : "Hvo"} Template Name
+                        </TableCell>
 
                         <TableCell align="center">Status</TableCell>
-                        <TableCell align="center">Hvo Template Link</TableCell>
+                        <TableCell align="center">
+                          {tempType === "VIDEO" ? "Video" : "Hvo"} Template Link
+                        </TableCell>
                         <TableCell align="center">Action</TableCell>
                       </TableRow>
                     </TableHead>
@@ -778,12 +714,7 @@ function UserProjectList() {
                                       ? data.hvoTemplateName
                                       : ""}
                                   </TableCell>
-                                  {/* <TableCell align="center">
-                                    {project.CUSTOMER_ORGANIZATION}
-                                  </TableCell> */}
-                                  {/* <TableCell align="center">
-                                    {data.templateType ? data.templateType : ""}
-                                  </TableCell> */}
+
                                   <TableCell
                                     align="center"
                                     className={`${
@@ -841,26 +772,32 @@ function UserProjectList() {
                                     >
                                       View
                                     </Button>
-                                    {/* <Divider className="dividerbtn" />
-                                    <Button
-                                      onClick={() => {
-                                        history.push("/Edit-Myproject", {
-                                          state: {
-                                            errorData:
-                                              errorData?.list[0]
-                                                ?.projectListing[projectIndex],
-                                            sheetUrl: sheetUrl,
-                                            ErrorSheetId: errorSheetId,
-                                            sheetName: sheetName,
-                                            CUSTOMER_ID: CUSTOMER_ID,
-                                            videoTemplete: videoTemplete,
-                                            projectIndex: projectIndex,
-                                          },
-                                        });
-                                      }}
-                                    >
-                                      Edit
-                                    </Button> */}
+                                    {tempType === "VIDEO" && (
+                                      <>
+                                        <Divider className="dividerbtn" />
+                                        <Button
+                                          onClick={() => {
+                                            history.push("/Edit-Myproject", {
+                                              state: {
+                                                errorData:
+                                                  errorData?.list[0]
+                                                    ?.projectListing[
+                                                    projectIndex
+                                                  ],
+                                                sheetUrl: sheetUrl,
+                                                ErrorSheetId: errorSheetId,
+                                                sheetName: sheetName,
+                                                CUSTOMER_ID: CUSTOMER_ID,
+                                                videoTemplete: videoTemplete,
+                                                projectIndex: projectIndex,
+                                              },
+                                            });
+                                          }}
+                                        >
+                                          Edit
+                                        </Button>
+                                      </>
+                                    )}
                                   </TableCell>
                                 </TableRow>
                               )
@@ -889,7 +826,7 @@ function UserProjectList() {
           </Paper>
         )}
         <Formik
-          initialValues={{ data }}
+          initialValues={{}}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
@@ -916,6 +853,7 @@ function UserProjectList() {
                       sheetData?.map((item, idx) =>
                         item?.dataType == "HVO URL (Required)" ||
                         item?.dataType == "Error (Required)" ||
+                        item?.dataType == "Final video URL (Required)" ||
                         item?.dataType == "Status (Required)" ? (
                           <></>
                         ) : (

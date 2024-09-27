@@ -1,107 +1,88 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import ReactApexChart from "react-apexcharts";
 
-// Helper function to generate day-wise time series data from current date to the last 30 days
-const generateDayWiseTimeSeries = (count, yrange) => {
-  let i = 0;
-  const series = [];
-  let baseval = new Date().getTime(); // Start from current date
-  while (i < count) {
-    const x = baseval;
-    const y =
-      Math.floor(Math.random() * (yrange.max - yrange.min + 1)) + yrange.min;
-
-    series.push({ x, y });
-    baseval -= 86400000; // Decrement the base value by one day (in milliseconds)
-    i++;
-  }
-  return series;
-};
-
-// UserGroupAreaGraph component definition
-const UserGroupAreaGraph = () => {
-  const [options, setOptions] = useState({});
-  const [series, setSeries] = useState([]);
+const UserGroupBarGraph = () => {
+  const chartRef = useRef(null);
 
   useEffect(() => {
-    const newSeries = [
-      {
-        name: "Data",
-        data: generateDayWiseTimeSeries(30, { min: 10, max: 60 }),
-      },
-    ];
-
-    const newOptions = {
+    const options = {
+      series: [
+        { name: "Videos", data: [44, 55], color: "#0358AC" },
+        { name: "HVO Pages", data: [30, 40], color: "#7DC371" },
+      ],
       chart: {
-        type: "area",
-        height: 350,
-        stacked: true,
-        events: {
-          selection: function (chart, e) {
-            console.log(new Date(e.xaxis.min));
-          },
+        type: "bar",
+        height: 180,
+        toolbar: {
+          show: false,
         },
       },
-      colors: ["rgb(3, 88, 172)"],
-      dataLabels: {
-        enabled: false,
+      plotOptions: {
+        bar: {
+          horizontal: false,
+          columnWidth: "60%",
+          endingShape: "rounded",
+          borderRadius: 10,
+          dataLabels: {
+            position: "top", // top, center, bottom
+            color: "#152F40",
+          },
+        },
       },
       stroke: {
-        curve: "smooth",
-        width: 0,
+        show: true,
+        width: 5,
+        colors: ["transparent"],
       },
-      fill: {
-        type: "solid",
-        opacity: 1,
-      },
-      legend: {
+      dataLabels: {
+        enabled: true,
         position: "top",
-        horizontalAlign: "left",
+        formatter: function (val) {
+          return val + "%";
+        },
+        offsetY: -20,
+        style: {
+          fontSize: "12px",
+          colors: ["#152F40"],
+        },
       },
       xaxis: {
-        type: "datetime",
+        categories: ["Videos", "HVO Pages"],
         labels: {
-          formatter: function (value) {
-            const date = new Date(value);
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-indexed
-            const day = String(date.getDate()).padStart(2, "0");
-            return `${year}-${month}-${day}`;
-          },
-        },
-        title: {
-          text: "Total:",
           style: {
-            color: "#858585",
-            fontWeight: 400,
+            colors: "#858585", // Change this to your desired color
           },
         },
       },
-      yaxis: {
-        title: {
-          text: "Views",
-          style: {
-            color: "#858585",
-            fontWeight: 400,
+      fill: {
+        opacity: 1,
+      },
+      tooltip: {
+        y: {
+          formatter: function (val) {
+            return "$ " + val + " thousands";
           },
         },
-        categories: [0, 50, 100, 150, 200],
+      },
+      legend: {
+        show: false,
       },
     };
 
-    setOptions(newOptions);
-    setSeries(newSeries);
+    if (chartRef.current) {
+      chartRef.current.chart.updateOptions(options);
+    }
   }, []);
 
-  // Rendering the area graph component
   return (
     <ReactApexChart
-      options={options}
-      series={series}
-      type="area"
-      height={350}
+      options={{}}
+      series={[]}
+      type="bar"
+      height={180}
+      ref={chartRef}
     />
   );
 };
 
-export default UserGroupAreaGraph;
+export default UserGroupBarGraph;

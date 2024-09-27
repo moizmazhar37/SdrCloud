@@ -19,11 +19,11 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import axios from "axios";
 import ApiConfig from "src/config/APIConfig";
-// import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import ErrorOutlineIcon from "@material-ui/icons/ErrorOutline";
 import WarningIcon from "@material-ui/icons/Warning";
 import VideoLibraryIcon from "@material-ui/icons/VideoLibrary";
-
+import TemplateDetail from "./TemplateDetail"
 import { UserContext } from "../../../context/User";
 import { MenuItem, IconButton } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -53,6 +53,19 @@ const useStyles = makeStyles((theme) => ({
   heading: {
     margin: theme.spacing(2, 0),
     color: theme.palette.text.secondary,
+  },
+  breads: {
+    marginTop: "10px",
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
+    "& nav li": {
+      margin: "0px",
+    },
+    "& .breadCrumbText": {
+      color: "#0358AC",
+      margin: "0px 5px",
+    },
   },
   maindiv: {
     "& .MuiPopover-paper": {
@@ -131,6 +144,14 @@ const useStyles = makeStyles((theme) => ({
       color: "black",
       height: "42px",
       width: "100px",
+    },
+    "& .sheetbtnDisables2": {
+      borderRadius: " 6px",
+      background: "#F4F4F4",
+      marginTop: "5px",
+      color: "black",
+      height: "42px",
+      width: "100%",
     },
     "& .gridcontainersecond": {
       display: "flex",
@@ -252,7 +273,7 @@ const useStyles = makeStyles((theme) => ({
       justifyContent: "center",
       width: "100%",
       marginTop: "32px",
-      padding: "19px",
+      padding: "8px",
       flexDirection: "column",
       "& .MuiButton-outlined": {
         fontSize: "16px",
@@ -314,7 +335,7 @@ const useStyles = makeStyles((theme) => ({
   elementCard: {
     border: "1px solid #ECECEC",
     borderRadius: "10px",
-    padding: "6px 16px",
+    padding: "12px 16px",
     background: "#F2F7FF",
     color: "#0358AC",
     "& .MuiButton-outlined": {
@@ -385,72 +406,65 @@ const CreateTemplate = (props) => {
   const history = useHistory();
   const user = useContext(UserContext);
   const [templateParams, setTemplateParams] = useState({});
-  console.log("templateParams: ", templateParams);
   const [viewParams, setViewParams] = useState({});
+
   const [selectedOption, setSelectedOption] = useState("none");
   const [selectedCategoryName, setSelectedCategoryName] = useState("");
   const [selectedOptionside, setSelectedOptionSide] = useState([]);
   const [elementType, setElementType] = useState(
     props?.location?.state || "none"
   );
-  console.log("elementType: ", elementType);
+
   const [linkObject, setLinkObject] = useState([]);
-  console.log("linkObject: ", linkObject);
+
   const [typeIndex, setTypeIndex] = useState();
   const [templateName, setTemplateName] = useState("");
   const [saveName, setSaveName] = useState(false);
-  console.log("saveName: ", saveName);
+
+  const [isSectionCompleted, setIsSectionCompleted] = useState(true);
+
   const [loading, setLoading] = useState(false);
+
   const [Category, setCategory] = useState(user?.category);
-  console.log("Category: ", Category);
   const [videoRefral, setVideoRefral] = useState();
-  console.log("videoRefral: ", videoRefral);
   const [editType, setEditType] = useState("Create");
-  const [openDialog, setOpenDialog] = useState(false);
   const [elementID, setElementID] = useState("");
   const [viewData, setViewData] = useState({});
+
   const [sheetData, setSheetData] = useState([]);
-  console.log("sheetData: ", sheetData);
   const [connectedSheet, setConnectedSheet] = useState("none");
-  console.log("connectedSheet: ", connectedSheet);
   const handleSheet = (event) => {
-    console.log(event, "eventeventeventnewest");
     setConnectedSheet(event.target.value);
   };
   const [isTemplateNameEmpty, setIsTemplateNameEmpty] = useState(false);
   const [active, setActive] = useState(false);
-  const [previewData, setPreviewData] = useState("");
-  console.log("previewData: ", previewData);
   const [editSheet, setEditSheet] = useState(false);
-  console.log("editSheet: ", editSheet);
   const [connectionStatus, setConnectionStatus] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [newCategory, setNewCategory] = useState("");
   const [error, setError] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("none");
+  const [isShow, setIsShow] = useState(false);
+  const [templateDetail, setTemplateDetail] = useState(false);
+
   const [elements, setElements] = useState([
-    { id: 1, name: "Element 1" },
-    { id: 2, name: "Element 2" },
-    { id: 3, name: "Element 3" },
-    { id: 4, name: "Element 4" },
+    { id: 1, name: "Section 1", isCompleted: false, isDisabled: false },
+    { id: 2, name: "Section 2", isCompleted: false, isDisabled: true },
+    { id: 3, name: "Section 3", isCompleted: false, isDisabled: true },
+    { id: 4, name: "Section 4", isCompleted: false, isDisabled: true },
   ]);
+
   const formik = useFormik({
     initialValues: {
       category: "",
     },
     validationSchema: Yup.object({
       category: Yup.string()
-        // .required(
-        //   "Category is required."
-        // )
         .max(
           20,
           "Category is required and must be between 2 and 20 characters."
         )
         .min(2, "Category is required and must be between 2 and 20 characters"),
-      // .matches(
-      //   /^[A-Za-z]{2,20}(?:\s[A-Za-z]{2,20})*$/,
-      //   "Category is required and must be between 2 and 20 characters, containing only alphabetic characters."
-      // ),
     }),
     onSubmit: (values) => {
       handleAddNewCategory(values.category);
@@ -459,7 +473,6 @@ const CreateTemplate = (props) => {
   });
   const handleAddNewCategory = (values) => {
     addCategory(values);
-    console.log(newCategory, "newCategory");
 
     setIsDialogOpen(false);
     setNewCategory("");
@@ -483,7 +496,6 @@ const CreateTemplate = (props) => {
       setLoading(false);
     }
   };
-
   const addCategory = async (values) => {
     try {
       setLoading(true);
@@ -498,16 +510,10 @@ const CreateTemplate = (props) => {
         },
       });
       if (res?.data?.status === 200) {
+        setIsShow(true);
         getVdoCategories();
-        setLoading(false);
-
         formik.resetForm();
         toast.success(res?.data?.message);
-      } else {
-        toast.error(res?.data?.message);
-
-        // else if (res?.data?.status === 205) {
-        //   toast.error(res?.data?.message);
       }
     } catch (error) {
       console.log(error, "error");
@@ -530,7 +536,9 @@ const CreateTemplate = (props) => {
         },
       });
       if (res?.data?.status === 200) {
+        setIsShow(false);
         toast.success(res?.data?.message);
+        setIsSectionCompleted(true);
         getVdoCategories();
         setLoading(false);
       } else if (res?.data?.status === 205) {
@@ -542,7 +550,6 @@ const CreateTemplate = (props) => {
       setLoading(false);
     }
   };
-
   useEffect(() => {
     if (!isDialogOpen) {
       setError("");
@@ -554,7 +561,6 @@ const CreateTemplate = (props) => {
     setNewCategory("");
     setIsDialogOpen(false);
   };
-  // Update category state when user context changes
   useEffect(() => {
     setCategory(user?.category);
   }, [user?.category]);
@@ -568,7 +574,9 @@ const CreateTemplate = (props) => {
   const handleSaveClick = () => {
     if (templateName.length !== 0 && selectedOption === "none") {
       toast.error("Please select a category.");
+      return;
     }
+    CreateVdoTemplate();
   };
   const handleconnect = () => {
     if (connectedSheet === "" || connectedSheet === "none") {
@@ -579,7 +587,6 @@ const CreateTemplate = (props) => {
   const handleScreen = (type) => {
     setElementType(type);
   };
-  // Function to get summary type
   const getSummary = (type) => {
     setElementType(type);
   };
@@ -596,13 +603,18 @@ const CreateTemplate = (props) => {
     }));
     setTypeIndex(index);
   };
-  // Function to add a new element
   const handleAddElement = () => {
     const newElementId = elements.length + 1;
-    const newElement = { id: newElementId, name: `Element ${newElementId}` };
+    const newElement = {
+      id: newElementId,
+      name: `Section ${newElementId}`,
+      isCompleted: false,
+      isDisabled: elements.every((element) => element.isCompleted),
+    };
     setElements([...elements, newElement]);
+    setIsSectionCompleted(false);
   };
-  // Function to update query parameters in URL
+
   const updateQueryParams = (value) => {
     const queryParams = new URLSearchParams(window.location.search);
     queryParams.set("templateId", value);
@@ -612,8 +624,6 @@ const CreateTemplate = (props) => {
       `${window.location.pathname}?${queryParams.toString()}`
     );
   };
-  // Validation schema for User form
-
   const CreateVdoTemplate = async () => {
     setLoading(false);
     const searchParams = new URLSearchParams(window.location.search);
@@ -726,16 +736,48 @@ const CreateTemplate = (props) => {
         }
         const videoTemplateReferrals =
           res?.data?.data?.getVideo?.videoTemplateReferrals;
-        setElements(
-          videoTemplateReferrals && videoTemplateReferrals.length !== 0
-            ? videoTemplateReferrals
-            : [
-              { id: 1, name: "Element 1" },
-              { id: 2, name: "Element 2" },
-              { id: 3, name: "Element 3" },
-              { id: 4, name: "Element 4" },
-            ]
-        );
+        const newElements = videoTemplateReferrals.map((item, index) => ({
+          id: index + 1,
+          name: `Section ${index + 1}`,
+          isCompleted: false,
+          isDisabled: false,
+        }));
+
+        if (videoTemplateReferrals && videoTemplateReferrals.length !== 0) {
+          setElements(newElements);
+        } else {
+          setElements([
+            {
+              id: 1,
+              name: "Section 1",
+              isCompleted: false,
+              isDisabled: false,
+            },
+            {
+              id: 2,
+              name: "Section 2",
+              isCompleted: false,
+              isDisabled: true,
+            },
+            {
+              id: 3,
+              name: "Section 3",
+              isCompleted: false,
+              isDisabled: true,
+            },
+            {
+              id: 4,
+              name: "Section 4",
+              isCompleted: false,
+              isDisabled: true,
+            },
+          ]);
+        }
+        // setElements(
+        //   videoTemplateReferrals && videoTemplateReferrals.length !== 0
+        //     ? videoTemplateReferrals
+        //     :
+        // );
 
         setTemplateName(res?.data?.data?.getVideo?.videoTemplateName);
         setViewParams((prevState) => ({
@@ -772,13 +814,11 @@ const CreateTemplate = (props) => {
   };
   const [videoUrl, setVideoUrl] = useState("");
   const [creationInProgress, setCreationInProgress] = useState(false);
-  console.log("videoUrl: ", videoUrl);
   const getPreviewdata = async () => {
     try {
       setLoading(true);
       const res = await axios({
         method: "POST",
-        // url: ApiConfig.previewVideo,
         url: `${ApiConfig.previewVideo}?videoTemplateId=${templateParams?.videoTemplateId}`,
         headers: {
           token: `${localStorage.getItem("token")}`,
@@ -786,54 +826,15 @@ const CreateTemplate = (props) => {
       });
       if (res?.status === 200) {
         const data = res?.data?.data;
-
-        // Check if video is already created
         if (data.video_url) {
           setVideoUrl(data.video_url);
-          setCreationInProgress(false); // Video is ready, not in progress
+          setCreationInProgress(false);
         } else {
-          setCreationInProgress(true); // Video creation has started
+          setCreationInProgress(true);
         }
       }
     } catch (error) {
       console.log(error, "error in the get preview API");
-    } finally {
-      setLoading(false);
-    }
-  };
-  // Function to update template overview data
-  const templateOverview = async (value) => {
-    const searchParams = new URLSearchParams(window.location.search);
-    const templateId = searchParams.get("templateId");
-    try {
-      setLoading(true);
-      const res = await axios({
-        method: "PUT",
-        url: ApiConfig.updateTemplatePreview,
-        headers: {
-          token: `
-          ${localStorage.getItem("token")}`,
-        },
-        data: {
-          categoryId: selectedOption,
-          companyName: value?.companyName,
-          dynamicUrlForPreview: value?.dynamicURL,
-          prospectName: value?.prospectName,
-          templateType: "VIDEO",
-          userId: localStorage.getItem("_id"),
-          videoTemplateId: templateId,
-          videoTemplateName: templateName,
-        },
-      });
-      if (res?.status === 200) {
-        setLoading(false);
-        getTemplateByID(templateId);
-        setOpenDialog(false);
-        toast.success("Successfully Save!");
-      }
-    } catch (error) {
-      // debugger;
-      console.log(error, "error");
     } finally {
       setLoading(false);
     }
@@ -846,29 +847,19 @@ const CreateTemplate = (props) => {
       getTemplateByID(templateId);
     }
   };
-  // useEffect hook to fetch initial data
   useEffect(() => {
     getVdoCategories();
     getConnectedSheet();
     getAllVideoRefTypes();
-    setConnectedSheet(viewParams?.googleSheetsId);
+    setConnectedSheet("none");
     const searchParams = new URLSearchParams(window.location.search);
     const templateId = searchParams.get("templateId");
-    if (templateId) {
-      getTemplateByID(templateId);
-    }
   }, []);
-  // Function to handle deletion of query parameters in URL
-  const handleDeleteParameter = () => {
-    const urlWithoutParameter = window.location.href.split("?")[0];
-    history.push(urlWithoutParameter);
-  };
-  // Function to handle change event for template title
   const handleChangetitle = (event, name) => {
     setSelectedOption(event.target.value);
   };
-  const [selectedCategory, setSelectedCategory] = useState("none");
-  const connectSheet = async () => {
+
+  const connectSheet = async (status) => {
     const searchParams = new URLSearchParams(window.location.search);
     const templateId = searchParams.get("templateId");
     try {
@@ -881,21 +872,32 @@ const CreateTemplate = (props) => {
           token: `${localStorage.getItem("token")}`,
         },
         params: {
-          connectionStatus: connectionStatus,
+          connectionStatus: status,
           sheetId: connectedSheet,
           templateId: templateId,
           type: "VIDEO",
         },
       });
       if (res?.data?.status === 200 || res?.data?.status === 201) {
+        console.log("res?.data: ", res?.data);
         setLoading(false);
-        toast.success(res?.data?.message);
+        // toast.success(res?.data?.message);
         // setEditSheet(true);
+        if (status === "CONNECT") {
+          setConnectionStatus("CONNECT");
+          setEditSheet(true);
+
+          toast.success("Sheet successfully connected!");
+        } else if (status === "DISCONNECT") {
+          setConnectionStatus("DISCONNECT");
+          setConnectedSheet("none");
+          toast.success("Sheet successfully disconnected!");
+        }
         setActive(true);
         getTemplateByID(templateId);
       }
     } catch (error) {
-      toast.error(error?.message);
+      toast.error(error?.response?.data?.message);
       console.log(error, "error");
     } finally {
       setLoading(false);
@@ -913,43 +915,20 @@ const CreateTemplate = (props) => {
     setViewData(data);
   };
   const connectionHandler = () => {
-    setConnectionStatus("CONNECT");
+    connectSheet("CONNECT");
   };
   const disConnectionHandler = () => {
-    setConnectionStatus("DISCONNECT");
+    connectSheet("DISCONNECT");
+
     disconnectSheet();
   };
-  const handleEditButtonClick = () => {
-    // Add your logic for handling the edit button click here
-    if (selectedCategory) {
-      alert(`Selected Category: ${selectedCategoryName}`);
-    } else {
-      alert("Please select a category.");
-    }
-  };
-  const formatCategoryName = (name) => {
-    if (!name) return "";
-
-    // Convert to lowercase and then capitalize the first letter of each word
-    return name.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
-  };
-
-  // Function to handle onBlur event for template name input
   const handleBlur = () => {
     setIsTemplateNameEmpty(templateName.trim() === "");
   };
-  useEffect(() => {
-    if (connectionStatus === "CONNECT" || connectionStatus === "DISCONNECT") {
-      connectSheet();
-    }
-    if (connectionStatus === "CONNECT") {
-      setEditSheet(true);
-    }
-  }, [connectionStatus]);
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => {
-    console.log("handleOpen: ", handleOpen);
+
     setOpen(true);
     // fetchVideo();
   };
@@ -959,17 +938,37 @@ const CreateTemplate = (props) => {
     setOpen(false);
   };
 
+  useEffect(() => {
+    if (isShow && Category.length > 0) {
+      const lastCategory = Category[0];
+      setSelectedCategory(lastCategory._id);
+      handleChangetitle({ target: { value: lastCategory._id } });
+    }
+  }, [isShow, Category, handleChangetitle]);
+
+  const showTemplateDetail = () => {
+    setTemplateDetail(!templateDetail)
+  }
+
   return (
     <>
       {loading && <FullScreenLoader />}
       <Grid item xs={12}>
-        <Typography style={{ color: "#152f40" }}>
-          Template /{" "}
-          <span style={{ color: "#0358AC" }}> New Video Template</span>
-        </Typography>
+        <Box className={classes.breads}>
+          <ArrowBackIcon
+            style={{ color: "black", cursor: "pointer", fontSize: "large" }}
+            onClick={() => {
+              history.push("/CreateTemplate");
+            }}
+          />
+          <Typography style={{ color: "#152f40" }}>
+            Template /{" "}
+            <span style={{ color: "#0358AC" }}> New Video Template</span>
+          </Typography>
+        </Box>
       </Grid>
       <Grid container spacing={3} className={classes.maindiv}>
-        <Grid item xs={12} sm={12} md={8}>
+        <Grid item xs={12} sm={12} md={7} lg={8}>
           <Grid container spacing={2} className="gridcontainer">
             <Grid
               item
@@ -1013,10 +1012,20 @@ const CreateTemplate = (props) => {
                       MenuProps={menuProps}
                       onChange={(e) => {
                         handleChangetitle(e);
+                        setIsShow(false);
                         setSelectedCategory(e.target.value);
                         setSelectedCategoryName(e.target.name);
                       }}
                       IconComponent={ExpandMoreIcon}
+                      // Use renderValue to display the selected category without the delete icon
+                      renderValue={(selected) => {
+                        const selectedData = Category.find(
+                          (item) => item._id === selected
+                        );
+                        return selectedData
+                          ? selectedData.category_Name
+                          : "Select Category";
+                      }}
                     >
                       <MenuItem value="none" disabled>
                         Select Category
@@ -1036,16 +1045,19 @@ const CreateTemplate = (props) => {
                           name={data?.category_Name}
                         >
                           {data?.category_Name}
-                          {data?._id !== selectedCategory && (
-                            <IconButton
-                              edge="end"
-                              onClick={() => deleteCategory(data?._id)}
-                              disabled={loading} // Optional: disable button when loading
-                              style={{ marginRight: "20px" }}
-                            >
-                              <DeleteIcon fontSize="small" />
-                            </IconButton>
-                          )}
+
+                          {!["Start-up", "SMB", "MM", "ENT"].includes(
+                            data?.category_Name
+                          ) && (
+                              <IconButton
+                                edge="end"
+                                onClick={() => deleteCategory(data?._id)}
+                                disabled={loading}
+                                style={{ marginRight: "20px" }}
+                              >
+                                <DeleteIcon fontSize="small" />
+                              </IconButton>
+                            )}
                         </MenuItem>
                       ))}
                       <MenuItem
@@ -1071,6 +1083,7 @@ const CreateTemplate = (props) => {
                         color: "#152F40",
                         fontSize: "16px",
                         wordBreak: "break-all",
+                        flexWrap: "wrap",
                       }}
                     >
                       {templateParams?.videoTemplateName}
@@ -1103,20 +1116,20 @@ const CreateTemplate = (props) => {
                     InputProps={{
                       endAdornment: (
                         <InputAdornment position="end">
-                          <div onClick={handleSaveClick}>
-                            <Button
-                              className={`${templateName === "" || selectedOption === "none"
-                                  ? "savebtnDisables"
-                                  : "savebtn"
-                                }`}
-                              disabled={
-                                templateName === "" || selectedOption === "none"
-                              }
-                              onClick={() => CreateVdoTemplate()}
-                            >
-                              Save
-                            </Button>
-                          </div>
+                          {/* <div onClick={handleSaveClick}> */}
+                          <Button
+                            className={`${templateName === "" || selectedOption === "none"
+                              ? "savebtnDisables"
+                              : "savebtn"
+                              }`}
+                            disabled={
+                              templateName === "" || selectedOption === "none"
+                            }
+                            onClick={handleSaveClick}
+                          >
+                            Save
+                          </Button>
+                          {/* </div> */}
                         </InputAdornment>
                       ),
                     }}
@@ -1137,7 +1150,7 @@ const CreateTemplate = (props) => {
                   <>
                     <Box
                       className="d-flex justify-space-between nameBox2"
-                      style={{ width: "100%" }}
+                      style={{ width: "100%", flexWrap: "wrap" }}
                     >
                       <Typography>{viewParams && viewParams?.title}</Typography>
 
@@ -1207,14 +1220,12 @@ const CreateTemplate = (props) => {
                     </FormControl>
                     <div onClick={handleconnect}>
                       <Button
-                        disabled={
-                          connectedSheet === "" || connectedSheet === "none"
-                        }
-                        className={`${connectedSheet === "" || connectedSheet === "none"
-                            ? "sheetbtnDisables"
-                            : "sheetbtn"
+                        disabled={connectedSheet === "none"}
+                        className={`${!(connectedSheet === "none")
+                          ? "sheetbtn"
+                          : "sheetbtnDisables"
                           }`}
-                        varinat="standard"
+                        variant="standard"
                         color="primary"
                         onClick={connectionHandler}
                       >
@@ -1225,69 +1236,94 @@ const CreateTemplate = (props) => {
                 )}
               </div>
             </Grid>
+
+            <Grid item xs={12} style={{ display: "flex", gap: "20px" }}>
+              {/* <Typography style={{ color: "#152F40", display: "flex", justifyContent: "center", alignItems: "center" }}>Template</Typography> */}
+              <Box style={{ display: "flex" }}>
+                <Button
+                  disabled={connectedSheet === "none"}
+                  className={`${!(connectedSheet === "none")
+                    ? "sheetbtn"
+                    : "sheetbtnDisables2"
+                    }`}
+                  variant="standard"
+                  color="primary"
+                  onClick={showTemplateDetail}
+                >
+                  Custom template
+                </Button>
+              </Box>
+            </Grid>
           </Grid>
 
           <Grid item xs={12} sm={12} className="secondmaingrid">
-            {elementType === "STATICURL" || elementType === "DYNAMICURL" ? (
-              <StaticDyanamicFile
-                elementType={elementType}
-                linkData={linkData}
-                elementID={elementID}
-                linkObject={linkObject}
-                typeIndex={typeIndex}
-                reloadData={reloadData}
-                handleScreen={handleScreen}
-                getSummary={getSummary}
-                setElementType={setElementType}
-                viewParams={viewParams}
-              />
-            ) : elementType === "UPLOADIMAGE" ||
-              elementType === "VIDEOCLIPS" ? (
-              <ImageVideo
-                elementType={elementType}
-                linkData={linkData}
-                linkObject={linkObject}
-                elementID={elementID}
-                reloadData={reloadData}
-                typeIndex={typeIndex}
-                handleScreen={handleScreen}
-                getSummary={getSummary}
-                viewParams={viewParams}
-              />
-            ) : elementType === "summary" ? (
-              <Summary
-                linkObject={linkObject}
-                sheetData={sheetData}
-                reloadData={reloadData}
-                sheetId={templateParams?.sheetId}
-                templateParams={templateParams}
-                viewParams={viewParams}
-                getTemplateByID={getTemplateByID}
-              />
-            ) : elementType === "VIEW" ? (
-              <ViewElement linkObject={viewData} getSummary={getSummary} />
-            ) : linkObject?.length === 0 ? (
-              <></>
-            ) : (
-              <Box
-                className="secondmaingridBox"
-                style={{ textAlign: "center" }}
-              >
-                <Button
-                  variant="contained"
-                  style={{ padding: "13px 24px" }}
-                  disabled={linkObject?.length === 0}
-                  onClick={() => {
-                    setElementType("summary");
-                  }}
-                >
-                  Summary
-                </Button>
-              </Box>
-            )}
+
+            {templateDetail ? (<TemplateDetail showTemplateDetail={showTemplateDetail} />) :
+              elementType === "STATICURL" || elementType === "DYNAMICURL" ? (
+                <StaticDyanamicFile
+                  elementType={elementType}
+                  linkData={linkData}
+                  elementID={elementID}
+                  linkObject={linkObject}
+                  typeIndex={typeIndex}
+                  reloadData={reloadData}
+                  handleScreen={handleScreen}
+                  getSummary={getSummary}
+                  setElementType={setElementType}
+                  viewParams={viewParams}
+                  setIsSectionCompleted={setIsSectionCompleted}
+                />
+              ) : elementType === "UPLOADIMAGE" ||
+                elementType === "VIDEOCLIPS" ? (
+                <ImageVideo
+                  getTemplateByID={getTemplateByID}
+                  elementType={elementType}
+                  linkData={linkData}
+                  linkObject={linkObject}
+                  elementID={elementID}
+                  reloadData={reloadData}
+                  typeIndex={typeIndex}
+                  handleScreen={handleScreen}
+                  getSummary={getSummary}
+                  viewParams={viewParams}
+                  setIsSectionCompleted={setIsSectionCompleted}
+                />
+              ) : elementType === "summary" ? (
+                <Summary
+                  linkObject={linkObject}
+                  sheetData={sheetData}
+                  reloadData={reloadData}
+                  sheetId={templateParams?.sheetId}
+                  templateParams={templateParams}
+                  viewParams={viewParams}
+                  getTemplateByID={getTemplateByID}
+                  setIsSectionCompleted={setIsSectionCompleted}
+                  videoUrl={videoUrl}
+                />
+              ) : elementType === "VIEW" ? (
+                <ViewElement
+                  linkObject={viewData}
+                  getSummary={getSummary}
+                  setIsSectionCompleted={setIsSectionCompleted}
+                />
+              ) : linkObject?.length === 0 ? (
+                <></>
+              ) : (
+                <Summary
+                  linkObject={linkObject}
+                  sheetData={sheetData}
+                  reloadData={reloadData}
+                  sheetId={templateParams?.sheetId}
+                  templateParams={templateParams}
+                  viewParams={viewParams}
+                  setIsSectionCompleted={setIsSectionCompleted}
+                  getTemplateByID={getTemplateByID}
+                />
+
+              )}
           </Grid>
         </Grid>
-        <Grid item xs={12} sm={12} md={4}>
+        <Grid item xs={12} sm={12} md={5} lg={4}>
           <Grid
             container
             spacing={2}
@@ -1296,44 +1332,31 @@ const CreateTemplate = (props) => {
           >
             {elements?.map((element, index) => (
               <React.Fragment key={element?.id}>
-                {/* {linkObject[index]?.sequence === index + 1 ? ( */}
                 <Grid item xs={12} sm={12} md={2} lg={2}>
                   <Box className="gridnumberbox1">
                     <Typography>{index + 1}</Typography>
                   </Box>
                 </Grid>
-                {/* ) : linkObject?.length + 1 == element?.id ? (
-                  <Grid item xs={2} sm={1} md={2} lg={2}>
-                    <Box className="gridnumberbox2">
-                      <Typography>{element?.id}</Typography>
-                    </Box>
-                  </Grid>
-                ) : (
-                  <Grid item xs={2} sm={1} md={2} lg={2}>
-                    <Box className="gridnumberbox">
-                      <Typography>{element?.id}</Typography>
-                    </Box>
-                  </Grid>
-                )} */}
 
                 <Grid
                   item
-                  xs={10}
-                  sm={11}
+                  xs={12}
+                  sm={12}
                   md={10}
                   lg={10}
                   align="right"
                   style={{ padding: "10px" }}
                 >
                   <FormControl style={{ width: "97%", textAlign: "left" }}>
-                    {linkObject && linkObject[index]?.sequence === index + 1 ? (
+                    {linkObject && linkObject[index] ? (
                       <>
                         <Typography variant="h5" style={{ color: "#0358AC" }}>
-                          {element.name ? element.name : `Element ${index + 1}`}
+                          {element.name ? element.name : `Section ${index + 1}`}
                         </Typography>
                         <div className={classes.elementCard}>
                           <div className="d-flex justify-space-between">
                             <Typography variant="h5">
+
                               {linkObject[index]?.elementId?.element_Name ===
                                 "STATICURL" && "Static URL"}
                               {linkObject[index]?.elementId?.element_Name ===
@@ -1353,7 +1376,15 @@ const CreateTemplate = (props) => {
                               View
                             </Button>
                           </div>
-                          <Typography variant="body1">
+                          <Typography
+                            variant="body1"
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              marginTop: "10px",
+                              gap: "10px",
+                            }}
+                          >
                             <Clock width={"14px"} height={"14px"} />{" "}
                             {linkObject[index]?.duration}sec &nbsp;|
                             {linkObject[index]?.elementId?.element_Name ===
@@ -1383,11 +1414,12 @@ const CreateTemplate = (props) => {
                           variant="outlined"
                           MenuProps={menuProps}
                           className="selectitemsecond"
-                          disabled={
-                            new URLSearchParams(window.location.search).get(
-                              "templateId"
-                            ) === null || !viewParams?.fetchUrl
-                          }
+                          // disabled={
+                          //   new URLSearchParams(window.location.search).get(
+                          //     "templateId"
+                          //   ) === null || !viewParams?.fetchUrl
+                          // }
+                          disabled={element.isDisabled || !viewParams?.fetchUrl}
                           id={`choose-template-${element.id}`}
                           value={selectedOptionside[element.id] || " "}
                           onChange={(event) =>
@@ -1395,13 +1427,19 @@ const CreateTemplate = (props) => {
                           }
                           IconComponent={ExpandMoreIcon}
                         >
-                          <MenuItem value=" " disabled>
+                          <MenuItem
+                            value=" "
+                            style={{ color: "#858585" }}
+                            divider
+                            disabled
+                          >
                             Choose type
                           </MenuItem>
                           {videoRefral?.map((item, i) => (
                             <MenuItem
                               style={{ color: "#858585" }}
                               value={item?.element_Id}
+                              onClick={() => setElementType(item?.element_Name)}
                               divider
                             >
                               {item?.element_Name === "STATICURL" &&
@@ -1426,12 +1464,14 @@ const CreateTemplate = (props) => {
                 disabled={
                   new URLSearchParams(window.location.search).get(
                     "templateId"
-                  ) === null
+                  ) === null ||
+                  !isSectionCompleted ||
+                  elements.some((e) => e.isDisabled)
                 }
                 style={{ color: "black", fontSize: "16px" }}
                 onClick={handleAddElement}
               >
-                + Add New Element
+                + Add New Section
               </Button>
 
               <Button
@@ -1441,14 +1481,14 @@ const CreateTemplate = (props) => {
                 disabled={
                   new URLSearchParams(window.location.search).get(
                     "templateId"
-                  ) === null || !viewParams?.fetchUrl
+                  ) === null ||
+                  !viewParams?.fetchUrl ||
+                  linkObject.length <= 0
                 }
                 onClick={() => {
-                  // setOpenDialog(true);
                   handleOpen();
                   getPreviewdata();
                 }}
-              // onClick={handleOpen}
               >
                 Progress Overview
               </Button>
@@ -1457,159 +1497,11 @@ const CreateTemplate = (props) => {
         </Grid>
       </Grid>
 
-      <Dialog fullWidth maxWidth="sm" open={openDialog}>
-        <Formik
-          enableReinitialize
-          initialValues={{
-            FirstName: previewData?.FIRST_NAME || "",
-            LastName: previewData?.LAST_NAME || "",
-            Email: previewData?.EMAIL || "",
-            Companyurl: previewData?.COMPANYURL || "",
-            FaceBookUrl: previewData?.FACEBOOK || "",
-            LinkedinUrl: previewData?.LINKEDIN || "",
-            TwitterUrl: previewData?.TWITTER || "",
-            customerorganization: previewData?.CUSTOMER_ORGANIZATION || "",
-          }}
-        >
-          <Form>
-            <DialogContent>
-              <Close
-                className={classes.onclick}
-                onClick={() => setOpenDialog(false)}
-              />
-              <Typography style={{ color: "#152F40" }}>
-                Progress Overview /
-                <span style={{ color: "#0358AC" }}> Preview AI Video</span>
-              </Typography>
-              <Typography
-                variant="h4"
-                style={{
-                  color: "#152F40",
-                  marginTop: "16px",
-                  textAlign: "center",
-                }}
-              >
-                Preview Data
-              </Typography>
-              <Box mt={3}>
-                <Typography style={{ color: "black" }}>First Name </Typography>
-                <Field
-                  type="text"
-                  name="FirstName"
-                  as={TextField}
-                  fullWidth
-                  variant="outlined"
-                  disabled
-                />
-              </Box>
-              <Box mt={2}>
-                <Typography style={{ color: "black" }}>Last Name</Typography>
-                <Field
-                  type="text"
-                  name="LastName"
-                  as={TextField}
-                  fullWidth
-                  variant="outlined"
-                  disabled
-                />
-              </Box>
-              <Box mt={2}>
-                <Typography style={{ color: "black" }}>Email</Typography>
-                <Field
-                  type="text"
-                  name="Email"
-                  as={TextField}
-                  fullWidth
-                  variant="outlined"
-                  disabled
-                />
-              </Box>
-              <Box mt={2}>
-                <Typography style={{ color: "black" }}>
-                  Customer Organization
-                </Typography>
-                <Field
-                  type="text"
-                  name="customerorganization"
-                  as={TextField}
-                  fullWidth
-                  variant="outlined"
-                  disabled
-                />
-              </Box>
-              <Box mt={2}>
-                <Typography style={{ color: "black" }}>Company Url</Typography>
-                <Field
-                  type="text"
-                  name="Companyurl"
-                  as={TextField}
-                  fullWidth
-                  variant="outlined"
-                  disabled
-                />
-              </Box>
-              <Box mt={2}>
-                <Typography style={{ color: "black" }}>Facebook Url</Typography>
-                <Field
-                  type="text"
-                  name="FaceBookUrl"
-                  as={TextField}
-                  fullWidth
-                  variant="outlined"
-                  disabled
-                />
-              </Box>
-              <Box mt={2}>
-                <Typography style={{ color: "black" }}>Linkedin Url</Typography>
-                <Field
-                  type="text"
-                  name="LinkedinUrl"
-                  as={TextField}
-                  fullWidth
-                  variant="outlined"
-                  disabled
-                />
-              </Box>
-              <Box mt={2}>
-                <Typography style={{ color: "black" }}>Twitter Url</Typography>
-                <Field
-                  type="text"
-                  name="TwitterUrl"
-                  as={TextField}
-                  fullWidth
-                  variant="outlined"
-                  disabled
-                />
-              </Box>
-            </DialogContent>
-            <DialogActions
-              className="d-flex"
-              style={{ padding: "8px 25px 18px" }}
-            >
-              <Button
-                variant="contained"
-                color="default"
-                onClick={() => setOpenDialog(false)}
-                fullWidth
-                style={{
-                  background: "#F4F4F4",
-                  color: "black",
-                  fontSize: "16px",
-                  fontWeight: 500,
-                  height: "45px",
-                }}
-              >
-                Back
-              </Button>
-            </DialogActions>
-          </Form>
-        </Formik>
-      </Dialog>
-
       <Dialog
         open={isDialogOpen}
         onClose={() => {
           setIsDialogOpen(false);
+          setSelectedOption("none");
           formik.resetForm();
         }}
         aria-labelledby="add-category-dialog-title"
@@ -1670,6 +1562,7 @@ const CreateTemplate = (props) => {
                 className="savebtnDisables"
                 onClick={() => {
                   setIsDialogOpen(false);
+                  setSelectedOption("none");
                   formik.resetForm();
                 }}
                 variant="outlined"
@@ -1680,8 +1573,8 @@ const CreateTemplate = (props) => {
               </Button>
               <Button
                 className={`${!formik.isValid || !formik.dirty
-                    ? "savebtnDisables"
-                    : "savebtn"
+                  ? "savebtnDisables"
+                  : "savebtn"
                   }`}
                 type="submit"
                 variant="contained"
@@ -1747,11 +1640,11 @@ const CreateTemplate = (props) => {
               <Box
                 style={{
                   width: "100%",
-                  maxWidth: "800px", // Maximum width for larger screens
-                  maxHeight: "450px", // Maximum height to maintain aspect ratio
+                  maxWidth: "800px",
+                  maxHeight: "450px",
                   overflow: "hidden",
                   position: "relative",
-                  paddingBottom: "56.25%", // 16:9 aspect ratio
+                  paddingBottom: "56.25%",
                 }}
               >
                 <video

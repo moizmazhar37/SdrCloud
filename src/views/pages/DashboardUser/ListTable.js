@@ -231,15 +231,14 @@ const ListTable = () => {
                 <Table className={classes.table} aria-label="simple table">
                   <TableHead>
                     <TableRow>
-                      <TableCell align="center">Video Template Name</TableCell>
+                      <TableCell align="center">
+                        {tempType === "VIDEO" ? "Video" : "Hvo"} Template Name
+                      </TableCell>
                       <TableCell align="center">Name</TableCell>
                       <TableCell align="center">User</TableCell>
-                      {tempType === "HVO" && (
-                        <TableCell align="center">HVO</TableCell>
-                      )}
-                      {tempType === "VIDEO" && (
-                        <TableCell align="center">VIDEO</TableCell>
-                      )}
+                      <TableCell align="center">
+                        {tempType === "VIDEO" ? "Video" : "Hvo"}
+                      </TableCell>
                       <TableCell align="center">Action</TableCell>
                     </TableRow>
                   </TableHead>

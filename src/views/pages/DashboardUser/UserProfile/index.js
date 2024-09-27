@@ -14,6 +14,7 @@ import { Formik, Form, Field } from "formik";
 import Breadcrumbs from "@material-ui/core/Breadcrumbs";
 import Link from "@material-ui/core/Link";
 import * as Yup from "yup";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import { UserContext } from "src/context/User";
 import { useHistory } from "react-router-dom";
 import ApiConfig from "src/config/APIConfig";
@@ -130,6 +131,10 @@ const useStyles = makeStyles((theme) => ({
     color: "grey",
   },
   breads: {
+    marginTop: "10px",
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
     "& nav li": {
       margin: "0px",
     },
@@ -316,26 +321,26 @@ const EditProfile = () => {
   const validationSchema = Yup.object().shape({
     firstName: Yup.string()
       .required(
-        "First Name is required and must be between 2 and 50 characters, containing only alphabetic or alphanumeric characters."
+        "First name is required and must be between 2 and 50 characters, containing only alphabetic or alphanumeric characters."
       )
       .matches(
         /^(?! )[A-Za-z0-9!@#\$%\^\&*\(\)_\+\-=\[\]\{\};:'",<>\.\?\/\\|`~]{1,49}[A-Za-z0-9!@#\$%\^\&*\(\)_\+\-=\[\]\{\};:'",<>\.\?\/\\|`~ ]$/,
-        "First Name is required and must be between 2 and 50 characters, containing only alphabetic or alphanumeric characters."
+        "First name is required and must be between 2 and 50 characters, containing only alphabetic or alphanumeric characters."
       ),
     lastName: Yup.string()
       .required(
-        "Last Name is required and must be between 2 and 50 characters, containing only alphabetic or alphanumeric characters."
+        "Last name is required and must be between 2 and 50 characters, containing only alphabetic or alphanumeric characters."
       )
 
       .matches(
         /^(?=.*[A-Za-z])[A-Za-z0-9 !@#\$%\^\&*\(\)_\+\-=\[\]\{\};:'",<>\.\?\/\\|`~]{2,50}$/,
-        "Last Name is required and must be between 2 and 50 characters, containing only alphabetic or alphanumeric characters."
+        "Last name is required and must be between 2 and 50 characters, containing only alphabetic or alphanumeric characters."
       ),
     phone: Yup.string()
-      .required("A valid Phone number is required, including the country code.")
+      .required("A valid phone number is required, including the country code.")
       .test(
         "is-valid-phone",
-        "A valid Phone number is required, including the country code.",
+        "A valid phone number is required, including the country code.",
         function (value) {
           console.log("value:: in the eidtprofile  ", value);
           const { country } = this.parent;
@@ -345,17 +350,17 @@ const EditProfile = () => {
       ),
     linkedinUrl: Yup.string()
       .url(
-        "Please enter a valid LinkedIn profile URL (e.g., https://www.linkedin.com/in/username)."
+        "Please enter a valid linkedin profile url (e.g., https://www.linkedin.com/in/username)."
       )
       .matches(
         /^https?:\/\/(www\.)?linkedin\.com\/.*$/,
-        "Please enter a valid LinkedIn profile URL (e.g., https://www.linkedin.com/in/username)."
+        "Please enter a valid linkedin profile url (e.g., https://www.linkedin.com/in/username)."
       ),
     meetLink: Yup.string()
-      .required("Please enter a valid meeting link URL.")
+      .required("Please enter a valid meeting link url.")
       .matches(
         /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/,
-        "Please enter a valid meeting link URL."
+        "Please enter a valid meeting link url."
       ),
     title: Yup.string()
       .required("Title must be between 2 and 100 characters.")
@@ -453,22 +458,7 @@ const EditProfile = () => {
     setEditing(false);
   };
 
-  // const handleFileUpload = (event) => {
-  //   const file = event.target.files[0];
-  //   setIsImageChanged(true);
-  //   if (file) {
-  //     const reader = new FileReader();
-  //     reader.onload = (event) => {
-  //       // setSelectedFile(event.target.result);
-  //       const base64Image = reader.result;
-  //       setSelectedFile(base64Image);
-  //       setShowImageName(file?.name);
-  //       formik.setFieldValue("profilephoto", base64Image);
-  //       setOpenCrop(true);
-  //     };
-  //     reader.readAsDataURL(file);
-  //   }
-  // };
+
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
@@ -488,6 +478,41 @@ const EditProfile = () => {
   const handleCloseDialog = () => {
     setIsImageChanged(false);
     setOpen(false);
+  };
+
+  const updateProfilePic = async (values) => {
+    setLoading(true)
+
+    try {
+      const res = await axios({
+        method: "POST",
+        url: ApiConfig.updateProfilePic,
+        headers: {
+          token: `${localStorage.getItem("token")}`,
+        },
+        data: {
+          profilePicture: photoURL
+        },
+
+      });
+      if (res?.data?.status === 200) {
+        console.log(res?.data, "uih");
+        toast.success("Image uploaded successfully.");
+
+        handleCloseDialog();
+        GetCompanyDetails()
+        setProfileData((prevData) => ({
+          ...prevData,
+          profilePicture: res?.data?.data,
+
+        }));
+      } else {
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+    }
   };
 
   const handleSaveClick = async () => {
@@ -516,6 +541,7 @@ const EditProfile = () => {
         data: profileUpdateDtoNew,
       });
       if (res?.data?.status === 200) {
+        console.log("res?.data: ", res?.data);
         toast.success(res?.data?.message);
         GetCompanyDetails();
         setEditing(false);
@@ -523,7 +549,7 @@ const EditProfile = () => {
         setLoading(false);
         setProfileData((prevData) => ({
           ...prevData,
-          profilePicture: res?.data?.data?.profilePicture,
+          profilePicture: userData.profilephoto,
           firstName: res?.data?.data?.firstName,
           lastName: res?.data?.data?.lastName,
         }));
@@ -541,6 +567,12 @@ const EditProfile = () => {
     <>
       {loading && <FullScreenLoader />}
       <Box className={classes.breads}>
+        <ArrowBackIcon
+          style={{ color: "black", cursor: "pointer", fontSize: "large" }}
+          onClick={() => {
+            history.push("/user-settings");
+          }}
+        />
         <Breadcrumbs aria-label="breadcrumb">
           <Link color="inherit" href="/user-settings">
             Settings
@@ -581,14 +613,14 @@ const EditProfile = () => {
                         {key === "profilephoto"
                           ? "Profile Picture"
                           : key === "firstName"
-                          ? "First Name"
-                          : key === "lastName"
-                          ? "Last Name"
-                          : key === "linkedinUrl"
-                          ? "LinkedIn Url"
-                          : key === "meetLink"
-                          ? "Meeting ID"
-                          : key.charAt(0).toUpperCase() + key.slice(1)}
+                            ? "First Name"
+                            : key === "lastName"
+                              ? "Last Name"
+                              : key === "linkedinUrl"
+                                ? "LinkedIn Url"
+                                : key === "meetLink"
+                                  ? "Meeting ID"
+                                  : key.charAt(0).toUpperCase() + key.slice(1)}
                       </Typography>
                     </Grid>
                     <Grid
@@ -713,13 +745,12 @@ const EditProfile = () => {
                                 : classes.textfiledallbefore
                             }
                             name={key}
-                            placeholder={`Enter Your ${
-                              key.charAt(0).toUpperCase() + key.slice(1)
-                            }`}
+                            placeholder={`Enter Your ${key.charAt(0).toUpperCase() + key.slice(1)
+                              }`}
                             value={
                               key === "firstName" || key === "lastName"
                                 ? formik.values[key].charAt(0).toUpperCase() +
-                                  formik.values[key].slice(1)
+                                formik.values[key].slice(1)
                                 : formik.values[key]
                             }
                             onChange={formik.handleChange}
@@ -740,10 +771,10 @@ const EditProfile = () => {
                                 key === "phone"
                                   ? 20
                                   : key === "firstName"
-                                  ? 50
-                                  : key === "lastName"
-                                  ? 50
-                                  : undefined,
+                                    ? 50
+                                    : key === "lastName"
+                                      ? 50
+                                      : undefined,
                               onKeyDown: (e) => {
                                 const isAlphanumericOrSpecial =
                                   /^[A-Za-z0-9!@#$%^&*(),.?":{}|<>-]+$/.test(
@@ -780,11 +811,10 @@ const EditProfile = () => {
                     Cancel
                   </Button>
                   <Button
-                    className={`${
-                      !formik.isValid || formik.isSubmitting
-                        ? "savebtnDisables"
-                        : "savebtn"
-                    }`}
+                    className={`${!formik.isValid || formik.isSubmitting
+                      ? "savebtnDisables"
+                      : "savebtn"
+                      }`}
                     // onClick={handleSaveClick}
                     type="submit"
                     disabled={!formik.isValid || formik.isSubmitting}
@@ -808,9 +838,7 @@ const EditProfile = () => {
       </form>
       {openCrop ? (
         <Dialog open={open} className={classes.mainDialog}>
-          <IconButton onClick={handleCloseDialog}>
-            {/* <CloseIcon className="closeicon" /> */}
-          </IconButton>
+          <IconButton onClick={handleCloseDialog}></IconButton>
 
           <Typography variant="body1" className={classes.dialogHeading}>
             Profile Image
@@ -822,7 +850,7 @@ const EditProfile = () => {
             setOpenCrop={setOpenCrop}
             setPhotoURL={setPhotoURL}
             setUploadedImage={setSelectedFile}
-            setErrors={() => {}}
+            setErrors={() => { }}
           />
         </Dialog>
       ) : (
@@ -874,8 +902,7 @@ const EditProfile = () => {
             <Button
               onClick={() => {
                 if (isImageChanged) {
-                  toast.success("Image uploaded successfully.");
-                  handleCloseDialog();
+                  updateProfilePic()
                 } else {
                   setSelectedFile(null);
                 }

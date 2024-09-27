@@ -26,6 +26,7 @@ import AudioDialog from "src/component/AudioDialog";
 import { menuProps } from "src/utils";
 import { toast } from "react-toastify";
 import FullScreenLoader from "src/component/FullScreenLoader";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 // Styles for the component
 const useStyles = makeStyles((theme) => ({
   maindiv: {
@@ -91,7 +92,7 @@ const useStyles = makeStyles((theme) => ({
     padding: "16px 23px",
     border: "1px solid var(--light-stroke, #ECECEC)",
     height: "100%",
-    minHeight: "450px",
+    // minHeight: "450px",
     "& .MuiButton-root": {
       color: "#152F40",
       background: "transparent",
@@ -141,6 +142,7 @@ const StaticDyanamicFile = ({
   linkObject,
   viewParams,
   firstRowValue,
+  setIsSectionCompleted,
 }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -150,29 +152,29 @@ const StaticDyanamicFile = ({
 
   const [link, setLink] = useState("");
   const [dymLink, setDymLink] = useState("none");
-  console.log(dymLink, "dymLink");
+  console.log(link, "link");
 
   const [duration, setDuration] = useState("");
   const [elementData, setElementData] = useState();
+  console.log(elementData, "elementData");
+
   const [loading, setLoading] = useState(false);
   const [openDialog, setOpenDialog] = useState();
   const [selectedAudioType, setSelectedAudioType] = useState("audio");
   const [audioScriptInput, setAudioScriptInput] = useState("");
   const [audioFile, setAudioFile] = useState(null);
+  console.log("audioFile: ", audioFile);
+
   const [tags, setTags] = useState([]);
 
   const [isSaved, setIsSaved] = useState(false);
-  console.log("isSaved: ", isSaved);
   const [nextBtn, setNextBtn] = useState(false);
-  console.log("nextBtn: ", nextBtn);
   const [saveButton, setSaveButton] = useState(false);
-  console.log("saveButton: ", saveButton);
   const [companyDetails, setCompanyDetails] = useState("");
   const [firstRowData, setFirstRowData] = useState("");
-  console.log("firstRowData inside th static ", firstRowData);
 
   const [matchData, setMatchData] = useState("");
-  console.log(matchData, "matchData");
+  const [matchDynamic, setMatchDynamic] = useState("");
 
   const handleOpenDialog = () => {
     setOpenDialog(true);
@@ -298,6 +300,7 @@ const StaticDyanamicFile = ({
       duration: duration,
       tagValueName: selectedOption,
       scrollEnabled: selectedOptionsecond,
+      firstRowValue: matchDynamic,
       elementId: elementID,
       sequence: typeIndex + 1,
       videoTemplateId: templateId,
@@ -355,10 +358,6 @@ const StaticDyanamicFile = ({
 
       if (
         (link !== "" || dymLink !== "") &&
-        // (link === "" ||
-        //   urlPattern.test(link) ||
-        //   dymLink === "" ||
-        //   urlPattern.test(dymLink)) &&
         duration !== "" &&
         selectedOptionsecond !== "none" &&
         audioFile !== null
@@ -377,16 +376,15 @@ const StaticDyanamicFile = ({
           });
           if (res?.data?.status === 200) {
             toast.success(res?.data?.message);
-            setElementData({
-              firstRowValue: firstRowValue,
-              index: typeIndex,
-              type: elementType,
-              link: link || dymLink,
-              dynamicURL: selectedOption,
-              duration: duration,
-              scroll: selectedOptionsecond,
-            });
-
+            // setElementData({
+            //   firstRowValue: firstRowValue,
+            //   index: typeIndex,
+            //   type: elementType,
+            //   link: link || dymLink,
+            //   dynamicURL: selectedOption,
+            //   duration: duration,
+            //   scroll: selectedOptionsecond,
+            // });
             setIsSaved(true); // Form successfully saved
             setNextBtn(true);
           }
@@ -437,15 +435,15 @@ const StaticDyanamicFile = ({
           });
           if (res?.data?.status === 200) {
             toast.success(res?.data?.message);
-            setElementData({
-              firstRowValue: link || matchData,
-              index: typeIndex,
-              type: elementType,
-              link: link,
-              dynamicURL: selectedOption,
-              duration: duration,
-              scroll: selectedOptionsecond,
-            });
+            // setElementData({
+            //   firstRowValue: firstRowValue,
+            //   index: typeIndex,
+            //   type: elementType,
+            //   link: link,
+            //   dynamicURL: selectedOption,
+            //   duration: duration,
+            //   scroll: selectedOptionsecond,
+            // });
             setIsSaved(true); // Form successfully saved
             setNextBtn(true);
           }
@@ -475,8 +473,14 @@ const StaticDyanamicFile = ({
     setAnchorEl(null);
   };
   const handleSelectChange = (event) => {
-    setSelectedOption(event.target.value);
-    handleClose();
+    const selectedDynamic = event.target.value;
+    setSelectedOption(selectedDynamic);
+    if (selectedDynamic !== "none" && firstRowData[selectedDynamic]) {
+      setMatchDynamic(firstRowData[selectedDynamic]);
+    } else {
+      setMatchDynamic(""); // Clear matchData if no match is found
+    }
+    // handleClose();
   };
   const handleSelectChangeSecond = (event) => {
     setSelectedOptionSecond(event.target.value);
@@ -487,9 +491,12 @@ const StaticDyanamicFile = ({
     setLink("");
     setDuration("");
     setSelectedOptionSecond("none");
+    setDymLink("none");
+    setAudioFile(null);
   };
   // Function to submit summary data
   const handleNext = () => {
+    setIsSectionCompleted(true);
     submitSummary();
     reloadData();
     handleScreen("none");
@@ -497,9 +504,10 @@ const StaticDyanamicFile = ({
   const submitSummary = async () => {
     if (linkObject?.length !== 0) {
       getSummary("summary");
-    } else {
-      toast.error("Please add atleast one element.");
     }
+    // else {
+    //   toast.error("Please add atleast one element.");
+    // }
   };
   const handleDymLinkChange = (e) => {
     const selectedValue = e.target.value;
@@ -521,36 +529,102 @@ const StaticDyanamicFile = ({
       setErrors({ dymLink: "" });
     }
   };
+  useEffect(() => {
+    if (
+      firstRowData &&
+      Object.keys(firstRowData).length > 0 &&
+      dymLink !== "none"
+    ) {
+      handleDymLinkChange({ target: { value: dymLink } });
+    }
+  }, [firstRowData]);
+  const goBackToElementSelection = () => {
+    setIsSectionCompleted(true);
+    handleScreen("none");
+  };
   return (
     <Box className={classes.secondmaingridBox}>
       {loading === true && <FullScreenLoader />}
       <Box style={{ marginTop: "12px", color: "#0358AC" }}>
-        {elementType === "STATICURL" ? (
-          <Typography>Static URL | Element {typeIndex + 1}</Typography>
-        ) : (
-          <Typography>Dynamic URL | Element {typeIndex + 1}</Typography>
-        )}
+        <Box mb={3} style={{ display: "flex", alignItems: "center" }}>
+          <ArrowBackIcon
+            style={{ cursor: "pointer", marginRight: "8px", fontSize: "large" }}
+            onClick={goBackToElementSelection}
+          />
+          {elementType === "STATICURL" ? (
+            <Typography>Static URL | Element {typeIndex + 1}</Typography>
+          ) : (
+            <Typography>Dynamic URL | Element {typeIndex + 1}</Typography>
+          )}
+        </Box>
         {elementType === "STATICURL" ? (
           <>
             <Grid container spacing={3}>
               <Grid item xs={12} sm={6} marginTop="12px">
                 <Typography className="heading">Enter Static URL</Typography>
-                <TextField
+                {/* <TextField
                   variant="outlined"
                   placeholder="www.hubspot.com"
                   value={link}
                   onChange={(e) => {
-                    setLink(e.target.value);
+                    let inputValue = e.target.value;
+
+                    // Automatically prepend http:// if not present
+                    if (
+                      !inputValue.startsWith("http://") &&
+                      !inputValue.startsWith("https://")
+                    ) {
+                      inputValue = "https://" + inputValue;
+                    }
+
+                    setLink(inputValue);
                     setDymLink("none");
-                    if (!urlPattern.test(e.target.value)) {
+
+                    // Validate the URL
+                    if (!urlPattern.test(inputValue)) {
                       setErrors({ link: "Please enter a valid Static URL." });
                     } else {
                       setErrors({ link: "" });
                     }
                   }}
-                />
+                /> */}
+                {/* /> */}
+                <TextField
+                  variant="outlined"
+                  placeholder="https://www.hubspot.com"
+                  value={link}
+                  onChange={(e) => {
+                    let inputValue = e.target.value;
+                    setMatchData("");
+                    setDymLink("none");
+                    // Check if input is empty
+                    if (inputValue === "") {
+                      setLink(inputValue);
+                      setErrors({ link: "" });
+                      return;
+                    }
 
-                {/* <Typography className="error">{errors.link}</Typography> */}
+                    // Prepend 'https://www.' only if the input is not empty
+                    if (
+                      !inputValue.startsWith("http://") &&
+                      !inputValue.startsWith("https://")
+                    ) {
+                      // Only prepend if it's the first input or input was fully cleared
+                      if (!inputValue.startsWith("www.") && link.length === 0) {
+                        inputValue = "https://www." + inputValue;
+                      }
+                    }
+
+                    // Validate the URL
+                    if (!urlPattern.test(link)) {
+                      setErrors({ link: "Please enter a valid Static URL." });
+                    } else {
+                      setErrors({ link: "" });
+                    }
+
+                    setLink(inputValue);
+                  }}
+                />
               </Grid>
               <Grid item xs={12} sm={6} marginTop="12px">
                 <Typography className="heading">Select Static URL</Typography>
@@ -565,13 +639,13 @@ const StaticDyanamicFile = ({
                   value={dymLink}
                   onChange={handleDymLinkChange}
                   IconComponent={ExpandMoreIcon}
-                  // error={!!errors.dymLink}
-                  // helperText={errors.dymLink}
+                // error={!!errors.dymLink}
+                // helperText={errors.dymLink}
                 >
                   <MenuItem value="none" disabled>
                     Select Static URL
                   </MenuItem>
-                  {/* <MenuItem value="--">Select None</MenuItem> */}
+
                   {companyDetails !== undefined &&
                     companyDetails.length > 0 &&
                     companyDetails
@@ -580,7 +654,6 @@ const StaticDyanamicFile = ({
                         <MenuItem value={item?.value}>{item?.value}</MenuItem>
                       ))}
                 </Select>
-                {/* <Typography className="error">{errors.dymLink}</Typography> */}
               </Grid>
             </Grid>
           </>
@@ -633,22 +706,32 @@ const StaticDyanamicFile = ({
             type="number"
             fullWidth
             onChange={(e) => {
-              const value = e.target.value;
+              let value = e.target.value;
 
-              // Check if the value length exceeds the max length
-              if (value.length <= 10) {
+              // Convert value to number to ensure numeric comparison
+              if (value !== "") {
+                value = Number(value);
+              }
+
+              // Ensure value does not exceed 3600, has a max length of 10 characters, and is not negative
+              if (value >= 0 && value.toString().length <= 10 && value <= 3600) {
                 setDuration(value);
                 if (value === "") {
                   setErrors({ duration: "Duration is required." });
                 } else {
                   setErrors({ duration: "" });
                 }
+              } else if (value > 3600) {
+                setErrors({ duration: "Duration cannot exceed 3600 seconds." });
+              } else if (value < 0) {
+                setErrors({ duration: "Negative values are not allowed." });
               }
             }}
             variant="outlined"
             placeholder="00"
-            inputProps={{ maxlength: 10 }}
           />
+
+
           <Typography className="error">{errors.duration}</Typography>
         </div>
         <div style={{ width: "100%", borderRadius: "6px" }}>
@@ -697,9 +780,8 @@ const StaticDyanamicFile = ({
               variant="contained"
               style={{ height: "44px" }}
               onClick={handleOpenDialog}
-              className={`${
-                selectedOptionsecond === "none" ? "savebtnDisables" : "savebtn"
-              }`}
+              className={`${selectedOptionsecond === "none" ? "savebtnDisables" : "savebtn"
+                }`}
               disabled={selectedOptionsecond === "none" || duration === ""}
             >
               Audio
@@ -708,17 +790,35 @@ const StaticDyanamicFile = ({
         </div>
       </Box>
       {elementType === "STATICURL" ? (
-        <Box className="middleBox" style={{ marginTop: "12px" }}>
-          <iframe
-            src={link || matchData}
-            alt=""
-            height="400px"
-            width="100%"
-            style={{ borderRadius: "16px", border: "1px solid" }}
-          ></iframe>
-        </Box>
+        <>
+          {(link || matchData) && (
+            <Box className="middleBox" style={{ marginTop: "12px" }}>
+              {console.log(link, "linkkkkk", matchData, "matchhh")}
+              <iframe
+                src={link || matchData}
+                // src={dymLink === "STATIC" ? link : elementData?.link}
+                alt=""
+                height="400px"
+                width="100%"
+                style={{ borderRadius: "16px", border: "1px solid" }}
+              ></iframe>
+            </Box>
+          )}
+        </>
       ) : (
-        ""
+        <>
+          {matchDynamic && (
+            <Box className="middleBox" style={{ marginTop: "12px" }}>
+              <iframe
+                src={matchDynamic}
+                alt=""
+                height="400px"
+                width="100%"
+                style={{ borderRadius: "16px", border: "1px solid" }}
+              ></iframe>
+            </Box>
+          )}
+        </>
       )}
 
       <Box className="secondmaingridbtn">
@@ -728,13 +828,7 @@ const StaticDyanamicFile = ({
             handleSetData();
           }}
           className={classes.savebtn}
-          disabled={
-            // !link ||
-            duration === "" ||
-            selectedOptionsecond === "none" ||
-            audioFile === null ||
-            loading
-          }
+          disabled={isSaved || !audioFile}
         >
           Save
         </Button>

@@ -1049,7 +1049,6 @@ const Intent = (props) => {
             Settings
           </Link>
           <Typography className="breadCrumbText">
-            {/* {settingRoute} */}
             <Typography>Footer Links</Typography>
           </Typography>
         </Breadcrumbs>
@@ -1120,163 +1119,147 @@ const Intent = (props) => {
                     dirty,
                   }) => (
                     <Form style={{ marginTop: "0px" }}>
-                      <Box className="innerbox commomInnerBox">
-                        <Grid container spacing={4}>
-                          <Grid
-                            item
-                            lg={4}
-                            md={4}
-                            sm={6}
-                            className="flexCenter"
-                          >
-                            <Typography variant="body1">
-                              Account Phone:
-                            </Typography>
-                          </Grid>
-                          <Grid item lg={8} md={8} sm={6}>
-                            <PhoneInput
-                              disabled={!isEditingContact}
-                              label="Phone Number"
-                              name="phoneNumberOne"
-                              value={values.phoneNumberOne}
-                              classes={classes.phoneInput}
-                              onBlur={(e) => {
-                                handleBlur(e);
-                                setFieldTouched("phoneNumberOne", true);
-                              }}
-                              onChange={(phoneNumberOne, countryData) => {
-                                const formattedPhone =
-                                  phoneNumberOne.startsWith("+")
-                                    ? phoneNumberOne
-                                    : `+${phoneNumberOne}`;
-                                setFieldValue("phoneNumberOne", formattedPhone);
-                                setFieldValue(
-                                  "country",
-                                  countryData.countryCode
-                                );
-                              }}
-                              defaultCountry="US"
-                              country={"us"}
-                              inputStyle={{
-                                width: "100%",
-                                height: "42px",
-                                marginTop: "0px",
-                                fontWeight: "normal",
-                              }}
-                            />
-                            <FormHelperText
-                              error
-                              className={classes.helperText}
-                            >
-                              {touched.phoneNumberOne && errors.phoneNumberOne}
-                            </FormHelperText>
-                          </Grid>
-                          <Grid
-                            item
-                            lg={4}
-                            md={4}
-                            sm={6}
-                            className="flexCenter"
-                          >
-                            <Typography variant="body1">
-                              Facebook Link:
-                            </Typography>
-                          </Grid>
-                          <Grid item lg={8} md={8} sm={6}>
-                            <TextField
-                              disabled={!isEditingContact}
-                              name="FACEBOOK"
-                              placeholder="Enter Facebook link"
-                              variant="outlined"
-                              value={values.FACEBOOK}
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              fullWidth
-                            />
-                            <FormHelperText
-                              error
-                              className={classes.helperText}
-                            >
-                              {touched.FACEBOOK && errors.FACEBOOK}
-                            </FormHelperText>
-                          </Grid>
-
-                          <Grid
-                            item
-                            lg={4}
-                            md={4}
-                            sm={6}
-                            className="flexCenter"
-                          >
-                            <Typography variant="body1">
-                              Instagram Link:
-                            </Typography>
-                          </Grid>
-                          <Grid item lg={8} md={8} sm={6}>
-                            <TextField
-                              disabled={!isEditingContact}
-                              placeholder="Enter Instagram link"
-                              name="INSTAGRAM"
-                              variant="outlined"
-                              value={values.INSTAGRAM}
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              fullWidth
-                            />
-                            <FormHelperText
-                              error
-                              className={classes.helperText}
-                            >
-                              {touched.INSTAGRAM && errors.INSTAGRAM}
-                            </FormHelperText>
-                          </Grid>
-
-                          <Grid
-                            item
-                            lg={4}
-                            md={4}
-                            sm={6}
-                            className="flexCenter"
-                          >
-                            <Typography variant="body1">
-                              LinkedIn Link:
-                            </Typography>
-                          </Grid>
-                          <Grid item lg={8} md={8} sm={6}>
-                            <TextField
-                              disabled={!isEditingContact}
-                              variant="outlined"
-                              placeholder="Enter LinkedIn link"
-                              name="LINKEDIN"
-                              value={values.LINKEDIN}
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              fullWidth
-                            />
-                            <FormHelperText
-                              error
-                              className={classes.helperText}
-                            >
-                              {touched.LINKEDIN && errors.LINKEDIN}
-                            </FormHelperText>
-                          </Grid>
-
-                          <Grid item lg={12} md={12} sm={12}>
-                            <Box>
-                              <Button
-                                variant="contained"
-                                type="submit"
-                                color="primary"
-                                disabled={
-                                  !isEditingContact || !isValid || !dirty
-                                }
-                              >
-                                {isEditingContact ? "Update" : "Save"}
-                              </Button>
-                            </Box>
-                          </Grid>
+                      <Grid container spacing={2}>
+                        <Grid
+                          item
+                          lg={4}
+                          md={4}
+                          sm={6}
+                          xs={12}
+                          className="flexCenter"
+                        >
+                          <Typography variant="body1">
+                            Account Phone:
+                          </Typography>
                         </Grid>
-                      </Box>
+                        <Grid item lg={8} md={8} sm={6} xs={12}>
+                          <PhoneInput
+                            disabled={!isEditingContact}
+                            label="Phone Number"
+                            name="phoneNumberOne"
+                            value={values.phoneNumberOne}
+                            classes={classes.phoneInput}
+                            onBlur={(e) => {
+                              handleBlur(e);
+                              setFieldTouched("phoneNumberOne", true);
+                            }}
+                            onChange={(phoneNumberOne, countryData) => {
+                              const formattedPhone = phoneNumberOne.startsWith(
+                                "+"
+                              )
+                                ? phoneNumberOne
+                                : `+${phoneNumberOne}`;
+                              setFieldValue("phoneNumberOne", formattedPhone);
+                              setFieldValue("country", countryData.countryCode);
+                            }}
+                            defaultCountry="US"
+                            country={"us"}
+                            inputStyle={{
+                              width: "100%",
+                              height: "42px",
+                              marginTop: "0px",
+                              fontWeight: "normal",
+                            }}
+                          />
+                          <FormHelperText error className={classes.helperText}>
+                            {touched.phoneNumberOne && errors.phoneNumberOne}
+                          </FormHelperText>
+                        </Grid>
+                        <Grid
+                          item
+                          lg={4}
+                          md={4}
+                          sm={6}
+                          xs={12}
+                          className="flexCenter"
+                        >
+                          <Typography variant="body1">
+                            Facebook Link:
+                          </Typography>
+                        </Grid>
+                        <Grid item lg={8} md={8} sm={6} xs={12}>
+                          <TextField
+                            disabled={!isEditingContact}
+                            name="FACEBOOK"
+                            placeholder="Enter Facebook link"
+                            variant="outlined"
+                            value={values.FACEBOOK}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            fullWidth
+                          />
+                          <FormHelperText error className={classes.helperText}>
+                            {touched.FACEBOOK && errors.FACEBOOK}
+                          </FormHelperText>
+                        </Grid>
+                        <Grid
+                          item
+                          lg={4}
+                          md={4}
+                          sm={6}
+                          xs={12}
+                          className="flexCenter"
+                        >
+                          <Typography variant="body1">
+                            Instagram Link:
+                          </Typography>
+                        </Grid>
+                        <Grid item lg={8} md={8} sm={6} xs={12}>
+                          <TextField
+                            disabled={!isEditingContact}
+                            placeholder="Enter Instagram link"
+                            name="INSTAGRAM"
+                            variant="outlined"
+                            value={values.INSTAGRAM}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            fullWidth
+                          />
+                          <FormHelperText error className={classes.helperText}>
+                            {touched.INSTAGRAM && errors.INSTAGRAM}
+                          </FormHelperText>
+                        </Grid>
+                        <Grid
+                          item
+                          lg={4}
+                          md={4}
+                          sm={6}
+                          xs={12}
+                          className="flexCenter"
+                        >
+                          <Typography variant="body1">
+                            LinkedIn Link:
+                          </Typography>
+                        </Grid>
+                        <Grid item lg={8} md={8} sm={6} xs={12}>
+                          <TextField
+                            disabled={!isEditingContact}
+                            variant="outlined"
+                            placeholder="Enter LinkedIn link"
+                            name="LINKEDIN"
+                            value={values.LINKEDIN}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            fullWidth
+                          />
+                          <FormHelperText error className={classes.helperText}>
+                            {touched.LINKEDIN && errors.LINKEDIN}
+                          </FormHelperText>
+                        </Grid>
+
+                        <Grid item lg={12} md={12} sm={12}>
+                          <Box>
+                            <Button
+                              variant="contained"
+                              type="submit"
+                              color="primary"
+                              disabled={!isEditingContact || !isValid || !dirty}
+                            >
+                              {isEditingContact ? "Update" : "Save"}
+                            </Button>
+                          </Box>
+                        </Grid>
+                      </Grid>
                     </Form>
                   )}
                 </Formik>

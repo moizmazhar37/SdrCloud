@@ -33,7 +33,7 @@ import BannerScetion from "./BannerScetion";
 import LeftTextSection from "./LeftTextSection";
 import RightTextSection from "./RightTextSection";
 import HVOSummary from "./HVOSummary";
-import { useHistory } from "react-router-dom/cjs/react-router-dom";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import { menuProps } from "src/utils";
 import { toast } from "react-toastify";
 import FullScreenLoader from "src/component/FullScreenLoader";
@@ -44,7 +44,7 @@ import { IoClose } from "react-icons/io5";
 import BannerSection2 from "./BannerSection2";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-// Styles for the component
+import { useHistory, useLocation } from "react-router-dom";
 const useStyles = makeStyles((theme) => ({
   maindiv: {
     "& .sheetbtn": {
@@ -127,7 +127,7 @@ const useStyles = makeStyles((theme) => ({
     "& .secondmaingrid": {
       marginTop: "20px",
       height: "100%",
-      minHeight: "450px",
+      // minHeight: "450px",
     },
     "& .secondmaingridBox": {
       borderRadius: "12px",
@@ -316,6 +316,19 @@ const useStyles = makeStyles((theme) => ({
       fontSize: "12px",
     },
   },
+  breads: {
+    marginTop: "10px",
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
+    "& nav li": {
+      margin: "0px",
+    },
+    "& .breadCrumbText": {
+      color: "#0358AC",
+      margin: "0px 5px",
+    },
+  },
   onclick: {
     marginLeft: "98%",
     marginTop: "-8px",
@@ -369,6 +382,7 @@ const useStyles = makeStyles((theme) => ({
 
 const CreateHVOTemplate = (props) => {
   const classes = useStyles();
+  const history = useHistory();
   const user = useContext(UserContext);
   const [selectedOption, setSelectedOption] = useState("none");
   const [selectedCategoryName, setSelectedCategoryName] = useState("none");
@@ -377,12 +391,14 @@ const CreateHVOTemplate = (props) => {
     props?.location?.state || "none"
   );
   const [linkObject, setLinkObject] = useState([]);
+  console.log("🚀 ~ linkObject:", linkObject);
   const [typeIndex, setTypeIndex] = useState();
   const [templateName, setTemplateName] = useState("");
   const [saveName, setSaveName] = useState(false);
   const [editType, setEditType] = useState("Create");
   const [templateParams, setTemplateParams] = useState({});
   const [connetedSheet, SetConnectedSheet] = useState("none");
+  console.log("connetedSheet11", connetedSheet);
   const [loading, setLoading] = useState(false);
   const [Category, setCategory] = useState([]);
   const [videoRefral, setVideoRefral] = useState();
@@ -393,6 +409,7 @@ const CreateHVOTemplate = (props) => {
   const [connectionStatus, setConnectionStatus] = useState("");
   const [isTemplateNameEmpty, setIsTemplateNameEmpty] = useState(false);
   const [viewParams, setViewParams] = useState({});
+  console.log("🚀 ~ viewParams:", viewParams);
   const [newlyCategory, setNewlyCategory] = useState(null);
   const [viewData, setViewData] = useState({});
   const [editData, setEditData] = useState({});
@@ -875,12 +892,21 @@ const CreateHVOTemplate = (props) => {
     <>
       {loading && <FullScreenLoader />}
       <Grid item xs={12}>
-        <Typography style={{ color: "#152f40" }}>
-          Template / <span style={{ color: "#0358AC" }}> New HVO Template</span>
-        </Typography>
+        <Box className={classes.breads}>
+          <ArrowBackIcon
+            style={{ color: "black", cursor: "pointer", fontSize: "large" }}
+            onClick={() => {
+              history.push("/CreateTemplate");
+            }}
+          />
+          <Typography style={{ color: "#152f40" }}>
+            Template /{" "}
+            <span style={{ color: "#0358AC" }}> New HVO Template</span>
+          </Typography>
+        </Box>
       </Grid>
       <Grid container spacing={3} className={classes.maindiv}>
-        <Grid item xs={12} sm={12} md={8}>
+        <Grid item xs={12} sm={12} md={7} lg={8}>
           <Grid container spacing={2} className="gridcontainer">
             <Grid
               item
@@ -948,7 +974,7 @@ const CreateHVOTemplate = (props) => {
 
                       {Category.filter(
                         (data) =>
-                          !["Startup", "SMB", "MM", "ENT"].includes(
+                          !["Start-up", "SMB", "MM", "ENT"].includes(
                             data.category_Name
                           )
                       ).map((data, i) => (
@@ -977,7 +1003,7 @@ const CreateHVOTemplate = (props) => {
                         </MenuItem>
                       ))}
 
-                      {["Startup", "SMB", "MM", "ENT"].map(
+                      {["Start-up", "SMB", "MM", "ENT"].map(
                         (categoryName, i) => {
                           const category = Category.find(
                             (cat) => cat.category_Name === categoryName
@@ -1366,7 +1392,7 @@ const CreateHVOTemplate = (props) => {
           </Grid>
         </Grid>
 
-        <Grid item xs={12} sm={12} md={4}>
+        <Grid item xs={12} sm={12} md={5} lg={4}>
           <Grid container spacing={2} className="gridcontainerside">
             {elements.map((element, index) => (
               <React.Fragment key={element.id}>
@@ -1376,19 +1402,6 @@ const CreateHVOTemplate = (props) => {
                     <Typography>{index + 1}</Typography>
                   </Box>
                 </Grid>
-                {/* ) : linkObject.length + 1 == element.id ? (
-                  <Grid item xs={12} sm={12} md={2}>
-                    <Box className="gridnumberbox2">
-                      <Typography>{element.id}</Typography>
-                    </Box>
-                  </Grid>
-                ) : (
-                  <Grid item xs={12} sm={12} md={2}>
-                    <Box className="gridnumberbox">
-                      <Typography>{element.id}</Typography>
-                    </Box>
-                  </Grid>
-                )} */}
 
                 <Grid item xs={12} sm={12} md={10}>
                   <FormControl>
@@ -1401,7 +1414,10 @@ const CreateHVOTemplate = (props) => {
 
                         <div className={classes.elementCard}>
                           <div>
-                            <Typography variant="h5">
+                            <Typography
+                              variant="h5"
+                              style={{ wordBreak: "break-all" }}
+                            >
                               {linkObject[index]?.sectionType?.sectionName}
                             </Typography>
                           </div>
@@ -1499,7 +1515,9 @@ const CreateHVOTemplate = (props) => {
                 disabled={
                   new URLSearchParams(window.location.search).get(
                     "templateId"
-                  ) === null || !viewParams?.fetchUrl
+                  ) === null ||
+                  !viewParams?.fetchUrl ||
+                  linkObject.length <= 0
                 }
                 onClick={() => {
                   getpreviewdata();

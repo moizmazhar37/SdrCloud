@@ -156,6 +156,8 @@ const useStyles = makeStyles((theme) => ({
     "& .MuiSelect-iconOpen": {
       borderLeft: "0px !important",
       borderRight: "1px solid #ECECEC",
+      transform: "rotate(360deg)",
+      marginRight: "-1px !important",
     },
     "& .MuiSelect-icon": {
       top: 0,
@@ -653,13 +655,26 @@ function SuperAdminAccount() {
                           (user) => user.userId === selectedPPAdmin
                         ) || null
                       }
-                      onChange={(event, newValue) =>
-                        handleChange(newValue ? newValue.userId : "")
-                      }
+                      onChange={(event, newValue) => {
+                        if (newValue) {
+                          handleChange(newValue.userId);
+                        } else {
+                          handleChange("none");
+                        }
+                      }}
                       inputValue={searchTerm}
-                      onInputChange={(event, newInputValue) =>
-                        setSearchTerm(newInputValue)
-                      }
+                      onInputChange={(event, newInputValue) => {
+                        setSearchTerm(newInputValue);
+                        if (!newInputValue) {
+                          setSelectedPPAdmin(""); // Clear the selected value when input is cleared
+                        }
+                      }}
+                      onBlur={() => {
+                        // Clear input field when it loses focus
+                        if (!selectedPPAdmin) {
+                          setSearchTerm(""); // Clear search input if no selection is made
+                        }
+                      }}
                       options={searchPPAdmin}
                       getOptionLabel={(option) => option.name}
                       isOptionEqualToValue={(option, value) =>
@@ -671,7 +686,7 @@ function SuperAdminAccount() {
                         <RiArrowDropDownLine
                           className="popupIcon"
                           style={{
-                            borderLeft: "1px solid lightgray",
+                            borderLeft: "1px solid #E7E7E7",
                             height: "36px",
                             fontSize: "25px",
                             color: "rgb(69 81 88)",
@@ -787,7 +802,7 @@ function SuperAdminAccount() {
                           <TableCell>Account Name</TableCell>
                           <TableCell>PP Admin</TableCell>
                           <TableCell>Users</TableCell>
-                          <TableCell>Created Date & Time</TableCell>
+                          <TableCell>Account Creation Date</TableCell>
                           <TableCell align="center">Status</TableCell>
                           <TableCell align="center">Action</TableCell>
                         </TableRow>
@@ -818,8 +833,7 @@ function SuperAdminAccount() {
                               {key?.users === 0 ? 0 : key?.users}
                             </TableCell>
                             <TableCell>
-                              {moment(key?.startDate).format("DD/MM/YY")}{" "}
-                              {new Date(key?.startDate).toLocaleTimeString()}
+                              {new Date(key?.startDate).toLocaleDateString()}
                             </TableCell>
 
                             <TableCell
@@ -842,42 +856,60 @@ function SuperAdminAccount() {
                               </li>
                             </TableCell>
                             <TableCell className={classes.viewEditbtn}>
-                              <Button
-                                onClick={() => {
-                                  history.push({
-                                    pathname: "/View-PP-createaccount",
-                                    state: { accountId: key?.accountId },
-                                  });
-                                }}
-                              >
-                                View
-                              </Button>
-                              <Divider className="dividerbtn" />
-                              <Button
-                                // disabled
-                                onClick={() => {
-                                  history.push({
-                                    pathname: "/Edit-PP-createaccount",
-                                    state: {
-                                      accountId: key?.accountId,
-                                      detail: key,
-                                    },
-                                  });
-                                }}
-                              >
-                                Edit
-                              </Button>
-                              <Divider className="dividerbtn" />
-                              <Button
-                                // disabled
-                                onClick={() => {
-                                  handleClose();
-                                  setSelectedUserId(key);
-                                  setDeleteOpen(true);
-                                }}
-                              >
-                                {key?.status === "ACTIVE" ? "Block" : "Unblock"}
-                              </Button>
+                              <FormControl style={{ width: "100px" }}>
+                                <Select
+                                  style={{ marginTop: "0px" }}
+                                  variant="outlined"
+                                  className={classes.selectitem}
+                                  id="choose-template"
+                                  value={"none"}
+                                  MenuProps={menuProps}
+                                  name=""
+                                  IconComponent={ExpandMoreIcon}
+                                >
+                                  <MenuItem
+                                    value="none"
+                                    onClick={() => {
+                                      history.push({
+                                        pathname: "/View-PP-createaccount",
+                                        state: { accountId: key?.accountId },
+                                      });
+                                    }}
+                                  >
+                                    View
+                                  </MenuItem>
+                                  <MenuItem
+                                    onClick={() => {
+                                      history.push({
+                                        pathname: "/Edit-PP-createaccount",
+                                        state: {
+                                          accountId: key?.accountId,
+                                          detail: key,
+                                        },
+                                      });
+                                    }}
+                                  >
+                                    Edit
+                                  </MenuItem>
+                                  <MenuItem
+                                    disabled={
+                                      key?.status !== "ACTIVE" &&
+                                      key?.status !== "BLOCK"
+                                    }
+                                    onClick={() => {
+                                      handleClose();
+                                      setSelectedUserId(key);
+                                      setDeleteOpen(true);
+                                    }}
+                                  >
+                                    {key?.status === "ACTIVE"
+                                      ? "Block"
+                                      : key?.status === "BLOCK"
+                                      ? "Unblock"
+                                      : "--"}
+                                  </MenuItem>
+                                </Select>
+                              </FormControl>
                             </TableCell>
                           </TableRow>
                         ))}

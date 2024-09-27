@@ -152,7 +152,8 @@ const useStyles = makeStyles((theme) => ({
     "& .MuiSelect-iconOpen": {
       borderLeft: "0px !important",
       borderRight: "1px solid #ECECEC",
-      marginRight: "-8px !important",
+      transform: "rotate(360deg)",
+      marginRight: "-1px !important",
     },
     "& .MuiSelect-icon": {
       top: 0,
@@ -332,7 +333,7 @@ function CompanyUserList() {
                   <TableHead>
                     <TableRow>
                       <TableCell>User Name</TableCell>
-                      <TableCell>Created Date & Time</TableCell>
+                      <TableCell>Account Creation Date</TableCell>
                       <TableCell>Projects</TableCell>
                       <TableCell>Active</TableCell>
                       <TableCell>Errors</TableCell>
@@ -351,8 +352,8 @@ function CompanyUserList() {
                               : "--"
                           )}
                         </TableCell>
-                        <TableCell>
-                          {moment(key.startDate).format("lll")}
+                        <TableCell align="center">
+                          {new Date(key?.startDate).toLocaleDateString()}
                         </TableCell>
                         <TableCell component="th" scope="row">
                           {key.projects !== null && key.projects !== undefined

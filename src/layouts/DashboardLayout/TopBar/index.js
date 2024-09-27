@@ -234,7 +234,7 @@ const TopBar = ({ className, onMobileNavOpen, onDrawerAction, ...rest }) => {
         <Box
           width={"100%"}
           className="d-flex justify-space-between"
-          style={{ marginTop: "29px" }}
+          style={{ marginTop: "29px", flexWrap: "wrap" }}
         >
           <div className="hiddenlogo">
             <Hidden lgUp>
@@ -279,7 +279,7 @@ const TopBar = ({ className, onMobileNavOpen, onDrawerAction, ...rest }) => {
             )}
           </div>
           <div className="d-flex avatarBox">
-            {/* <Avatar src={user?.profileData?.imageUrl}></Avatar> */}
+
             {localStorage.getItem("userType") === "ADMIN" ? (
               <Avatar src={user?.profileData?.profilePicture}></Avatar>
             ) : localStorage.getItem("userType") === "SUBADMIN" ? (
@@ -301,11 +301,11 @@ const TopBar = ({ className, onMobileNavOpen, onDrawerAction, ...rest }) => {
               )}
               <Typography className="accountname" style={{ marginTop: "2px" }}>
                 {user?.profileData?.firstName &&
-                user?.profileData?.firstName.length > 10
+                  user?.profileData?.firstName.length > 10
                   ? user?.profileData?.firstName.slice(0, 10) + "..."
                   : user?.profileData?.firstName}{" "}
                 {user?.profileData?.lastName &&
-                user?.profileData?.lastName.length > 10
+                  user?.profileData?.lastName.length > 10
                   ? user?.profileData?.lastName.slice(0, 10) + "..."
                   : user?.profileData?.lastName}
               </Typography>
@@ -321,8 +321,8 @@ TopBar.propTypes = {
   className: PropTypes.string,
 };
 TopBar.defaultProps = {
-  onMobileNavOpen: () => {},
-  onDrawerAction: () => {},
+  onMobileNavOpen: () => { },
+  onDrawerAction: () => { },
 };
 
 export default TopBar;

@@ -134,14 +134,14 @@ const useStyles = makeStyles((theme) => ({
 // Define validation schema for personal details
 const validationSchema = Yup.object().shape({
   firstName: Yup.string()
-    .required("First Name is required")
+    .required("First name is required")
     .transform((value) =>
       value
         ? value.charAt(0).toUpperCase() + value.slice(1).toLowerCase()
         : value
     ),
   lastName: Yup.string()
-    .required("Last Name is required")
+    .required("Last name is required")
     .transform((value) =>
       value
         ? value.charAt(0).toUpperCase() + value.slice(1).toLowerCase()

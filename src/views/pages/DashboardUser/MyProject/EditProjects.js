@@ -1,15 +1,27 @@
 import React, { useState, useEffect } from "react";
-import { Box, Typography, Grid, Button } from "@material-ui/core";
+import {
+  Box,
+  Typography,
+  Grid,
+  Button,
+  TextField,
+  Link,
+  Paper,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import Paper from "@material-ui/core/Paper";
-import Reprocess from "./Errorreprocess";
-import Link from "@material-ui/core/Link";
-import ApiConfig from "src/config/APIConfig";
 import axios from "axios";
 import FullScreenLoader from "src/component/FullScreenLoader";
-import { toast, ToastContainer } from "react-toastify";
-
-// Styles for the component
+import { RxCross2 } from "react-icons/rx";
+import ApiConfig from "src/config/APIConfig";
+import { Formik, Form, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import ButtonCircularProgress from "src/component/ButtonCircularProgress";
+import { useHistory } from "react-router-dom";
+import { toast } from "react-toastify";
 const useStyles = makeStyles((theme) => ({
   tableContainer: {
     marginTop: "32px",
@@ -21,24 +33,21 @@ const useStyles = makeStyles((theme) => ({
       color: "#868686",
     },
     "& .middledata": {
-      // padding: "16px 30px",
       padding: "20px 30px",
     },
     "& .contentHeading": {
       color: "#868686",
+      marginBottom: "10px",
+      wordBreak: "break-all",
     },
     "& .acmeHeading": {
       color: "#152F40",
       fontWeight: 700,
     },
-    // "& .allmiddledata": {
-    //   marginTop: "18px",
-    // },
     "& .viewbtn": {
       color: "var(--blue, #0358AC)",
       minWidth: "35px",
-      // padding: "6px 0px",
-      cursor: "default",
+      cursor: "pointer",
       "& .MuiButton-root": {
         fontSize: "14px",
       },
@@ -46,8 +55,8 @@ const useStyles = makeStyles((theme) => ({
     "& .viewbtnblack": {
       color: "#152F40",
       minWidth: "35px",
-      // padding: "6px 0px",
       cursor: "default",
+      wordBreak: "break-all",
       "& .MuiButton-root": {
         fontSize: "14px",
       },
@@ -64,21 +73,6 @@ const useStyles = makeStyles((theme) => ({
       textDecorationLine: "underline",
       cursor: "pointer",
       color: "#152F40",
-    },
-    "& .errorhandlebtn": {
-      "& .MuiButton-root": {
-        color: "red",
-        marginLeft: "-12px",
-      },
-      display: "flex",
-      alignItems: "center",
-      gap: "2rem",
-      "& .MuiButton-outlined": {
-        color: "var(--blue, #0358AC)",
-        borderRadius: "12px",
-        border: "1px solid var(--light-stroke, #ECECEC)",
-        background: "var(--white, #FFF)",
-      },
     },
   },
 
@@ -119,113 +113,323 @@ const useStyles = makeStyles((theme) => ({
       marginLeft: "-3px",
       display: "flex",
       justifyContent: "center",
-      color: "var(--light-blue, #F2F7FF)",
       fontSize: "16px",
       border: "none",
       background: "#F4F4F4",
       color: "black",
     },
   },
+  DialogMain: {
+    "& .MuiDialog-paperWidthSm": {
+      maxWidth: "70%",
+    },
+  },
+  savecancelbtn: {
+    justifyContent: "center",
+    padding: "25px 0px 30px",
+    "& .canclereprocessbtn": {
+      display: "flex",
+      gap: "1rem",
+      alignItems: "center",
+      flexWrap: "wrap",
+      justifyContent: "center",
+    },
+    "& .MuiButton-contained": {
+      padding: "9px 30px",
+      fontSize: "15px",
+    },
+    "& .MuiButton-containedPrimary": {
+      backgroundColor: "var(--blue, #0358AC)",
+      color: "white !important",
+    },
+  },
+  CrossIcon: {
+    display: "flex",
+    justifyContent: "end",
+    padding: "5px",
+    "& .closeicon": {
+      width: "24px",
+      height: "24px",
+      border: "1px solid #ECECEC",
+      background: "#FFFFFF",
+      borderRadius: "50%",
+      position: "fixed",
+      marginTop: "-21px",
+      marginRight: "-17px",
+      padding: "6px",
+      cursor: "pointer",
+    },
+  },
+  DialogTitleFirst: {
+    textAlign: "center",
+    "@media (max-width: 576px)": {
+      fontSize: "12px",
+    },
+    "& span": {
+      color: "#0358AC",
+    },
+    "& h2": {
+      fontSize: "24px",
+      fontWeight: 600,
+    },
+  },
+  innerallinfoform: {
+    "& .MuiFormControl-marginNormal": {
+      marginTop: "1px",
+      marginBottom: "16px",
+    },
+    "& .savebtn": {
+      borderRadius: "0px 6px 6px 0px",
+      background: " #0358AC",
+      color: "white",
+      height: "42px",
+      width: "100px",
+    },
+    "& .MuiOutlinedInput-adornedEnd": {
+      paddingRight: "0px",
+    },
+    "& .imageuploadbox": {
+      "& label": {
+        marginTop: "0px",
+      },
+    },
+  },
+  error: {
+    color: "red !important",
+    fontSize: "12px !important",
+  },
+  mainDialog: {
+    "& .MuiDialog-paperWidthSm": {
+      maxWidth: "721px !important",
+      width: "100% !important",
+      height: "567px",
+      borderRadius: "12px",
+    },
+  },
+  CrossIcon: {
+    display: "flex",
+    justifyContent: "end",
+    // padding: "5px",
+    "& .closeicon": {
+      width: "24px",
+      height: "24px",
+      border: "1px solid #ECECEC",
+      background: "#FFFFFF",
+      borderRadius: "50%",
+      position: "fixed",
+      marginTop: "-19px",
+      marginRight: "-13px",
+      padding: "6px",
+      cursor: "pointer",
+    },
+  },
+  dialogBtnBox: {
+    padding: "130px 123px",
+    textAlign: "center",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    border: "2px dashed #CACACA",
+    borderRadius: "10px",
+    borderSpacing: "10px",
+    margin: "-11px 44px",
+    "& .dialogTypo": {
+      color: "#858585",
+      fontSize: "14px",
+      width: "100%",
+      maxWidth: "273px",
+    },
+    "& .btnUpload": {
+      backgroundColor: "#0358AC",
+      color: "#F2F7FF",
+      height: "40px",
+      width: "80px",
+      marginTop: "17px",
+    },
+  },
+  btnConatainer: {
+    display: "flex",
+    gap: "16px",
+    // padding: "24px 44px 32px 44px",
+    padding: "35px 44px 32px 44px",
+    "& .btnCancel": {
+      backgroundColor: "#F4F4F4",
+      color: "#152F40",
+      width: "100%",
+      maxWidth: "266.5px",
+      height: "48px",
+      borderRadius: "8px",
+    },
+    "& .btnSave": {
+      backgroundColor: "#0358AC",
+      color: "#F2F7FF",
+      width: "100%",
+      maxWidth: "266.5px",
+      height: "48px",
+      borderRadius: "8px",
+    },
+  },
+  dialogHeading: {
+    marginTop: "-15px",
+    padding: "0px 44px 24px 44px",
+    color: "#152F40",
+    fontSize: "18px",
+    fontWeight: 500,
+    "& .btnCancel": {
+      backgroundColor: "#F4F4F4",
+      color: "#152F40",
+      borderRadius: "8px",
+    },
+    "& .btnSave": {
+      backgroundColor: "#0358AC",
+      color: "#F2F7FF",
+      borderRadius: "8px",
+    },
+  },
 }));
 
 function EditProjects(props) {
   const classes = useStyles();
-  const [errorhandle, setErrorhandle] = useState("error");
-  const [reprocessopen, setReprocessOpen] = useState(false);
-  const [adminUserList, setAdminUserList] = useState([]);
-  const [sheetData, setSheetData] = useState([]);
+  const [reprocessOpen, setReprocessOpen] = useState(false);
+  const [firstRowData, setFirstRowData] = useState({});
+  const [editData, setEditData] = useState({});
+  const [headersData, setHeadersData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [missingFields, setMissingFields] = useState([]);
-  const [addMissing, setAddMissing] = useState(false);
-
-  const handleReprocessClose = () => {
-    setReprocessOpen(!reprocessopen);
-  };
-
-  const errorData = props?.location?.state?.state?.errorData;
-  const sheetUrl = props?.location?.state?.state?.sheetUrl;
+  const history = useHistory();
   const sheetId = props?.location?.state?.state?.ErrorSheetId;
   const projectIndex = props?.location?.state?.state?.projectIndex;
-  const videoTemplete = props?.location?.state?.state?.videoTemplete;
-  const sheetName = props?.location?.state?.state?.sheetName;
-  const CUSTOMER_ID = errorData?.CUSTOMER_ID;
-
-  const getAllSheet = async (name, url) => {
+  const handleReprocessClose = () => {
+    setReprocessOpen(!reprocessOpen);
+  };
+  const sheetRowData = async () => {
     try {
       setLoading(true);
       const res = await axios({
         method: "GET",
-        url: ApiConfig.getAllSheet,
+        url: ApiConfig.getRowData,
         headers: {
           token: `${localStorage.getItem("token")}`,
         },
         params: {
           googleSheetId: sheetId,
+          row: projectIndex,
         },
       });
-      if (res?.status === 200) {
-        setLoading(false);
-        setSheetData(res?.data?.data);
+      if (res?.data?.status === 200) {
+        setFirstRowData(res?.data?.data?.firstRowData);
+        setHeadersData(res?.data?.data?.datatype);
       }
     } catch (error) {
-      setLoading(false);
-      console.log(error, "error");
+      console.log("error");
     } finally {
       setLoading(false);
     }
   };
+
   useEffect(() => {
-    const checkMissingFields = (requiredFields) => {
-      const missing = requiredFields.filter(
-        (field) => !errorData || !errorData[field]
-      );
-      setMissingFields(missing);
-    };
+    if (headersData && headersData.length > 0) {
+      let newFirstRow = { ...firstRowData };
 
-    getAllSheet();
-  }, [errorData]);
+      let errorHeaderName = headersData
+        .filter((item) => {
+          return item.dataType == "Error (Required)";
+        })
+        .map((item) => item.value);
+      let statusHeaderName = headersData
+        .filter((item) => {
+          return item.dataType == "Status (Required)";
+        })
+        .map((item) => item.value);
+      let finalHeaderName = headersData
+        .filter((item) => {
+          return item.dataType == "Final video URL (Required)";
+        })
+        .map((item) => item.value);
 
-  const truncateText = (text, maxLength = 30) => {
-    return text?.length > maxLength
-      ? `${text.slice(0, 15)}...${text.slice(-15)}`
-      : text;
+      if (errorHeaderName.length > 0) {
+        errorHeaderName = errorHeaderName[0];
+        if (newFirstRow.hasOwnProperty(errorHeaderName)) {
+          delete newFirstRow[errorHeaderName];
+        }
+      } else {
+        errorHeaderName = "";
+      }
+      if (statusHeaderName.length > 0) {
+        statusHeaderName = statusHeaderName[0];
+        if (newFirstRow.hasOwnProperty(statusHeaderName)) {
+          delete newFirstRow[statusHeaderName];
+        }
+      } else {
+        statusHeaderName = "";
+      }
+      if (finalHeaderName.length > 0) {
+        finalHeaderName = finalHeaderName[0];
+        if (newFirstRow.hasOwnProperty(finalHeaderName)) {
+          delete newFirstRow[finalHeaderName];
+        }
+      } else {
+        finalHeaderName = "";
+      }
+      setEditData(newFirstRow);
+    }
+  }, [headersData]);
+  useEffect(() => {
+    sheetRowData();
+  }, []);
+  const handleCancel = () => {
+    handleReprocessClose();
   };
-
-  const reprocess = async () => {
-    setLoading(false);
+  const PostProjectDetails = async (values) => {
     try {
       setLoading(true);
+      const formattedData = Object.keys(values).map((key) => ({
+        data: values[key],
+        row: key,
+      }));
       const res = await axios({
-        method: "POST",
-        url: ApiConfig.reprocess,
+        method: "PUT",
+        url: ApiConfig.reprocessVideo,
         headers: {
           token: `${localStorage.getItem("token")}`,
         },
         params: {
-          videoTemplateId: videoTemplete,
+          sheetId: sheetId,
+          row: projectIndex,
         },
+        data: formattedData,
       });
       if (res?.data?.status === 200) {
-        setLoading(false);
-        toast.success("Reprocess done successfully");
-      } else if (res?.data?.status === 205) {
-        toast.error("No User Found");
-        setLoading(false);
+        toast.success(res?.data?.message);
+        handleReprocessClose();
+        await sheetRowData();
       }
     } catch (error) {
-      console.log(error, "error");
+      console.log(error, "rerror  we are just before this res");
+    } finally {
       setLoading(false);
     }
   };
-  useEffect(() => {
-    getAllSheet();
-  }, []);
+  const initialValues = editData
+    ? Object.keys(editData).reduce((acc, key) => {
+        acc[key] = editData[key] || "";
+        return acc;
+      }, {})
+    : {};
+  const validationSchema = Yup.object().shape(
+    Object.keys(editData).reduce((acc, key) => {
+      acc[key] = Yup.string().required("This is required");
+      return acc;
+    }, {})
+  );
+
   return (
     <>
       {loading && <FullScreenLoader />}
       <Typography variant="body1">
-        <Link href="/Myprojects">Project Listings</Link> /{" "}
-        <span style={{ color: "#0358AC" }}>Project Settings</span>
+        <Link style={{ cursor: "pointer" }} onClick={() => history.goBack()}>
+          Project Listings
+        </Link>{" "}
+        / <span style={{ color: "#0358AC" }}>Project Data</span>
       </Typography>
 
       <Paper className={classes.tableContainer}>
@@ -234,68 +438,131 @@ function EditProjects(props) {
             Project Details
           </Typography>
         </Box>
-
         <Box className="middledata">
           <Grid container spacing={2} alignItems="baseline">
-            {sheetData &&
-              sheetData.map((item) => (
-                <React.Fragment key={item.value}>
-                  <Grid item xs={6} sm={6} md={4} className="allmiddledata">
-                    <Typography className="contentHeading">
-                      {item.value}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6} sm={6} md={8}>
-                    <Typography className="viewbtnblack">
-                      {errorData[item.value] || "N/A"}
-                    </Typography>
-                  </Grid>
-                </React.Fragment>
-              ))}
+            {Object.entries(firstRowData).map(([key, value]) => (
+              <React.Fragment key={key}>
+                <Grid item xs={6} sm={6} md={4} className="allmiddledata">
+                  <Typography className="contentHeading">
+                    {key || "N/A"}
+                  </Typography>
+                </Grid>
+                <Grid item xs={6} sm={6} md={8}>
+                  <Typography className="viewbtnblack">
+                    {value || "N/A"}
+                  </Typography>
+                </Grid>
+              </React.Fragment>
+            ))}
           </Grid>
         </Box>
       </Paper>
       <Box className={classes.groupBtn}>
-        <Box className={classes.Endbtn}>
-          <Button
-            variant="Contained"
-            onClick={() => {
-              setReprocessOpen(true);
-              setErrorhandle("reprocess");
-            }}
-            className={`${
-              missingFields.length === 0 ? "EndbtnDisables" : "Endbtn"
-            }`}
-            disabled={missingFields.length === 0}
-          >
-            Add Missing Information
-          </Button>
-        </Box>
-        <Box className={classes.Endbtn}>
-          <Button
-            variant="Contained"
-            onClick={reprocess}
-            className={`${
-              missingFields.length !== 0 ? "EndbtnDisables" : "Endbtn"
-            }`}
-            disabled={missingFields.length !== 0}
-          >
-            Reprocess
-          </Button>
-        </Box>
+        <Button
+          variant="outlined"
+          className="Endbtn"
+          onClick={() => {
+            setReprocessOpen(true);
+          }}
+        >
+          Edit Missing Information
+        </Button>
       </Box>
-
-      {errorhandle === "reprocess" && (
-        <Reprocess
-          reprocessopen={reprocessopen}
-          handleReprocessClose={handleReprocessClose}
-          missingFields={missingFields}
-          sheetUrl={sheetUrl}
-          sheetName={sheetName}
-          CUSTOMER_ID={CUSTOMER_ID}
-          projectIndex={projectIndex}
-        />
-      )}
+      <>
+        <Dialog
+          fullWidth
+          maxWidth="sm"
+          open={reprocessOpen}
+          onClose={handleReprocessClose}
+          className={classes.DialogMain}
+        >
+          <Formik
+            initialValues={initialValues}
+            validationSchema={validationSchema}
+            enableReinitialize
+            initialStatus={{
+              success: false,
+              successMsg: "",
+            }}
+            onSubmit={(values, { setSubmitting, resetForm }) => {
+              setSubmitting(true);
+              PostProjectDetails(values, resetForm);
+              setSubmitting(false);
+            }}
+          >
+            {({
+              values,
+              handleChange,
+              handleBlur,
+              isSubmitting,
+              handleSubmit,
+              isValid,
+              dirty,
+            }) => (
+              <Form onSubmit={handleSubmit}>
+                <Box className={classes.CrossIcon}>
+                  <RxCross2 className="closeicon" onClick={handleCancel} />
+                </Box>
+                <DialogTitle className={classes.DialogTitleFirst} variant="h2">
+                  You are still missing information to create media.
+                  <br />
+                  <span>Project Details</span>
+                </DialogTitle>
+                <DialogContent>
+                  <Grid container spacing={4}>
+                    {Object.entries(editData)?.map(([key, value]) => (
+                      <Grid item xs={12} md={6} lg={6} sm={12} key={key}>
+                        <Box>
+                          <Typography className="mainTypo" variant="body1">
+                            {key}
+                          </Typography>
+                          <TextField
+                            type="text"
+                            variant="outlined"
+                            fullWidth
+                            name={key}
+                            value={values[key]}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            error={!!(values[key] === "" && dirty)}
+                            helperText={
+                              <ErrorMessage name={key} component="div" />
+                            }
+                          />
+                        </Box>
+                      </Grid>
+                    ))}
+                  </Grid>
+                </DialogContent>
+                <DialogActions className={classes.savecancelbtn}>
+                  <Box fullWidth className="canclereprocessbtn">
+                    <Button
+                      variant="contained"
+                      color="default"
+                      onClick={handleCancel}
+                      disabled={isSubmitting}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      type="submit"
+                      disabled={!isValid || !dirty}
+                    >
+                      {loading === false ? (
+                        " Reprocess"
+                      ) : (
+                        <ButtonCircularProgress />
+                      )}
+                    </Button>
+                  </Box>
+                </DialogActions>
+              </Form>
+            )}
+          </Formik>
+        </Dialog>
+      </>
     </>
   );
 }

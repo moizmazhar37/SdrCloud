@@ -328,7 +328,7 @@ function PreviewHVO(location) {
                           fontSize: `${item?.values?.headline1Size}px`,
                         }}
                         variant="h3"
-                      // data-aos="fade-up"
+                        // data-aos="fade-up"
                       >
                         <span
                           style={{
@@ -338,7 +338,7 @@ function PreviewHVO(location) {
                         >
                           Welcome{" "}
                         </span>
-                        {item?.values?.headline1},
+                        {item?.values?.headline1}
                       </Typography>
                       <Typography
                         style={{
@@ -350,7 +350,7 @@ function PreviewHVO(location) {
                           lineHeight: "35px",
                         }}
                         variant="h1"
-                      // data-aos="fade-up"
+                        // data-aos="fade-up"
                       >
                         {item?.values?.headline2}
                       </Typography>
@@ -362,7 +362,7 @@ function PreviewHVO(location) {
                           fontSize: `${item?.values?.bodyTextSize}px`,
                         }}
                         variant="body1"
-                      // data-aos="fade-up"
+                        // data-aos="fade-up"
                       >
                         {item?.values?.bodyText}
                       </Typography>
@@ -382,7 +382,7 @@ function PreviewHVO(location) {
                             )
                           }
                           variant="contained"
-                        // data-aos="fade-up"
+                          // data-aos="fade-up"
                         >
                           {item?.values?.ctaButtonText}
                         </Button>
@@ -419,7 +419,7 @@ function PreviewHVO(location) {
                       sm={7}
                       xs={12}
                       align="center"
-                    // style={{ paddingTop: "50px" }}
+                      // style={{ paddingTop: "50px" }}
                     >
                       <img
                         src={
@@ -444,14 +444,16 @@ function PreviewHVO(location) {
                     style={{ background: item?.values?.bannerColor }}
                     className={classes.LandingSlider}
                   >
-                    { }
+                    {}
                     {Array.from({ length: 18 }).map((_, index) => (
                       <Box
                         sx={{
-                          color: `${item?.values?.bannerTextColor || "#FFF"
-                            } !important`,
-                          fontSize: `${item?.values?.bannerTextSize || "16"
-                            }px !important`,
+                          color: `${
+                            item?.values?.bannerTextColor || "#FFF"
+                          } !important`,
+                          fontSize: `${
+                            item?.values?.bannerTextSize || "16"
+                          }px !important`,
                           paddingTop: "30px",
                           paddingBottom: "30px",
                         }}
@@ -468,14 +470,16 @@ function PreviewHVO(location) {
                     style={{ background: item?.values?.bannerColor }}
                     className={classes.LandingSlider}
                   >
-                    { }
+                    {}
                     {Array.from({ length: 18 }).map((_, index) => (
                       <Box
                         sx={{
-                          color: `${item?.values?.bannerTextColor || "#FFF"
-                            } !important`,
-                          fontSize: `${item?.values?.bannerTextSize || "16"
-                            }px !important`,
+                          color: `${
+                            item?.values?.bannerTextColor || "#FFF"
+                          } !important`,
+                          fontSize: `${
+                            item?.values?.bannerTextSize || "16"
+                          }px !important`,
                           paddingTop: "30px",
                           paddingBottom: "30px",
                         }}

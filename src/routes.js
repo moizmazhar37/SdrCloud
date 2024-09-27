@@ -106,6 +106,13 @@ export const routes = [
     layout: DashboardLayout,
     component: lazy(() => import("src/views/pages/CreateVideo/PreviewVideo")),
   },
+  {
+    exact: true,
+    path: `/preview-video/:customerId`,
+    // guard: true,
+    // layout: DashboardLayout,
+    component: lazy(() => import("src/views/pages/CreateVideo/CreatedVideo")),
+  },
 
   {
     exact: true,

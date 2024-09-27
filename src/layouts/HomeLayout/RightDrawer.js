@@ -259,7 +259,7 @@ const RightDrawer = ({ drawerOpen, handleDrawerClose }) => {
             <>
               <Box className={classes.orgLogoContainer}>
                 <Box className={classes.subContainer}>
-                  {/* <img src="images/orgLogo.svg" alt="org Logo" /> */}
+
                   {orgLogo && (
                     <img src={orgLogo} alt="" width="200px" height="50px" />
                   )}

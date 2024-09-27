@@ -15,7 +15,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import ButtonCircularProgress from "src/component/ButtonCircularProgress";
 import FullScreenLoader from "src/component/FullScreenLoader";
 import CropEasyProfile from "../CreateVideo/Crop/CropEasyProfile";
-
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 // Styles for the component
 const useStyles = makeStyles((theme) => ({
   innerbox: {
@@ -162,6 +162,10 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   breads: {
+    marginTop: "10px",
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
     "& nav li": {
       margin: "0px",
     },
@@ -402,6 +406,12 @@ const CompanySetting = () => {
     <>
       {loading && <FullScreenLoader />}
       <Box className={classes.breads}>
+        <ArrowBackIcon
+          style={{ color: "black", cursor: "pointer", fontSize: "large" }}
+          onClick={() => {
+            history.push("/pp-settings");
+          }}
+        />
         <Breadcrumbs aria-label="breadcrumb">
           <Link color="inherit" href="/pp-settings">
             Settings&nbsp;

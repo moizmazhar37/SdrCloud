@@ -306,26 +306,26 @@ const EditProfile = () => {
   const validationSchema = Yup.object().shape({
     firstName: Yup.string()
       .required(
-        "First Name is required and must be between 2 and 50 characters, containing only alphabetic, alphanumeric or special characters."
+        "First name is required and must be between 2 and 50 characters, containing only alphabetic, alphanumeric or special characters."
       )
       .matches(
         /^(?! )[A-Za-z0-9!@#\$%\^\&*\(\)_\+\-=\[\]\{\};:'",<>\.\?\/\\|`~]{1,49}[A-Za-z0-9!@#\$%\^\&*\(\)_\+\-=\[\]\{\};:'",<>\.\?\/\\|`~ ]$/,
-        "First Name is required and must be between 2 and 50 characters, containing only alphabetic, alphanumeric or special characters."
+        "First name is required and must be between 2 and 50 characters, containing only alphabetic, alphanumeric or special characters."
       ),
     lastName: Yup.string()
       .required(
-        "Last Name is required and must be between 2 and 50 characters, containing only alphabetic, alphanumeric or special characters."
+        "Last name is required and must be between 2 and 50 characters, containing only alphabetic, alphanumeric or special characters."
       )
       .matches(
         /^(?=.*[A-Za-z])[A-Za-z0-9 !@#\$%\^\&*\(\)_\+\-=\[\]\{\};:'",<>\.\?\/\\|`~]{2,50}$/,
-        "Last Name is required and must be between 2 and 50 characters, containing only alphabetic, alphanumeric or special characters."
+        "Last name is required and must be between 2 and 50 characters, containing only alphabetic, alphanumeric or special characters."
       ),
 
     adminPhoneNo: Yup.string()
-      .required("A valid Phone number is required, including the country code.")
+      .required("A valid phone number is required, including the country code.")
       .test(
         "is-valid-phone",
-        "A valid Phone number is required, including the country code.",
+        "A valid phone number is required, including the country code.",
         function (value) {
           console.log("value:: in the eidtprofile  ", value);
           const { country } = this.parent;
@@ -340,6 +340,7 @@ const EditProfile = () => {
   const [change, setChange] = useState(true);
   const [settingRoute, setSettingRoute] = useState("Edit My Profile");
   const { setProfileData } = useContext(UserContext);
+
   const [loading, setLoading] = useState(false);
   const [isFormValid, setFormValid] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -452,6 +453,41 @@ const EditProfile = () => {
     setOpen(false);
   };
 
+
+  const updateProfilePic = async (values) => {
+    setLoading(true)
+
+    try {
+      const res = await axios({
+        method: "POST",
+        url: ApiConfig.updateProfilePic,
+        headers: {
+          token: `${localStorage.getItem("token")}`,
+        },
+        data: {
+          profilePicture: photoURL
+        },
+
+      });
+      if (res?.data?.status === 200) {
+        toast.success("Image uploaded successfully.");
+
+        handleCloseDialog();
+        GetCompanyDetails()
+        setProfileData((prevData) => ({
+          ...prevData,
+          adminProfileImage: res?.data?.data,
+
+        }));
+      } else {
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+    }
+  };
+
   const handleSaveClick = async (values) => {
     setLoading(true);
     let update_Account_Id = accountId;
@@ -472,6 +508,7 @@ const EditProfile = () => {
         },
       });
       if (res?.data?.status === 200) {
+        console.log(res?.data?.data, "jhgjgjg");
         toast.success(res?.data?.message);
         GetCompanyDetails();
         setEditing(false);
@@ -480,7 +517,7 @@ const EditProfile = () => {
         setLoading(false);
         setProfileData((prevData) => ({
           ...prevData,
-          adminProfileImage: res?.data?.data?.imageurl,
+          adminProfileImage: photoURL || res?.data?.data?.imageurl,
           firstName: res?.data?.data?.firstName,
           lastName: res?.data?.data?.lastName,
         }));
@@ -535,7 +572,7 @@ const EditProfile = () => {
                       item
                       lg={3}
                       md={3}
-                      sm={4}
+                      sm={3}
                       xs={12}
                       className="profileBox d-flex"
                     >
@@ -543,21 +580,21 @@ const EditProfile = () => {
                         {key === "adminProfileImage"
                           ? "Profile Picture"
                           : key === "firstName"
-                          ? "First Name"
-                          : key === "lastName"
-                          ? "Last Name"
-                          : key === "adminEmail"
-                          ? "Email"
-                          : key === "adminPhoneNo"
-                          ? "Phone No."
-                          : key.charAt(0).toUpperCase() + key.slice(1)}
+                            ? "First Name"
+                            : key === "lastName"
+                              ? "Last Name"
+                              : key === "adminEmail"
+                                ? "Email"
+                                : key === "adminPhoneNo"
+                                  ? "Phone No."
+                                  : key.charAt(0).toUpperCase() + key.slice(1)}
                       </Typography>
                     </Grid>
                     <Grid
                       item
                       lg={7}
                       md={7}
-                      sm={8}
+                      sm={7}
                       xs={12}
                       style={{ display: "flex" }}
                     >
@@ -674,19 +711,18 @@ const EditProfile = () => {
                           <TextField
                             className={
                               isEditing &&
-                              key !== "adminEmail" &&
-                              key !== "password"
+                                key !== "adminEmail" &&
+                                key !== "password"
                                 ? classes.textfiledall
                                 : classes.textfiledallbefore
                             }
                             name={key}
-                            placeholder={`Enter Your ${
-                              key.charAt(0).toUpperCase() + key.slice(1)
-                            }`}
+                            placeholder={`Enter Your ${key.charAt(0).toUpperCase() + key.slice(1)
+                              }`}
                             value={
                               key === "firstName" || key === "lastName"
                                 ? formik.values[key].charAt(0).toUpperCase() +
-                                  formik.values[key].slice(1)
+                                formik.values[key].slice(1)
                                 : formik.values[key]
                             }
                             onChange={formik.handleChange}
@@ -707,10 +743,10 @@ const EditProfile = () => {
                                 key === "adminPhoneNo"
                                   ? 20
                                   : key === "firstName"
-                                  ? 50
-                                  : key === "lastName"
-                                  ? 50
-                                  : undefined,
+                                    ? 50
+                                    : key === "lastName"
+                                      ? 50
+                                      : undefined,
                               onKeyDown: (e) => {
                                 const isAlphanumericOrSpecial =
                                   /^[A-Za-z0-9!@#$%^&*(),.?":{}|<>]+$/.test(
@@ -773,9 +809,7 @@ const EditProfile = () => {
       </form>
       {openCrop ? (
         <Dialog open={open} className={classes.mainDialog}>
-          <IconButton onClick={handleCloseDialog}>
-            {/* <CloseIcon className="closeicon" /> */}
-          </IconButton>
+          <IconButton onClick={handleCloseDialog}></IconButton>
 
           <Typography variant="body1" className={classes.dialogHeading}>
             Profile Image
@@ -786,7 +820,7 @@ const EditProfile = () => {
             setOpenCrop={setOpenCrop}
             setPhotoURL={setPhotoURL}
             setUploadedImage={setSelectedFile}
-            setErrors={() => {}}
+            setErrors={() => { }}
           />
         </Dialog>
       ) : (
@@ -838,8 +872,9 @@ const EditProfile = () => {
             <Button
               onClick={() => {
                 if (isImageChanged) {
-                  toast.success("Image uploaded successfully.");
-                  handleCloseDialog();
+                  updateProfilePic()
+                  // toast.success("Image uploaded successfully.");
+                  // handleCloseDialog();
                 } else {
                   setSelectedFile(null);
                 }

@@ -33,7 +33,7 @@ const Logo = () => {
         src={
           user.coverData.companyLogo
             ? user.coverData.companyLogo
-            : "images/personaprologohd.png"
+            : "images/personaprosvglogo.svg"
         }
         alt=""
         className="logoDiv"

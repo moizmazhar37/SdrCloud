@@ -8,7 +8,7 @@ import { useHistory, useLocation } from "react-router-dom";
 import Breadcrumbs from "@material-ui/core/Breadcrumbs";
 import Link from "@material-ui/core/Link";
 import ButtonCircularProgress from "src/component/ButtonCircularProgress";
-
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 //Custom Style of View page
 const useStyles = makeStyles((theme) => ({
   vieworgLogoContainer: {
@@ -95,6 +95,10 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   breads: {
+    marginTop: "10px",
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
     "& nav li": {
       margin: "0px",
     },
@@ -161,10 +165,20 @@ function ViewUser(props) {
     }
     return "";
   };
-
+  const truncateText = (text, maxLength = 30) => {
+    return text?.length > maxLength
+      ? `${text.slice(0, 15)}...${text.slice(-15)}`
+      : text;
+  };
   return (
     <>
       <Box className={classes.breads}>
+        <ArrowBackIcon
+          style={{ color: "black", cursor: "pointer", fontSize: "large" }}
+          onClick={() => {
+            history.push("/companyUsers-List");
+          }}
+        />
         <Breadcrumbs aria-label="breadcrumb">
           <Link color="inherit" href="/companyUsers-List">
             Users&nbsp;
@@ -174,7 +188,7 @@ function ViewUser(props) {
       </Box>
 
       <Grid container spacing={1} style={{ paddingTop: "32px" }}>
-        <Grid item md={8} sm={8} xs={12} lg={5}>
+        <Grid item md={8} sm={12} xs={12} lg={5}>
           <Box>
             <Typography variant="h5" className={classes.mercedesHeading}>
               View User Details
@@ -188,8 +202,8 @@ function ViewUser(props) {
                 <Grid container>
                   <Grid
                     item
-                    lg={4}
-                    md={4}
+                    lg={5}
+                    md={5}
                     sm={6}
                     xs={12}
                     className="profileBox d-flex"
@@ -210,7 +224,7 @@ function ViewUser(props) {
                     >
                       <Typography variant="body1">
                         {viewUserData?.userDetails?.firstName
-                          ? viewUserData?.userDetails?.firstName
+                          ? truncateText(viewUserData?.userDetails?.firstName)
                           : ""}
                       </Typography>
                     </Box>
@@ -221,8 +235,8 @@ function ViewUser(props) {
                 <Grid container>
                   <Grid
                     item
-                    lg={4}
-                    md={4}
+                    lg={5}
+                    md={5}
                     sm={6}
                     xs={12}
                     className="profileBox d-flex"
@@ -242,8 +256,9 @@ function ViewUser(props) {
                       style={{ justifyContent: "start", width: "100%" }}
                     >
                       <Typography variant="body1">
+                        {" "}
                         {viewUserData?.userDetails?.lastName
-                          ? viewUserData?.userDetails?.lastName
+                          ? truncateText(viewUserData?.userDetails?.lastName)
                           : ""}
                       </Typography>
                     </Box>
@@ -254,8 +269,8 @@ function ViewUser(props) {
                 <Grid container>
                   <Grid
                     item
-                    lg={4}
-                    md={4}
+                    lg={5}
+                    md={5}
                     sm={6}
                     xs={12}
                     className="profileBox d-flex"
@@ -274,9 +289,12 @@ function ViewUser(props) {
                       className="d-flex"
                       style={{ justifyContent: "start", width: "100%" }}
                     >
-                      <Typography variant="body1">
+                      <Typography
+                        variant="body1"
+                        style={{ wordBreak: "break-all" }}
+                      >
                         {viewUserData?.userDetails?.email
-                          ? viewUserData?.userDetails?.email
+                          ? truncateText(viewUserData?.userDetails?.email)
                           : ""}
                       </Typography>
                     </Box>
@@ -287,8 +305,8 @@ function ViewUser(props) {
                 <Grid container>
                   <Grid
                     item
-                    lg={4}
-                    md={4}
+                    lg={5}
+                    md={5}
                     sm={6}
                     xs={12}
                     className="profileBox d-flex"
@@ -308,7 +326,6 @@ function ViewUser(props) {
                       style={{ justifyContent: "start", width: "100%" }}
                     >
                       <Typography variant="body1">
-                        {/* {viewUserData?.projects ? viewUserData?.projects : ""} */}
                         {viewUserData?.projects !== null &&
                         viewUserData?.projects !== undefined
                           ? viewUserData?.projects
@@ -322,13 +339,15 @@ function ViewUser(props) {
                 <Grid container>
                   <Grid
                     item
-                    lg={4}
-                    md={4}
+                    lg={5}
+                    md={5}
                     sm={6}
                     xs={12}
                     className="profileBox d-flex"
                   >
-                    <Typography variant="body1">Created At:</Typography>
+                    <Typography variant="body1">
+                      Account Creation Date:
+                    </Typography>
                   </Grid>
                   <Grid
                     item
@@ -359,8 +378,8 @@ function ViewUser(props) {
                 <Grid container>
                   <Grid
                     item
-                    lg={4}
-                    md={4}
+                    lg={5}
+                    md={5}
                     sm={6}
                     xs={12}
                     className="profileBox d-flex"
@@ -393,8 +412,8 @@ function ViewUser(props) {
                 <Grid container>
                   <Grid
                     item
-                    lg={4}
-                    md={4}
+                    lg={5}
+                    md={5}
                     sm={6}
                     xs={12}
                     className="profileBox d-flex"
@@ -426,8 +445,8 @@ function ViewUser(props) {
                 <Grid container>
                   <Grid
                     item
-                    lg={4}
-                    md={4}
+                    lg={5}
+                    md={5}
                     sm={6}
                     xs={12}
                     className="profileBox d-flex"

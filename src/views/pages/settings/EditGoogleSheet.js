@@ -158,12 +158,18 @@ function EditGoogleSheet(props) {
     recent: "",
     fetchUrl: "",
     records: "",
+    sheetType: null,
   });
   console.log(viewdata.sheetType, "ojopjo");
-
+  const [sheetType, setSheetType] = useState(viewdata?.sheetType);
+  console.log(viewdata?.sheetType, "sheetType");
+  useEffect(() => {
+    setSheetType(viewdata?.sheetType);
+  }, [viewdata]);
   const [recordCount, setRecordCount] = useState(0);
   const [tempRecordCount, setTempRecordCount] = useState(0);
   const [isEditing, setEditing] = useState(false);
+  const [isEditingSheet, setEditingSheet] = useState(false);
   const [fieldValue, setFieldValue] = useState({ value: "", dataType: "" }); // Initialize with null or appropriate initial value
   const [diabledFields, setDisabledFields] = useState(true);
 
@@ -209,12 +215,6 @@ function EditGoogleSheet(props) {
   if (viewdata && viewdata.sheetType === "HVO") {
     values = [
       {
-        value: "Text Field",
-      },
-      {
-        value: "URL",
-      },
-      {
         value: "Image URL",
       },
       {
@@ -224,35 +224,61 @@ function EditGoogleSheet(props) {
         value: "Screenshot from URL",
       },
       {
+        value: "Text Field",
+      },
+      {
+        value: "URL",
+      },
+      {
         value: "Email (Required)",
       },
       {
         value: "Error (Required)",
       },
       {
-        value: "Status (Required)",
+        value: "HVO URL (Required)",
       },
       {
-        value: "HVO URL (Required)",
+        value: "Status (Required)",
       },
     ];
   } else {
     values = [
       {
-        value: "Text Field",
+        value: "Customer id (Required)",
       },
       {
-        value: "Static URL",
+        value: "Customer organization (Required)",
       },
       {
         value: "Dynamic URL",
       },
       {
+        value: "First name (Required)",
+      },
+      {
         value: "Image URL",
       },
-
+      {
+        value: "Static URL",
+      },
+      {
+        value: "Text Field",
+      },
       {
         value: "Video URL",
+      },
+      {
+        value: "Email (Required)",
+      },
+      {
+        value: "Error (Required)",
+      },
+      {
+        value: "Final video URL (Required)",
+      },
+      {
+        value: "Status (Required)",
       },
     ];
   }
@@ -307,6 +333,9 @@ function EditGoogleSheet(props) {
   const handleEditClick = () => {
     setEditing(!isEditing);
   };
+  const handleEditSheetClick = () => {
+    setEditingSheet(!isEditingSheet);
+  };
 
   const handleSave = async (viewdata) => {
     setLoading(true);
@@ -338,11 +367,70 @@ function EditGoogleSheet(props) {
     }
   };
 
+  const handleSheetSave = async () => {
+    setLoading(true);
+    try {
+      const response = await axios({
+        url: ApiConfig.setSheetDataType,
+        method: "PUT",
+        headers: {
+          token: `${localStorage.getItem("token")}`,
+        },
+        params: {
+          googleSheetId: sheetid,
+          type: sheetType,
+        },
+      });
+      if (response?.data?.status === 200) {
+        setEditingSheet(false);
+        getAllSheet();
+        handleViewData();
+        setLoading(false);
+        toast.success(response?.data?.message);
+      }
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+      toast.error(
+        error.response?.data?.message || "An error occurred while saving."
+      );
+    }
+  };
+
   const saveFieldDataType = async () => {
     setLoading(true);
     try {
       const response = await axios({
         url: ApiConfig.setHeadersDataType,
+        method: "PUT",
+        headers: {
+          token: `${localStorage.getItem("token")}`,
+        },
+        data: {
+          sheetId: sheetid,
+          headersWithDataType: fieldValue,
+        },
+      });
+      if (response?.data?.status === 200) {
+        console.log(response);
+        setLoading(false);
+        toast.success(response?.data?.message);
+        setDisabledFields(true);
+      } else {
+        console.log(response);
+        setLoading(false);
+      }
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+      toast.error(error?.response?.data?.message);
+    }
+  };
+  const saveFieldDataTypeVideo = async () => {
+    setLoading(true);
+    try {
+      const response = await axios({
+        url: ApiConfig.setHeadersDataTypeVideo,
         method: "PUT",
         headers: {
           token: `${localStorage.getItem("token")}`,
@@ -424,7 +512,7 @@ function EditGoogleSheet(props) {
   };
   return (
     <>
-      {/* {loading && <FullScreenLoader />} */}
+      {/* {loading && <FullScreenLoader / >} */}
       {isLoading && <FullScreenLoader />}
 
       <Box className={classes.breads}>
@@ -607,6 +695,56 @@ function EditGoogleSheet(props) {
                   </Box>
                 ))}
               </Box>
+              <Box className={classes.headingBox} style={{ marginTop: "25px" }}>
+                <Box className="d-flex" style={{ justifyContent: "start" }}>
+                  <Typography variant="h5">Sheet Type</Typography>
+                  {isEditingSheet ? (
+                    <Button
+                      color="primary"
+                      onClick={() => handleSheetSave()}
+                      style={{ color: "var(--blue, #0358AC)" }}
+                    >
+                      Save
+                    </Button>
+                  ) : (
+                    <Button
+                      color="primary"
+                      onClick={handleEditSheetClick}
+                      style={{ color: "var(--blue, #0358AC)" }}
+                    >
+                      Edit
+                    </Button>
+                  )}
+                </Box>
+              </Box>
+              {sheetType && (
+                <Box className={classes.innerbox}>
+                  <Typography>Select Sheet Type</Typography>
+                  <>
+                    <Select
+                      value={sheetType}
+                      fullWidth
+                      style={{ marginTop: "5px" }}
+                      variant="outlined"
+                      displayEmpty
+                      disabled={!isEditingSheet}
+                      onChange={(e) => {
+                        setSheetType(e.target.value);
+                        // console.log(e.target.value)
+                      }}
+                      IconComponent={ExpandMoreIcon}
+                      MenuProps={menuProps}
+                      marginTop="5px"
+                    >
+                      <MenuItem value="" disabled>
+                        Select Type
+                      </MenuItem>
+                      <MenuItem value="HVO">HVO</MenuItem>
+                      <MenuItem value="VIDEO">VIDEO</MenuItem>
+                    </Select>
+                  </>
+                </Box>
+              )}
             </Grid>
             <Grid item xs={12} md={12} lg={5} className="gridItem">
               <Box className={classes.commonBorder}>
@@ -623,11 +761,18 @@ function EditGoogleSheet(props) {
                   </Typography>
                   <Button
                     color="primary"
-                    onClick={() =>
-                      diabledFields
-                        ? setDisabledFields(!diabledFields)
-                        : saveFieldDataType()
-                    }
+                    onClick={() => {
+                      if (diabledFields) {
+                        setDisabledFields(!diabledFields);
+                      } else {
+                        // Conditionally call the appropriate function based on viewdata.sheetType
+                        if (viewdata.sheetType === "HVO") {
+                          saveFieldDataType();
+                        } else {
+                          saveFieldDataTypeVideo();
+                        }
+                      }
+                    }}
                     style={{ color: "var(--blue, #0358AC)" }}
                   >
                     {diabledFields ? "Edit" : "Save"}
@@ -641,7 +786,7 @@ function EditGoogleSheet(props) {
                   <Box pt={2} pl={3} pr={2}>
                     <Typography variant="body1">
                       {item?.value?.length > 40
-                        ? `${item.value.substring(0, 40)}...`
+                        ? `${item.value.substring(0, 45)}...`
                         : item?.value}
                     </Typography>
                     <Select
@@ -656,8 +801,8 @@ function EditGoogleSheet(props) {
                       onChange={(e) => handleChangeField(e, idx, item)} // P
                       IconComponent={ExpandMoreIcon}
                       disabled={diabledFields == true}
-                      // error={!!errors.image}
-                      // helperText={errors.image}
+                    // error={!!errors.image}
+                    // helperText={errors.image}
                     >
                       <MenuItem value="none" disabled>
                         Select Field value

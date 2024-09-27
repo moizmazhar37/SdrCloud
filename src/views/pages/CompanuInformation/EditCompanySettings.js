@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { debounce } from "lodash";
 import {
   Box,
   Paper,
@@ -164,18 +165,20 @@ const useStyles = makeStyles((theme) => ({
     },
     "& .gridContainer": {
       marginTop: "32px",
-      // justifyContent:"space-between",
-      gap: "90px",
+      justifyContent: "space-between",
+      // gap: "90px",
       // "@media(max-width:960px)":{
       //   gap: '0px',
       // },
       "& .MuiGrid-item": {
         width: "100%",
-        maxWidth: "584px",
+        maxWidth: "634px",
         alignItems: "center",
       },
 
       "& .commonHeadingBox": {
+        display: "flex",
+        alignItems: "center",
         padding: "12px 24px",
         backgroundColor: "#F4F4F4",
         color: "#152F40",
@@ -567,12 +570,12 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
   const formValidationSchemaOne = Yup.object().shape({
     AccountName: Yup.string()
       .required(
-        "Account Name is required and must be between 3 and 100 characters, containing only alphabetic, alphanumeric or special characters."
+        "Account name is required and must be between 3 and 100 characters, containing only alphabetic, alphanumeric or special characters."
       )
 
       .matches(
         /^(?=.*[A-Za-z])[A-Za-z0-9 !@#\$%\^\&*\(\)_\+\-=\[\]\{\};:'",<>\.\?\/\\|`~]{3,100}$/,
-        "Account Name is required and must be between 3 and 100 characters, containing only alphabetic, alphanumeric or special characters."
+        "Account name is required and must be between 3 and 100 characters, containing only alphabetic, alphanumeric or special characters."
       ),
 
     phoneNumberOne: Yup.string()
@@ -596,20 +599,20 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
   const formValidationSchemaTwo = Yup.object().shape({
     AdminFirstName: Yup.string()
       .required(
-        "Account First Name is required and must be between 2 and 50 characters, containing only alphabetic, alphanumeric or special characters."
+        "Account first name is required and must be between 2 and 50 characters, containing only alphabetic, alphanumeric or special characters."
       )
       .matches(
         /^(?! )[A-Za-z0-9!@#\$%\^\&*\(\)_\+\-=\[\]\{\};:'",<>\.\?\/\\|`~]{1,49}[A-Za-z0-9!@#\$%\^\&*\(\)_\+\-=\[\]\{\};:'",<>\.\?\/\\|`~ ]$/,
-        "Account First Name is required and must be between 2 and 50 characters, containing only alphabetic, alphanumeric or special characters."
+        "Account first name is required and must be between 2 and 50 characters, containing only alphabetic, alphanumeric or special characters."
       ),
 
     AdminLastName: Yup.string()
       .required(
-        "Account Last Name is required and must be between 2 and 50 characters, containing only alphabetic, alphanumeric or special characters."
+        "Account last name is required and must be between 2 and 50 characters, containing only alphabetic, alphanumeric or special characters."
       )
       .matches(
         /^(?=.*[A-Za-z])[A-Za-z0-9 !@#\$%\^\&*\(\)_\+\-=\[\]\{\};:'",<>\.\?\/\\|`~]{2,50}$/,
-        "Account Last Name is required and must be between 2 and 50 characters, alphanumeric or special characters."
+        "Account last name is required and must be between 2 and 50 characters, alphanumeric or special characters."
       ),
 
     adminEmail: Yup.string()
@@ -618,7 +621,7 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
       .max(254, "A valid email address is required. (e.g. user@example.com)"),
 
     phoneNumberTwo: Yup.string()
-      .required("A valid Phone number is required, including the country code.")
+      .required("A valid phone number is required, including the country code.")
       .test(
         "is-valid-number",
         "A valid phone number is required, including the country code.",
@@ -644,22 +647,22 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
       .required("A valid URL is required (e.g., https://example.com).")
       .matches(
         /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/,
-        "A valid URL is required (e.g., https://example.com)."
+        "A valid url is required (e.g., https://example.com)."
       ),
 
     RedirectURL: Yup.string()
       .required("A valid URL is required (e.g., https://example.com).")
       .matches(
         /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/,
-        "A valid URL is required (e.g., https://example.com)."
+        "A valid url is required (e.g., https://example.com)."
       ),
 
     ContractDate: Yup.string()
-      .required("Contract Date is required.")
+      .required("Contract date is required.")
       .matches(/^\d{4}-\d{2}-\d{2}$/, "Contract date formate"),
 
     ContractTerm: Yup.string().required(
-      "Package Name is required and must be at least 3 characters."
+      "Package name is required and must be at least 3 characters."
     ),
 
     CustomerType: Yup.string().required("CustomerType is required."),
@@ -883,6 +886,47 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
     setOpen(false);
   };
 
+  const handleColorChange = debounce((color) => {
+    const updatedHexValue = color.hex.toUpperCase();
+
+    // Update hexValue
+    setHexValue(updatedHexValue);
+
+    // Update accountData with the new primaryHex value
+    setAccountData((prevData) => ({
+      ...prevData,
+      accountDetails: {
+        ...prevData.accountDetails,
+        primaryHex: updatedHexValue,
+      },
+    }));
+
+    console.log("Updated hexValue:", updatedHexValue);
+  }, 100);
+
+  const handleColorChange1 = debounce((color) => {
+    const updatedHexValue = color.hex.toUpperCase();
+
+    // Update secondaryHex value
+    setHexValue2(updatedHexValue);
+
+    // Update accountData with the new secondaryHex value
+    setAccountData((prevData) => ({
+      ...prevData,
+      accountDetails: {
+        ...prevData.accountDetails,
+        secondaryHex: updatedHexValue,
+      },
+    }));
+
+    console.log("Updated secondaryHexValue:", updatedHexValue);
+  }, 100);
+
+  const formatContractTerm = (term) => {
+    // Use a regular expression to find the first digit and separate it from the following text
+    return term.replace(/(\d+)([a-zA-Z]+)/, "$1 $2");
+  };
+
   return (
     <>
       {loading && <FullScreenLoader />}
@@ -913,7 +957,7 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
           </Breadcrumbs>
         </Box>
         <Grid container spacing={2} className="gridContainer ">
-          <Grid item xs={12} sm={6} md={6} lg={6}>
+          <Grid item xs={12} sm={12} md={6} lg={6}>
             <Box className="companyDetails commonBorder">
               {accountData && (
                 <Formik
@@ -942,28 +986,26 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
                   }) => (
                     <Form style={{ marginTop: "0px" }}>
                       <Box className="commonHeadingBox">
-                        <Typography variant="body1">
-                          Account Details
-                          {isEditing1 ? (
-                            <Button
-                              color="primary"
-                              onClick={handleSaveClick1}
-                              className="EditButton"
-                              type="submit"
-                              disabled={!isValid || !dirty}
-                            >
-                              Save
-                            </Button>
-                          ) : (
-                            <Button
-                              color="primary"
-                              onClick={handleEditClick1}
-                              className="EditButton"
-                            >
-                              Edit
-                            </Button>
-                          )}
-                        </Typography>
+                        <Typography variant="body1">Account Details</Typography>
+                        {isEditing1 ? (
+                          <Button
+                            color="primary"
+                            onClick={handleSaveClick1}
+                            className="EditButton"
+                            type="submit"
+                            disabled={!isValid || !dirty}
+                          >
+                            Save
+                          </Button>
+                        ) : (
+                          <Button
+                            color="primary"
+                            onClick={handleEditClick1}
+                            className="EditButton"
+                          >
+                            Edit
+                          </Button>
+                        )}
                       </Box>
                       <Box className="innerbox commomInnerBox">
                         <Grid container>
@@ -972,13 +1014,14 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
                             lg={4}
                             md={4}
                             sm={6}
+                            xs={6}
                             className="flexCenter"
                           >
                             <Typography variant="body1">
                               Account Name:
                             </Typography>
                           </Grid>
-                          <Grid item lg={8} md={8} sm={6}>
+                          <Grid item lg={8} md={8} sm={6} xs={6}>
                             <TextField
                               value={
                                 !isEditing1 &&
@@ -1046,13 +1089,14 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
                             lg={4}
                             md={4}
                             sm={6}
+                            xs={6}
                             className="flexCenter"
                           >
                             <Typography variant="body1">
                               Account Phone:
                             </Typography>
                           </Grid>
-                          <Grid item lg={8} md={8} sm={6}>
+                          <Grid item lg={8} md={8} sm={6} xs={6}>
                             <PhoneInput
                               disabled={!isEditing1}
                               label="Phone Number"
@@ -1107,13 +1151,14 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
                             lg={4}
                             md={4}
                             sm={6}
+                            xs={6}
                             className="flexCenter"
                           >
                             <Typography variant="body1">
                               PersonaPro Admin:
                             </Typography>
                           </Grid>
-                          <Grid item lg={8} md={8} sm={6}>
+                          <Grid item lg={8} md={8} sm={6} xs={6}>
                             <TextField
                               // disabled={!isEditing1}
                               disabled={true}
@@ -1151,13 +1196,6 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
                               }}
                               className={isEditing1 ? "editableTextField" : ""}
                             />
-                            {/* <FormHelperText
-                              error
-                              className={classes.helperText}
-                            >
-                              {touched.PersonaProAdmin &&
-                                errors.PersonaProAdmin}
-                            </FormHelperText> */}
                           </Grid>
                         </Grid>
                       </Box>
@@ -1202,26 +1240,26 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
                       <Box className="commonHeadingBox">
                         <Typography variant="body1">
                           Account Admin Details
-                          {isEditing2 ? (
-                            <Button
-                              color="primary"
-                              onClick={handleSaveClick2}
-                              className="EditButton"
-                              type="submit"
-                              disabled={!isValid || !dirty}
-                            >
-                              Save
-                            </Button>
-                          ) : (
-                            <Button
-                              color="primary"
-                              onClick={handleEditClick2}
-                              className="EditButton"
-                            >
-                              Edit
-                            </Button>
-                          )}
                         </Typography>
+                        {isEditing2 ? (
+                          <Button
+                            color="primary"
+                            onClick={handleSaveClick2}
+                            className="EditButton"
+                            type="submit"
+                            disabled={!isValid || !dirty}
+                          >
+                            Save
+                          </Button>
+                        ) : (
+                          <Button
+                            color="primary"
+                            onClick={handleEditClick2}
+                            className="EditButton"
+                          >
+                            Edit
+                          </Button>
+                        )}
                       </Box>
                       <Box className="innerbox commomInnerBox">
                         <Grid container>
@@ -1230,6 +1268,7 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
                             lg={4}
                             md={4}
                             sm={6}
+                            xs={6}
                             className="flexCenter"
                           >
                             <Typography variant="body1">
@@ -1237,7 +1276,7 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
                             </Typography>
                           </Grid>
 
-                          <Grid item lg={8} md={8} sm={6}>
+                          <Grid item lg={8} md={8} sm={6} xs={6}>
                             <TextField
                               value={
                                 !isEditing2 &&
@@ -1293,6 +1332,7 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
                             lg={4}
                             md={4}
                             sm={6}
+                            xs={6}
                             className="flexCenter"
                           >
                             <Typography variant="body1">
@@ -1300,7 +1340,7 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
                             </Typography>
                           </Grid>
 
-                          <Grid item lg={8} md={8} sm={6}>
+                          <Grid item lg={8} md={8} sm={6} xs={6}>
                             <TextField
                               value={
                                 !isEditing2 &&
@@ -1359,6 +1399,7 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
                             lg={4}
                             md={4}
                             sm={6}
+                            xs={6}
                             className="flexCenter"
                           >
                             <Typography variant="body1">
@@ -1366,7 +1407,7 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
                             </Typography>
                           </Grid>
 
-                          <Grid item lg={8} md={8} sm={6}>
+                          <Grid item lg={8} md={8} sm={6} xs={6}>
                             <TextField
                               value={values.adminEmail}
                               name="adminEmail"
@@ -1399,6 +1440,7 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
                             lg={4}
                             md={4}
                             sm={6}
+                            xs={6}
                             className="flexCenter"
                           >
                             <Typography variant="body1">
@@ -1406,7 +1448,7 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
                             </Typography>
                           </Grid>
 
-                          <Grid item lg={8} md={8} sm={6}>
+                          <Grid item lg={8} md={8} sm={6} xs={6}>
                             <PhoneInput
                               disabled={!isEditing2}
                               label="Phone Number"
@@ -1421,12 +1463,7 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
                               onChange={(value, countryData) => {
                                 const formattedPhone = value.startsWith("+")
                                   ? value
-                                  : `${value}`;
-
-                                setAccountData({
-                                  ...accountData,
-                                  adminPhone: formattedPhone,
-                                });
+                                  : `+${value}`;
                                 setFieldValue("phoneNumberTwo", formattedPhone);
                                 setFieldValue(
                                   "country",
@@ -1494,28 +1531,33 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
                   }) => (
                     <Form style={{ marginTop: "0px" }}>
                       <Box className="commonHeadingBox">
-                        <Typography variant="body1">
-                          Account Details
-                          {isEditing3 ? (
-                            <Button
-                              color="primary"
-                              onClick={handleSaveClick3}
-                              className="EditButton"
-                              stype="submit"
-                              // disabled={!isValid || !dirty}
-                            >
-                              Save
-                            </Button>
-                          ) : (
-                            <Button
-                              color="primary"
-                              onClick={handleEditClick3}
-                              className="EditButton"
-                            >
-                              Edit
-                            </Button>
-                          )}
-                        </Typography>
+                        {console.log("dirty: ", isValid)}
+                        <Typography variant="body1">Account Details</Typography>
+                        {isEditing3 ? (
+                          <Button
+                            color="primary"
+                            onClick={handleSaveClick3}
+                            className="EditButton"
+                            stype="submit"
+                            // disabled={!isValid || !dirty}
+                            disabled={
+                              !accountData?.accountDetails?.bookDemoButton ||
+                              !accountData?.accountDetails?.redirectLinks ||
+                              errors.bookDemoButton ||
+                              errors.RedirectURL
+                            }
+                          >
+                            Save
+                          </Button>
+                        ) : (
+                          <Button
+                            color="primary"
+                            onClick={handleEditClick3}
+                            className="EditButton"
+                          >
+                            Edit
+                          </Button>
+                        )}
                       </Box>
                       <Box className="innerbox commomInnerBox">
                         <Grid container>
@@ -1524,6 +1566,7 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
                             lg={4}
                             md={4}
                             sm={6}
+                            xs={6}
                             className="flexCenter"
                           >
                             <Typography variant="body1">
@@ -1531,7 +1574,7 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
                             </Typography>
                           </Grid>
 
-                          <Grid item lg={8} md={8} sm={6}>
+                          <Grid item lg={8} md={8} sm={6} xs={6}>
                             <>
                               <TextField
                                 name="PrimaryColor"
@@ -1541,11 +1584,13 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
                                     ? "editableTextField"
                                     : "nonEditabletextField"
                                 }
-                                onBlur={handleBlur}
+                                // onBlur={handleBlur}
                                 margin="normal"
                                 placeholder="Choose Color"
                                 value={hexValue}
-                                onClick={() => setShowColorPicker(true)}
+                                onClick={() => {
+                                  setShowColorPicker(true);
+                                }}
                               />
                               <Modal
                                 open={showColorPicker}
@@ -1567,32 +1612,7 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
                                   <SketchPicker
                                     className={classes.colorpicker}
                                     color={hexValue}
-                                    onChange={(color) => {
-                                      const updatedHexValue =
-                                        color.hex.toUpperCase();
-
-                                      // Update hexValue
-                                      setHexValue(updatedHexValue);
-
-                                      // Update accountData with the new primaryHex value
-                                      setAccountData((prevData) => ({
-                                        ...prevData,
-                                        accountDetails: {
-                                          ...prevData.accountDetails,
-                                          primaryHex: updatedHexValue,
-                                        },
-                                      }));
-
-                                      // Check the updated value
-                                      console.log(
-                                        "Updated hexValue:",
-                                        updatedHexValue
-                                      );
-                                      console.log(
-                                        "Updated accountData:",
-                                        accountData
-                                      );
-                                    }}
+                                    onChange={handleColorChange}
                                   />
                                   <div className={classes.colorpickerbtndiv}>
                                     <Button
@@ -1622,6 +1642,7 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
                             lg={4}
                             md={4}
                             sm={6}
+                            xs={6}
                             className="flexCenter"
                           >
                             <Typography variant="body1">
@@ -1629,13 +1650,13 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
                             </Typography>
                           </Grid>
 
-                          <Grid item lg={8} md={8} sm={6}>
+                          <Grid item lg={8} md={8} sm={6} xs={6}>
                             <TextField
                               value={hexValue2}
                               onClick={() => setShowColorPicker1(true)}
                               name="SecondaryColor"
                               disabled={!isEditing3}
-                              onBlur={handleBlur}
+                              // onBlur={handleBlur}
                               margin="normal"
                               placeholder="Choose Color"
                               className={
@@ -1664,32 +1685,7 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
                                 <SketchPicker
                                   className={classes.colorpicker}
                                   color={hexValue2}
-                                  onChange={(color) => {
-                                    const updatedHexValue =
-                                      color.hex.toUpperCase();
-
-                                    // Update hexValue
-                                    setHexValue2(updatedHexValue);
-
-                                    // Update accountData with the new primaryHex value
-                                    setAccountData((prevData) => ({
-                                      ...prevData,
-                                      accountDetails: {
-                                        ...prevData.accountDetails,
-                                        secondaryHex: updatedHexValue,
-                                      },
-                                    }));
-
-                                    // Check the updated value
-                                    console.log(
-                                      "Updated hexValue:",
-                                      updatedHexValue
-                                    );
-                                    console.log(
-                                      "Updated accountData:",
-                                      accountData
-                                    );
-                                  }}
+                                  onChange={handleColorChange1}
                                 />
                                 <div className={classes.colorpickerbtndiv}>
                                   <Button
@@ -1818,7 +1814,7 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
             </Box>
           </Grid>
 
-          <Grid item xs={12} sm={6} md={6} lg={6}>
+          <Grid item xs={12} sm={12} md={6} lg={6}>
             <Box className="companyDetails commonBorder">
               {accountData && (
                 <Formik
@@ -1848,26 +1844,7 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
                   }) => (
                     <Form style={{ marginTop: "0px" }}>
                       <Box className="commonHeadingBox">
-                        <Typography varient="body1">
-                          Contract Term
-                          {/* {isEditing4 ? ( */}
-                          {/* <Button
-                              color="primary"
-                              onClick={handleSaveClick4}
-                              className="EditButton"
-                            >
-                              Save
-                            </Button> */}
-                          {/* ) : ( */}
-                          {/* <Button
-                              color="primary"
-                              onClick={handleEditClick4}
-                              className="EditButton"
-                            >
-                              Edit
-                            </Button> */}
-                          {/* )} */}
-                        </Typography>
+                        <Typography varient="body1">Contract Term</Typography>
                       </Box>
 
                       <Box className="innerbox commomInnerBox">
@@ -1877,6 +1854,7 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
                             lg={3}
                             md={4}
                             sm={6}
+                            xs={6}
                             className="flexCenter"
                           >
                             <Typography variant="body1">
@@ -1884,13 +1862,13 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
                             </Typography>
                           </Grid>
 
-                          <Grid item lg={8} md={8} sm={6}>
+                          <Grid item lg={8} md={8} sm={6} xs={6}>
                             <TextField
                               value={
-                                new Date(
-                                  values.ContractDate
-                                ).toLocaleTimeString() +
-                                " " +
+                                // new Date(
+                                //   values.ContractDate
+                                // ).toLocaleTimeString() +
+                                // " " +
                                 new Date(
                                   values.ContractDate
                                 ).toLocaleDateString()
@@ -1911,15 +1889,16 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
                             lg={3}
                             md={4}
                             sm={6}
+                            xs={6}
                             className="flexCenter"
                           >
                             <Typography variant="body1">
                               Contract Term:
                             </Typography>
                           </Grid>
-                          <Grid item lg={8} md={8} sm={6}>
+                          <Grid item lg={8} md={8} sm={6} xs={6}>
                             <TextField
-                              value={values.ContractTerm}
+                              value={formatContractTerm(values.ContractTerm)}
                               disabled={!isEditing4}
                               onChange={handleChange}
                               onBlur={handleBlur}
@@ -1936,19 +1915,20 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
                             lg={3}
                             md={4}
                             sm={6}
+                            xs={6}
                             className="flexCenter"
                           >
                             <Typography variant="body1">
                               Contract End Date:
                             </Typography>
                           </Grid>
-                          <Grid item lg={8} md={8} sm={6}>
+                          <Grid item lg={8} md={8} sm={6} xs={6}>
                             <TextField
                               value={
-                                new Date(
-                                  values.ContractEndDate
-                                ).toLocaleTimeString() +
-                                " " +
+                                // new Date(
+                                //   values.ContractEndDate
+                                // ).toLocaleTimeString() +
+                                // " " +
                                 new Date(
                                   values.ContractEndDate
                                 ).toLocaleDateString()
@@ -1977,7 +1957,8 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
                   initialValues={{
                     CustomerType:
                       accountData?.accountDetails?.customerType || "",
-                    UserCount: accountData?.userCount || "",
+                    UserCount:
+                      accountData?.accountDetails?.contractedUsers || "",
                     MediaCredits:
                       accountData?.accountDetails?.mediaCredits === 0
                         ? 0
@@ -2006,26 +1987,7 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
                   }) => (
                     <Form style={{ marginTop: "0px" }}>
                       <Box className="commonHeadingBox">
-                        <Typography variant="body1">
-                          Contact Details
-                          {/* {isEditing5 ? ( */}
-                          {/* <Button
-                              color="primary"
-                              onClick={handleSaveClick5}
-                              className="EditButton"
-                            >
-                              Save
-                            </Button> */}
-                          {/* ) : ( */}
-                          {/* <Button
-                              color="primary"
-                              onClick={handleEditClick5}
-                              className="EditButton"
-                            >
-                              Edit
-                            </Button> */}
-                          {/* )} */}
-                        </Typography>
+                        <Typography variant="body1">Contact Details</Typography>
                       </Box>
                       <Box className="innerbox commomInnerBox">
                         <Grid container>
@@ -2034,6 +1996,7 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
                             lg={3}
                             md={4}
                             sm={6}
+                            xs={6}
                             className="flexCenter"
                           >
                             <Typography variant="body1">
@@ -2041,7 +2004,7 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
                             </Typography>
                           </Grid>
 
-                          <Grid item lg={8} md={8} sm={6}>
+                          <Grid item lg={8} md={8} sm={6} xs={6}>
                             <TextField
                               name="CustomerType"
                               value={values.CustomerType}
@@ -2060,11 +2023,12 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
                             lg={3}
                             md={4}
                             sm={6}
+                            xs={6}
                             className="flexCenter"
                           >
                             <Typography variant="body1">User Count:</Typography>
                           </Grid>
-                          <Grid item lg={8} md={8} sm={6}>
+                          <Grid item lg={8} md={8} sm={6} xs={6}>
                             <TextField
                               value={values.UserCount}
                               name="UserCount"
@@ -2082,13 +2046,14 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
                             lg={3}
                             md={4}
                             sm={6}
+                            xs={6}
                             className="flexCenter"
                           >
                             <Typography variant="body1">
                               Media Credits:
                             </Typography>
                           </Grid>
-                          <Grid item lg={8} md={8} sm={6}>
+                          <Grid item lg={8} md={8} sm={6} xs={6}>
                             <TextField
                               value={values.MediaCredits}
                               disabled={!isEditing5}
@@ -2119,13 +2084,14 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
                             lg={3}
                             md={4}
                             sm={6}
+                            xs={6}
                             className="flexCenter"
                           >
                             <Typography variant="body1">
                               Active Media Limit:
                             </Typography>
                           </Grid>
-                          <Grid item lg={8} md={8} sm={6}>
+                          <Grid item lg={8} md={8} sm={6} xs={6}>
                             <TextField
                               value={values.ActiveMediaLimit1}
                               disabled={!isEditing5}
@@ -2161,35 +2127,33 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
             {accountData && (
               <Box className="companyLogo commonBorder topMargin">
                 <Box className="commonHeadingBox">
-                  <Typography variant="body1">
-                    Account logo
-                    {isEditing6 ? (
-                      <Button
-                        color="primary"
-                        onClick={handleSaveClick6}
-                        className="EditButton"
-                      >
-                        Save
-                      </Button>
-                    ) : (
-                      <Button
-                        color="primary"
-                        onClick={handleEditClick6}
-                        className="EditButton"
-                      >
-                        Edit
-                      </Button>
+                  <Typography variant="body1">Account logo</Typography>
+                  {isEditing6 ? (
+                    <Button
+                      color="primary"
+                      onClick={handleSaveClick6}
+                      className="EditButton"
+                    >
+                      Save
+                    </Button>
+                  ) : (
+                    <Button
+                      color="primary"
+                      onClick={handleEditClick6}
+                      className="EditButton"
+                    >
+                      Edit
+                    </Button>
 
-                      // <Button
-                      //   variant="contained"
-                      //   component="label"
-                      //   className={classes.uploadButton}
-                      //   onClick={handleOpenDialog}
-                      // >
-                      //   Upload
-                      // </Button>
-                    )}
-                  </Typography>
+                    // <Button
+                    //   variant="contained"
+                    //   component="label"
+                    //   className={classes.uploadButton}
+                    //   onClick={handleOpenDialog}
+                    // >
+                    //   Upload
+                    // </Button>
+                  )}
                 </Box>
                 <Box className="innerbox commomInnerBox">
                   <Grid container spacing={3}>
@@ -2278,9 +2242,7 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
       </Box>
       {openCrop ? (
         <Dialog open={open} className={classes.mainDialog}>
-          <IconButton onClick={handleCloseDialog}>
-            {/* <CloseIcon className="closeicon" /> */}
-          </IconButton>
+          <IconButton onClick={handleCloseDialog}></IconButton>
 
           <Typography variant="body1" className={classes.dialogHeading}>
             Account Logo

@@ -76,8 +76,8 @@ const CropEasyProfile = ({
         try {
             const { file } = await getCroppedImg(photoURL, croppedAreaPixels, rotation);
             const base64 = await blobToBase64(file);
-            setPhotoURL(base64); // Update with base64 image
-            setUploadedImage(base64); // Assuming you want to set the uploaded image as well
+            setPhotoURL(base64);
+            setUploadedImage(base64);
             setOpenCrop(false);
             setErrors({ image: "" });
         } catch (error) {
@@ -88,17 +88,7 @@ const CropEasyProfile = ({
     return (
         <>
             <DialogContent dividers className={classes.DialogContentBox}>
-                {/* <Cropper
-                    image={photoURL}
-                    crop={crop}
-                    zoom={zoom}
-                    rotation={rotation}
-                    aspect={16 / 9}
-                    onZoomChange={setZoom}
-                    onRotationChange={setRotation}
-                    onCropChange={setCrop}
-                    onCropComplete={cropComplete}
-                /> */}
+
                 <Cropper
                     image={photoURL}
                     crop={crop}

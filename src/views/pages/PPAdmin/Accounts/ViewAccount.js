@@ -22,7 +22,7 @@ import { useEffect } from "react";
 import ApiConfig from "src/config/APIConfig";
 import axios from "axios";
 import { toast } from "react-toastify";
-import ButtonCircularProgress from "src/component/ButtonCircularProgress";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import Dialog from "@material-ui/core/Dialog";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
@@ -141,6 +141,10 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   breads: {
+    marginTop: "10px",
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
     "& nav li": {
       margin: "0px",
     },
@@ -641,6 +645,12 @@ const ViewAccount = () => {
   return (
     <>
       <Box className={classes.breads}>
+        <ArrowBackIcon
+          style={{ color: "black", cursor: "pointer", fontSize: "large" }}
+          onClick={() => {
+            history.push("/PP-createaccount");
+          }}
+        />
         <Breadcrumbs aria-label="breadcrumb">
           <Link color="inherit" href="/PP-createaccount">
             Accounts&nbsp;
@@ -772,10 +782,10 @@ const ViewAccount = () => {
                       value={
                         newAccount.contractTerm
                           ? newAccount.contractTerm
-                            .replace(/(\d)([A-Z])/g, "$1 $2")
-                            .replace(/(\d) Year/, (match, p1) =>
-                              p1 > 1 ? `${p1} Years` : `${p1} Year`
-                            )
+                              .replace(/(\d)([A-Z])/g, "$1 $2")
+                              .replace(/(\d) Year/, (match, p1) =>
+                                p1 > 1 ? `${p1} Years` : `${p1} Year`
+                              )
                           : ""
                       }
                     />

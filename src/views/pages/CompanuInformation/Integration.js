@@ -128,13 +128,7 @@ const Integration = ({ settingRoute, handleClick, setSettingRoute }) => {
     <>
       <Box className={classes.IntegrationContainer}>
         <Typography>
-          {/* {" "}
-          <ArrowBackIcon
-            style={{ color: "black", cursor: "pointer" }}
-            onClick={() => {
-              history.push("/settings");
-            }}
-          /> */}
+
         </Typography>
         {nextRoute === "Google Sheet" ? (
           <>
@@ -149,12 +143,7 @@ const Integration = ({ settingRoute, handleClick, setSettingRoute }) => {
         ) : (
           <>
             <Box className="breads">
-              {/* <ArrowBackIcon
-                style={{ color: "black", cursor: "pointer", fontSize: "large" }}
-                onClick={() => {
-                  history.push("/integrations");
-                }}
-              /> */}
+
               <Breadcrumbs aria-label="breadcrumb" className="breadcrumb">
                 <Typography variant="body1">
                   <Link

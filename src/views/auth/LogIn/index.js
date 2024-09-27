@@ -258,7 +258,7 @@ function Login(props) {
     <div style={{ maxWidth: "520px", width: "100%", margin: "0px 10px" }}>
       <Page title="Login">
         <ToastContainer />
-        {/* <Container maxWidth="sm"> */}
+
         <Box className={classes.loginLayoutForm}>
           <Box className="loginboxinner">
             <Logo />
@@ -299,7 +299,7 @@ function Login(props) {
                     .string()
                     .trim()
                     .matches(
-                      /^(?=.*[A-Z][a-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,16}$/,
+                      /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[\s\S])[A-Za-z\d\s\S]{8,16}$/,
                       "Password is required and must be between 8 and 16 characters, including a mix of uppercase, lowercase, numbers, and special characters."
                     )
                     .required(
@@ -455,16 +455,12 @@ function Login(props) {
                         )}
                       </Button>
                     </Box>
-                    {/* <Box style={{ marginTop: "24px" }}>
-                        <Typography variant="body1" style={{ color: "var(--blue, #0358AC)", textAlign: "center" }} >I am New User</Typography>
-                      </Box> */}
                   </Form>
                 )}
               </Formik>
             </Box>
           </Box>
         </Box>
-        {/* </Container> */}
       </Page>
     </div>
   );

@@ -1240,7 +1240,9 @@ function EditElement({
                     value={h1}
                     onChange={(e) => {
                       const value = e.target.value.replace(htmlTagRegex, "");
-                      if (value.length <= 100) {
+                      const isSpecialCase =
+                        value.startsWith("[") && value.endsWith("]");
+                      if (isSpecialCase || value.length <= 100) {
                         setH1(value);
                         setError((prevErrors) => ({
                           ...prevErrors,
@@ -1385,7 +1387,9 @@ function EditElement({
                     variant="outlined"
                     onChange={(e) => {
                       const value = e.target.value.replace(htmlTagRegex, "");
-                      if (value.length <= 150) {
+                      const isSpecialCase =
+                        value.startsWith("[") && value.endsWith("]");
+                      if (isSpecialCase || value.length <= 150) {
                         setH2(value);
                         setError((prevErrors) => ({
                           ...prevErrors,
@@ -1527,7 +1531,9 @@ function EditElement({
                     value={body}
                     onChange={(e) => {
                       const value = e.target.value.replace(htmlTagRegex, "");
-                      if (value.length <= 200) {
+                      const isSpecialCase =
+                        value.startsWith("[") && value.endsWith("]");
+                      if (isSpecialCase || value.length <= 200) {
                         setBody(value);
                         setError((prevErrors) => ({
                           ...prevErrors,
@@ -1733,16 +1739,18 @@ function EditElement({
                 // onChange={handleInputChange}
                 onChange={(e) => {
                   const value = e.target.value.replace(htmlTagRegex, "");
-                  if (value.length > 20) {
-                    setError((prevErrors) => ({
-                      ...prevErrors,
-                      CTA: "Maximum character count is 20.",
-                    }));
-                  } else {
+                  const isSpecialCase =
+                    value.startsWith("[") && value.endsWith("]");
+                  if (isSpecialCase || value.length <= 20) {
                     setButtonText(value);
                     setError((prevErrors) => ({
                       ...prevErrors,
                       CTA: "",
+                    }));
+                  } else {
+                    setError((prevErrors) => ({
+                      ...prevErrors,
+                      CTA: "Maximum character count is 20.",
                     }));
                   }
                 }}
@@ -1951,6 +1959,8 @@ function EditElement({
                 value={demoButtonText}
                 onChange={(e) => {
                   const value = e.target.value.replace(htmlTagRegex, "");
+                  const isSpecialCase =
+                    value.startsWith("[") && value.endsWith("]");
                   if (value.length === 0) {
                     setStaticURLDemo("");
                     setHexValueDemoBtnText("");
@@ -1958,21 +1968,21 @@ function EditElement({
                     setStaticURLDemo("");
                     setDynamicSelectedOptionDemo("none");
                   }
-                  if (value.length > 30) {
-                    setError((prevErrors) => ({
-                      ...prevErrors,
-                      demo: "Maximum character count is 30.",
-                    }));
-                  } else {
+                  if (isSpecialCase || value.length <= 30) {
                     setDemoButtonText(value);
                     setError((prevErrors) => ({
                       ...prevErrors,
-                      demo: "",
+                      Demo: "",
+                    }));
+                  } else {
+                    setError((prevErrors) => ({
+                      ...prevErrors,
+                      Demo: "Maximum character count is 30.",
                     }));
                   }
                 }}
-                error={!!error.demo}
-                helperText={error.demo}
+                error={!!error.Demo}
+                helperText={error.Demo}
               />
             </Grid>
             <Grid item xs={12} sm={4}>
@@ -2224,7 +2234,9 @@ function EditElement({
                     value={bannerText}
                     onChange={(e) => {
                       const value = e.target.value;
-                      if (value.length <= 60) {
+                      const isSpecialCase =
+                        value.startsWith("[") && value.endsWith("]");
+                      if (isSpecialCase || value.length <= 60) {
                         setBannerText(value);
                         setError((prevError) => ({
                           ...prevError,
@@ -2623,13 +2635,30 @@ function EditElement({
                     fullWidth
                     // value={linkObject?.headline1}
                     value={h1}
+                    // onChange={(e) => {
+                    //   const value = e.target.value.replace(htmlTagRegex, "");
+                    //   setH1(value);
+                    //   setError((prevErrors) => ({
+                    //     ...prevErrors,
+                    //     h1: "",
+                    //   }));
+                    // }}
                     onChange={(e) => {
                       const value = e.target.value.replace(htmlTagRegex, "");
-                      setH1(value);
-                      setError((prevErrors) => ({
-                        ...prevErrors,
-                        h1: "",
-                      }));
+                      const isSpecialCase =
+                        value.startsWith("[") && value.endsWith("]");
+                      if (isSpecialCase || value.length <= 100) {
+                        setH1(value);
+                        setError((prevErrors) => ({
+                          ...prevErrors,
+                          h1: "",
+                        }));
+                      } else {
+                        setError((prevErrors) => ({
+                          ...prevErrors,
+                          h1: "Maximum character count is 100.",
+                        }));
+                      }
                     }}
                     error={!!error.h1}
                     helperText={error.h1}
@@ -2756,7 +2785,9 @@ function EditElement({
                     value={h2}
                     onChange={(e) => {
                       const value = e.target.value.replace(htmlTagRegex, "");
-                      if (value.length <= 100) {
+                      const isSpecialCase =
+                        value.startsWith("[") && value.endsWith("]");
+                      if (isSpecialCase || value.length <= 100) {
                         setH2(value);
                         setError((prevErrors) => ({
                           ...prevErrors,
@@ -2896,7 +2927,9 @@ function EditElement({
                     variant="outlined"
                     onChange={(e) => {
                       const value = e.target.value.replace(htmlTagRegex, "");
-                      if (value.length <= 400) {
+                      const isSpecialCase =
+                        value.startsWith("[") && value.endsWith("]");
+                      if (isSpecialCase || value.length <= 400) {
                         setBody(value);
                         setError((prevErrors) => ({
                           ...prevErrors,
@@ -3041,7 +3074,7 @@ function EditElement({
                 </Typography>
 
                 <div>
-                  <div style={{ height: "500px", overflowY: "auto" }}>
+                  <div style={{ height: "640px", overflowY: "auto" }}>
                     {companyDetails !== undefined &&
                       companyDetails.length > 0 &&
                       companyDetails
@@ -3093,7 +3126,9 @@ function EditElement({
                     value={bannerText}
                     onChange={(e) => {
                       const value = e.target.value;
-                      if (value.length <= 60) {
+                      const isSpecialCase =
+                        value.startsWith("[") && value.endsWith("]");
+                      if (isSpecialCase || value.length <= 60) {
                         setBannerText(value);
                         setError((prevError) => ({
                           ...prevError,
@@ -3333,7 +3368,9 @@ function EditElement({
                       // onChange={handleInputChange}
                       onChange={(e) => {
                         const value = e.target.value.replace(htmlTagRegex, "");
-                        if (value.length <= 20) {
+                        const isSpecialCase =
+                          value.startsWith("[") && value.endsWith("]");
+                        if (isSpecialCase || value.length <= 20) {
                           setButtonText(value);
                           setError((prevErrors) => ({
                             ...prevErrors,
@@ -3689,7 +3726,9 @@ function EditElement({
                     value={h1}
                     onChange={(e) => {
                       const value = e.target.value.replace(htmlTagRegex, "");
-                      if (value.length <= 100) {
+                      const isSpecialCase =
+                        value.startsWith("[") && value.endsWith("]");
+                      if (isSpecialCase || value.length <= 100) {
                         setH1(value);
                         setError((prevErrors) => ({
                           ...prevErrors,
@@ -3824,15 +3863,12 @@ function EditElement({
                   <Typography className="label">Headline 2</Typography>
                   <TextField
                     fullWidth
-                    // value={linkObject?.headline2}
                     value={h2}
-                    // onChange={(e) => {
-                    //   setH2(e.target.value);
-                    //   // setError((prevError) => ({ ...prevError, h2: "" }));
-                    // }}
                     onChange={(e) => {
                       const value = e.target.value.replace(htmlTagRegex, "");
-                      if (value.length <= 100) {
+                      const isSpecialCase =
+                        value.startsWith("[") && value.endsWith("]");
+                      if (isSpecialCase || value.length <= 100) {
                         setH2(value);
                         setError((prevErrors) => ({
                           ...prevErrors,
@@ -3969,7 +4005,9 @@ function EditElement({
                     value={body}
                     onChange={(e) => {
                       const value = e.target.value.replace(htmlTagRegex, "");
-                      if (value.length <= 400) {
+                      const isSpecialCase =
+                        value.startsWith("[") && value.endsWith("]");
+                      if (isSpecialCase || value.length <= 400) {
                         setBody(value);
                         setError((prevErrors) => ({
                           ...prevErrors,

@@ -29,6 +29,7 @@ import { parsePhoneNumberFromString, isValidNumber } from "libphonenumber-js";
 const useStyles = makeStyles((theme) => ({
   savecancelbtn: {
     display: "flex",
+    flexWrap: "wrap",
     justifyContent: "center",
     width: "100%",
     gap: "1rem",
@@ -166,19 +167,19 @@ function AddUser({ adduser, id, roleid, handleAddUserClose }) {
     roleStatus: Yup.string().required("Please select a User Type."),
     firstName: Yup.string()
       .required(
-        "First Name is required and must be between 2 and 50 characters, containing only alphabetic, alphanumeric or special characters."
+        "First name is required and must be between 2 and 50 characters, containing only alphabetic, alphanumeric or special characters."
       )
       .matches(
         /^(?! )[A-Za-z0-9!@#\$%\^\&*\(\)_\+\-=\[\]\{\};:'",<>\.\?\/\\|`~]{1,49}[A-Za-z0-9!@#\$%\^\&*\(\)_\+\-=\[\]\{\};:'",<>\.\?\/\\|`~ ]$/,
-        "First Name is required and must be between 2 and 50 characters, containing only alphabetic, alphanumeric or special characters."
+        "First name is required and must be between 2 and 50 characters, containing only alphabetic, alphanumeric or special characters."
       ),
     lastName: Yup.string()
       .required(
-        "Last Name is required and must be between 2 and 50 characters, containing only alphabetic, alphanumeric or special characters."
+        "Last name is required and must be between 2 and 50 characters, containing only alphabetic, alphanumeric or special characters."
       )
       .matches(
         /^(?=.*[A-Za-z])[A-Za-z0-9 !@#\$%\^\&*\(\)_\+\-=\[\]\{\};:'",<>\.\?\/\\|`~]{2,50}$/,
-        "Last Name is required and must be between 2 and 50 characters, containing only alphabetic, alphanumeric or special characters."
+        "Last name is required and must be between 2 and 50 characters, containing only alphabetic, alphanumeric or special characters."
       ),
     email: Yup.string()
       .required("A valid email address is required (e.g., user@example.com).")
@@ -188,10 +189,10 @@ function AddUser({ adduser, id, roleid, handleAddUserClose }) {
       )
       .transform((value) => value.toLowerCase()),
     phoneNo: Yup.string()
-      .required("A valid Phone number is required, including the country code.")
+      .required("A valid phone number is required, including the country code.")
       .test(
         "is-valid-phone",
-        "A valid Admin Phone number is required, including the country code.",
+        "A valid Admin phone number is required, including the country code.",
         function (value) {
           if (typeof value !== "string") return false;
           const phoneNumber = parsePhoneNumberFromString(
@@ -205,9 +206,8 @@ function AddUser({ adduser, id, roleid, handleAddUserClose }) {
       .required(
         "Password is required and must be between 8 and 20 characters, including a mix of uppercase, lowercase, numbers, and special characters."
       )
-
       .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,16}$/,
+        /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[\s\S])[A-Za-z\d\s\S]{8,16}$/,
         "Password is required and must be between 8 and 16 characters, including a mix of uppercase, lowercase, numbers, and special characters."
       ),
     title: Yup.string()
@@ -218,18 +218,18 @@ function AddUser({ adduser, id, roleid, handleAddUserClose }) {
       ),
     linkedinUrl: Yup.string()
       .required(
-        "Please enter a valid LinkedIn profile URL (e.g., https://www.linkedin.com/in/username)."
+        "Please enter a valid linkedIn profile url (e.g., https://www.linkedin.com/in/username)."
       )
       .matches(
         /^https?:\/\/(www\.)?linkedin\.com\/.*$/,
-        "Please enter a valid LinkedIn profile URL (e.g., https://www.linkedin.com/in/username)."
+        "Please enter a valid linkedIn profile url (e.g., https://www.linkedin.com/in/username)."
       ),
 
     meetLink: Yup.string()
-      .required("Please enter a valid meeting link URL.")
+      .required("Please enter a valid meeting link url.")
       .matches(
         /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/,
-        "Please enter a valid meeting link URL."
+        "Please enter a valid meeting link url."
       ),
   });
 
@@ -420,6 +420,7 @@ function AddUser({ adduser, id, roleid, handleAddUserClose }) {
                               /[^a-zA-Z0-9 !@#\$%\^\&*\(\)_\+\-=\[\]\{\};:'",<>\.\?\/\\|`~]/g,
                               ""
                             );
+
                             const capitalizedValue =
                               filteredValue.charAt(0).toUpperCase() +
                               filteredValue.slice(1).toLowerCase();
@@ -551,15 +552,15 @@ const getFieldPlaceholder = (field) => {
     case "lastName":
       return "Enter User Last Name";
     case "email":
-      return "Enter Email";
+      return "Enter User Email";
     case "phoneNo":
       return "+1 (___) __ __ ___";
     case "password":
-      return "Enter Your Password";
+      return "Enter User Password";
     case "title":
       return "Enter Title";
     case "linkedinUrl":
-      return "Enter LinkedIn URL";
+      return "Enter User LinkedIn URL";
     case "meetLink":
       return "Enter Meeting Link";
     default:

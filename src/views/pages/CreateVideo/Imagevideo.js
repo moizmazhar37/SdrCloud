@@ -17,6 +17,7 @@ import axios from "axios";
 import ApiConfig from "src/config/APIConfig";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { Menu, MenuItem, IconButton } from "@material-ui/core";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import { useDropzone } from "react-dropzone";
 import CropEasy from "./Crop/CropEasy";
 import AudioDialog from "src/component/AudioDialog";
@@ -61,7 +62,7 @@ const useStyles = makeStyles((theme) => ({
       padding: "16px 24px",
       border: "1px solid var(--light-stroke, #ECECEC)",
       height: "100%",
-      minHeight: "450px",
+      // minHeight: "450px",
     },
     "& .middleBox": {
       display: "flex",
@@ -124,7 +125,7 @@ const useStyles = makeStyles((theme) => ({
     padding: "16px 24px",
     border: "1px solid var(--light-stroke, #ECECEC)",
     height: "100%",
-    minHeight: "450px",
+    // minHeight: "450px",
     "& .MuiButton-root": {
       color: "#152F40",
       background: "transparent",
@@ -165,6 +166,7 @@ const ImageVideo = ({
   handleScreen,
   elementID,
   reloadData,
+  setIsSectionCompleted,
   linkObject,
   viewParams,
 }) => {
@@ -174,7 +176,7 @@ const ImageVideo = ({
   const [selectedOption, setSelectedOption] = useState("");
   const [uploadedImage, setUploadedImage] = useState(null);
   const [apiImage, setApiImage] = useState("");
-  console.log("apiImage: ", apiImage);
+
   const [uploadedImage1, setUploadedImage1] = useState(null);
   const [uploadedVideo, setUploadedVideo] = useState(null);
   const videoRef = useRef(null);
@@ -185,37 +187,31 @@ const ImageVideo = ({
   const [videoName, setVideoName] = useState("");
   const [openCrop, setOpenCrop] = useState(false);
   const [photoURL, setPhotoURL] = useState("");
-  console.log("photoURL: ", photoURL);
-  const [type, setType] = useState("");
-  console.log("type: ", type);
+  const [type, setType] = useState("none");
 
   const [openDialog, setOpenDialog] = useState();
   const [audioScriptInput, setAudioScriptInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [audioFile, setAudioFile] = useState(null);
+  console.log("audioFile: ", audioFile);
+
   const [img64, setImg64] = useState(null);
-  console.log("img64: ", img64);
   const [video64, setVideo64] = useState(null);
   const [checked, setChecked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [isVideoUploaded, setIsVideoUploaded] = useState(false);
-  console.log(isVideoUploaded, "isVideoUploaded");
-  console.log(isSaved, "isSaved");
 
   const [dynamicImage, setDynamicImage] = useState("none");
-  console.log("dynamicImage: ", dynamicImage);
+
   const [dynamicVideo, setDynamicVideo] = useState("none");
+
   const [companyDetails, setCompanyDetails] = useState("");
   const [firstRowData, setFirstRowData] = useState("");
-  console.log("firstRowData: ", firstRowData);
+  const [firstRowDataVideo, setFirstRowDataVideo] = useState("");
   const [firstRightImg, setFirstRightImg] = useState(null);
-  console.log("firstRightImg: ", firstRightImg);
 
-  console.log((!uploadedImage && !type) || !isVideoUploaded, "companyDetails");
-  console.log("isVideoUploaded: ", isVideoUploaded);
-  console.log("uploadedImage: ", !uploadedImage && !type);
   const [matchData, setMatchData] = useState("");
-  console.log(matchData, "matchData");
+
   const getSheetType = async () => {
     try {
       setLoading(true);
@@ -230,7 +226,6 @@ const ImageVideo = ({
         },
       });
       if (res.data.status === 200) {
-        console.log(res?.data?.data?.data);
         setCompanyDetails(res?.data?.data?.data);
       }
     } catch (error) {
@@ -253,19 +248,13 @@ const ImageVideo = ({
         },
       });
       if (res.data.status === 200) {
-        // console.log(res?.data?.data?.data);
-        // setPhotoURL(res?.data?.data?.type)
-        // setFirstRowData(res?.data?.data);
-        // setUploadedImage(null)
+        setUploadedImage(null);
         const firstRowData = res?.data?.data;
-        console.log(firstRowData, "firstRowData");
-
+        setFirstRowDataVideo(firstRowData);
         if (firstRowData) {
-          console.log("typpeeee", type);
           setPhotoURL(firstRowData[type]);
         } else {
-          console.warn(`Type '${type}' is not present in the data`);
-          console.log("inside the Photo else part");
+
           setPhotoURL(null);
         }
 
@@ -288,16 +277,16 @@ const ImageVideo = ({
     reader.onloadend = () => {
       const base64String = reader.result;
       // Do something with the base64 string, e.g., save it in state
-      console.log("Base64 string:", base64String);
+
       setApiImage(base64String); // Save the base64 string in state or handle it as needed
     };
     reader.readAsDataURL(file);
-    setType("");
+    setType("none");
   };
 
   const handleDynamicImage = (e) => {
     const file = e.target.files[0];
-    const imageUrl = URL.createObjectURL(file);
+    const imageUrl = URL?.createObjectURL(file);
     setPhotoURL(imageUrl);
     if (file) {
       handleImageToBase64(file);
@@ -305,16 +294,12 @@ const ImageVideo = ({
   };
 
   const handleDynamicimage = async (event) => {
-    console.log("event: ", event);
-
     const imageUrl = event.target.value;
-    console.log("imageUrl: ", imageUrl);
+
     setUploadedImage1(imageUrl);
     setUploadedImage(null);
     setOpenCrop(true);
-
     setPhotoURL(imageUrl);
-
     setDynamicImage(imageUrl);
     setImg64(null);
     setUploadedImage1(imageUrl);
@@ -363,7 +348,7 @@ const ImageVideo = ({
       videoTemplateId: templateId,
       userId: localStorage.getItem("_id"),
       status: "PROCESSING",
-      firstRowValue: apiImage || firstRowData[type],
+      firstRowValue: firstRowData[type],
       audioTemplateReferralDto: {
         audioTypeId: "AUDIOURL",
         embedded: false,
@@ -373,14 +358,14 @@ const ImageVideo = ({
       },
       fileType: {
         // IMAGE: img64 || dynamicImage,
-        IMAGE: apiImage,
+        IMAGE: apiImage ? photoURL : "",
       },
       url: type,
     };
   } else if (elementType === "VIDEOCLIPS") {
     apiData = {
       duration: duration,
-      firstRowValue: uploadedVideo || matchData,
+      firstRowValue: matchData,
       scrollEnabled: false,
       elementId: elementID,
       sequence: typeIndex + 1,
@@ -396,8 +381,9 @@ const ImageVideo = ({
         },
       },
       fileType: {
-        VIDEO: video64 || dynamicVideo,
+        VIDEO: video64,
       },
+      tagValueName: dynamicVideo,
     };
   }
   // State for managing form errors
@@ -420,9 +406,9 @@ const ImageVideo = ({
       dynamicVideo: "",
     };
     if (elementType === "UPLOADIMAGE") {
-      if (img64 === null && dynamicImage === "none")
+      if (img64 === null || dynamicImage === "none")
         newError.image = "Static or Dynamic Image URL is required.";
-      if (img64 === null && dynamicImage === "none")
+      if (img64 === null || dynamicImage === "none")
         newError.dynamicImage = "Dynamic or Static Image URL is required.";
 
       if (duration === "") {
@@ -449,17 +435,19 @@ const ImageVideo = ({
             data: apiData,
           });
           if (res?.data?.status === 200) {
+            setIsVideoUploaded(false);
             setIsSaved(true);
+            reloadData();
             toast.success(res?.data?.message);
             setElementData({
               index: typeIndex,
               type: elementType,
               fileName:
                 videoName || uploadedImage?.name || uploadedImage1?.name,
-              file: uploadedVideo || URL.createObjectURL(uploadedImage) || type,
+              file:
+                uploadedVideo || URL?.createObjectURL(uploadedImage) || type,
               duration: duration,
             });
-            setIsSaved(true);
             setLoading(false);
           }
         } catch (error) {
@@ -501,15 +489,16 @@ const ImageVideo = ({
           });
           if (res?.data?.status === 200) {
             setIsSaved(true);
+            reloadData();
+            setIsVideoUploaded(false);
             toast.success(res?.data?.message);
             setElementData({
               index: typeIndex,
               type: elementType,
               fileName: videoName || uploadedImage?.name,
-              file: uploadedVideo || URL.createObjectURL(uploadedImage),
+              file: uploadedVideo || URL?.createObjectURL(uploadedImage),
               duration: duration,
             });
-            setIsSaved(true);
             setLoading(false);
           }
         } catch (error) {
@@ -537,11 +526,10 @@ const ImageVideo = ({
   };
   //  handle dropped files
   const onDrop = (acceptedFiles) => {
-    console.log("ggggggg");
     setUploadedImage(acceptedFiles[0]);
     setOpenCrop(true);
 
-    setPhotoURL(URL.createObjectURL(acceptedFiles[0]));
+    setPhotoURL(URL?.createObjectURL(acceptedFiles[0]));
   };
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -549,22 +537,24 @@ const ImageVideo = ({
   });
 
   const handleDynamicVideo = (e) => {
-    console.log("handleDynamicVideo: is triggering");
     setShowUploadButton(false);
     const videoDynamicURL = e.target.value;
+
+
+    setDynamicVideo(videoDynamicURL);
     setIsVideoUploaded(true);
     setVideo64(null);
     setVideoName("");
-
-    if (videoDynamicURL !== "none" && firstRowData[videoDynamicURL]) {
+    setUploadedVideo(null);
+    if (videoDynamicURL !== "none" && firstRowDataVideo[videoDynamicURL]) {
       setDynamicVideo(videoDynamicURL);
-      const videoUrl = firstRowData[videoDynamicURL];
+      const videoUrl = firstRowDataVideo[videoDynamicURL];
       setMatchData(videoUrl);
+
       const videoElement = document.createElement("video");
       videoElement.addEventListener("loadedmetadata", () => {
         const duration = videoElement.duration;
         setDuration(duration.toFixed(0));
-        console.log("Video Duration:", duration);
       });
       videoElement.onerror = () => {
         console.error(
@@ -578,17 +568,26 @@ const ImageVideo = ({
       if (videoRef.current) {
         videoRef.current.src = videoUrl;
         videoRef.current.play().catch((error) => {
-          console.error("Failed to play video:", error);
+
         });
       }
     } else {
       setMatchData("");
     }
   };
+  useEffect(() => {
+    if (
+      firstRowDataVideo &&
+      Object.keys(firstRowDataVideo).length > 0 &&
+      dynamicVideo !== "none"
+    ) {
+      handleDynamicVideo({ target: { value: dynamicVideo } });
+    }
+  }, [firstRowDataVideo]);
 
   const handleVideoUpload = (e) => {
     const uploadedVideoFile = e.target.files[0];
-    console.log("uploadedVideoFile: ", uploadedVideoFile);
+
     setVideoName(uploadedVideoFile?.name);
     setDynamicVideo("none");
     // Function to handle image file selection
@@ -604,18 +603,17 @@ const ImageVideo = ({
       reader.readAsDataURL(file);
     }
     if (uploadedVideoFile) {
-      const videoURL = URL.createObjectURL(uploadedVideoFile);
-      console.log("videoURL: ", videoURL);
+      const videoURL = URL?.createObjectURL(uploadedVideoFile);
+
       setShowUploadButton(false);
       setUploadedVideo(videoURL);
-      console.log(videoURL, "videoURL");
+
       setIsVideoUploaded(true); // Update state when video is uploaded
 
       const videoElement = document.createElement("video");
       videoElement.addEventListener("loadedmetadata", () => {
         const duration = videoElement.duration;
         setDuration(duration.toFixed(0));
-        console.log("Video Duration:", duration);
       });
       videoElement.src = videoURL;
       videoElement.load();
@@ -661,15 +659,18 @@ const ImageVideo = ({
   };
   // Function to submit summary data
   const handleNext = () => {
+    setIsSectionCompleted(true);
     submitSummary();
-    reloadData();
     handleScreen("none");
   };
+  const goBackToElementSelection = () => {
+    setIsSectionCompleted(true);
+    handleScreen("none");
+  };
+
   const submitSummary = async () => {
     if (linkObject?.length !== 0) {
       getSummary("summary");
-    } else {
-      toast.error("Please add atleast one element.");
     }
   };
   // Function to close crop dialog
@@ -680,7 +681,8 @@ const ImageVideo = ({
   const fileInputRef = useRef(null);
   // Function to handle editing image
   const handleEditImage = () => {
-    // setDynamicImage('none');
+    setPhotoURL("");
+    setImg64(null);
     setUploadedImage(null);
   };
   // Function to handle editing video
@@ -701,17 +703,29 @@ const ImageVideo = ({
       setErrors({ video: "" });
     }
   };
-
+  useEffect(() => {
+    if (videoRef.current && matchData) {
+      videoRef.current.src = matchData;
+      videoRef.current.play().catch((error) => {
+        console.error("Failed to play video:", error);
+      });
+    }
+  }, [matchData]);
   return (
     <Box className={classes.secondmaingridBox}>
       {loading === true && <FullScreenLoader />}
       <Box style={{ marginTop: "12px", color: "#0358AC" }}>
-        {elementType === "UPLOADIMAGE" ? (
-          <Typography>Upload Image | Element {typeIndex + 1}</Typography>
-        ) : (
-          <Typography>Upload Video Clip | Element {typeIndex + 1}</Typography>
-        )}
-
+        <Box mb={3} style={{ display: "flex", alignItems: "center" }}>
+          <ArrowBackIcon
+            style={{ cursor: "pointer", marginRight: "8px", fontSize: "large" }}
+            onClick={goBackToElementSelection}
+          />
+          {elementType === "UPLOADIMAGE" ? (
+            <Typography>Upload Image | Element {typeIndex + 1}</Typography>
+          ) : (
+            <Typography>Upload Video Clip | Element {typeIndex + 1}</Typography>
+          )}
+        </Box>
         {elementType === "UPLOADIMAGE" ? (
           <>
             <Grid container spacing={3}>
@@ -722,9 +736,9 @@ const ImageVideo = ({
                   variant="outlined"
                   placeholder="Upload Image"
                   disabled
-                  value={!uploadedImage ? "" : uploadedImage?.name}
+                  value={apiImage ? photoURL : ""}
                   onBlur={() => {
-                    if (!uploadedImage) {
+                    if (!photoURL) {
                       setErrors({ image: "Image is required." });
                     } else {
                       setErrors({ image: "" });
@@ -747,7 +761,6 @@ const ImageVideo = ({
                               onClick={(e) => {
                                 fileInputRef.current.click();
                                 handleDynamicimage(e);
-                                setType("");
                                 // setDynamicImage('none');
                               }}
                             >
@@ -780,15 +793,13 @@ const ImageVideo = ({
                   id="choose-template"
                   fullWidth
                   MenuProps={menuProps}
-                  value={dynamicImage}
+                  value={type === "none" ? type : dynamicImage}
                   onChange={(e) => handleDynamicimage(e)}
                   IconComponent={ExpandMoreIcon}
-                  // error={!!errors.image}
-                  // helperText={errors.image}
+                // error={!!errors.image}
+                // helperText={errors.image}
                 >
-                  <MenuItem value="none" disabled>
-                    Select Image Url
-                  </MenuItem>
+                  <MenuItem value="none">Select Image Url</MenuItem>
                   {/* <MenuItem value="--">Select None</MenuItem> */}
                   {companyDetails !== undefined &&
                     companyDetails.length > 0 &&
@@ -905,21 +916,34 @@ const ImageVideo = ({
                 onChange={(e) => {
                   const value = e.target.value;
 
-                  // Check if the value length exceeds the max length
-                  if (value.length <= 10) {
+                  // Convert the value to a number for validation
+                  const numericValue = Number(value);
+
+                  // Check if the value is non-negative, within 3600 seconds, and has a max length of 10
+                  if (
+                    value === "" ||
+                    (numericValue >= 0 && numericValue <= 3600 && value.length <= 10)
+                  ) {
                     setDuration(value);
+
                     if (value === "") {
                       setErrors({ duration: "Duration is required." });
+                    } else if (numericValue < 0) {
+                      setErrors({ duration: "Duration cannot be negative." });
                     } else {
                       setErrors({ duration: "" });
                     }
+                  } else if (numericValue > 3600) {
+                    setErrors({ duration: "Duration cannot exceed 3600 seconds." });
                   }
                 }}
                 className={classes.durationscroll}
                 variant="outlined"
                 placeholder="00"
-                inputProps={{ maxlength: 10 }}
+                inputProps={{ maxLength: 10 }}
               />
+
+
               <Typography className="error">{errors.duration}</Typography>
             </div>
             <div
@@ -933,9 +957,11 @@ const ImageVideo = ({
             >
               <Button
                 fullWidth
-                variant="contained"
+                variant={duration ? "contained" : "outlined"}
                 style={{ height: "44px" }}
+                className={`${!duration ? "savebtnDisables" : "savebtn"}`}
                 onClick={handleOpenDialog}
+                disabled={!duration}
               >
                 Audio
               </Button>
@@ -970,108 +996,117 @@ const ImageVideo = ({
       </Box>
 
       {elementType === "UPLOADIMAGE" ? (
-        <Box className="secondmaingridBox" style={{ marginTop: "12px" }}>
+        <>
           {(uploadedImage || firstRightImg) && (
-            <Box className="middleBox" {...getRootProps()}>
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                <>
-                  {isFullScreen ? (
-                    <div
-                      onClick={closeFullScreen}
-                      style={{ cursor: "pointer" }}
-                    >
-                      <img
-                        src={photoURL}
-                        alt="Uploaded"
-                        style={{
-                          width: "100%",
-                          height: "100vh",
-                          objectFit: "contain",
-                        }}
-                      />
-                    </div>
-                  ) : (
-                    <>
-                      <Typography
-                        style={{ color: "black", marginBottom: "10px" }}
+            <Box className="secondmaingridBox" style={{ marginTop: "12px" }}>
+              <Box className="middleBox" {...getRootProps()}>
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                  <>
+                    {isFullScreen ? (
+                      <div
+                        onClick={closeFullScreen}
+                        style={{ cursor: "pointer" }}
                       >
-                        Image Preview
-                      </Typography>
-                      <img
-                        src={photoURL || dynamicImage || firstRightImg}
-                        alt="Uploaded"
-                        className={classes.secondimage}
+                        <img
+                          src={photoURL}
+                          alt="Uploaded"
+                          style={{
+                            width: "100%",
+                            height: "100vh",
+                            objectFit: "contain",
+                          }}
+                        />
+                      </div>
+                    ) : (
+                      <>
+                        <Typography
+                          style={{ color: "black", marginBottom: "10px" }}
+                        >
+                          Image Preview
+                        </Typography>
+                        <img
+                          src={photoURL || dynamicImage || firstRightImg}
+                          alt="Uploaded"
+                          className={classes.secondimage}
                         // onClick={openFullScreen}
-                      />
-                    </>
-                  )}
-                </>
-              </div>
+                        />
+                      </>
+                    )}
+                  </>
+                </div>
+              </Box>
             </Box>
           )}
-        </Box>
+        </>
       ) : (
-        <Box className="secondmaingridBox" style={{ marginTop: "12px" }}>
-          <Box className="middleBox">
-            {showUploadButton && (
-              <div>
-                <input
-                  type="file"
-                  accept="video/*"
-                  style={{ display: "none" }}
-                  onChange={handleVideoUpload}
-                  id="videoInput"
-                />
-                <label htmlFor="videoInput">
-                  <Button
-                    variant="contained"
-                    style={{
-                      marginTop: "17px",
-                      width: "100%",
-                      maxWidth: "150px",
-                    }}
-                    component="span"
-                  >
-                    Choose
-                  </Button>
-                </label>
-              </div>
-            )}
-            {console.log(uploadedVideo, "uploadedVideo")}
-            {!showUploadButton && (
-              <video ref={videoRef} width="100%" height="100%" controls>
-                <source src={matchData || uploadedVideo} type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
-            )}
-          </Box>
-        </Box>
+        <>
+          {!showUploadButton && (
+            <Box className="secondmaingridBox" style={{ marginTop: "12px" }}>
+              <Box className="middleBox">
+                <video
+                  ref={videoRef}
+                  width="100%"
+                  height="100%"
+                  style={{ maxHeight: "450px" }}
+                  controls
+                >
+                  <source src={matchData || uploadedVideo} type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              </Box>
+            </Box>
+          )}
+        </>
       )}
 
       <Box className={classes.secondmaingridbtn}>
-        <Button
-          // disabled={!isVideoUploaded}
-          // disabled={!uploadedImage || !type || !isVideoUploaded}
-          variant={isSaved ? "outlined" : "contained"}
-          onClick={() => handleSetData()}
-          className={`${
-            isVideoUploaded === false && uploadedImage === null
-              ? "savebtnDisables"
-              : "savebtn"
-          }`}
-          disabled={isVideoUploaded === false && uploadedImage === null}
-        >
-          Save
-        </Button>
-        <Button
-          variant="contained"
-          style={{ padding: "13px 24px" }}
-          onClick={handleNext}
-          className={`${!isSaved ? "savebtnDisables" : "savebtn"}`}
-          disabled={!isSaved}
-        >
-          Next
-        </Button>
+        {elementType === "UPLOADIMAGE" ? (
+          <>
+            {" "}
+            <Button
+              variant="contained"
+              onClick={() => handleSetData()}
+              className={`${audioFile === null || isSaved ? "savebtnDisables" : "savebtn"
+                }`}
+              disabled={isSaved || !audioFile}
+            >
+              Save
+            </Button>
+            <Button
+              variant="contained"
+              style={{ padding: "13px 24px" }}
+              onClick={handleNext}
+              className={`${!isSaved ? "savebtnDisables" : "savebtn"}`}
+              disabled={!isSaved}
+            >
+              Next
+            </Button>{" "}
+          </>
+        ) : (
+          <>
+            {" "}
+            <Button
+              variant={isSaved ? "outlined" : "contained"}
+              onClick={() => handleSetData()}
+              className={`${isVideoUploaded === false || isSaved
+                ? "savebtnDisables"
+                : "savebtn"
+                }`}
+              disabled={isVideoUploaded === false || isSaved}
+            >
+              Save
+            </Button>
+            <Button
+              variant="contained"
+              style={{ padding: "13px 24px" }}
+              onClick={handleNext}
+              className={`${!isSaved ? "savebtnDisables" : "savebtn"}`}
+              disabled={!isSaved}
+            >
+              Next
+            </Button>{" "}
+          </>
+        )}
       </Box>
       {openCrop && (
         <Dialog
@@ -1086,15 +1121,19 @@ const ImageVideo = ({
           <CropEasy
             {...{
               photoURL,
+              setType,
               setFirstRightImg,
               firstRightImg,
               setApiImage,
               type,
+              openFullScreen,
               setOpenCrop,
               setPhotoURL,
               setUploadedImage,
               setUploadedImage1,
               setErrors,
+              setDynamicImage,
+              setImg64,
             }}
           />
         </Dialog>

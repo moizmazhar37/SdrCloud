@@ -776,8 +776,9 @@ function HeroSection({
                   value={h1}
                   onChange={(e) => {
                     const value = e.target.value.replace(htmlTagRegex, "");
-
-                    if (value.length <= 100) {
+                    const isSpecialCase =
+                      value.startsWith("[") && value.endsWith("]");
+                    if (isSpecialCase || value.length <= 100) {
                       setH1(value);
                       setErrors((prevErrors) => ({
                         ...prevErrors,
@@ -921,7 +922,9 @@ function HeroSection({
                   value={h2}
                   onChange={(e) => {
                     const value = e.target.value.replace(htmlTagRegex, "");
-                    if (value.length <= 150) {
+                    const isSpecialCase =
+                      value.startsWith("[") && value.endsWith("]");
+                    if (isSpecialCase || value.length <= 150) {
                       setH2(value);
                       setErrors((prevErrors) => ({
                         ...prevErrors,
@@ -1065,7 +1068,9 @@ function HeroSection({
                   value={body}
                   onChange={(e) => {
                     const value = e.target.value.replace(htmlTagRegex, "");
-                    if (value.length <= 200) {
+                    const isSpecialCase =
+                      value.startsWith("[") && value.endsWith("]");
+                    if (isSpecialCase || value.length <= 200) {
                       setBody(value);
                       setErrors((prevErrors) => ({
                         ...prevErrors,
@@ -1272,7 +1277,9 @@ function HeroSection({
                   // onChange={handleInputChange}
                   onChange={(e) => {
                     const value = e.target.value.replace(htmlTagRegex, "");
-                    if (value.length <= 20) {
+                    const isSpecialCase =
+                      value.startsWith("[") && value.endsWith("]");
+                    if (isSpecialCase || value.length <= 20) {
                       setButtonText(value);
                       setErrors((prevErrors) => ({
                         ...prevErrors,
@@ -1513,6 +1520,8 @@ function HeroSection({
                   // onChange={handleDemoInputChange}
                   onChange={(e) => {
                     const value = e.target.value.replace(htmlTagRegex, "");
+                    const isSpecialCase =
+                      value.startsWith("[") && value.endsWith("]");
                     if (value.length === 0) {
                       setStaticURLDemo("");
                       setHexValueDemoBtnText("");
@@ -1520,7 +1529,7 @@ function HeroSection({
                       setStaticURLDemo("");
                       setSelectedOptionDemo("none");
                     }
-                    if (value.length <= 30) {
+                    if (isSpecialCase || value.length <= 30) {
                       setDemoButtonText(value);
                       setErrors((prevErrors) => ({
                         ...prevErrors,

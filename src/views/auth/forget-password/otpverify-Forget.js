@@ -214,7 +214,7 @@ function VerifyOTP(props) {
       otp4: "",
     },
     validate: validateInput,
-    onSubmit: (values) => {},
+    onSubmit: (values) => { },
   });
 
   const handleFormSubmit = async (values) => {
@@ -331,9 +331,8 @@ function VerifyOTP(props) {
     const minutes = Math.floor(seconds / 60);
     const secondsLeft = seconds % 60;
     // return `${minutes}:${secondsLeft < 10 ? "0" : ""}${secondsLeft}`;
-    return `${minutes < 10 ? "0" : ""}${minutes}:${
-      secondsLeft < 10 ? "0" : ""
-    }${secondsLeft}`;
+    return `${minutes < 10 ? "0" : ""}${minutes}:${secondsLeft < 10 ? "0" : ""
+      }${secondsLeft}`;
   };
 
   // useEffect(() => {
@@ -408,15 +407,14 @@ function VerifyOTP(props) {
                           }}
                         >
                           {formatTime(remainingTime)}
-                          {/* {minute.length > 1 ? minute : "0" + minute}:
-                          {second.length > 1 ? second : "0" + second} */}
+
                         </Typography>{" "}
                       </Box>
                     </>
                   ) : (
                     <>
                       <Box className={classes.timerExpiredContainer}>
-                        {/* <Typography>OTP expired!</Typography> */}
+
                       </Box>
                     </>
                   )}

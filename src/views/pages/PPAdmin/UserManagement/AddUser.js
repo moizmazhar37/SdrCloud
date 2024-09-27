@@ -153,20 +153,20 @@ function AddUser({ adduser, handleAddUserClose, PPUsers }) {
   const validationSchema = Yup.object({
     firstName: Yup.string()
       .required(
-        "Admin First Name is required and must be between 2 and 50 characters, containing only alphabetic or alphanumeric characters."
+        "Admin first name is required and must be between 2 and 50 characters, containing only alphabetic or alphanumeric characters."
       )
       .matches(
         /^(?=.*[A-Za-z])[A-Za-z0-9]{2,50}$/,
-        "Admin First Name is required and must be between 2 and 50 characters, containing only alphabetic or alphanumeric characters."
+        "Admin first name is required and must be between 2 and 50 characters, containing only alphabetic or alphanumeric characters."
       ),
     lastName: Yup.string()
       .required(
-        "Admin Last Name is required and must be between 2 and 50 characters, containing only alphabetic or alphanumeric characters."
+        "Admin last name is required and must be between 2 and 50 characters, containing only alphabetic or alphanumeric characters."
       )
 
       .matches(
         /^(?=.*[A-Za-z])[A-Za-z0-9 ]{2,50}$/,
-        "Admin Last Name is required and must be between 2 and 50 characters, containing only alphabetic or alphanumeric characters."
+        "Admin last name is required and must be between 2 and 50 characters, containing only alphabetic or alphanumeric characters."
       ),
     email: Yup.string()
       .required("A valid email address is required (e.g., user@example.com).")
@@ -177,11 +177,11 @@ function AddUser({ adduser, handleAddUserClose, PPUsers }) {
       .transform((value) => value.toLowerCase()),
     phoneNo: Yup.string()
       .required(
-        "A valid Admin Phone number is required, including the country code."
+        "A valid admin phone number is required, including the country code."
       )
       .test(
         "is-valid-phone",
-        "A valid Admin Phone number is required, including the country code.",
+        "A valid admin phone number is required, including the country code.",
         function (value) {
           if (typeof value !== "string") return false;
           const phoneNumber = parsePhoneNumberFromString(
@@ -196,7 +196,7 @@ function AddUser({ adduser, handleAddUserClose, PPUsers }) {
         "Password is required and must be between 8 and 16 characters, including a mix of uppercase, lowercase, numbers, and special characters."
       )
       .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,16}$/,
+        /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[\s\S])[A-Za-z\d\s\S]{8,16}$/,
         "Password is required and must be between 8 and 16 characters, including a mix of uppercase, lowercase, numbers, and special characters."
       ),
   });
@@ -294,7 +294,7 @@ function AddUser({ adduser, handleAddUserClose, PPUsers }) {
           Account Admin / <span>Create New PersonaPro Admin</span>
         </Typography>
         <DialogTitle className={classes.DialogTitleFirst} variant="h4">
-          Create New PersoaPro Employee Admin
+          Create New PersonaPro Employee Admin
         </DialogTitle>
         <DialogContent className={classes.DialogContentBox}>
           <form onSubmit={formik.handleSubmit}>

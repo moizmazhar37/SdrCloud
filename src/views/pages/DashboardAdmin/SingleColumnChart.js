@@ -1,6 +1,8 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
-import { makeStyles, } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core";
+import ApiConfig from "src/config/APIConfig";
+import axios from 'axios';
 
 // Styles for the component
 const useStyles = makeStyles(() => ({
@@ -15,24 +17,67 @@ const useStyles = makeStyles(() => ({
       borderRadius: "10px !important",
     },
   }
-
 }))
 
 // Renders a single column chart component for displaying user activity data over time
 const UserSingleColumnChart = () => {
-  const chartRef = useRef(null);
-  const classes = useStyles()
+  const classes = useStyles();
+  const [fourMonthDetail, setFourMonthDetail] = useState([]);
+  const [chartOptions, setChartOptions] = useState({
+    series: [],
+    options: {}
+  });
 
+  // Fetch last four months of data from API
+  const lastFourMonthData = async () => {
+    const token = window?.localStorage?.getItem("token");
+    try {
+      const res = await axios({
+        url: ApiConfig.lastFourMonthData,
+        method: "GET",
+        headers: {
+          token: `${token}`,
+        },
+      });
+
+      if (res?.data?.status === 200) {
+        setFourMonthDetail(res?.data?.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data: ", error);
+    }
+  }
+
+  // Call the API once the component is mounted
   useEffect(() => {
+    lastFourMonthData();
+  }, []);
+
+  // Update the chart options when `fourMonthDetail` is updated
+  useEffect(() => {
+    const totalViews = fourMonthDetail.map(item => item.totalViews);
+    console.log("totalViews: ", totalViews);
+    const categories = fourMonthDetail.map(item => item.month);
+
     const options = {
       series: [
-        { name: 'Total Active Media', data: [3000, 5097, 4007, 4056], color: '#0358AC', borderRadius: "50%" },
-        { name: 'Total Views', data: [1542, 2560, 2556, 3245], color: '#CACACA', borderRadius: "50%" }, // Second set of data
+        {
+          name: 'Total Views',
+          data: totalViews,
+          color: '#0358AC',
+          borderRadius: "50%"
+        },
+        // {
+        //   name: 'Total Active Media',
+        //   data: totalViews,
+        //   color: '#CACACA',
+        //   borderRadius: "50%"
+        // }
       ],
       chart: {
         type: 'bar',
         height: 250,
-        stacked: true, // Set to true for a stacked column bar chart
+        stacked: true,
         toolbar: {
           show: false,
         },
@@ -47,21 +92,6 @@ const UserSingleColumnChart = () => {
           horizontal: false,
           columnWidth: '12px',
           endingShape: 'rounded',
-          colors: {
-            ranges: [
-              {
-                from: 0,
-                to: 0,
-                color: '#CACACA',
-
-              },
-              {
-                from: 1,
-                to: 1,
-                color: '#0358AC',
-              },
-            ],
-          },
         },
       },
       dataLabels: {
@@ -73,31 +103,39 @@ const UserSingleColumnChart = () => {
         colors: ['transparent'],
       },
       xaxis: {
-        categories: ['Mar', 'Apr', 'May', 'Jun'],
+        categories: categories,
         labels: {
           style: {
             colors: '#858585'
           }
         }
       },
+      // yaxis: {
+      //   tickAmount: 4,
+      //   min: 0,
+      //   max: Math.ceil(Math.max(...totalViews) * 1.2),
+      // },
       yaxis: {
-      
-        tickAmount: 4,  // Set the number of ticks
-        max: 8000,
-      },
+        tickAmount: 4,
+        min: 0,
+        max: Math.ceil(Math.max(...totalViews) * 1.2),
+        labels: {
+          formatter: function (value) {
+            return Math.floor(value);
+          }
+        }
+      }
+      ,
       fill: {
         opacity: 1,
       },
       tooltip: {
         y: {
           formatter: function (val) {
-            return '$ ' + val;
+            return '' + val;
           },
           position: 'center'
         },
-      },
-      css: {
-        inset: 'none',
       },
       legend: {
         position: 'top',
@@ -106,14 +144,21 @@ const UserSingleColumnChart = () => {
       },
     };
 
-    if (chartRef.current) {
-      chartRef.current.chart.updateOptions(options);
-    }
-  }, []); // Empty dependency array ensures useEffect runs once when the component mounts
+
+    setChartOptions({
+      series: options.series,
+      options: options
+    });
+  }, [fourMonthDetail]);
 
   return (
     <div id="chart" className={classes.chart}>
-      <ReactApexChart options={{}} series={[]} type="bar" height={250} ref={chartRef} />
+      <ReactApexChart
+        options={chartOptions.options}
+        series={chartOptions.series}
+        type="bar"
+        height={250}
+      />
     </div>
   )
 };

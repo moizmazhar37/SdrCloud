@@ -260,11 +260,11 @@ const useStyles = makeStyles((theme) => ({
     overflowY: "scroll",
   },
   sidebarlladmin: {
-    height: "calc(100vh - 180px)",
+    height: "calc(100vh - 140px)",
     marginTop: "0px",
   },
   sidebarllsubadmin: {
-    height: "calc(100vh - 215px)",
+    height: "calc(100vh - 170px)",
   },
 }));
 
@@ -530,7 +530,12 @@ const NavBar = ({ onMobileClose, openMobile, drawerOpen }) => {
                 }}
               >
                 <Box mt={2} className={classes.logoutBtn}>
-                  <Button variant="outlined" color="secondary" onClick={logout} style={{ width: "100px" }}>
+                  <Button
+                    variant="outlined"
+                    color="secondary"
+                    onClick={logout}
+                    style={{ width: "100px" }}
+                  >
                     {isLoading === false ? (
                       "Confirm"
                     ) : (

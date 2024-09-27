@@ -50,12 +50,15 @@ const CropEasy = ({
   setOpenCrop,
   setPhotoURL,
   setUploadedImage,
+  setType,
   setFirstRightImg,
   firstRightImg,
   setApiImage,
   setErrors,
+  setDynamicImage,
+  setImg64,
 }) => {
-  console.log("in the copbox ", type);
+  console.log("typetype", type);
   const classes = useStyles();
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
@@ -68,19 +71,28 @@ const CropEasy = ({
   // Function to handle the cropping action and update the image state
   const cropImage = async () => {
     try {
-      const { file, url } = await getCroppedImg(
+      const { file } = await getCroppedImg(
         photoURL,
         croppedAreaPixels,
         rotation
       );
-      setPhotoURL(url);
-      setUploadedImage(file);
+      const base64 = await blobToBase64(file);
+      setPhotoURL(base64); // Update with base64 image
+      setUploadedImage(base64); // Assuming you want to set the uploaded image as well
       setOpenCrop(false);
       setErrors({ image: "" });
     } catch (error) {
       console.log(error);
     }
   };
+
+  const blobToBase64 = (blob) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
   // Function to handle the cropping action and update the image state
   const cropImage2 = async () => {
     try {
@@ -145,18 +157,23 @@ const CropEasy = ({
             variant="outlined"
             startIcon={<Cancel />}
             onClick={() => {
+              console.log("we are inside this on CLick evenet");
+              setType("none");
               setOpenCrop(false);
               setPhotoURL("");
               setUploadedImage("");
+              setFirstRightImg("");
+              setDynamicImage("");
+              setImg64(null);
             }}
           >
             Cancel
           </Button>
-          {type ? (
+          {type === "none" ? (
             <Button
               variant="contained"
               startIcon={<CropIcon />}
-              onClick={cropImage2}
+              onClick={cropImage}
             >
               Crop
             </Button>
@@ -164,7 +181,7 @@ const CropEasy = ({
             <Button
               variant="contained"
               startIcon={<CropIcon />}
-              onClick={cropImage}
+              onClick={cropImage2}
             >
               Crop
             </Button>

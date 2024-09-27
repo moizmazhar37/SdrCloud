@@ -173,7 +173,7 @@ function BannerScetion({
   const classes = useStyles();
   const [scrollSelect, setScrollSelect] = useState(false);
   const [bannerText, setBannerText] = useState("");
-  console.log("bannerText: ", bannerText.length);
+  console.log("bannerText: ", bannerText);
   const [sectionData, setSectionData] = useState();
   const [showTextField, setShowTextField] = useState(false);
   const [buttonText, setButtonText] = useState("");
@@ -256,8 +256,7 @@ function BannerScetion({
       bannerText !== "" &&
       hexValueBanner !== "" &&
       hexValueBannerText !== "" &&
-      bannerTextSize !== "" &&
-      bannerText.length <= 59
+      bannerTextSize !== ""
     ) {
       setLoading(true);
       try {
@@ -407,12 +406,29 @@ function BannerScetion({
                 <TextField
                   fullWidth
                   value={bannerText}
+                  // onChange={(e) => {
+                  //   const value = e.target.value.replace(htmlTagRegex, "");
+                  //   if (value.length <= 60) {
+                  //     setBannerText(value);
+                  //     setError((prevError) => ({
+                  //       ...prevError,
+                  //       bannerText: "",
+                  //     }));
+                  //   } else {
+                  //     setError((prevErrors) => ({
+                  //       ...prevErrors,
+                  //       bannerText: "Maximum character count is 60.",
+                  //     }));
+                  //   }
+                  // }}
                   onChange={(e) => {
                     const value = e.target.value.replace(htmlTagRegex, "");
-                    if (value.length <= 60) {
+                    const isSpecialCase =
+                      value.startsWith("[") && value.endsWith("]");
+                    if (isSpecialCase || value.length <= 60) {
                       setBannerText(value);
-                      setError((prevError) => ({
-                        ...prevError,
+                      setError((prevErrors) => ({
+                        ...prevErrors,
                         bannerText: "",
                       }));
                     } else {
@@ -428,32 +444,7 @@ function BannerScetion({
                 />
                 <Typography className="error">{error.bannerText}</Typography>
               </Grid>
-              {/* <Grid item xs={12} sm={1}>
-                <Typography className="label">Size</Typography>
-                <TextField
-                  fullWidth
-                  value={bannerTextSize}
-                  onChange={(e) => {
-                    const value = e.target.value.replace(htmlTagRegex, "");
-                    if (value.length <= 60) {
-                      setBannerText(value);
-                      setError((prevError) => ({
-                        ...prevError,
-                        bannerText: "",
-                      }));
-                    } else {
-                      setError((prevErrors) => ({
-                        ...prevErrors,
-                        bannerText: "Maximum character count is 60.",
-                      }));
-                    }
-                  }}
-                  variant="outlined"
-                  style={{ marginTop: "2px" }}
-                  placeholder="Enter Your Banner Text Here"
-                />
-                <Typography className="error">{error.bannerText}</Typography>
-              </Grid> */}
+
 
               <Grid item xs={1} className="sizeField">
                 <Typography className="label">Size</Typography>

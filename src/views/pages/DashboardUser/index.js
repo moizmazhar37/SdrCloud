@@ -6,7 +6,6 @@ import UserSingleBarGraph from "./UserSingleBarGraph";
 import UserGroupBarGraph from "./UserGroupBarGraph";
 import ListTable from "./ListTable";
 
-// Custom styles
 const useStyles = makeStyles((theme) => ({
   displayFlexColumn: {
     "& .border": {
@@ -34,6 +33,8 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   secondBox: {
+    // padding: "0px 12px",
+    // margin: "-8px -4px",
     [theme.breakpoints.down("sm")]: {
       marginTop: "16px",
     },
@@ -54,6 +55,7 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: "8px",
         border: "1px solid var(--light-stroke, #ECECEC)",
         boxShadow: "0px 8px 24px 0px rgba(0, 0, 0, 0.04)",
+        // width: "100%",
         minHeight: "90px",
         height: "auto",
         padding: "8px",
@@ -186,6 +188,10 @@ const useStyles = makeStyles((theme) => ({
     },
     gridRowGap: "12px",
     "& .TotalContactBox": {
+      // padding: "8px",
+      // border: "1px solid var(--light-stroke, #ECECEC)",
+      // boxShadow: "0px 8px 24px 0px rgba(0, 0, 0, 0.04)",
+      // borderRadius: '8px',
       "& .d-flex": {
         "& .MuiTypography-body1": {
           textAlign: "center",
@@ -201,11 +207,10 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }));
-// Functional component definition
 const UserDashboard = () => {
   const classes = useStyles();
   return (
-    <Box>
+    <>
       <Grid container xs={12} justifyContent="space-between">
         <Grid
           container
@@ -278,15 +283,75 @@ const UserDashboard = () => {
             </Grid>
             <Grid item lg={8} md={12} sm={12} xs={12}>
               <Box className={classes.border} ml={"10px"} pb={"20px"}>
-                {/* <UserSingleBarGraph /> */}
+                <UserSingleBarGraph />
               </Box>
             </Grid>
           </Grid>
 
           <Grid container md={12} sm={12} xs={12} className={classes.border}>
-            <Grid item lg={12} md={12} sm={12} xs={12}>
-              <Box className={classes.border} ml={"10px"}>
-                {/* <UserGroupBarGraph /> */}
+            <Grid
+              item
+              lg={5}
+              md={12}
+              sm={12}
+              xs={12}
+              className="TotalContactBox d-flex column justify-space-between"
+              style={{ gap: "2px" }}
+            >
+              <Box
+                className={clsx(
+                  classes.border,
+                  "d-flex",
+                  "column",
+                  "subSecondChartBox"
+                )}
+                pd={2}
+              >
+                <Typography variant="h6">Avarage CTR</Typography>
+                <Typography variant="h2">+37%</Typography>
+                <Typography variant="body1">CTR (%)</Typography>
+              </Box>
+              <Box className={clsx(classes.border, "d-flex")}>
+                <Typography variant="body1">
+                  <span style={{ color: "#7DC371" }}>618 </span>HVOs |{" "}
+                  <span style={{ color: "#7DC371" }}> 622 </span>Videos Active
+                </Typography>
+              </Box>
+              <Box
+                className="d-flex justify-start alignstart fullwidth"
+                style={{ gap: "12px" }}
+              >
+                <Box className="d-flex column">
+                  <Typography variant="body2">Avarage</Typography>
+                  <Box
+                    style={{
+                      height: "19px",
+                      width: "47px",
+                      borderRadius: "4px",
+                      background: "var(--blue, #0358AC)",
+                    }}
+                  ></Box>
+                </Box>
+                <Box className="d-flex column">
+                  <Typography variant="body2">Best</Typography>
+                  <Box
+                    style={{
+                      height: "19px",
+                      width: "47px",
+                      borderRadius: "4px",
+                      background: "var(--green, #7DC371)",
+                    }}
+                  ></Box>
+                </Box>
+              </Box>
+            </Grid>
+            <Grid item lg={7} md={12} sm={12} xs={12}>
+              <Box
+                className={classes.border}
+                ml={"10px"}
+                pb={"26px !important"}
+              >
+                <UserGroupBarGraph />
               </Box>
             </Grid>
           </Grid>
@@ -294,7 +359,7 @@ const UserDashboard = () => {
       </Grid>
 
       <ListTable />
-    </Box>
+    </>
   );
 };
 

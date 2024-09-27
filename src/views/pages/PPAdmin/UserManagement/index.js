@@ -15,6 +15,9 @@ import {
   DialogContent,
   Divider,
   Grid,
+  FormControl,
+  Select,
+  MenuItem,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import ApiConfig from "src/config/APIConfig";
@@ -29,6 +32,8 @@ import ViewUser from "./View";
 import AddUser from "./AddUser";
 import { toast } from "react-toastify";
 import { Pagination } from "@material-ui/lab";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import { menuProps } from "src/utils";
 // Styles for the component
 const useStyles = makeStyles((theme) => ({
   paperContainer: {
@@ -79,8 +84,8 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: "#FCFCFC",
         color: "#858585",
         fill: "#858585",
-        minWidth: "32px",
-        height: "32px",
+        // minWidth: "32px",
+        // height: "32px",
       },
     },
     "& .ViewButton": {
@@ -153,15 +158,20 @@ const useStyles = makeStyles((theme) => ({
     "& .MuiSelect-iconOpen": {
       borderLeft: "0px !important",
       borderRight: "1px solid #ECECEC",
+      transform: "rotate(360deg)",
+      marginRight: "-1px !important",
     },
     "& .MuiSelect-icon": {
       top: 0,
       height: "40px",
-      paddingLeft: "8px",
+      padding: "0px 5px ",
       color: "#152F40",
     },
     "& .MuiPopover-paper": {
       marginTop: "85px",
+    },
+    "& .MuiTableCell-head ": {
+      lineheight: "2.5rem",
     },
   },
   active: {
@@ -361,7 +371,7 @@ function PPuserlist() {
                         Phone
                       </TableCell>
                       <TableCell style={{ paddingLeft: "45px" }}>
-                        Created Date & Time
+                        Account Creation Date
                       </TableCell>
                       <TableCell
                         style={{ textAlign: "center", paddingLeft: "45px" }}
@@ -407,9 +417,7 @@ function PPuserlist() {
                             : key?.phoneNo || "--"}
                         </TableCell>
                         <TableCell>
-                          {/* {moment(key?.createdDate).format("DD/MM/YY")} */}
-                          {moment(key?.createdDate).format("DD/MM/YY")}{" "}
-                          {new Date(key?.createdDate).toLocaleTimeString()}
+                          {new Date(key?.createdDate).toLocaleDateString()}
                         </TableCell>
                         <TableCell
                           component="th"
@@ -433,26 +441,40 @@ function PPuserlist() {
                           </li>
                         </TableCell>
                         <TableCell className={classes.viewEditbtn}>
-                          <Button onClick={() => handleOpenUser(key, viewss)}>
-                            View
-                          </Button>
-                          <Divider className="dividerbtn" />
-                          <Button onClick={() => handleEditUser(key)}>
-                            Edit
-                          </Button>
-                          <Divider className="dividerbtn" />
-                          <Button
-                            onClick={() => {
-                              handleClose();
-                              setSelectedUserId(key?.userId);
-                              setDeleteOpen(true);
-                              setSuspendStatus(key.userStatus);
-                            }}
-                          >
-                            {key.userStatus === "DELETE"
-                              ? "Unsuspend"
-                              : "Suspend"}
-                          </Button>
+                          <FormControl style={{ width: "100px" }}>
+                            <Select
+                              style={{ marginTop: "0px" }}
+                              variant="outlined"
+                              className={classes.selectitem}
+                              id="choose-template"
+                              value={"none"}
+                              MenuProps={menuProps}
+                              name=""
+                              IconComponent={ExpandMoreIcon}
+                            >
+                              <MenuItem
+                                value="none"
+                                onClick={() => handleOpenUser(key, viewss)}
+                              >
+                                View
+                              </MenuItem>
+                              <MenuItem onClick={() => handleEditUser(key)}>
+                                Edit
+                              </MenuItem>
+                              <MenuItem
+                                onClick={() => {
+                                  handleClose();
+                                  setSelectedUserId(key?.userId);
+                                  setDeleteOpen(true);
+                                  setSuspendStatus(key.userStatus);
+                                }}
+                              >
+                                {key.userStatus === "DELETE"
+                                  ? "Unsuspend"
+                                  : "Suspend"}
+                              </MenuItem>
+                            </Select>
+                          </FormControl>
                         </TableCell>
                       </TableRow>
                     ))}

@@ -5,7 +5,6 @@ import axios from "axios";
 import FullScreenLoader from "src/component/FullScreenLoader";
 import { toast, ToastContainer } from "react-toastify";
 import ApiConfig from "src/config/APIConfig";
-import Reprocess from "./Errorreprocess";
 import { useHistory } from "react-router-dom";
 const useStyles = makeStyles((theme) => ({
   tableContainer: {
@@ -123,8 +122,6 @@ const useStyles = makeStyles((theme) => ({
 
 function UserViewProject(props) {
   const classes = useStyles();
-  const [errorhandle, setErrorhandle] = useState("error");
-  const [reprocessopen, setReprocessOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [missingFields, setMissingFields] = useState([]);
   const [sheetData, setSheetData] = useState([]);
@@ -136,12 +133,7 @@ function UserViewProject(props) {
   const videoTemplete = props?.location?.state?.state?.videoTemplete;
   const sheetName = props?.location?.state?.state?.sheetName;
   const CUSTOMER_ID = errorData?.CUSTOMER_ID;
-
-  const handleReprocessClose = () => {
-    setReprocessOpen(!reprocessopen);
-  };
-
-  const getAllSheet = async (name, url) => {
+  const getAllSheet = async () => {
     try {
       setLoading(true);
       const res = await axios({
@@ -165,52 +157,6 @@ function UserViewProject(props) {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    const checkMissingFields = (requiredFields) => {
-      const missing = requiredFields.filter(
-        (field) => !errorData || !errorData[field]
-      );
-      setMissingFields(missing);
-    };
-
-    // Call getAllSheet to get the required fields and check missing fields
-    getAllSheet();
-  }, [errorData]);
-
-  const truncateText = (text, maxLength = 30) => {
-    return text?.length > maxLength
-      ? `${text.slice(0, 15)}...${text.slice(-15)}`
-      : text;
-  };
-
-  const reprocess = async () => {
-    setLoading(false);
-    try {
-      setLoading(true);
-      const res = await axios({
-        method: "POST",
-        url: ApiConfig.reprocess,
-        headers: {
-          token: `${localStorage.getItem("token")}`,
-        },
-        params: {
-          videoTemplateId: videoTemplete,
-        },
-      });
-      if (res?.data?.status === 200) {
-        setLoading(false);
-        toast.success("Reprocess done successfully");
-      } else if (res?.data?.status === 205) {
-        toast.error("No User Found");
-        setLoading(false);
-      }
-    } catch (error) {
-      console.log(error, "error");
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
     getAllSheet();
   }, []);
@@ -219,8 +165,10 @@ function UserViewProject(props) {
     <>
       {loading && <FullScreenLoader />}
       <Typography variant="body1">
-        <Link onClick={() => history.goBack()}>Project Listings</Link> /{" "}
-        <span style={{ color: "#0358AC" }}>Project Data</span>
+        <Link style={{ cursor: "pointer" }} onClick={() => history.goBack()}>
+          Project Listings
+        </Link>{" "}
+        / <span style={{ color: "#0358AC" }}>Project Data</span>
       </Typography>
 
       <Paper className={classes.tableContainer}>
@@ -249,18 +197,6 @@ function UserViewProject(props) {
           </Grid>
         </Box>
       </Paper>
-
-      {errorhandle === "reprocess" && (
-        <Reprocess
-          reprocessopen={reprocessopen}
-          handleReprocessClose={handleReprocessClose}
-          missingFields={missingFields}
-          sheetUrl={sheetUrl}
-          sheetName={sheetName}
-          CUSTOMER_ID={CUSTOMER_ID}
-          projectIndex={projectIndex}
-        />
-      )}
     </>
   );
 }

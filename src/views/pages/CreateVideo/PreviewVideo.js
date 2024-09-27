@@ -12,59 +12,14 @@ function PreviewVideo(props) {
   const [firstName, setFirstName] = useState("");
   const history = useHistory();
   const location = useLocation();
+  const firstname = location?.state?.Data?.firstName;
+  const bookDemoUrl = location?.state?.Data?.bookdemo;
+
   const intervalRef = useRef(null);
-
-  const getPreviewData = async () => {
-    try {
-      setLoading(true);
-      const res = await Axios({
-        method: "GET",
-        url: ApiConfig.getpreviewdata,
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          userId: localStorage.getItem("_id"),
-        },
-        params: {
-          type: "VIDEO",
-          videoTemplateId: getTemplateId(),
-        },
-      });
-      if (res?.status === 200) {
-        const data = res.data.data;
-        setPreviewData(data);
-        setFirstName(data.FIRST_NAME || "");
-        if (data.FINAL_VIDEO_URL !== "") {
-          clearInterval(intervalRef.current); // Clear interval if FINAL_VIDEO_URL is received
-        }
-      }
-    } catch (error) {
-      console.log(error, "error");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    // Initial call to fetch data
-    // getPreviewData();
-
-    // Set interval to call getPreviewData every 5 seconds
-    intervalRef.current = setInterval(() => {
-      getPreviewData();
-    }, 5000);
-
-    return () => {
-      clearInterval(intervalRef.current); // Clean up: clear interval when component unmounts
-    };
-  }, [location]);
 
   const getTemplateId = () => {
     const searchParams = new URLSearchParams(window.location.search);
     return props?.location?.state || searchParams.get("templateId");
-  };
-
-  const handleClick = () => {
-    window.location.href = "https://calendly.com/pratiksha-kolase";
   };
 
   return (
@@ -72,6 +27,7 @@ function PreviewVideo(props) {
       <Typography>
         {" "}
         <ArrowBackIcon
+          fontSize="small"
           style={{ color: "black", cursor: "pointer" }}
           onClick={() => {
             history.goBack();
@@ -79,22 +35,28 @@ function PreviewVideo(props) {
         />
       </Typography>
       <Typography style={{ textAlign: "center" }}>
-        <img
-          src={previewData?.LOGO || ""}
+        <Box
           style={{
-            display: "block",
             margin: "auto",
-            width: "300px",
-            height: "100px",
+            width: "200px",
+            height: "50px",
           }}
-          alt="Logo"
-        />
+        >
+          <img
+            src="images/personaprosvglogo.svg"
+            style={{
+              width: "100%",
+              height: "100%",
+            }}
+            alt="Logo"
+          />
+        </Box>
       </Typography>
       <Typography
         variant="h2"
         style={{ textAlign: "center", paddingTop: "30px" }}
       >
-        Nice to meet you, {firstName}
+        Nice to meet you, {firstname}
       </Typography>
 
       {loading ? (
@@ -106,7 +68,8 @@ function PreviewVideo(props) {
             size={100}
           />
           <Typography>
-            This will take some time. Please wait for a few moments.
+
+            Video generation has started and will take several minutes. We will update the video URL in the sheet and send an email. You may leave the screen.
           </Typography>
         </Box>
       ) : (
@@ -129,10 +92,11 @@ function PreviewVideo(props) {
 
       <Typography style={{ textAlign: "center", paddingTop: "48px" }}>
         <Button
-          onClick={handleClick}
+          onClick={() => (window.location.href = bookDemoUrl)}
           style={{
             background: "#0358AC",
-            width: "415px",
+            maxWidth: "415px",
+            width: "100%",
             height: "48px",
             fontSize: "16px",
             textTransform: "none",

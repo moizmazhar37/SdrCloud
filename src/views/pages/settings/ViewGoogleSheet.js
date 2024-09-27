@@ -8,6 +8,7 @@ import {
   Button,
   TextField,
   ButtonGroup,
+  MenuItem,
 } from "@material-ui/core";
 import Link from "@material-ui/core/Link";
 import { Formik, Form } from "formik";
@@ -17,8 +18,10 @@ import moment from "moment";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import FullScreenLoader from "src/component/FullScreenLoader";
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, Select } from "@mui/material";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import { menuProps } from "src/utils";
 const useStyles = makeStyles((theme) => ({
   breads: {
     display: "flex",
@@ -151,6 +154,12 @@ function ViewGoogleSheet(props) {
     fetchUrl: "",
     records: "",
   });
+  const [sheetType, setSheetType] = useState(viewdata?.sheetType);
+  useEffect(() => {
+    setSheetType(viewdata?.sheetType);
+  }, [viewdata]);
+  console.log(viewdata?.sheetType, "sheetTypesdd");
+
   const [recordCount, setRecordCount] = useState(1);
   // Function to handle incrementing record count
   const handleIncrement = () => {
@@ -453,6 +462,45 @@ function ViewGoogleSheet(props) {
                   </Box>
                 ))}
               </Box>
+              <Box className={classes.headingBox} style={{ marginTop: "25px" }}>
+                <Box className="d-flex" style={{ justifyContent: "start" }}>
+                  <Typography variant="h5">Sheet Type</Typography>
+                </Box>
+              </Box>
+              {sheetType && (
+                <Box className={classes.innerbox}>
+                  <Typography>Selected Sheet Type</Typography>
+                  <>
+                    {/* <Select
+                      value={sheetType}
+                      fullWidth
+                      style={{ marginTop: "5px" }}
+                      variant="outlined"
+                      displayEmpty
+                      disabled
+                      // onChange={(e) => {
+                      //   setSheetType(e.target.value);
+                      //   // console.log(e.target.value)
+                      // }}
+                      IconComponent={ExpandMoreIcon}
+                      MenuProps={menuProps}
+                      marginTop="5px"
+                    >
+                      <MenuItem value="" disabled>
+                        Select Type
+                      </MenuItem>
+                      <MenuItem value="HVO">HVO</MenuItem>
+                      <MenuItem value="VIDEO">VIDEO</MenuItem>
+                    </Select> */}
+                    <TextField
+                      id="outlined-select-currency-native"
+                      value={sheetType}
+                      variant="outlined"
+                      disabled
+                    ></TextField>
+                  </>
+                </Box>
+              )}
             </Grid>
             <Grid item xs={12} md={12} lg={5} className="gridItem">
               <Box className={classes.commonBorder}>
@@ -482,7 +530,7 @@ function ViewGoogleSheet(props) {
                   <Box pt={2} pl={3} pr={2} pb={2}>
                     <Typography variant="body1">
                       {item?.value?.length > 40
-                        ? `${item.value.substring(0, 40)}...`
+                        ? `${item.value.substring(0, 45)}...`
                         : item?.value}
                     </Typography>
                     <TextField

@@ -449,10 +449,10 @@ const TemplateAudio = (props) => {
                 <TableRow>
                   <TableCell>Template Name</TableCell>
                   <TableCell>Type</TableCell>
-                  <TableCell>Created On</TableCell>
+                  <TableCell>Creation Date</TableCell>
                   <TableCell align="center">Categories</TableCell>
+                  <TableCell align="center">Total Records</TableCell>
                   <TableCell align="center">Sent</TableCell>
-                  <TableCell align="center">Active</TableCell>
                   <TableCell>Action</TableCell>
                 </TableRow>
               </TableHead>
@@ -475,22 +475,20 @@ const TemplateAudio = (props) => {
                         {key.templateType ? key.templateType : "--"}
                       </TableCell>
                       <TableCell className="tableCellText">
-                        {moment(key.createdAt).format("MM.DD.YYYY")}
+                        {new Date(key?.createdAt).toLocaleDateString()}
                       </TableCell>
                       <TableCell className="tableCellText">
                         <Box className={classes.tableBox}>
-                          {/* {key?.categoryId
-                            ? getCategoryName(key?.categoryId)
-                            : "--"} */}
                           {key?.categoryName}
                         </Box>
                       </TableCell>
                       <TableCell className="tableCellText" align="center">
-                        {key.sent ? key.sent : "--"}
+                        {key.totalRecords ? key.totalRecords : "--"}
                       </TableCell>
                       <TableCell className="tableCellText" align="center">
-                        {key.active ? key.active : "--"}
+                        {key.sent ? key.sent : "--"}
                       </TableCell>
+
                       <TableCell className="tableCellText">
                         <FormControl style={{ width: "100px" }}>
                           <Select
@@ -563,11 +561,12 @@ const TemplateAudio = (props) => {
                         </Box>
                       </TableCell>
                       <TableCell className="tableCellText" align="center">
-                        {key.sendCount ? key.sendCount : "--"}
+                        {key.totalRecords ? key.totalRecords : "--"}
                       </TableCell>
                       <TableCell className="tableCellText" align="center">
-                        {key.active ? key.active : "--"}
+                        {key.sendCount ? key.sendCount : "--"}
                       </TableCell>
+
                       <TableCell className="tableCellText">
                         <FormControl style={{ width: "100px" }}>
                           <Select

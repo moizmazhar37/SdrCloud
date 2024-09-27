@@ -13,12 +13,13 @@ import PeopleOutlineOutlinedIcon from "@material-ui/icons/PeopleOutlineOutlined"
 import LinearProgress from "@material-ui/core/LinearProgress";
 import clsx from "clsx";
 import { GoGraph } from "react-icons/go";
-
+import { toast } from "react-toastify";
 import SingleBarChart from "./SingleBarGraph";
 import SingleColumnChartBar from "./SingleColumnChart";
 import GroupBarGraph from "./GroupBarGraph";
 import axios from "axios";
 import ApiConfig from "src/config/APIConfig";
+import Tooltip from "@mui/material/Tooltip";
 // Styles for the component
 const useStyles = makeStyles((theme) => ({
   displayFlexColumn: {
@@ -328,38 +329,130 @@ const BorderLinearProgress1 = withStyles((theme) => ({
 function NoProjects() {
   const classes = useStyles();
 
-  const [userCount, setUserCount] = useState({});
-
+  const [userCount, setUserCount] = useState([]);
+  const [packageName, setPackageName] = useState("");
+  const [topTemplate, setTopTemplate] = useState([]);
+  console.log("🚀 ~ NoProjects ~ topTemplate:", topTemplate);
+  const [loading, setLoading] = useState(false);
+  const [sheetCount, setSheetCount] = useState("");
+  const [bestMonth, setBestMonth] = useState("");
+  console.log(bestMonth, "bestMonth");
   const [adminCounting, setAdminCounting] = useState("");
 
   const totalUser = async () => {
     const token = window?.localStorage?.getItem("token");
-    const accountId = window?.localStorage?.getItem("accountId");
-    const UserId = window?.localStorage?.getItem("_id");
+
     try {
       const res = await axios({
         url: ApiConfig.totalUserCount,
         method: "GET",
         headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        params: {
-          accountId: accountId,
-          userId: UserId,
+          token: `${token}`,
         },
       });
 
       if (res?.data?.status === 200) {
-        console.log("resresresres");
-        setUserCount(res?.data?.data);
+        setUserCount(res?.data?.data?.totalUserCount);
       }
     } catch (error) {
       console.log("error", error);
     }
   };
+  const GetAdminDetails = async () => {
+    setLoading(true);
+    try {
+      setLoading(true);
+      const res = await axios({
+        method: "GET",
+        url: ApiConfig.companyDetails,
+        headers: {
+          token: `${localStorage.getItem("token")}`,
+        },
+      });
+      if (res?.data?.status === 200) {
+        setPackageName(res?.data?.data?.accountDetails?.packageName);
+        setLoading(false);
+      }
+    } catch (error) {
+      // toast.error("Something went wrong")
+      toast.error(error?.data?.message);
+      setLoading(false);
+      console.log(error);
+    }
+  };
+  const topPerformingTempate = async () => {
+    setLoading(true);
+    try {
+      setLoading(true);
+      const res = await axios({
+        method: "GET",
+        url: ApiConfig.topPerformingTempate,
+        headers: {
+          token: `${localStorage.getItem("token")}`,
+        },
+      });
+      if (res?.data?.status === 200) {
+        setTopTemplate(res?.data?.data);
+        setLoading(false);
+      }
+    } catch (error) {
+      // toast.error("Something went wrong")
+      toast.error(error?.data?.message);
+      setLoading(false);
+      console.log(error);
+    }
+  };
+  const SheetCounts = async () => {
+    setLoading(true);
+    try {
+      setLoading(true);
+      const res = await axios({
+        method: "GET",
+        url: ApiConfig.sheetcount,
+        headers: {
+          token: `${localStorage.getItem("token")}`,
+        },
+      });
+      if (res?.data?.status === 200) {
+        setSheetCount(res?.data?.data[0]);
+        setLoading(false);
+      }
+    } catch (error) {
+      // toast.error("Something went wrong")
+      toast.error(error?.data?.message);
+      setLoading(false);
+      console.log(error);
+    }
+  };
+  const BestMonthView = async () => {
+    setLoading(true);
+    try {
+      setLoading(true);
+      const res = await axios({
+        method: "GET",
+        url: ApiConfig.bestMonth,
+        headers: {
+          token: `${localStorage.getItem("token")}`,
+        },
+      });
+      if (res?.data?.status === 200) {
+        setBestMonth(res?.data?.data[0]);
+        setLoading(false);
+      }
+    } catch (error) {
+      // toast.error("Something went wrong")
+      toast.error(error?.data?.message);
+      setLoading(false);
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
+    GetAdminDetails();
     totalUser();
+    SheetCounts();
+    BestMonthView();
+    topPerformingTempate();
   }, []);
 
   const adminCount = async () => {
@@ -386,6 +479,26 @@ function NoProjects() {
       console.log(error, "error");
     }
   };
+  const formatNumber = (num) => {
+    if (num >= 1_000_000_000_000) {
+      // 1 trillion
+      return `${(num / 1_000_000_000_000).toFixed(1)}T`;
+    } else if (num >= 1_000_000_000_000_000) {
+      // 1 quadrillion
+      return `${(num / 1_000_000_000_000_000).toFixed(1)}Q`;
+    } else if (num >= 1_000_000_000) {
+      // 1 billion
+      return `${(num / 1_000_000_000).toFixed(1)}B`;
+    } else if (num >= 1_000_000) {
+      // 1 million
+      return `${(num / 1_000_000).toFixed(1)}M`;
+    } else if (num >= 1_000) {
+      // 1 thousand
+      return `${(num / 1_000).toFixed(1)}K`;
+    } else {
+      return num;
+    }
+  };
   useEffect(() => {
     adminCount();
   }, []);
@@ -407,7 +520,7 @@ function NoProjects() {
               <Box className="CommanBox" style={{ height: "100px" }}>
                 <Typography variant="h5">Your package</Typography>
                 <Typography variant="h3" className="EnterpriseTxt">
-                  Enterprise Plus
+                  {packageName}
                 </Typography>
                 <Typography variant="body1" style={{ fontWeight: "500" }}>
                   {adminCounting?.mediaDetails?.totalMediaCredits} Credits
@@ -427,13 +540,16 @@ function NoProjects() {
                     alt="Active"
                     className="Totalseat"
                   />
-                  <Typography variant="body1">Total Seats</Typography>
+                  <Typography variant="body1">Total Sheets</Typography>
                 </Box>
 
-                <Typography variant="h3">
-                  {adminCounting?.userSeatsUsed} used |{" "}
-                  {adminCounting?.userSeatsAvailable} available
-                </Typography>
+                {sheetCount && (
+                  <Typography variant="h3" style={{ fontSize: "18px" }}>
+                    {formatNumber(sheetCount ? sheetCount?.used : "--")} used |{" "}
+                    {formatNumber(sheetCount ? sheetCount?.available : "--")}{" "}
+                    available
+                  </Typography>
+                )}
               </Box>
             </Grid>
 
@@ -501,7 +617,7 @@ function NoProjects() {
                   <span style={{ color: "var(--blue, #0358AC)" }}>
                     {adminCounting?.mediaDetails?.unusedMediaCredits}{" "}
                   </span>
-                  <span style={{ color: "red" }}> Unused Seats</span> Media
+                  <span style={{ color: "red" }}> Unused Sheets</span> Media
                   Credits
                 </Typography>
               </Box>
@@ -532,7 +648,9 @@ function NoProjects() {
                 <img src="images/users.png" alt="" />
                 Total Users
               </Typography>
-              <Typography variant="h2">{userCount?.totalCount}</Typography>
+              <Typography variant="h2">
+                {formatNumber(userCount + 1)}
+              </Typography>
             </Grid>
 
             <Grid
@@ -556,7 +674,7 @@ function NoProjects() {
                   <img src="images/users.png" alt="" />
                   Admins
                 </Typography>
-                <Typography variant="h2">{userCount?.admins}</Typography>
+                <Typography variant="h2">1</Typography>
               </Grid>
               <Grid
                 item
@@ -571,7 +689,9 @@ function NoProjects() {
                   <img src="images/users.png" alt="" />
                   Users
                 </Typography>
-                <Typography variant="h2">{userCount?.users}</Typography>
+                <Typography variant="h2">
+                  {formatNumber(userCount || 0)}
+                </Typography>
               </Grid>
             </Grid>
           </Grid>
@@ -594,71 +714,24 @@ function NoProjects() {
               <Typography variant="h6">Your Top Performing</Typography>
               <Typography variant="h3">Templates</Typography>
             </Grid>
-
-            <Grid
-              item
-              xs={12}
-              className="d-flex column border alignstart subBoxes"
-            >
-              <Typography variant="body1">
-                Hubspot for Small Business
-              </Typography>
-              <Box className="d-flex justify-space-between fullwidth">
-                <Typography variant="h6" style={{ fontSize: "13px" }}>
-                  1m:22s Video &nbsp; 42% &nbsp; CTR{" "}
+            {topTemplate?.slice(0, 3).map((item, index) => (
+              <Grid
+                item
+                xs={12}
+                className="d-flex column border alignstart subBoxes"
+                key={item?._id}
+              >
+                <Typography variant="body1">
+                  Template Name : {item?.templateName}
                 </Typography>
-                <Box className="d-flex justify-end">
-                  <Button style={{ minWidth: "35px" }} disabled>
-                    View
-                  </Button>
-                  <Button style={{ minWidth: "35px" }} disabled>
-                    Edit
-                  </Button>
+                <Box className="d-flex justify-space-between fullwidth">
+                  <Typography variant="h6" style={{ fontSize: "13px" }}>
+                    Template Type : {item?.templateType} &nbsp; {item?.count}{" "}
+                    views
+                  </Typography>
                 </Box>
-              </Box>
-            </Grid>
-
-            <Grid
-              item
-              xs={12}
-              className="d-flex column border alignstart subBoxes"
-            >
-              <Typography variant="body1">Hubspot for Startups</Typography>
-              <Box className="d-flex justify-space-between fullwidth">
-                <Typography variant="h6" style={{ fontSize: "13px" }}>
-                  HVO Page &nbsp; 26% &nbsp; CTR{" "}
-                </Typography>
-                <Box className="d-flex justify-end">
-                  <Button style={{ minWidth: "35px" }} disabled>
-                    View
-                  </Button>
-                  <Button style={{ minWidth: "35px" }} disabled>
-                    Edit
-                  </Button>
-                </Box>
-              </Box>
-            </Grid>
-
-            <Grid
-              item
-              xs={12}
-              className="d-flex column border alignstart subBoxes"
-            >
-              <Typography variant="body1">Hubspot for Mid Market</Typography>
-              <Box className="d-flex justify-space-between fullwidth">
-                <Typography variant="h6" style={{ fontSize: "13px" }}>
-                  1m:22s Video &nbsp; 42% &nbsp; CTR{" "}
-                </Typography>
-                <Box className="d-flex justify-end">
-                  <Button style={{ minWidth: "35px" }} disabled>
-                    View
-                  </Button>
-                  <Button style={{ minWidth: "35px" }} disabled>
-                    Edit
-                  </Button>
-                </Box>
-              </Box>
-            </Grid>
+              </Grid>
+            ))}
           </Grid>
         </Grid>
 
@@ -677,7 +750,19 @@ function NoProjects() {
                 style={{ gap: "4px", margin: "4px" }}
               >
                 <Typography variant="h5">Your Best Month</Typography>
-                <Typography variant="h2">5,840 Views</Typography>
+                <Tooltip
+                  title={
+                    bestMonth ? `${bestMonth.month} ${bestMonth.year}` : "--"
+                  }
+                  arrow
+                >
+                  {bestMonth && (
+                    <Typography variant="h2">
+                      {bestMonth ? formatNumber(bestMonth?.totalViews) : "--"}{" "}
+                      Views
+                    </Typography>
+                  )}
+                </Tooltip>
               </Box>
               <Box
                 className={clsx(classes.border, "d-flex column")}
@@ -686,7 +771,8 @@ function NoProjects() {
                 <Box className="d-flex" style={{ gap: "12px" }}>
                   <img src="images/tranding.png" alt="" />
                   <Typography variant="body1">
-                    Total Views within Total Active Media <br />
+                    Total Views {" "}
+                    {/* within Total Active Media <br /> */}
                     (Last 4 Months)
                   </Typography>
                 </Box>
@@ -705,7 +791,7 @@ function NoProjects() {
           className={clsx(classes.secondChartBox)}
         >
           <Grid container xs={12} className={classes.border}>
-            <Grid
+            {/* <Grid
               item
               lg={4}
               md={4}
@@ -740,8 +826,8 @@ function NoProjects() {
                   </span>
                 </Typography>
               </Box>
-            </Grid>
-            <Grid item lg={8} md={8} sm={8} xs={12}>
+            </Grid> */}
+            <Grid item lg={12} md={12} sm={12} xs={12}>
               <Box
                 className={classes.border}
                 ml={"10px"}

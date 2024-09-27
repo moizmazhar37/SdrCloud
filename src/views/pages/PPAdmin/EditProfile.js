@@ -12,6 +12,7 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import { Formik, Form, Field } from "formik";
 import { parsePhoneNumberFromString } from "libphonenumber-js";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import Breadcrumbs from "@material-ui/core/Breadcrumbs";
 import Link from "@material-ui/core/Link";
 import * as Yup from "yup";
@@ -131,6 +132,10 @@ const useStyles = makeStyles((theme) => ({
     color: "grey",
   },
   breads: {
+    marginTop: "10px",
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
     "& nav li": {
       margin: "0px",
     },
@@ -303,26 +308,26 @@ const validatePhoneNumber = (value, country) => {
 const validationSchema = Yup.object().shape({
   firstName: Yup.string()
     .required(
-      "First Name is required and must be between 2 and 50 characters, containing only alphabetic, alphanumeric or special characters."
+      "First name is required and must be between 2 and 50 characters, containing only alphabetic, alphanumeric or special characters."
     )
     .matches(
       /^(?! )[A-Za-z0-9!@#\$%\^\&*\(\)_\+\-=\[\]\{\};:'",<>\.\?\/\\|`~]{1,49}[A-Za-z0-9!@#\$%\^\&*\(\)_\+\-=\[\]\{\};:'",<>\.\?\/\\|`~ ]$/,
-      "First Name is required and must be between 2 and 50 characters, containing only alphabetic, alphanumeric or special characters."
+      "First name is required and must be between 2 and 50 characters, containing only alphabetic, alphanumeric or special characters."
     ),
   lastName: Yup.string()
     .required(
-      "Last Name is required and must be between 2 and 50 characters, containing only alphabetic, alphanumeric or special characters."
+      "Last name is required and must be between 2 and 50 characters, containing only alphabetic, alphanumeric or special characters."
     )
 
     .matches(
       /^(?=.*[A-Za-z])[A-Za-z0-9 !@#\$%\^\&*\(\)_\+\-=\[\]\{\};:'",<>\.\?\/\\|`~]{2,50}$/,
-      "Last Name is required and must be between 2 and 50 characters, containing only alphabetic, alphanumeric or special characters."
+      "Last name is required and must be between 2 and 50 characters, containing only alphabetic, alphanumeric or special characters."
     ),
   phone: Yup.string()
     .required("A valid phone number is required.")
     .test(
       "is-valid-phone",
-      "A valid Phone number is required, including the country code.",
+      "A valid phone number is required, including the country code.",
       function (value) {
         console.log("value:: in the eidtprofile  ", value);
         const { country } = this.parent;
@@ -435,6 +440,7 @@ const EditProfile = () => {
       setSelectedFile(file);
       setPhotoURL(URL.createObjectURL(file));
       setShowImageName(file?.name);
+      formik.setFieldValue("profilePicture", file);
       setIsImageChanged(true);
       setOpenCrop(true);
     }
@@ -447,6 +453,41 @@ const EditProfile = () => {
   const handleCloseDialog = () => {
     setIsImageChanged(false);
     setOpen(false);
+  };
+
+  const updateProfilePic = async (values) => {
+    setLoading(true)
+
+    try {
+      const res = await axios({
+        method: "POST",
+        url: ApiConfig.updateProfilePic,
+        headers: {
+          token: `${localStorage.getItem("token")}`,
+        },
+        data: {
+          profilePicture: photoURL
+        },
+
+      });
+      if (res?.data?.status === 200) {
+        console.log(res?.data, "uih");
+        toast.success("Image uploaded successfully.");
+
+        handleCloseDialog();
+        GetCompanyDetails()
+        setProfileData((prevData) => ({
+          ...prevData,
+          profilePicture: res?.data?.data,
+
+        }));
+      } else {
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+    }
   };
 
   const handleSaveClick = async (values) => {
@@ -488,6 +529,12 @@ const EditProfile = () => {
     <>
       {loading && <FullScreenLoader />}
       <Box className={classes.breads}>
+        <ArrowBackIcon
+          style={{ color: "black", cursor: "pointer", fontSize: "large" }}
+          onClick={() => {
+            history.push("/pp-settings");
+          }}
+        />
         <Breadcrumbs aria-label="breadcrumb">
           <Link color="inherit" href="/pp-settings">
             Settings
@@ -528,10 +575,10 @@ const EditProfile = () => {
                         {key === "profilePicture"
                           ? "Profile Picture"
                           : key === "firstName"
-                          ? "First Name"
-                          : key === "lastName"
-                          ? "Last Name"
-                          : key.charAt(0).toUpperCase() + key.slice(1)}
+                            ? "First Name"
+                            : key === "lastName"
+                              ? "Last Name"
+                              : key.charAt(0).toUpperCase() + key.slice(1)}
                       </Typography>
                     </Grid>
                     <Grid
@@ -560,7 +607,9 @@ const EditProfile = () => {
                               }
                               name={key}
                               disabled={!isEditing || key === "profilePicture"}
-                              value={formik.values[key]}
+                              value={
+                                userData?.profilePicture
+                              }
                               InputProps={{
                                 classes: {
                                   notchedOutline: isEditing
@@ -642,15 +691,14 @@ const EditProfile = () => {
                                 : classes.textfiledallbefore
                             }
                             name={key}
-                            placeholder={`${
-                              key === "profilePicture"
-                                ? "Upload Your"
-                                : "Enter Your"
-                            } ${key.charAt(0).toUpperCase() + key.slice(1)}`}
+                            placeholder={`${key === "profilePicture"
+                              ? "Upload Your"
+                              : "Enter Your"
+                              } ${key.charAt(0).toUpperCase() + key.slice(1)}`}
                             value={
                               key === "firstName" || key === "lastName"
                                 ? formik.values[key].charAt(0).toUpperCase() +
-                                  formik.values[key].slice(1)
+                                formik.values[key].slice(1)
                                 : formik.values[key]
                             }
                             onChange={formik.handleChange}
@@ -671,10 +719,10 @@ const EditProfile = () => {
                                 key === "phone"
                                   ? 20
                                   : key === "firstName"
-                                  ? 50
-                                  : key === "lastName"
-                                  ? 50
-                                  : undefined,
+                                    ? 50
+                                    : key === "lastName"
+                                      ? 50
+                                      : undefined,
                               onKeyDown: (e) => {
                                 const isAlphanumericOrSpecial =
                                   /^[A-Za-z0-9!@#$%^&*(),.?":{}|<>]+$/.test(
@@ -708,8 +756,8 @@ const EditProfile = () => {
                           >
                             {userData[key].length > 40
                               ? `${userData[key].slice(0, 15)}...${userData[
-                                  key
-                                ].slice(-15)}`
+                                key
+                              ].slice(-15)}`
                               : userData[key]}
                           </Typography>
                         )}
@@ -720,6 +768,7 @@ const EditProfile = () => {
               ))}
               {isEditing && (
                 <Box pt={2} className={classes.btnCanSaveContainer}>
+                  {console.log(formik.dirty, "kkkk")}
                   <Button className="btnCan" onClick={handleCancelClick}>
                     Cancel
                   </Button>
@@ -764,7 +813,7 @@ const EditProfile = () => {
             setOpenCrop={setOpenCrop}
             setPhotoURL={setPhotoURL}
             setUploadedImage={setSelectedFile}
-            setErrors={() => {}}
+            setErrors={() => { }}
           />
         </Dialog>
       ) : (
@@ -816,8 +865,7 @@ const EditProfile = () => {
             <Button
               onClick={() => {
                 if (isImageChanged) {
-                  toast.success("Image uploaded successfully.");
-                  handleCloseDialog();
+                  updateProfilePic()
                 } else {
                   setSelectedFile(null);
                 }

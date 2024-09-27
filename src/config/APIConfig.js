@@ -2,9 +2,9 @@
 // const javaurl = "https://java-videogenerator.mobiloitte.io/";
 // const javaurl = "http://172.16.1.147:2137/api/v1/"; //ansh
 // const javaurl = "http://172.16.2.25:6002/";
+const javaurl = "https://node-aivideogenerator.mobiloitte.io/api/v1/"; //UAT
 // const javaurl = "http://172.16.6.113:2137/api/v1/"; //rishabhlocal
-const javaurl = "https://node-aivideogenerator.mobiloitte.io/api/v1/"; //UAT/
-// const javaurl = "http://172.16.1.209:2137/api/v1/"; //arish
+// const javaurl = "http://172.16.6.45:2137/api/v1/"; //deepanshu
 
 const url = "https://java-videogenerator.mobiloitte.io/";
 
@@ -68,7 +68,6 @@ const ApiConfig = {
   projectListing: `${javaurl}sheet/user-projects/project-listing`,
   addProjectManually: `${javaurl}sheet/add-project-manually`,
   userAddProjectManually: `${javaurl}user-projects/add-project-manually`,
-
   viewUser: `${javaurl}user/admin/user-management/get-role-user-deatils`,
 
   // Template List
@@ -76,6 +75,8 @@ const ApiConfig = {
 
   // Create Video
   createVdoTemplate: `${javaurl}video/video-templates/createVideoTemplate`,
+  customVdoTemplate: `${javaurl}video/video-templates/create-custom-template`,
+  getCustomVdoTemplate: `${javaurl}video/video-templates/get-custom-template`,
   createVideoTemplateReferral: `${javaurl}video/video-templates/createVideoTemplateReferral`,
   updateTemplateVideo: `${javaurl}video/video-templates/updateTemplate`,
   duplicateTemplateVideo: `${javaurl}video/video-templates/duplicate-template-data`,
@@ -84,6 +85,7 @@ const ApiConfig = {
   deleteElement: `${javaurl}video/video-templates/delete-video-referral`,
 
   getFirstRowData: `${javaurl}sheet/first-row-data`,
+  getRowData: `${javaurl}sheet/row-data`,
 
   // getTemplatebyID: `${url}account/videotemplatess/getTemplateById`,
   getTemplatebyID: `${javaurl}video/video-templates/getVideoTemplateById`,
@@ -93,10 +95,12 @@ const ApiConfig = {
   updateTemplatePreview: `${javaurl}account/video-templates/updateTemplatePreview`,
   createVideoWithSheet: `${javaurl}video/video-templates/create-video-with-sheet-data`,
   connectSheetTOTemplate: `${javaurl}hvo/hvoTemplate/connect-sheet-with-template`,
+  topPerformingTempate: `${javaurl}hvo/Top-Performing-Template`,
   getpreviewdata: `${javaurl}video/video-templates/get-preview-data`,
   reprocess: `${javaurl}account/video-templates/re-process`,
+  reprocessVideo: `${javaurl}video/video-templates/re-process`,
   previewVideo: `${javaurl}video/video-templates/preview-video-with-sheet-data`,
-
+  createdVideo: `${javaurl}video/video-templates/video-link`,
   //google Sheet
   connectedSheet: `${javaurl}hvo/hvoTemplate/connected-all-google-sheets`,
   connectedSheetVideo: `${javaurl}video/video-templates/connected-all-google-sheets`,
@@ -105,13 +109,17 @@ const ApiConfig = {
   getSheetById: `${javaurl}account/google/api/get-google-sheet-connection-by-id`,
   getAllSheet: `${javaurl}sheet/get-all-sheet-fields`,
   setHeadersDataType: `${javaurl}sheet/setHeadersDataType`,
+  setHeadersDataTypeVideo: `${javaurl}sheet/setHeadersDataTypeforVideo`,
+  sheetcount: `${javaurl}sheet/used-sheet`,
+  bestMonth: `${javaurl}hvo/bestMonth`,
   //
   disconnectSheet: `${javaurl}account/google/api/disconnect-sheet`,
   deleteSheet: `${javaurl}sheet/delete-sheet`,
 
   //dashboard
-  totalUserCount: `${javaurl}sub-admin/count-users-by-admin`,
+  totalUserCount: `${javaurl}user/get-total-users`,
   getAllAdminSeat: `${javaurl}account/api/dashboard/get-package-media-activeMedia-seats-info`,
+  lastFourMonthData: `${javaurl}hvo/last-four-month-view`,
 
   // Projects
   getAllCustomers: `${javaurl}/customerManagement/getAllCustomers`,
@@ -159,7 +167,8 @@ const ApiConfig = {
   // EditcompanyDetails: `${javaurl}account/sub-admin/edit-company-information`,
   useraccount: `${javaurl}user/user-management/my-account`,
   edituseraccount: `${javaurl}user/user-management/update-profile-data`,
-  getppadmindetails: `${javaurl}/user/get-account-details-by-id`,
+  getppadmindetails: `${javaurl}user/get-account-details-by-id`,
+  updateProfilePic: `${javaurl}user/updateProfilePic`,
   //IntentTraking
   FooterLink: `${javaurl}hvo/hvoTemplate/save-footer-links`,
   saveFooterContact: `${javaurl}hvo/hvoTemplate/save-footer-contact`,
@@ -186,6 +195,8 @@ const ApiConfig = {
   AddProjectManually: `${javaurl}account/user-projects/add-project-manually`,
   ErrorDataListing: `${javaurl}sheet/user-projects/project-listing-of-user`,
   UserProjectList: `${javaurl}sheet/My-Project-list`,
+  getHeadersDataType: `${javaurl}sheet/getHeadersDataType`,
+  setSheetDataType: `${javaurl}sheet/change-sheet-type`,
 
   // Comapny
   editImages: `${javaurl}company/user-management/edit-my-profile`,

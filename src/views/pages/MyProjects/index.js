@@ -390,23 +390,6 @@ function AllCustomerGroup() {
     setSelectedOption(" ");
     setSearch("");
   };
-  const getAllUsers = async () => {
-    try {
-      const response = await axios({
-        url: ApiConfig.getAllUserByAccountId,
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      if (response?.data?.status === 200) {
-        setUserList(response?.data?.data);
-      }
-    } catch (error) {
-      console.log(error);
-      setLoading(false);
-    }
-  };
 
   const handleUnAssign = async () => {
     try {
@@ -460,9 +443,6 @@ function AllCustomerGroup() {
   const handleDropdownChange = (event) => {
     setSelectedOption(event.target.value);
     setIsOpen(false);
-  };
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen);
   };
 
   const [isFocused, setIsFocused] = useState(false);
@@ -587,8 +567,10 @@ function AllCustomerGroup() {
                       <TableRow>
                         <TableCell align="center">Sheet Name</TableCell>
                         <TableCell align="center">
-                          {tempType.charAt(0).toUpperCase() +
-                            tempType.slice(1).toLowerCase()}{" "}
+                          {tempType === "VIDEO"
+                            ? tempType.charAt(0).toUpperCase() +
+                              tempType.slice(1).toLowerCase()
+                            : tempType}{" "}
                           Template Name
                         </TableCell>
 

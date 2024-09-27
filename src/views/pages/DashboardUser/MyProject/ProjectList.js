@@ -38,6 +38,16 @@ import { Pagination } from "@material-ui/lab";
 
 // Styles for the component
 const useStyles = makeStyles((theme) => ({
+  paperContainer: {
+    "& .ButtonStyling": {
+      display: "flex",
+      margin: "25px 0px",
+      gap: "10px",
+      [theme.breakpoints.down("xs")]: {
+        justifyContent: "center",
+      },
+    },
+  },
   darkBtn: {
     padding: "10px",
     borderRadius: "5px",
@@ -254,8 +264,6 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }));
-// Component for managing all customer group data, including fetching project data, user data, and handling various user interactions.
-
 function ProjectList() {
   const classes = useStyles();
   const history = useHistory();
@@ -272,11 +280,9 @@ function ProjectList() {
   const [totalPageCount, setTotalPageCount] = useState(0);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
-  console.log(search, "jhsgh");
 
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState();
-  const [accountStatus, setAccountStatus] = useState("");
   const [userList, setUserList] = useState([]);
   const [userId, setUserId] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
@@ -468,18 +474,9 @@ function ProjectList() {
               />
             </div>
           </div>
-          {/* <div>
-            <Button
-              variant="outlined"
-              className={classes.nextButton}
-            // onClick={() => setAddCompanyAdminDialogueUpen(true)}
-            >
-              Edit
-            </Button>
-          </div> */}
         </Box>
 
-        <Box style={{ display: "flex", margin: "25px 0px", gap: "10px" }}>
+        <Box className="ButtonStyling">
           <Button
             variant="contained"
             color="primary"
@@ -524,12 +521,12 @@ function ProjectList() {
                       <TableRow>
                         <TableCell align="center">Sheet Name</TableCell>
                         <TableCell align="center">
-                          {tempType.charAt(0).toUpperCase() +
-                            tempType.slice(1).toLowerCase()}{" "}
+                          {tempType === "VIDEO"
+                            ? tempType.charAt(0).toUpperCase() +
+                              tempType.slice(1).toLowerCase()
+                            : tempType}{" "}
                           Template Name
                         </TableCell>
-
-                        {/* <TableCell align="center">User</TableCell> */}
 
                         <TableCell align="center">Status</TableCell>
                         <TableCell align="center">Action</TableCell>
@@ -546,16 +543,6 @@ function ProjectList() {
                             <TableCell align="center">
                               {truncateText(data?.hvoTemplateName)}
                             </TableCell>
-                            {/* <TableCell align="center">
-                              {data?.assignedUserData?.firstName
-                                ? truncateText(
-                                    data?.assignedUserData?.firstName
-                                  )
-                                : "-"}{" "}
-                              {data?.assignedUserData?.lastName
-                                ? truncateText(data?.assignedUserData?.lastName)
-                                : "-"}
-                            </TableCell> */}
 
                             <TableCell
                               align="center"
@@ -579,47 +566,18 @@ function ProjectList() {
                             >
                               <Button
                                 onClick={() => {
-                                  console.log();
                                   history.push("/user-myprojects", {
                                     state: {
                                       sheetId: data?._id,
                                       hvoTemplateName: data?.hvoTemplateName,
                                       sheetName: data?.title,
+                                      tempType: tempType,
                                     },
                                   });
                                 }}
                               >
                                 View
                               </Button>
-                              {/* <Divider className="dividerbtn" />
-                            <Button
-                              onClick={() => {
-                                history.push("/user-myprojects", {
-                                  state: {
-                                    sheetId: data?.assignedUserData?._id,
-                                    // videoTemplateId: data?.videoTemplateId,
-                                    sheetName: data?.title,
-                                  },
-                                });
-                              }}
-                            >
-                              Edit
-                            </Button> */}
-                              {/* <Divider className="dividerbtn" />
-                            <Button
-                              onClick={() => {
-                                // var userId1 = data?.userId;
-                                // var accountId1 = data?.accountId;
-
-                                // var sheetId1 = data?.sheetId;
-                                handleClose();
-                                setSelectedUserId(data);
-                                // getAllUsers();
-                                setDeleteOpen(true);
-                              }}
-                            >
-                              Unassign
-                            </Button> */}
                             </TableCell>
                           </TableRow>
                         ))}

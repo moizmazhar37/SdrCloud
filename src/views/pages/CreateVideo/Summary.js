@@ -118,7 +118,9 @@ function Summary({
   templateParams,
   reloadData,
   viewParams,
+  setIsSectionCompleted,
   getTemplateByID,
+  videoUrl,
 }) {
   const classes = useStyles();
   const history = useHistory();
@@ -132,7 +134,8 @@ function Summary({
   const handleDeleteClose = () => {
     setDeleteOpen(false);
   };
-  const handlenext = () => {
+  const handleNext = () => {
+    setIsSectionCompleted(true);
     if (templateParams?.sheetId === null) {
       toast.error("Please connect google sheet.");
     }
@@ -156,43 +159,23 @@ function Summary({
         });
         if (res?.data?.status === 200 || res?.data?.status === 201) {
           setLoading(false);
-          history.push({ pathname: "/preview-video", state: templateId });
+          const Data = res?.data?.data;
+          history.push({
+            pathname: "/preview-video",
+            state: { templateId, Data },
+          });
           toast.success(res?.data?.message);
-        } else if (res?.data?.status === 404) {
-          setLoading(false);
-          toast.error("No data in Google Sheet.");
         }
       } catch (error) {
-        console.log(error, "error");
+        toast.error(error?.response?.data?.message);
+        console.log(error);
+        setLoading(false);
+        console.log(error, "errorss");
       } finally {
         setLoading(false);
       }
     } else {
       toast.error("Please connect the sheet to template!");
-    }
-  };
-  const getpreviewdata = async () => {
-    try {
-      setLoading(true);
-      const res = await axios({
-        method: "GET",
-        url: ApiConfig.getpreviewdata,
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          userId: localStorage.getItem("_id"),
-        },
-        params: {
-          type: "VIDEO",
-          videoTemplateId: templateId,
-        },
-      });
-      if (res?.status === 200) {
-        setPreviewData(res?.data?.data?.FINAL_VIDEO_URL);
-      }
-    } catch (error) {
-      console.log(error, "error");
-    } finally {
-      setLoading(false);
     }
   };
   const deleteVideoElement = async () => {
@@ -210,6 +193,7 @@ function Summary({
         },
       });
       if (res?.data?.status === 200) {
+        setIsSectionCompleted(true);
         setLoading(false);
         setDeleteOpen(false);
         reloadData();
@@ -223,7 +207,6 @@ function Summary({
   };
 
   useEffect(() => {
-    // getpreviewdata();
     getTemplateByID(templateId);
   }, []);
 
@@ -237,13 +220,23 @@ function Summary({
             {loading === true && <FullScreenLoader />}
 
             {linkObject?.map((item, i) => (
-              <Grid item md={6} key={i}>
+              <Grid item md={6} xs={12} key={i}>
                 <Box className="elementBox">
                   <Grid container>
                     <Grid item xs={6}>
-                      <Typography>Element {i + 1}</Typography>
-                      <Typography style={{ color: "#0358AC" }}>
-                        {item?.elementId?.element_Name}
+                      <Typography>Section {i + 1}</Typography>
+                      <Typography
+                        style={{ color: "#0358AC", marginTop: "10px" }}
+                      >
+                        {item?.elementId?.element_Name === "DYNAMICURL"
+                          ? "Dynamic URL"
+                          : item?.elementId?.element_Name === "STATICURL"
+                          ? "Static URL"
+                          : item?.elementId?.element_Name === "UPLOADIMAGE"
+                          ? "Upload Image"
+                          : item?.elementId?.element_Name === "VIDEOCLIPS"
+                          ? "Video Clips"
+                          : item?.elementId?.element_Name}
                       </Typography>
                     </Grid>
                     <Grid item xs={6} align="right">
@@ -261,17 +254,28 @@ function Summary({
                   <Box mt={2}>
                     {item?.elementId?.element_Name === "STATICURL" ? (
                       <>
-                        <iframe
-                          src={item?.firstRowValue}
-                          alt=""
-                          height="126px"
-                          width="100%"
+                        <Box
                           style={{
-                            border: "1px solid transparent",
+                            border: "1px solid #ECECEC",
                             maxHeight: "280px",
+                            padding: "15px",
+                            borderRadius: "10px",
                           }}
-                        ></iframe>
-                        <Typography style={{ color: "#0358AC" }}>
+                        >
+                          <iframe
+                            src={item?.firstRowValue}
+                            alt=""
+                            height="126px"
+                            width="100%"
+                            style={{
+                              border: "1px solid transparent",
+                              maxHeight: "280px",
+                            }}
+                          ></iframe>
+                        </Box>
+                        <Typography
+                          style={{ color: "#0358AC", marginTop: "10px" }}
+                        >
                           <CiClock2 />
                           {item?.duration}sec&nbsp;&nbsp;|&nbsp;&nbsp;Scroll -{" "}
                           {item?.scrollEnabled === true ? "Yes" : "No"}
@@ -287,14 +291,24 @@ function Summary({
                           style={{
                             border: "1px solid #ECECEC",
                             maxHeight: "280px",
-                            height: "100px",
                             padding: "15px",
                             borderRadius: "10px",
                           }}
                         >
-                          <Typography>{item?.tagValueName}</Typography>
+                          <iframe
+                            src={item?.firstRowValue}
+                            alt=""
+                            height="126px"
+                            width="100%"
+                            style={{
+                              border: "1px solid transparent",
+                              maxHeight: "280px",
+                            }}
+                          ></iframe>
                         </Box>
-                        <Typography style={{ color: "#0358AC" }}>
+                        <Typography
+                          style={{ color: "#0358AC", marginTop: "10px" }}
+                        >
                           <CiClock2 />
                           {item?.duration}sec&nbsp;&nbsp;|&nbsp;&nbsp;Scroll -{" "}
                           {item?.scrollEnabled === true ? "Yes" : "No"}
@@ -312,15 +326,22 @@ function Summary({
                             maxHeight: "280px",
                             height: "100px",
                             padding: "15px",
+                            borderRadius: "10px",
                           }}
                         >
                           <img
                             src={item?.firstRowValue || item?.url}
                             alt="img"
                             className={classes.img}
+                            style={{
+                              aspectRatio: "1.9",
+                              objectFit: "contain",
+                            }}
                           />
                         </Box>
-                        <Typography style={{ color: "#0358AC" }}>
+                        <Typography
+                          style={{ color: "#0358AC", marginTop: "10px" }}
+                        >
                           <CiClock2 />
                           {item?.duration}sec&nbsp;&nbsp;|&nbsp;&nbsp;Audio -
                           Yes
@@ -334,6 +355,7 @@ function Summary({
                             maxHeight: "280px",
                             height: "100px",
                             padding: "15px",
+                            borderRadius: "10px",
                           }}
                         >
                           <video
@@ -343,12 +365,14 @@ function Summary({
                             controls
                           >
                             <source
-                              src={item?.firstRowValue}
+                              src={item?.url || item?.firstRowValue}
                               type="video/mp4"
                             />
                           </video>
                         </Box>
-                        <Typography style={{ color: "#0358AC" }}>
+                        <Typography
+                          style={{ color: "#0358AC", marginTop: "10px" }}
+                        >
                           &nbsp;&nbsp;Audio - Yes
                         </Typography>
                       </>
@@ -374,7 +398,7 @@ function Summary({
             >
               Preview
             </Button>
-            <div onClick={handlenext}>
+            <div onClick={handleNext}>
               <Button
                 style={{
                   marginTop: "13px",
@@ -383,10 +407,11 @@ function Summary({
                   width: "100%",
                 }}
                 variant="contained"
-                className={`${templateParams?.sheetId === null
-                  ? "sheetbtnDisables"
-                  : "sheetbtn"
-                  }`}
+                className={`${
+                  templateParams?.sheetId === null
+                    ? "sheetbtnDisables"
+                    : "sheetbtn"
+                }`}
                 disabled={templateParams?.sheetId === null}
                 onClick={() => {
                   handleSheetData();

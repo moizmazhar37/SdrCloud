@@ -494,16 +494,16 @@ const useStyles = makeStyles((theme) => ({
 const CreateAccount = () => {
   const [selectedCountry, setSelectedCountry] = useState("US");
   const accountNameErrorMessage =
-    "Account Name is required and must be between 3 and 100 characters, containing only alphabetic, alphanumeric or special characters.";
+    "Account name is required and must be between 3 and 100 characters, containing only alphabetic, alphanumeric or special characters.";
 
   const accountPhoneErrorMessage =
     "A valid account phone number is required, including the country code.";
 
   const accountFirstName =
-    "Admin First Name is required and must be between 2 and 50 characters, containing only alphabetic, alphanumeric or special characters.";
+    "Admin first name is required and must be between 2 and 50 characters, containing only alphabetic, alphanumeric or special characters.";
 
   const accountLastName =
-    "Admin Last Name is required and must be between 2 and 50 characters, containing only alphabetic, alphanumeric or special characters.";
+    "Admin last name is required and must be between 2 and 50 characters, containing only alphabetic, alphanumeric or special characters.";
 
   const accountPhoneAdmin =
     "A valid account phone number is required, including the country code.";
@@ -540,7 +540,7 @@ const CreateAccount = () => {
       .required("Contract file is required.")
       .test(
         "fileType",
-        "Only PDF files are allowed.",
+        "Only pdf files are allowed.",
         (value) => value && value.type === "application/pdf"
       ),
     contractEndDate: Yup.date()
@@ -555,7 +555,7 @@ const CreateAccount = () => {
       })
       .max(20, accountPhoneAdmin),
 
-    contractTerm: Yup.string().required("Contract Term is required."),
+    contractTerm: Yup.string().required("Contract term is required."),
     firstName: Yup.string()
       .required(accountFirstName)
       .test(
@@ -590,19 +590,19 @@ const CreateAccount = () => {
       ),
 
     contractedUsers: Yup.number()
-      .required("Contracted Users must be a valid number.")
-      .positive("Contracted Users must be a positive number.")
-      .integer("Contracted Users must be an integer."),
+      .required("Contracted users must be a valid number.")
+      .positive("Contracted users must be a positive number.")
+      .integer("Contracted users must be an integer."),
     // .max(1000, "Contracted Users cannot be greater than 1000."),
     mediaCredits: Yup.number()
-      .required("Media Credits must be a valid number.")
-      .positive("Media Credits must be a positive number.")
-      .integer("Media Credits must be an integer."),
+      .required("Media credits must be a valid number.")
+      .positive("Media credits must be a positive number.")
+      .integer("Media credits must be an integer."),
     // .max(1000, "Media Credits cannot be greater than 1000."),
     activeMediaLimits: Yup.number()
-      .required("Active Media Limit must be a valid number.")
-      .positive("Active Media Limit must be a positive number.")
-      .integer("Active Media Limit must be an integer."),
+      .required("Active media limit must be a valid number.")
+      .positive("Active media limit must be a positive number.")
+      .integer("Active media limit must be an integer."),
     // .max(1000, "Active Media Limit cannot be greater than 1000."),
     primaryRgb: Yup.string()
       .required("A valid RGB color code is required (e.g., 255, 255, 255).")
@@ -614,39 +614,39 @@ const CreateAccount = () => {
       .required("A valid RGB color code is required (e.g., 255, 255, 255).")
       .matches(
         /^rgb\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})\)$/,
-        "The matches with Secondary RGB color codes, e.g., rgb(255, 255, 255)."
+        "The matches with secondary RGB color codes, e.g., rgb(255, 255, 255)."
       ),
     bookDemoButton: Yup.string()
-      .required("A valid URL is required (e.g., https://example.com).")
+      .required("A valid url is required (e.g., https://example.com).")
       .matches(
         /^https?:\/\/[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(:\d+)?(\/.*)?$/,
-        "A valid URL is required (e.g., https://example.com)."
+        "A valid url is required (e.g., https://example.com)."
       ),
     redirectLinks: Yup.string()
-      .required("A valid URL is required (e.g., https://example.com).")
+      .required("A valid url is required (e.g., https://example.com).")
       .matches(
         /^https?:\/\/[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(:\d+)?(\/.*)?$/,
-        "A valid URL is required (e.g., https://example.com)."
+        "A valid url is required (e.g., https://example.com)."
       ),
     packageName: Yup.string()
       .matches(
         /^[a-zA-Z0-9\s]{3,100}$/,
-        "Package Name is required and must be between 3 and 100 characters, containing only alphabetic or alphanumeric characters."
+        "Package name is required and must be between 3 and 100 characters, containing only alphabetic or alphanumeric characters."
       )
       .test(
         "not-only-numbers",
-        "Package Name is required and must be between 3 and 100 characters, containing only alphabetic or alphanumeric characters.",
+        "Package name is required and must be between 3 and 100 characters, containing only alphabetic or alphanumeric characters.",
         (value) => !/^\d+$/.test(value)
       )
       .max(
         100,
-        "Package Name is required and must be between 3 and 100 characters, containing only alphabetic or alphanumeric characters."
+        "Package name is required and must be between 3 and 100 characters, containing only alphabetic or alphanumeric characters."
       )
       .required(
-        "Package Name is required and must be between 3 and 100 characters, containing only alphabetic or alphanumeric characters."
+        "Package name is required and must be between 3 and 100 characters, containing only alphabetic or alphanumeric characters."
       ),
     accountLogo: Yup.mixed()
-      .required("Account Logo is required.")
+      .required("Account logo is required.")
       .test("fileFormat", "Unsupported Format", (value) =>
         value
           ? ["image/jpeg", "image/png", "image/gif", "image/jpg"].includes(
@@ -2101,12 +2101,9 @@ const CreateAccount = () => {
                         {customerType
                           ?.filter(
                             (data) =>
-                              ![
-                                "Startup",
-                                "ENT",
-                                "MM",
-                                "SMB",
-                              ].includes(data?.category_Name)
+                              !["Start-up", "ENT", "MM", "SMB"].includes(
+                                data?.category_Name
+                              )
                           )
                           .map((data, i) => (
                             <MenuItem
@@ -2139,12 +2136,9 @@ const CreateAccount = () => {
                         {/* Predefined options */}
                         {customerType
                           ?.filter((data) =>
-                            [
-                              "Startup",
-                              "ENT",
-                              "MM",
-                              "SMB",
-                            ].includes(data?.category_Name)
+                            ["Start-up", "ENT", "MM", "SMB"].includes(
+                              data?.category_Name
+                            )
                           )
                           .map((data, i) => (
                             <MenuItem

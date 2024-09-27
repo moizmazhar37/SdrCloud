@@ -38,6 +38,9 @@ import { toast } from "react-toastify";
 import { menuProps } from "src/utils";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 const useStyles = makeStyles((theme) => ({
+  " & MuiInputBase-input": {
+    padding: "0px !important",
+  },
   GoogleSheetContainer: {
     "& .breadcrumbs": {},
     "& .Headbutton": {
@@ -157,6 +160,41 @@ const useStyles = makeStyles((theme) => ({
       borderRadius: "50px",
       right: "-5px",
       cursor: "pointer",
+    },
+  },
+  selectitem: {
+    color: "#000",
+    border: "1px solid #ECECEC",
+    height: "44px",
+    marginTop: "20px",
+    background: "transparent",
+    borderRadius: "8px",
+
+    "& .MuiSelect-iconOutlined": {
+      borderLeft: "1px solid #ECECEC",
+    },
+    "& .MuiSelect-outlined.MuiSelect-outlined": {
+      display: "flex !important",
+      justifyContent: "space-between !important",
+      alignItems: "center !important",
+    },
+    "& .MuiSelect-iconOpen": {
+      borderLeft: "0px !important",
+      borderRight: "1px solid #ECECEC",
+      transform: "rotate(360deg)",
+      marginRight: "-1px !important",
+    },
+    "& .MuiSelect-icon": {
+      top: 0,
+      height: "40px",
+      paddingLeft: "8px",
+      color: "#152F40",
+    },
+    "& .MuiPopover-paper": {
+      marginTop: "85px",
+    },
+    "& .MuiTableCell-head ": {
+      lineheight: "2.5rem",
     },
   },
 }));
@@ -400,7 +438,10 @@ const GoogleSheet = ({
         ) : (
           <>
             {" "}
-            <Box className="d-flex justify-space-between">
+            <Box
+              className="d-flex justify-space-between"
+              style={{ flexWrap: "wrap", gap: "10px", marginTop: "10px" }}
+            >
               <Box className="breads">
                 <ArrowBackIcon
                   style={{ cursor: "pointer", marginRight: "8px" }}
@@ -458,8 +499,8 @@ const GoogleSheet = ({
                       <TableCell align="center">Fields</TableCell>
                       <TableCell align="center">Created On</TableCell>
                       <TableCell align="center">Status</TableCell>
-                      <TableCell align="center">Assign Status</TableCell>
-                      <TableCell align="center">Total</TableCell>
+                      <TableCell align="center">Status</TableCell>
+                      <TableCell align="center">Total Records</TableCell>
                       <TableCell align="center">Recent</TableCell>
                       <TableCell align="center">Action</TableCell>
                     </TableRow>
@@ -527,81 +568,81 @@ const GoogleSheet = ({
                         <TableCell className="tableCellText">
                           {key?.recent}
                         </TableCell>
-                        <TableCell className={classes.viewEditbtn}>
-                          <Button
-                            onClick={() => {
-                              history.push({
-                                pathname: "/viewSheets",
-                                state: {
-                                  id: key.googleSheetId,
-                                  nextRoute: nextRoute,
-                                },
-                              });
-                            }}
-                          >
-                            View
-                          </Button>
-                          <Divider className="dividerbtn" />
-                          <Button
-                            onClick={() => {
-                              history.push({
-                                pathname: "/editSheets",
-                                state: {
-                                  id: key.googleSheetId,
-                                  nextRoute: nextRoute,
-                                },
-                              });
-                            }}
-                          >
-                            Edit
-                          </Button>
-                          <Divider className="dividerbtn" />
-                          {key?.assignedStatus === "ASSIGNED" ? (
-                            <Button
-                              onClick={() => {
-                                // handleClose();
-                                setSelectedUserId(key);
-                                // getAllUsers();
-                                setUnassignOpen(true);
-                              }}
-                              // disabled={key.assignedStatus === "ASSIGNED"}
+                        <TableCell className="tableCellText">
+                          <FormControl style={{ width: "100px" }}>
+                            <Select
+                              style={{ marginTop: "0px" }}
+                              variant="outlined"
+                              className={classes.selectitem}
+                              id="choose-template"
+                              value={"none"}
+                              MenuProps={menuProps}
+                              name=""
+                              IconComponent={ExpandMoreIcon}
                             >
-                              Unassign
-                            </Button>
-                          ) : (
-                            <Button
-                              onClick={() => {
-                                handleClose();
-                                setSelectedUserId(key);
-                                getAllUsers();
-                                setAssignOpen(true);
-                              }}
-                              // disabled={key.assignedStatus === "ASSIGNED"}
-                            >
-                              Assign
-                            </Button>
-                          )}
-                          {/* <Divider className="dividerbtn" /> */}
-                          {/* <Button
-                            onClick={() => {
-                              setDisconnectSheetId(key.googleSheetId);
-                              disconnectSheet();
-                            }}
-                            disabled={key.sheetStatus === "DISCONNECTED"}
-                          >
-                            {" "}
-                            Disconnect
-                          </Button> */}
-                          <Divider className="dividerbtn" />
-                          <Button
-                            onClick={() => {
-                              setDeleteSheetId(key.googleSheetId);
-                              setDeleteOpen(true);
-                            }}
-                          >
-                            {" "}
-                            Delete
-                          </Button>
+                              <MenuItem
+                                value="none"
+                                onClick={() => {
+                                  history.push({
+                                    pathname: "/viewSheets",
+                                    state: {
+                                      id: key.googleSheetId,
+                                      nextRoute: nextRoute,
+                                    },
+                                  });
+                                }}
+                              >
+                                View
+                              </MenuItem>
+                              <MenuItem
+                                onClick={() => {
+                                  history.push({
+                                    pathname: "/editSheets",
+                                    state: {
+                                      id: key.googleSheetId,
+                                      nextRoute: nextRoute,
+                                    },
+                                  });
+                                }}
+                              >
+                                Edit
+                              </MenuItem>
+                              {key?.assignedStatus === "ASSIGNED" ? (
+                                <MenuItem
+                                  onClick={() => {
+                                    // handleClose();
+                                    setSelectedUserId(key);
+                                    // getAllUsers();
+                                    setUnassignOpen(true);
+                                  }}
+                                  // disabled={key.assignedStatus === "ASSIGNED"}
+                                >
+                                  Unassign
+                                </MenuItem>
+                              ) : (
+                                <MenuItem
+                                  onClick={() => {
+                                    handleClose();
+                                    setSelectedUserId(key);
+                                    getAllUsers();
+                                    setAssignOpen(true);
+                                  }}
+                                  // disabled={key.assignedStatus === "ASSIGNED"}
+                                >
+                                  Assign
+                                </MenuItem>
+                              )}
+                              <MenuItem
+                                onClick={() => {
+                                  setDeleteSheetId(key.googleSheetId);
+                                  setDeleteOpen(true);
+                                }}
+                              >
+                                {" "}
+                                Delete
+                              </MenuItem>
+                            </Select>
+                          </FormControl>
                         </TableCell>
                       </TableRow>
                     ))}

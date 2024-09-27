@@ -810,11 +810,9 @@ input:-webkit-autofill {
   height: 50px;
   width: 50px;
   border-radius: 50%;
-  background: linear-gradient(
-    220.89deg,
-    rgba(255, 25, 25, 0.368627451) 42.01%,
-    rgba(255, 255, 255, 0.2588235294) 82.75%
-  );
+  background: linear-gradient(220.89deg,
+      rgba(255, 25, 25, 0.368627451) 42.01%,
+      rgba(255, 255, 255, 0.2588235294) 82.75%);
   position: absolute;
   bottom: 100px;
   left: 30%;
@@ -826,11 +824,9 @@ input:-webkit-autofill {
   height: 30px;
   width: 30px;
   border-radius: 50%;
-  background: linear-gradient(
-    220.89deg,
-    rgba(255, 25, 25, 0.368627451) 42.01%,
-    rgba(255, 255, 255, 0.2588235294) 82.75%
-  );
+  background: linear-gradient(220.89deg,
+      rgba(255, 25, 25, 0.368627451) 42.01%,
+      rgba(255, 255, 255, 0.2588235294) 82.75%);
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   position: absolute;
   top: 143px;
@@ -843,11 +839,9 @@ input:-webkit-autofill {
   height: 40px;
   width: 40px;
   border-radius: 50%;
-  background: linear-gradient(
-    220.89deg,
-    rgba(255, 25, 25, 0.368627451) 42.01%,
-    rgba(255, 255, 255, 0.2588235294) 82.75%
-  );
+  background: linear-gradient(220.89deg,
+      rgba(255, 25, 25, 0.368627451) 42.01%,
+      rgba(255, 255, 255, 0.2588235294) 82.75%);
   position: absolute;
   bottom: 218px;
   left: 35%;
@@ -1266,8 +1260,7 @@ input.MuiInputBase-input.MuiOutlinedInput-input.MuiInputBase-inputMarginDense.Mu
   height: 55px;
 }
 
-.textFeilds
-  fieldset.PrivateNotchedOutline-root-65.MuiOutlinedInput-notchedOutline {
+.textFeilds fieldset.PrivateNotchedOutline-root-65.MuiOutlinedInput-notchedOutline {
   border: none !important;
 }
 
@@ -1340,9 +1333,9 @@ input.MuiInputBase-input.MuiOutlinedInput-input.MuiInputBase-inputMarginDense.Mu
   color: #848484;
 }
 
-.MuiSelect-root.MuiSelect-select.MuiSelect-selectMenu.MuiSelect-outlined.MuiInputBase-input.MuiOutlinedInput-input {
+/* .MuiSelect-root.MuiSelect-select.MuiSelect-selectMenu.MuiSelect-outlined.MuiInputBase-input.MuiOutlinedInput-input {
   border-radius: 15px;
-}
+} */
 
 .sellBtn {
   color: white;
@@ -1363,13 +1356,11 @@ input.MuiInputBase-input.MuiOutlinedInput-input.MuiInputBase-inputMarginDense.Mu
 }
 
 .backBlue {
-  background: linear-gradient(
-    180deg,
-    rgba(0, 172, 235, 0.1) 0%,
-    rgba(0, 176, 237, 0.1) 10.18%,
-    rgba(16, 105, 194, 0.1) 70.35%,
-    rgba(16, 105, 194, 0.1) 100%
-  );
+  background: linear-gradient(180deg,
+      rgba(0, 172, 235, 0.1) 0%,
+      rgba(0, 176, 237, 0.1) 10.18%,
+      rgba(16, 105, 194, 0.1) 70.35%,
+      rgba(16, 105, 194, 0.1) 100%);
   border-radius: 10px;
   border: 1px solid #6ecff3;
   margin-top: 40px;
@@ -1410,13 +1401,11 @@ svg.MuiSvgIcon-root.MuiStepIcon-root {
   padding: 5px 15px !important;
   margin: 5px;
   font-size: 14px;
-  background: linear-gradient(
-    180deg,
-    #00aceb 0%,
-    #00b0ed 10.18%,
-    #1069c2 70.35%,
-    #1069c2 100%
-  );
+  background: linear-gradient(180deg,
+      #00aceb 0%,
+      #00b0ed 10.18%,
+      #1069c2 70.35%,
+      #1069c2 100%);
   box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.25);
 }
 
@@ -1447,13 +1436,11 @@ svg.MuiSvgIcon-root.MuiStepIcon-root {
 }
 
 .Styleword {
-  background: linear-gradient(
-    180deg,
-    #00aceb 0%,
-    #00b0ed 10.18%,
-    #1069c2 70.35%,
-    #1069c2 100%
-  );
+  background: linear-gradient(180deg,
+      #00aceb 0%,
+      #00b0ed 10.18%,
+      #1069c2 70.35%,
+      #1069c2 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -2299,7 +2286,7 @@ a:hover {
     color: #0082e6;
   }
 
-  #check:checked ~ ul {
+  #check:checked~ul {
     left: 10px;
     z-index: 99;
     height: 100vh !important;
@@ -2323,11 +2310,9 @@ a:hover {
   height: 50px;
   width: 50px;
   border-radius: 50%;
-  background: linear-gradient(
-    220.89deg,
-    rgba(255, 25, 25, 0.368627451) 42.01%,
-    rgba(255, 255, 255, 0.2588235294) 82.75%
-  );
+  background: linear-gradient(220.89deg,
+      rgba(255, 25, 25, 0.368627451) 42.01%,
+      rgba(255, 255, 255, 0.2588235294) 82.75%);
   position: absolute;
   bottom: 100px;
   left: 30%;
@@ -2339,11 +2324,9 @@ a:hover {
   height: 30px;
   width: 30px;
   border-radius: 50%;
-  background: linear-gradient(
-    220.89deg,
-    rgba(255, 25, 25, 0.368627451) 42.01%,
-    rgba(255, 255, 255, 0.2588235294) 82.75%
-  );
+  background: linear-gradient(220.89deg,
+      rgba(255, 25, 25, 0.368627451) 42.01%,
+      rgba(255, 255, 255, 0.2588235294) 82.75%);
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   position: absolute;
   top: 143px;
@@ -2356,11 +2339,9 @@ a:hover {
   height: 40px;
   width: 40px;
   border-radius: 50%;
-  background: linear-gradient(
-    220.89deg,
-    rgba(255, 25, 25, 0.368627451) 42.01%,
-    rgba(255, 255, 255, 0.2588235294) 82.75%
-  );
+  background: linear-gradient(220.89deg,
+      rgba(255, 25, 25, 0.368627451) 42.01%,
+      rgba(255, 255, 255, 0.2588235294) 82.75%);
   position: absolute;
   bottom: 218px;
   left: 35%;
@@ -2648,11 +2629,9 @@ input::-webkit-inner-spin-button {
   animation: rotation 2s infinite linear;
 }
 
-@-webkit-keyframes rotation {
-}
+@-webkit-keyframes rotation {}
 
-@keyframes rotation {
-}
+@keyframes rotation {}
 
 .MuiInput-underline:after {
   border-bottom: none;
@@ -2777,11 +2756,9 @@ input::-webkit-inner-spin-button {
 #borderColor {
   border: 0.9px solid;
 
-  border-image-source: radial-gradient(
-    97.86% 5703.94% at 2.14% 14.42%,
-    #004aad 0%,
-    #c53ad2 100%
-  );
+  border-image-source: radial-gradient(97.86% 5703.94% at 2.14% 14.42%,
+      #004aad 0%,
+      #c53ad2 100%);
 }
 
 input:-webkit-autofill {
@@ -2904,6 +2881,7 @@ input:-webkit-autofill {
   gap: 2rem;
   flex-wrap: wrap;
 }
+
 @media (max-width: 768px) {
   .section-flex {
     justify-content: center;

@@ -37,6 +37,7 @@ import { useLocation } from "react-router-dom";
 import "react-phone-input-2/lib/style.css";
 import PhoneInput from "react-phone-input-2";
 import FullScreenLoader from "src/component/FullScreenLoader";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import { FormHelperText } from "@mui/material";
 import CropEasyProfile from "../../CreateVideo/Crop/CropEasyProfile";
 // Styles for the component
@@ -149,6 +150,10 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   breads: {
+    marginTop: "10px",
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
     "& nav li": {
       margin: "0px",
     },
@@ -407,17 +412,17 @@ const useStyles = makeStyles((theme) => ({
 const EditAccount = () => {
   const [selectedCountry, setSelectedCountry] = useState("US");
   const accountNameErrorMessage =
-    "Account Name is required and must be between 3 and 100 characters, containing only alphabetic, alphanumeric or special characters.";
+    "Account name is required and must be between 3 and 100 characters, containing only alphabetic, alphanumeric or special characters.";
   const accountPhoneErrorMessage =
     "A valid account phone number is required, including the country code.";
 
   const accountFirstName =
-    "Admin First Name is required and must be between 2 and 50 characters, containing only alphabetic, alphanumeric or special characters.";
+    "Admin first name is required and must be between 2 and 50 characters, containing only alphabetic, alphanumeric or special characters.";
 
   const accountLastName =
-    "Admin Last Name is required and must be between 2 and 50 characters, containing only alphabetic, alphanumeric or special characters.";
+    "Admin last name is required and must be between 2 and 50 characters, containing only alphabetic, alphanumeric or special characters.";
   const phoneNo =
-    "A valid Account Admin Phone number is required, including the country code.";
+    "A valid account admin phone number is required, including the country code.";
   const validationSchema = Yup.object().shape({
     accountName: Yup.string()
       .test(
@@ -922,6 +927,12 @@ const EditAccount = () => {
     <>
       {loading && <FullScreenLoader />}
       <Box className={classes.breads}>
+        <ArrowBackIcon
+          style={{ color: "black", cursor: "pointer", fontSize: "large" }}
+          onClick={() => {
+            history.push("/PP-createaccount");
+          }}
+        />
         <Breadcrumbs aria-label="breadcrumb">
           <Link color="inherit" href="/PP-createaccount">
             Accounts&nbsp;
@@ -1106,10 +1117,10 @@ const EditAccount = () => {
                       value={
                         newAccount.contractTerm
                           ? newAccount.contractTerm
-                            .replace(/(\d)([A-Z])/g, "$1 $2")
-                            .replace(/(\d) Year/, (match, p1) =>
-                              p1 > 1 ? `${p1} Years` : `${p1} Year`
-                            )
+                              .replace(/(\d)([A-Z])/g, "$1 $2")
+                              .replace(/(\d) Year/, (match, p1) =>
+                                p1 > 1 ? `${p1} Years` : `${p1} Year`
+                              )
                           : ""
                       }
                     />
@@ -1366,7 +1377,7 @@ const EditAccount = () => {
                                   }
                                   helperText={
                                     form.touched.primaryRgb &&
-                                      form.errors.primaryRgb
+                                    form.errors.primaryRgb
                                       ? form.errors.primaryRgb
                                       : ""
                                   }
@@ -1439,13 +1450,13 @@ const EditAccount = () => {
                                   hexValue
                                     ? ""
                                     : form.touched.primaryHex &&
-                                    form.errors.primaryHex
+                                      form.errors.primaryHex
                                 }
                                 helperText={
                                   hexValue
                                     ? ""
                                     : form.touched.primaryHex &&
-                                    form.errors.primaryHex
+                                      form.errors.primaryHex
                                 }
                                 value={hexValue || ""}
                               />
@@ -1550,13 +1561,13 @@ const EditAccount = () => {
                                   hexValuesecondary
                                     ? " "
                                     : form.touched.secondaryHex &&
-                                    form.errors.secondaryHex
+                                      form.errors.secondaryHex
                                 }
                                 helperText={
                                   hexValuesecondary
                                     ? " "
                                     : form.touched.secondaryHex &&
-                                    form.errors.secondaryHex
+                                      form.errors.secondaryHex
                                 }
                                 value={hexValuesecondary || ""}
                               />
@@ -1836,7 +1847,7 @@ const EditAccount = () => {
             setOpenCrop={setOpenCrop}
             setPhotoURL={setPhotoURL}
             setUploadedImage={setAccountlogo}
-            setErrors={() => { }}
+            setErrors={() => {}}
           />
         </Dialog>
       ) : (

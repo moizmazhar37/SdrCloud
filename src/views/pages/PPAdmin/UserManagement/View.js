@@ -6,6 +6,7 @@ import {
   TextField,
   Grid,
   Breadcrumbs,
+  useTheme,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { toast } from "react-toastify";
@@ -19,6 +20,7 @@ import { BsWindowSidebar } from "react-icons/bs";
 import "react-phone-input-2/lib/style.css";
 import PhoneInput from "react-phone-input-2";
 import { parsePhoneNumberFromString } from "libphonenumber-js";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 const validatePhoneNumber = (value, country) => {
   // Parse the phone number, adding "+" if missing
   const phoneNumber = parsePhoneNumberFromString(
@@ -60,6 +62,12 @@ const useStyles = makeStyles((theme) => ({
       color: "#f44336 !important",
       marginTop: "3px",
       fontWeight: 500,
+    },
+    "& .MuiFormControl-root": {
+      marginTop: "5px",
+      [theme.breakpoints.down("sm")]: {
+        marginTop: "0px", // Reduce padding for sm and xs screens
+      },
     },
   },
   textfieldRed: {
@@ -121,6 +129,10 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   breads: {
+    marginTop: "10px",
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
     "& nav li": {
       margin: "0px",
     },
@@ -169,7 +181,7 @@ function ViewUser() {
   const [change, setChange] = useState(true);
   const [isFormValid, setFormValid] = useState(false);
   const [ppadminDetails, setPPadminDetails] = useState("");
-  console.log("ppadminDetails", ppadminDetails);
+  const theme = useTheme();
   const [originalUserData, setOriginalUserData] = useState({});
   console.log("originalUserData: ", originalUserData);
   const [viewUserData, setViewUserData] = useState({
@@ -285,7 +297,7 @@ function ViewUser() {
     fullName: "Admin Name",
     email: "Email",
     phoneNumber: "Phone",
-    DateCreated: "Created Date & Time",
+    DateCreated: "Account Creation Date",
     Status: "Status",
   };
 
@@ -329,12 +341,18 @@ function ViewUser() {
   return (
     <>
       <Box className={classes.breads}>
+        <ArrowBackIcon
+          style={{ color: "black", cursor: "pointer", fontSize: "large" }}
+          onClick={() => {
+            history.push("/PP-user-management");
+          }}
+        />
         <Breadcrumbs aria-label="breadcrumb">
           <Link href="/PP-user-management" color="inherit">
             User Managment&nbsp;
           </Link>
           <Typography className="breadCrumbText">
-            {allData?.viewss ? "View" : "Edit"} PersoaPro Admin Details
+            {allData?.viewss ? "View" : "Edit"} PersonaPro Admin Details
           </Typography>
         </Breadcrumbs>
       </Box>
@@ -380,7 +398,15 @@ function ViewUser() {
                     (key) =>
                       key !== "userId" && (
                         <Box key={key} pt={1} className="d-flex">
-                          <Grid container spacing={3} style={{ gap: "24px" }}>
+                          <Grid
+                            container
+                            spacing={2}
+                            style={{
+                              gap: theme.breakpoints.down("sm")
+                                ? "0px"
+                                : "24px",
+                            }}
+                          >
                             <Grid
                               item
                               lg={4}
@@ -486,7 +512,7 @@ function ViewUser() {
                                           key === "DateCreated"
                                             ? new Date(
                                                 viewUserData[key]
-                                              ).toLocaleString()
+                                              ).toLocaleDateString() // Use toLocaleDateString() for date only
                                             : key === "Status" &&
                                               values[key] === "Delete"
                                             ? "Inactive"

@@ -10,6 +10,10 @@ import {
   InputAdornment,
   MenuItem,
   Select,
+  DialogActions,
+  DialogTitle,
+  Dialog,
+  DialogContent,
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { menuProps } from "src/utils";
@@ -23,7 +27,58 @@ import { toast } from "react-toastify";
 import FullScreenLoader from "src/component/FullScreenLoader";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import { Close } from "@material-ui/icons";
+import ButtonCircularProgress from "src/component/ButtonCircularProgress";
 const useStyles = makeStyles((theme) => ({
+
+  dialog: {
+    "& .MuiPaper-rounded": {
+      borderRadius: "16px",
+    },
+    "& h5": {
+      textAlign: "center",
+      fontSize: "30px",
+      fontWeight: 700,
+      color: "#152F40",
+    },
+    "& h4": {
+      textAlign: "center",
+      padding: "0px 30px",
+      color: "#152F40",
+      fontSize: "20px"
+    },
+    "& .MuiDialogActions-root": {
+      justifyContent: "center",
+      gap: "20px",
+      padding: "18px 10px 20px",
+    },
+    "& .MuiButton-containedPrimary": {
+      backgroundColor: "red",
+      color: "#fff !important",
+      boxShadow: "none",
+    },
+    "& .MuiButton-contained": {
+      padding: "10px 40px",
+      fontSize: "14px",
+    },
+    "& .MuiDialog-paper": {
+      overflowY: "visible",
+    },
+    "& .MuiDialogTitle-root": {
+      position: "relative",
+    },
+    "& .MuiSvgIcon-root": {
+      color: "#152F40",
+      position: "absolute",
+      top: "-15px",
+      padding: "5px",
+      background: "white",
+      border: "thin solid #ECECEC",
+      borderRadius: "50px",
+      right: "-5px",
+      cursor: "pointer",
+    },
+  },
   GoogleSheetContainer: {
     "& .headText": {
       color: "#0358AC",
@@ -114,7 +169,17 @@ const GoogleSheetConnection = ({
   const [loading, setLoading] = useState(false);
   const [sheetdata, setSheetData] = useState([]);
   const [sheetType, setSheetType] = useState("");
+  const [openDailog, setOpenDailog] = useState(false);
+  console.log("openDailog: ", openDailog);
   const history = useHistory();
+
+  const handleClose = () => {
+    setOpenDailog(false)
+  }
+  const handleCopy = () => {
+    navigator.clipboard.writeText('scott-account@scott-project-416709.iam.gserviceaccount.com');
+    toast.success('Email copied to clipboard!');
+  };
 
   const handleBackClick2 = () => {
     setnextRoutes1("Google Sheet");
@@ -135,6 +200,7 @@ const GoogleSheetConnection = ({
           sheetType: sheetType,
         },
       });
+
       if (response?.data?.status === 200) {
         console.log(response?.data?.data?._id);
         history.push("/editSheets", {
@@ -145,17 +211,28 @@ const GoogleSheetConnection = ({
 
         toast.success("Successfully connected to Google Sheet");
         setLoading(false);
-      } else {
-        console.log(response);
+      }
+
+      else {
+        // setOpenDailog(true)
         toast.error(response?.data?.message);
         setFieldValue("sheetURL", "");
         setIsSheetURLSet(false);
         setLoading(false);
       }
     } catch (error) {
-      toast.error(error?.response?.data?.message);
-      console.log(error);
-      setLoading(false);
+      console.log("error: ", error);
+      if (error?.response?.data?.status === 402) {
+        setLoading(false);
+
+        setOpenDailog(true)
+      }
+      else {
+
+        toast.error(error?.response?.data?.message);
+        console.log(error);
+        setLoading(false);
+      }
     }
   };
 
@@ -193,211 +270,212 @@ const GoogleSheetConnection = ({
   };
 
   return (
-    <Box className={classes.GoogleSheetContainer}>
-      {loading && <FullScreenLoader />}
-      {nextRoutes2 === "Sheet Details" ? (
-        <SheetDetails
-          settingRoute={settingRoute}
-          setSettingRoute={setSettingRoute}
-          nextRoute={nextRoute}
-          nextRoute1={nextRoute1}
-          setnextRoutes={setnextRoutes}
-          nextRoutes2={nextRoutes2}
-          setNextRoutes2={setNextRoutes2}
-          handleClick={handleClick}
-          sheetData1={sheetdata}
-        />
-      ) : (
-        <>
-          <Box className="breads">
-            <ArrowBackIcon
-              style={{ cursor: "pointer", marginRight: "8px" }}
-              onClick={goBackToElementSelection}
-            />
-            <Breadcrumbs aria-label="breadcrumb">
-              <Typography variant="body1" style={{ color: "#152F40" }}>
-                <Link color="inherit" href="/pp-settings" onClick={handleClick}>
-                  Settings{" "}
+    <>
+      <Box className={classes.GoogleSheetContainer}>
+        {loading && <FullScreenLoader />}
+        {nextRoutes2 === "Sheet Details" ? (
+          <SheetDetails
+            settingRoute={settingRoute}
+            setSettingRoute={setSettingRoute}
+            nextRoute={nextRoute}
+            nextRoute1={nextRoute1}
+            setnextRoutes={setnextRoutes}
+            nextRoutes2={nextRoutes2}
+            setNextRoutes2={setNextRoutes2}
+            handleClick={handleClick}
+            sheetData1={sheetdata}
+          />
+        ) : (
+          <>
+            <Box className="breads">
+              <ArrowBackIcon
+                style={{ cursor: "pointer", marginRight: "8px" }}
+                onClick={goBackToElementSelection}
+              />
+              <Breadcrumbs aria-label="breadcrumb">
+                <Typography variant="body1" style={{ color: "#152F40" }}>
+                  <Link color="inherit" href="/pp-settings" onClick={handleClick}>
+                    Settings{" "}
+                  </Link>
+                </Typography>
+                <Typography
+                  variant="body1"
+                  style={{ color: "#152F40", marginLeft: "5px" }}
+                >
+                  <Link color="inherit" href="/integration" onClick={handleClick}>
+                    Integration
+                  </Link>
+                </Typography>{" "}
+                <Link onClick={handleBackClick2} className="linkClass">
+                  {nextRoute}
                 </Link>
-              </Typography>
-              <Typography
-                variant="body1"
-                style={{ color: "#152F40", marginLeft: "5px" }}
-              >
-                <Link color="inherit" href="/integration" onClick={handleClick}>
-                  Integration
-                </Link>
-              </Typography>{" "}
-              <Link onClick={handleBackClick2} className="linkClass">
-                {nextRoute}
-              </Link>
-              <span className="headText"> {nextRoute1}</span>
-            </Breadcrumbs>
-          </Box>
-          <Formik
-            initialValues={{
-              sheetType: "",
-              sheetName: "",
-              sheetURL: "",
-            }}
-            validationSchema={validationSchema}
-            onSubmit={(values, { setFieldValue }) => {
-              handleSubmit(values, setFieldValue);
-            }}
-          >
-            {({ handleBlur, handleChange, values }) => (
-              <Form>
-                <Grid container spacing={2} className="mainGridContainer">
-                  <Grid item lg={2} xs={12}>
-                    <Box mt={4}>
-                      <Typography>Select Sheet Type</Typography>
-                      <Field
-                        name="sheetType"
-                        as="select"
-                        fullWidth
-                        marginTop="20px"
-                      >
-                        {({ field, form }) => (
-                          <>
-                            <Select
-                              {...field}
-                              fullWidth
-                              style={{ marginTop: "5px" }}
-                              variant="outlined"
-                              displayEmpty
-                              onChange={(e) => {
-                                form.setFieldValue(field.name, e.target.value);
-                                setSheetType(e.target.value);
-                                // console.log(e.target.value)
-                              }}
-                              IconComponent={ExpandMoreIcon}
-                              MenuProps={menuProps}
-                              marginTop="5px"
-                            >
-                              <MenuItem value="" disabled>
-                                Select Type
-                              </MenuItem>
-                              <MenuItem value="HVO">HVO</MenuItem>
-                              <MenuItem value="VIDEO">VIDEO</MenuItem>
-                            </Select>
-                            {form.errors.sheetType &&
-                              form.touched.sheetType && (
-                                <div
-                                  style={{
-                                    fontSize: "12px",
-                                    color: "red",
-                                    marginTop: "7px",
-                                  }}
-                                >
-                                  {form.errors.sheetType}
-                                </div>
-                              )}
-                          </>
-                        )}
-                      </Field>
-                    </Box>
-                  </Grid>
-                  <Grid item lg={3} xs={12}>
-                    <Box mt={4}>
-                      <Typography>Google Sheet Name</Typography>
-                      <Field name="sheetName">
-                        {({ field, form }) => (
-                          <div>
-                            <TextField
-                              {...field}
-                              variant="outlined"
-                              className="btnTextfield"
-                              placeholder="Enter PersonaPro Sheet Name"
-                              disabled={!values.sheetType}
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              inputProps={{
-                                maxLength: 151,
-                                // onKeyPress: (event) => {
-                                //   const charCode = event.which
-                                //     ? event.which
-                                //     : event.keyCode;
-                                //   const charStr = String.fromCharCode(charCode);
-
-                                //   if (
-                                //     !(
-                                //       (
-                                //         (charCode >= 65 && charCode <= 90) || // A-Z
-                                //         (charCode >= 97 && charCode <= 122) || // a-z
-                                //         (charCode >= 48 && charCode <= 57) || // 0-9
-                                //         charStr === " " || // space
-                                //         charStr === "_" || // underscore
-                                //         charStr === "-" || // hyphen
-                                //         charStr === "."
-                                //       ) // period
-                                //     )
-                                //   ) {
-                                //     event.preventDefault();
-                                //   }
-                                // },
-                              }}
-                            />
-                            {form.errors.sheetName &&
-                              form.touched.sheetName && (
-                                <div
-                                  style={{
-                                    fontSize: "12px",
-                                    color: "red",
-                                    marginTop: "7px",
-                                  }}
-                                >
-                                  {form.errors.sheetName}
-                                </div>
-                              )}
-                          </div>
-                        )}
-                      </Field>
-                    </Box>
-                  </Grid>
-                  <Grid item lg={4} xs={12}>
-                    <Box mt={4}>
-                      <Typography>Google Sheet URL</Typography>
-                      <Field name="sheetURL">
-                        {({ field, form }) => (
-                          <div>
-                            <TextField
-                              {...field}
-                              variant="outlined"
-                              className="btnTextfield"
-                              disabled={!values.sheetType}
-                              placeholder="Enter PersonaPro Sheet URL"
-                              InputProps={{
-                                endAdornment: (
-                                  <InputAdornment position="end">
-                                    <Button
-                                      variant="contained"
-                                      type="submit"
-                                      color="primary"
-                                      onClick={handleFetchButtonClick}
-                                    >
-                                      Fetch
-                                    </Button>
-                                  </InputAdornment>
-                                ),
-                              }}
-                            />
-                            {form.errors.sheetURL && form.touched.sheetURL && (
-                              <div
-                                style={{
-                                  fontSize: "12px",
-                                  color: "red",
-                                  marginTop: "7px",
+                <span className="headText"> {nextRoute1}</span>
+              </Breadcrumbs>
+            </Box>
+            <Formik
+              initialValues={{
+                sheetType: "",
+                sheetName: "",
+                sheetURL: "",
+              }}
+              validationSchema={validationSchema}
+              onSubmit={(values, { setFieldValue }) => {
+                handleSubmit(values, setFieldValue);
+              }}
+            >
+              {({ handleBlur, handleChange, values }) => (
+                <Form>
+                  <Grid container spacing={2} className="mainGridContainer">
+                    <Grid item lg={2} xs={12}>
+                      <Box mt={4}>
+                        <Typography>Select Sheet Type</Typography>
+                        <Field
+                          name="sheetType"
+                          as="select"
+                          fullWidth
+                          marginTop="20px"
+                        >
+                          {({ field, form }) => (
+                            <>
+                              <Select
+                                {...field}
+                                fullWidth
+                                style={{ marginTop: "5px" }}
+                                variant="outlined"
+                                displayEmpty
+                                onChange={(e) => {
+                                  form.setFieldValue(field.name, e.target.value);
+                                  setSheetType(e.target.value);
+                                  // console.log(e.target.value)
                                 }}
+                                IconComponent={ExpandMoreIcon}
+                                MenuProps={menuProps}
+                                marginTop="5px"
                               >
-                                {form.errors.sheetURL}
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      </Field>
-                    </Box>
-                  </Grid>
-                  {/* <Grid item lg={2} xs={12}>
+                                <MenuItem value="" disabled>
+                                  Select Type
+                                </MenuItem>
+                                <MenuItem value="HVO">HVO</MenuItem>
+                                <MenuItem value="VIDEO">VIDEO</MenuItem>
+                              </Select>
+                              {form.errors.sheetType &&
+                                form.touched.sheetType && (
+                                  <div
+                                    style={{
+                                      fontSize: "12px",
+                                      color: "red",
+                                      marginTop: "7px",
+                                    }}
+                                  >
+                                    {form.errors.sheetType}
+                                  </div>
+                                )}
+                            </>
+                          )}
+                        </Field>
+                      </Box>
+                    </Grid>
+                    <Grid item lg={3} xs={12}>
+                      <Box mt={4}>
+                        <Typography>Google Sheet Name</Typography>
+                        <Field name="sheetName">
+                          {({ field, form }) => (
+                            <div>
+                              <TextField
+                                {...field}
+                                variant="outlined"
+                                className="btnTextfield"
+                                placeholder="Enter PersonaPro Sheet Name"
+                                disabled={!values.sheetType}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                inputProps={{
+                                  maxLength: 151,
+                                  // onKeyPress: (event) => {
+                                  //   const charCode = event.which
+                                  //     ? event.which
+                                  //     : event.keyCode;
+                                  //   const charStr = String.fromCharCode(charCode);
+
+                                  //   if (
+                                  //     !(
+                                  //       (
+                                  //         (charCode >= 65 && charCode <= 90) || // A-Z
+                                  //         (charCode >= 97 && charCode <= 122) || // a-z
+                                  //         (charCode >= 48 && charCode <= 57) || // 0-9
+                                  //         charStr === " " || // space
+                                  //         charStr === "_" || // underscore
+                                  //         charStr === "-" || // hyphen
+                                  //         charStr === "."
+                                  //       ) // period
+                                  //     )
+                                  //   ) {
+                                  //     event.preventDefault();
+                                  //   }
+                                  // },
+                                }}
+                              />
+                              {form.errors.sheetName &&
+                                form.touched.sheetName && (
+                                  <div
+                                    style={{
+                                      fontSize: "12px",
+                                      color: "red",
+                                      marginTop: "7px",
+                                    }}
+                                  >
+                                    {form.errors.sheetName}
+                                  </div>
+                                )}
+                            </div>
+                          )}
+                        </Field>
+                      </Box>
+                    </Grid>
+                    <Grid item lg={4} xs={12}>
+                      <Box mt={4}>
+                        <Typography>Google Sheet URL</Typography>
+                        <Field name="sheetURL">
+                          {({ field, form }) => (
+                            <div>
+                              <TextField
+                                {...field}
+                                variant="outlined"
+                                className="btnTextfield"
+                                disabled={!values.sheetType}
+                                placeholder="Enter PersonaPro Sheet URL"
+                                InputProps={{
+                                  endAdornment: (
+                                    <InputAdornment position="end">
+                                      <Button
+                                        variant="contained"
+                                        type="submit"
+                                        color="primary"
+                                        onClick={handleFetchButtonClick}
+                                      >
+                                        Fetch
+                                      </Button>
+                                    </InputAdornment>
+                                  ),
+                                }}
+                              />
+                              {form.errors.sheetURL && form.touched.sheetURL && (
+                                <div
+                                  style={{
+                                    fontSize: "12px",
+                                    color: "red",
+                                    marginTop: "7px",
+                                  }}
+                                >
+                                  {form.errors.sheetURL}
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </Field>
+                      </Box>
+                    </Grid>
+                    {/* <Grid item lg={2} xs={12}>
                     <Box mt={7}>
                       <Button
                         variant="containedSecondary"
@@ -407,13 +485,46 @@ const GoogleSheetConnection = ({
                       </Button>
                     </Box>
                   </Grid> */}
-                </Grid>
-              </Form>
-            )}
-          </Formik>
-        </>
-      )}
-    </Box>
+                  </Grid>
+                </Form>
+              )}
+            </Formik>
+          </>
+        )}
+      </Box>
+
+      <Dialog
+        open={openDailog}
+        className={classes.dialog}
+        onClose={handleClose}
+      >
+        <DialogTitle>
+          <Typography variant="h5">Warning</Typography>
+          <Close onClick={handleClose} />
+        </DialogTitle>
+        <DialogContent>
+          <Typography variant="h4">
+            Kindly share the Excel sheet with us at{' '}
+            <span
+              onClick={handleCopy}
+              style={{ textDecoration: 'underline', cursor: 'pointer', color: 'inherit' }}
+            >
+              scott-account@scott-project-416709.iam.gserviceaccount.com
+            </span>. This will allow our system to process your file and automatically add the generated URL link directly into the sheet.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="containedPrimary" onClick={() => handleClose()}>
+            {" "}
+            Ok
+          </Button>
+          {/* <Button variant="containedPrimary" onClick={() => handleDelete()}>
+            {loading === false ? "Delete" : <ButtonCircularProgress />}
+          </Button> */}
+        </DialogActions>
+      </Dialog>
+
+    </>
   );
 };
 

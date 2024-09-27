@@ -18,14 +18,14 @@ import ButtonCircularProgress from "src/component/ButtonCircularProgress";
 // Validation schema for form fields
 const validationSchema = Yup.object().shape({
   firstName: Yup.string()
-    .required("First Name is required")
+    .required("First name is required")
     .transform((value) =>
       value
         ? value.charAt(0).toUpperCase() + value.slice(1).toLowerCase()
         : value
     ),
   lastName: Yup.string()
-    .required("Last Name is required")
+    .required("Last name is required")
     .transform((value) =>
       value
         ? value.charAt(0).toUpperCase() + value.slice(1).toLowerCase()
@@ -40,10 +40,9 @@ const validationSchema = Yup.object().shape({
     .required("Email is required"),
   password: Yup.string()
     .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[a-zA-Z\d@$!%*?&]{6,}$/,
-      "Password must contain at least 6 characters, including one uppercase letter, one lowercase letter, and one digit"
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[a-zA-Z\d@$!%*?&]{8,16}$/,
+      "Password must contain at least 8 characters, including one uppercase letter, one lowercase letter, and one digit"
     )
-    .min(6, "Password must be at least 6 characters")
     .required("Password is required"),
 });
 

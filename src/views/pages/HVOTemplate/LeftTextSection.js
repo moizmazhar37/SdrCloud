@@ -717,7 +717,9 @@ function LeftTextSection({
                     value={h1}
                     onChange={(e) => {
                       const value = e.target.value.replace(htmlTagRegex, "");
-                      if (value.length <= 100) {
+                      const isSpecialCase =
+                        value.startsWith("[") && value.endsWith("]");
+                      if (isSpecialCase || value.length <= 100) {
                         setH1(value);
                         setErrors((prevErrors) => ({
                           ...prevErrors,
@@ -866,7 +868,9 @@ function LeftTextSection({
                     value={h2}
                     onChange={(e) => {
                       const value = e.target.value.replace(htmlTagRegex, "");
-                      if (value.length <= 100) {
+                      const isSpecialCase =
+                        value.startsWith("[") && value.endsWith("]");
+                      if (isSpecialCase || value.length <= 100) {
                         setH2(value);
                         setErrors((prevErrors) => ({
                           ...prevErrors,
@@ -1012,7 +1016,9 @@ function LeftTextSection({
                     value={body}
                     onChange={(e) => {
                       const value = e.target.value.replace(htmlTagRegex, "");
-                      if (value.length <= 400) {
+                      const isSpecialCase =
+                        value.startsWith("[") && value.endsWith("]");
+                      if (isSpecialCase || value.length <= 400) {
                         setBody(value);
                         setErrors((prevErrors) => ({
                           ...prevErrors,

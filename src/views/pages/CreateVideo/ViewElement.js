@@ -6,8 +6,7 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import React from "react";
-
-// Styles for the component
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 const useStyles = makeStyles((theme) => ({
   secondmaingridBox: {
     borderRadius: "12px",
@@ -34,24 +33,39 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }));
-// Function to render and manage the view elements based on the provided linkObject and getSummary function
-function ViewElement({ linkObject, getSummary }) {
+function ViewElement({ linkObject, getSummary, setIsSectionCompleted }) {
+  console.log(linkObject?.url, "linkObject");
+
   const classes = useStyles();
-  console.log(linkObject, "vide Object");
   return (
     <Box className={classes.secondmaingridBox}>
-      <Box style={{ marginTop: "12px", color: "#0358AC" }}>
-        {linkObject?.elementId?.element_Name === "STATICURL" ? (
-          <Typography>Static URL | Element {linkObject?.sequence}</Typography>
-        ) : linkObject?.elementId?.element_Name === "DYNAMICURL" ? (
-          <Typography>Dynamic URL | Element {linkObject?.sequence}</Typography>
-        ) : linkObject?.elementId?.element_Name === "UPLOADIMAGE" ? (
-          <Typography>Upload Image | Element {linkObject?.sequence}</Typography>
-        ) : linkObject?.elementId?.element_Name === "VIDEOCLIPS" ? (
-          <Typography>Upload Video | Element {linkObject?.sequence}</Typography>
-        ) : (
-          <></>
-        )}
+      <Box mb={3} mt={2} style={{ display: "flex", alignItems: "center" }}>
+        <ArrowBackIcon
+          style={{ cursor: "pointer", marginRight: "8px", fontSize: "large" }}
+          onClick={() => {
+            getSummary("summary");
+            setIsSectionCompleted(true);
+          }}
+        />
+        <Box style={{ color: "#0358AC" }}>
+          {linkObject?.elementId?.element_Name === "STATICURL" ? (
+            <Typography>Static URL | Element {linkObject?.sequence}</Typography>
+          ) : linkObject?.elementId?.element_Name === "DYNAMICURL" ? (
+            <Typography>
+              Dynamic URL | Element {linkObject?.sequence}
+            </Typography>
+          ) : linkObject?.elementId?.element_Name === "UPLOADIMAGE" ? (
+            <Typography>
+              Upload Image | Element {linkObject?.sequence}
+            </Typography>
+          ) : linkObject?.elementId?.element_Name === "VIDEOCLIPS" ? (
+            <Typography>
+              Video Clips | Element {linkObject?.sequence}
+            </Typography>
+          ) : (
+            <></>
+          )}
+        </Box>
       </Box>
       {linkObject?.elementId?.element_Name === "STATICURL" ? (
         <>
@@ -89,7 +103,6 @@ function ViewElement({ linkObject, getSummary }) {
                 placeholder="Scroll"
               />
             </div>
-
             <div
               style={{ width: "100%", maxWidth: "150px", borderRadius: "6px" }}
             >
@@ -137,6 +150,7 @@ function ViewElement({ linkObject, getSummary }) {
             >
               <Typography>Duration (sec)</Typography>
               <TextField
+                disabled
                 className={classes.durationscroll}
                 value={linkObject?.duration}
                 type="number"
@@ -150,6 +164,7 @@ function ViewElement({ linkObject, getSummary }) {
             >
               <Typography>Scroll</Typography>
               <TextField
+                disabled
                 className={classes.durationscroll}
                 value={linkObject?.scrollEnabled === true ? "Yes" : "No"}
                 fullWidth
@@ -163,6 +178,7 @@ function ViewElement({ linkObject, getSummary }) {
             >
               <Typography>Audio</Typography>
               <TextField
+                disabled
                 className={classes.durationscroll}
                 value={
                   linkObject?.audioTemplateReferral?.embedded === false
@@ -175,10 +191,24 @@ function ViewElement({ linkObject, getSummary }) {
               />
             </div>
           </Box>
+          <Box mt={2}>
+            <iframe
+              src={linkObject?.firstRowValue}
+              alt=""
+              height="400px"
+              width="100%"
+              style={{ borderRadius: "16px", border: "1px solid" }}
+            ></iframe>
+          </Box>
         </>
       ) : linkObject?.elementId?.element_Name === "UPLOADIMAGE" ? (
         <>
-          <TextField fullWidth value={linkObject?.url} variant="outlined" />
+          <TextField
+            fullWidth
+            value={linkObject?.url}
+            variant="outlined"
+            disabled
+          />
           <Box
             style={{
               display: "flex",
@@ -192,6 +222,7 @@ function ViewElement({ linkObject, getSummary }) {
             >
               <Typography>Duration (sec)</Typography>
               <TextField
+                disabled
                 className={classes.durationscroll}
                 value={linkObject?.duration}
                 type="number"
@@ -205,6 +236,7 @@ function ViewElement({ linkObject, getSummary }) {
             >
               <Typography>Scroll</Typography>
               <TextField
+                disabled
                 className={classes.durationscroll}
                 value={linkObject?.scrollEnabled === true ? "Yes" : "No"}
                 fullWidth
@@ -218,6 +250,7 @@ function ViewElement({ linkObject, getSummary }) {
             >
               <Typography>Audio</Typography>
               <TextField
+                disabled
                 className={classes.durationscroll}
                 value={
                   linkObject?.audioTemplateReferral?.embedded === false
@@ -262,6 +295,7 @@ function ViewElement({ linkObject, getSummary }) {
             >
               <Typography>Audio</Typography>
               <TextField
+                disabled
                 className={classes.durationscroll}
                 value={
                   linkObject?.audioTemplateReferral?.embedded === false
@@ -275,8 +309,16 @@ function ViewElement({ linkObject, getSummary }) {
             </div>
           </Box>
           <Box mt={2}>
-            <video width="100%" height="100%" controls>
-              <source src={linkObject?.firstRowValue} type="video/mp4" />
+            <video
+              width="100%"
+              height="100%"
+              controls
+              style={{ maxHeight: "350px" }}
+            >
+              <source
+                src={linkObject?.firstRowValue || linkObject?.url}
+                type="video/mp4"
+              />
               Your browser does not support the video tag.
             </video>
           </Box>
@@ -284,18 +326,6 @@ function ViewElement({ linkObject, getSummary }) {
       ) : (
         <></>
       )}
-      <Box mt={2} display={"flex"} justifyContent={"right"}>
-        <Button
-          variant="contained"
-          style={{ padding: "13px 24px" }}
-          disabled={linkObject?.length === 0}
-          onClick={() => {
-            getSummary("summary");
-          }}
-        >
-          Summary
-        </Button>
-      </Box>
     </Box>
   );
 }

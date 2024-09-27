@@ -439,7 +439,9 @@ function BannerSection2({
                   value={bannerText}
                   onChange={(e) => {
                     const value = e.target.value.replace(htmlTagRegex, "");
-                    if (value.length <= 60) {
+                    const isSpecialCase =
+                      value.startsWith("[") && value.endsWith("]");
+                    if (isSpecialCase || value.length <= 60) {
                       setBannerText(value);
                       setError((prevErrors) => ({
                         ...prevErrors,
@@ -674,7 +676,9 @@ function BannerSection2({
                     value={buttonText}
                     onChange={(e) => {
                       const value = e.target.value.replace(htmlTagRegex, "");
-                      if (value.length <= 20) {
+                      const isSpecialCase =
+                        value.startsWith("[") && value.endsWith("]");
+                      if (isSpecialCase || value.length <= 20) {
                         setButtonText(value);
                         setError((prevErrors) => ({
                           ...prevErrors,
