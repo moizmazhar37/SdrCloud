@@ -159,7 +159,7 @@ function AudioDialog({
             )}
             <input
               type="file"
-              accept="audio/mp3, audio/wav"
+              accept="audio/mp3, audio/wav ,audio/aiff"
               onChange={handleFileChange}
               id="uploadAudio"
               style={{ display: "none" }}

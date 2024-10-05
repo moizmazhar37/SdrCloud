@@ -281,6 +281,7 @@ function ViewElement({ linkObject, getSummary, setIsSectionCompleted }) {
             fullWidth
             value={linkObject?.elementId?.element_Name}
             variant="outlined"
+            disabled
           />
           <Box
             style={{

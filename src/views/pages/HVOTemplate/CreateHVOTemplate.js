@@ -948,6 +948,7 @@ const CreateHVOTemplate = (props) => {
                       variant="outlined"
                       className="selectitem"
                       id="choose-template"
+                      placeholder="Select Category"
                       value={selectedOption}
                       MenuProps={menuProps}
                       onChange={(e) => {
@@ -968,9 +969,15 @@ const CreateHVOTemplate = (props) => {
                         );
                       }}
                     >
-                      <MenuItem value="none" disabled>
-                        Select Category
+                      <MenuItem
+                        style={{ color: "#0358AC", fontWeight: "bold" }}
+                        onClick={() => setIsDialogOpen(true)}
+                      >
+                        + Add New Category
                       </MenuItem>
+                      {/* <MenuItem value="none" disabled>
+                        Select Category
+                      </MenuItem> */}
 
                       {Category.filter(
                         (data) =>
@@ -1029,13 +1036,6 @@ const CreateHVOTemplate = (props) => {
                           );
                         }
                       )}
-
-                      <MenuItem
-                        style={{ color: "#0358AC", fontWeight: "bold" }}
-                        onClick={() => setIsDialogOpen(true)}
-                      >
-                        + Add New Category
-                      </MenuItem>
                     </Select>
                   </FormControl>
                 </Box>

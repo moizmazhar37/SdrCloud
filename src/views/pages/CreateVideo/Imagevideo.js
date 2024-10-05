@@ -194,9 +194,7 @@ const ImageVideo = ({
   const [loading, setLoading] = useState(false);
   const [audioFile, setAudioFile] = useState(null);
   console.log("audioFile: ", audioFile);
-
   const [img64, setImg64] = useState(null);
-  const [video64, setVideo64] = useState(null);
   const [checked, setChecked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [isVideoUploaded, setIsVideoUploaded] = useState(false);
@@ -254,7 +252,6 @@ const ImageVideo = ({
         if (firstRowData) {
           setPhotoURL(firstRowData[type]);
         } else {
-
           setPhotoURL(null);
         }
 
@@ -381,7 +378,7 @@ const ImageVideo = ({
         },
       },
       fileType: {
-        VIDEO: video64,
+        VIDEO: uploadedVideo,
       },
       tagValueName: dynamicVideo,
     };
@@ -460,9 +457,9 @@ const ImageVideo = ({
       }
       setErrors(newError);
     } else if (elementType === "VIDEOCLIPS") {
-      if (video64 === null && dynamicVideo === "none")
+      if (uploadedVideo === null && dynamicVideo === "none")
         newError.video = "Static or Dynamic Video URL is required.";
-      if (video64 === null && dynamicVideo === "none")
+      if (uploadedVideo === null && dynamicVideo === "none")
         newError.dynamicVideo = "Dynamic or Static Video URL is required.";
 
       if (duration === "") {
@@ -472,7 +469,7 @@ const ImageVideo = ({
         toast.error("Please upload audio file.");
       }
       if (
-        (video64 !== null || dynamicVideo !== "none") &&
+        (uploadedVideo !== null || dynamicVideo !== "none") &&
         duration !== "" &&
         (checked === true ? audioFile !== null : true)
       ) {
@@ -540,10 +537,8 @@ const ImageVideo = ({
     setShowUploadButton(false);
     const videoDynamicURL = e.target.value;
 
-
     setDynamicVideo(videoDynamicURL);
     setIsVideoUploaded(true);
-    setVideo64(null);
     setVideoName("");
     setUploadedVideo(null);
     if (videoDynamicURL !== "none" && firstRowDataVideo[videoDynamicURL]) {
@@ -567,9 +562,7 @@ const ImageVideo = ({
 
       if (videoRef.current) {
         videoRef.current.src = videoUrl;
-        videoRef.current.play().catch((error) => {
-
-        });
+        videoRef.current.play().catch((error) => { });
       }
     } else {
       setMatchData("");
@@ -585,46 +578,60 @@ const ImageVideo = ({
     }
   }, [firstRowDataVideo]);
 
-  const handleVideoUpload = (e) => {
+  const handleVideoUpload = async (e) => {
     const uploadedVideoFile = e.target.files[0];
+
+    // Check if the file size exceeds 100MB (100 * 1024 * 1024 = 104857600 bytes)
+    if (uploadedVideoFile?.size > 104857600) {
+      toast.error("File size should not exceed 100MB.");
+      return; // Stop execution if the file is too large
+    }
 
     setVideoName(uploadedVideoFile?.name);
     setDynamicVideo("none");
-    // Function to handle image file selection
-    const file = e.target.files[0];
-    const reader = new FileReader();
 
-    reader.onloadend = () => {
-      const base64String = reader.result;
-      setVideo64(base64String);
-    };
+    try {
+      setLoading(true);
+      const formData = new FormData();
+      formData.append("image", uploadedVideoFile);
+      console.log(formData, "dfgfg");
 
-    if (file) {
-      reader.readAsDataURL(file);
-    }
-    if (uploadedVideoFile) {
-      const videoURL = URL?.createObjectURL(uploadedVideoFile);
-
-      setShowUploadButton(false);
-      setUploadedVideo(videoURL);
-
-      setIsVideoUploaded(true); // Update state when video is uploaded
-
-      const videoElement = document.createElement("video");
-      videoElement.addEventListener("loadedmetadata", () => {
-        const duration = videoElement.duration;
-        setDuration(duration.toFixed(0));
+      const res = await axios({
+        method: "POST",
+        url: ApiConfig.uploadFile,
+        headers: {
+          token: localStorage.getItem("token"),
+        },
+        data: formData,
       });
-      videoElement.src = videoURL;
-      videoElement.load();
 
-      if (videoRef.current) {
-        videoRef.current.src = videoURL;
-        videoRef.current.play();
+      if (res?.status == 200) {
+        toast.success("Video Uploaded Successfully.");
+        const videoURL = res?.data?.data;
+        setShowUploadButton(false);
+        setUploadedVideo(videoURL);
+        setIsVideoUploaded(true);
+
+        const videoElement = document.createElement("video");
+        videoElement.addEventListener("loadedmetadata", () => {
+          const duration = videoElement.duration;
+          setDuration(duration.toFixed(0));
+        });
+        videoElement.src = videoURL;
+        videoElement.load();
+
+        if (videoRef.current) {
+          videoRef.current.src = videoURL;
+          videoRef.current.play();
+        }
       }
-      // toggleFullScreen();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
+
 
   const file = dynamicImage;
   const reader = new FileReader();
@@ -922,7 +929,9 @@ const ImageVideo = ({
                   // Check if the value is non-negative, within 3600 seconds, and has a max length of 10
                   if (
                     value === "" ||
-                    (numericValue >= 0 && numericValue <= 3600 && value.length <= 10)
+                    (numericValue >= 0 &&
+                      numericValue <= 3600 &&
+                      value.length <= 10)
                   ) {
                     setDuration(value);
 
@@ -934,7 +943,9 @@ const ImageVideo = ({
                       setErrors({ duration: "" });
                     }
                   } else if (numericValue > 3600) {
-                    setErrors({ duration: "Duration cannot exceed 3600 seconds." });
+                    setErrors({
+                      duration: "Duration cannot exceed 3600 seconds.",
+                    });
                   }
                 }}
                 className={classes.durationscroll}
@@ -942,7 +953,6 @@ const ImageVideo = ({
                 placeholder="00"
                 inputProps={{ maxLength: 10 }}
               />
-
 
               <Typography className="error">{errors.duration}</Typography>
             </div>

@@ -2073,6 +2073,7 @@ const CreateAccount = () => {
                         variant="outlined"
                         className="selectitem"
                         id="choose-template"
+                        placeholder="Select Customer Type"
                         MenuProps={menuProps}
                         value={selectedcustomerType}
                         onChange={handlecustomerType}
@@ -2093,8 +2094,11 @@ const CreateAccount = () => {
                           );
                         }}
                       >
-                        <MenuItem value=" " style={{ color: "gray" }}>
-                          Select Customer Type
+                        <MenuItem
+                          style={{ color: "#0358AC", fontWeight: "bold" }}
+                          onClick={() => setIsDialogOpen(true)}
+                        >
+                          + Add New Customer Type
                         </MenuItem>
 
                         {/* Newly added options */}
@@ -2157,13 +2161,6 @@ const CreateAccount = () => {
                               {data?.category_Name}
                             </MenuItem>
                           ))}
-
-                        <MenuItem
-                          style={{ color: "#0358AC", fontWeight: "bold" }}
-                          onClick={() => setIsDialogOpen(true)}
-                        >
-                          + Add New Customer Type
-                        </MenuItem>
                       </Select>
                     </FormControl>
                   </div>

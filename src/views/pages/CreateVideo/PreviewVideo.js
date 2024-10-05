@@ -14,6 +14,9 @@ function PreviewVideo(props) {
   const location = useLocation();
   const firstname = location?.state?.Data?.firstName;
   const bookDemoUrl = location?.state?.Data?.bookdemo;
+  const buttonText = location?.state?.Data?.meetingButtonText;
+  const title = location?.state?.Data?.TemplateTitle;
+  const description = location?.state?.Data?.meetingDescription;
 
   const intervalRef = useRef(null);
 
@@ -52,11 +55,17 @@ function PreviewVideo(props) {
           />
         </Box>
       </Typography>
+      {/* <Typography
+        variant="h4"
+        style={{ textAlign: "center", paddingTop: "30px" }}
+      >
+        Video creation has started. It'll take some time.
+      </Typography> */}
       <Typography
         variant="h2"
         style={{ textAlign: "center", paddingTop: "30px" }}
       >
-        Nice to meet you, {firstname}
+        {title ? title : `Nice to meet you, ${firstname}`}
       </Typography>
 
       {loading ? (
@@ -68,26 +77,40 @@ function PreviewVideo(props) {
             size={100}
           />
           <Typography>
-
-            Video generation has started and will take several minutes. We will update the video URL in the sheet and send an email. You may leave the screen.
+            Video generation has started and will take several minutes. We will
+            update the video URL in the sheet and send an email. You may leave
+            the screen.
           </Typography>
         </Box>
       ) : (
-        previewData?.FINAL_VIDEO_URL && (
-          <div style={{ paddingTop: "28px", textAlign: "center" }}>
-            <video width="70%" height="100%" controls>
-              <source src={previewData?.FINAL_VIDEO_URL} type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-          </div>
-        )
+        // <div style={{ paddingTop: "28px", textAlign: "center" }}>
+        //   <video width="70%" height="100%" controls>
+        //     <source src={previewData?.FINAL_VIDEO_URL} type="video/mp4" />
+        //     Your browser does not support the video tag.
+        //   </video>
+        // </div>
+        <Box style={{ textAlign: "center", paddingTop: "30px" }}>
+          {/* <Loader
+            type="spinner-circle"
+            color={"rgb(3, 88, 172)"}
+            bgColor={"#0358ac"}
+            size={100}
+          /> */}
+          <Typography variant="h4" style={{ width: "80%", margin: "auto" }}>
+            Video generation has started and will take several minutes. We will
+            update the video URL in the sheet and send an email. You may leave
+            the screen.
+          </Typography>
+        </Box>
       )}
 
       <Typography
         variant="h4"
         style={{ textAlign: "center", paddingTop: "35px" }}
       >
-        Schedule a 30-minute meeting to learn more.
+        {description
+          ? description
+          : "Schedule a 30-minute meeting to learn more."}
       </Typography>
 
       <Typography style={{ textAlign: "center", paddingTop: "48px" }}>
@@ -102,7 +125,7 @@ function PreviewVideo(props) {
             textTransform: "none",
           }}
         >
-          Schedule a meeting
+          {buttonText ? buttonText : "Schedule a meeting"}
         </Button>
       </Typography>
     </div>

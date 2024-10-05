@@ -23,7 +23,7 @@ import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import ErrorOutlineIcon from "@material-ui/icons/ErrorOutline";
 import WarningIcon from "@material-ui/icons/Warning";
 import VideoLibraryIcon from "@material-ui/icons/VideoLibrary";
-import TemplateDetail from "./TemplateDetail"
+import TemplateDetail from "./TemplateDetail";
 import { UserContext } from "../../../context/User";
 import { MenuItem, IconButton } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -928,7 +928,6 @@ const CreateTemplate = (props) => {
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => {
-
     setOpen(true);
     // fetchVideo();
   };
@@ -947,8 +946,8 @@ const CreateTemplate = (props) => {
   }, [isShow, Category, handleChangetitle]);
 
   const showTemplateDetail = () => {
-    setTemplateDetail(!templateDetail)
-  }
+    setTemplateDetail(!templateDetail);
+  };
 
   return (
     <>
@@ -1008,6 +1007,7 @@ const CreateTemplate = (props) => {
                       variant="outlined"
                       className="selectitem"
                       id="choose-template"
+                      placeholder="Select Category"
                       value={selectedCategory}
                       MenuProps={menuProps}
                       onChange={(e) => {
@@ -1027,9 +1027,15 @@ const CreateTemplate = (props) => {
                           : "Select Category";
                       }}
                     >
-                      <MenuItem value="none" disabled>
-                        Select Category
+                      <MenuItem
+                        style={{ color: "#0358AC", fontWeight: "bold" }}
+                        onClick={() => setIsDialogOpen(true)}
+                      >
+                        + Add New Category
                       </MenuItem>
+                      {/* <MenuItem value="none" disabled>
+                        Select Category
+                      </MenuItem> */}
                       {Category?.map((data, i) => (
                         <MenuItem
                           divider
@@ -1049,23 +1055,17 @@ const CreateTemplate = (props) => {
                           {!["Start-up", "SMB", "MM", "ENT"].includes(
                             data?.category_Name
                           ) && (
-                              <IconButton
-                                edge="end"
-                                onClick={() => deleteCategory(data?._id)}
-                                disabled={loading}
-                                style={{ marginRight: "20px" }}
-                              >
-                                <DeleteIcon fontSize="small" />
-                              </IconButton>
-                            )}
+                            <IconButton
+                              edge="end"
+                              onClick={() => deleteCategory(data?._id)}
+                              disabled={loading}
+                              style={{ marginRight: "20px" }}
+                            >
+                              <DeleteIcon fontSize="small" />
+                            </IconButton>
+                          )}
                         </MenuItem>
                       ))}
-                      <MenuItem
-                        style={{ color: "#0358AC", fontWeight: "bold" }}
-                        onClick={() => setIsDialogOpen(true)}
-                      >
-                        + Add New Category
-                      </MenuItem>
                     </Select>
                   </FormControl>
                 </Box>
@@ -1118,10 +1118,11 @@ const CreateTemplate = (props) => {
                         <InputAdornment position="end">
                           {/* <div onClick={handleSaveClick}> */}
                           <Button
-                            className={`${templateName === "" || selectedOption === "none"
-                              ? "savebtnDisables"
-                              : "savebtn"
-                              }`}
+                            className={`${
+                              templateName === "" || selectedOption === "none"
+                                ? "savebtnDisables"
+                                : "savebtn"
+                            }`}
                             disabled={
                               templateName === "" || selectedOption === "none"
                             }
@@ -1221,10 +1222,11 @@ const CreateTemplate = (props) => {
                     <div onClick={handleconnect}>
                       <Button
                         disabled={connectedSheet === "none"}
-                        className={`${!(connectedSheet === "none")
-                          ? "sheetbtn"
-                          : "sheetbtnDisables"
-                          }`}
+                        className={`${
+                          !(connectedSheet === "none")
+                            ? "sheetbtn"
+                            : "sheetbtnDisables"
+                        }`}
                         variant="standard"
                         color="primary"
                         onClick={connectionHandler}
@@ -1242,10 +1244,11 @@ const CreateTemplate = (props) => {
               <Box style={{ display: "flex" }}>
                 <Button
                   disabled={connectedSheet === "none"}
-                  className={`${!(connectedSheet === "none")
-                    ? "sheetbtn"
-                    : "sheetbtnDisables2"
-                    }`}
+                  className={`${
+                    !(connectedSheet === "none")
+                      ? "sheetbtn"
+                      : "sheetbtnDisables2"
+                  }`}
                   variant="standard"
                   color="primary"
                   onClick={showTemplateDetail}
@@ -1257,70 +1260,69 @@ const CreateTemplate = (props) => {
           </Grid>
 
           <Grid item xs={12} sm={12} className="secondmaingrid">
-
-            {templateDetail ? (<TemplateDetail showTemplateDetail={showTemplateDetail} />) :
-              elementType === "STATICURL" || elementType === "DYNAMICURL" ? (
-                <StaticDyanamicFile
-                  elementType={elementType}
-                  linkData={linkData}
-                  elementID={elementID}
-                  linkObject={linkObject}
-                  typeIndex={typeIndex}
-                  reloadData={reloadData}
-                  handleScreen={handleScreen}
-                  getSummary={getSummary}
-                  setElementType={setElementType}
-                  viewParams={viewParams}
-                  setIsSectionCompleted={setIsSectionCompleted}
-                />
-              ) : elementType === "UPLOADIMAGE" ||
-                elementType === "VIDEOCLIPS" ? (
-                <ImageVideo
-                  getTemplateByID={getTemplateByID}
-                  elementType={elementType}
-                  linkData={linkData}
-                  linkObject={linkObject}
-                  elementID={elementID}
-                  reloadData={reloadData}
-                  typeIndex={typeIndex}
-                  handleScreen={handleScreen}
-                  getSummary={getSummary}
-                  viewParams={viewParams}
-                  setIsSectionCompleted={setIsSectionCompleted}
-                />
-              ) : elementType === "summary" ? (
-                <Summary
-                  linkObject={linkObject}
-                  sheetData={sheetData}
-                  reloadData={reloadData}
-                  sheetId={templateParams?.sheetId}
-                  templateParams={templateParams}
-                  viewParams={viewParams}
-                  getTemplateByID={getTemplateByID}
-                  setIsSectionCompleted={setIsSectionCompleted}
-                  videoUrl={videoUrl}
-                />
-              ) : elementType === "VIEW" ? (
-                <ViewElement
-                  linkObject={viewData}
-                  getSummary={getSummary}
-                  setIsSectionCompleted={setIsSectionCompleted}
-                />
-              ) : linkObject?.length === 0 ? (
-                <></>
-              ) : (
-                <Summary
-                  linkObject={linkObject}
-                  sheetData={sheetData}
-                  reloadData={reloadData}
-                  sheetId={templateParams?.sheetId}
-                  templateParams={templateParams}
-                  viewParams={viewParams}
-                  setIsSectionCompleted={setIsSectionCompleted}
-                  getTemplateByID={getTemplateByID}
-                />
-
-              )}
+            {templateDetail ? (
+              <TemplateDetail showTemplateDetail={showTemplateDetail} />
+            ) : elementType === "STATICURL" || elementType === "DYNAMICURL" ? (
+              <StaticDyanamicFile
+                elementType={elementType}
+                linkData={linkData}
+                elementID={elementID}
+                linkObject={linkObject}
+                typeIndex={typeIndex}
+                reloadData={reloadData}
+                handleScreen={handleScreen}
+                getSummary={getSummary}
+                setElementType={setElementType}
+                viewParams={viewParams}
+                setIsSectionCompleted={setIsSectionCompleted}
+              />
+            ) : elementType === "UPLOADIMAGE" ||
+              elementType === "VIDEOCLIPS" ? (
+              <ImageVideo
+                getTemplateByID={getTemplateByID}
+                elementType={elementType}
+                linkData={linkData}
+                linkObject={linkObject}
+                elementID={elementID}
+                reloadData={reloadData}
+                typeIndex={typeIndex}
+                handleScreen={handleScreen}
+                getSummary={getSummary}
+                viewParams={viewParams}
+                setIsSectionCompleted={setIsSectionCompleted}
+              />
+            ) : elementType === "summary" ? (
+              <Summary
+                linkObject={linkObject}
+                sheetData={sheetData}
+                reloadData={reloadData}
+                sheetId={templateParams?.sheetId}
+                templateParams={templateParams}
+                viewParams={viewParams}
+                getTemplateByID={getTemplateByID}
+                setIsSectionCompleted={setIsSectionCompleted}
+                videoUrl={videoUrl}
+              />
+            ) : elementType === "VIEW" ? (
+              <ViewElement
+                linkObject={viewData}
+                getSummary={getSummary}
+                setIsSectionCompleted={setIsSectionCompleted}
+              />
+            ) : linkObject?.length === 0 ? (
+              <></>
+            ) : (
+              <Summary
+                linkObject={linkObject}
+                sheetData={sheetData}
+                reloadData={reloadData}
+                sheetId={templateParams?.sheetId}
+                templateParams={templateParams}
+                viewParams={viewParams}
+                setIsSectionCompleted={setIsSectionCompleted}
+                getTemplateByID={getTemplateByID}
+              />
+            )}
           </Grid>
         </Grid>
         <Grid item xs={12} sm={12} md={5} lg={4}>
@@ -1356,7 +1358,6 @@ const CreateTemplate = (props) => {
                         <div className={classes.elementCard}>
                           <div className="d-flex justify-space-between">
                             <Typography variant="h5">
-
                               {linkObject[index]?.elementId?.element_Name ===
                                 "STATICURL" && "Static URL"}
                               {linkObject[index]?.elementId?.element_Name ===
@@ -1389,7 +1390,7 @@ const CreateTemplate = (props) => {
                             {linkObject[index]?.duration}sec &nbsp;|
                             {linkObject[index]?.elementId?.element_Name ===
                               "UPLOADIMAGE" ||
-                              linkObject[index]?.elementId?.element_Name ===
+                            linkObject[index]?.elementId?.element_Name ===
                               "VIDEOCLIPS" ? (
                               <></>
                             ) : (
@@ -1572,10 +1573,11 @@ const CreateTemplate = (props) => {
                 Cancel
               </Button>
               <Button
-                className={`${!formik.isValid || !formik.dirty
-                  ? "savebtnDisables"
-                  : "savebtn"
-                  }`}
+                className={`${
+                  !formik.isValid || !formik.dirty
+                    ? "savebtnDisables"
+                    : "savebtn"
+                }`}
                 type="submit"
                 variant="contained"
                 // color="primary"

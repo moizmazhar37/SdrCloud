@@ -160,6 +160,8 @@ function Summary({
         if (res?.data?.status === 200 || res?.data?.status === 201) {
           setLoading(false);
           const Data = res?.data?.data;
+          console.log(res?.data?.data, "huhkhjk");
+
           history.push({
             pathname: "/preview-video",
             state: { templateId, Data },
@@ -353,13 +355,13 @@ function Summary({
                           style={{
                             border: "1px solid #ECECEC",
                             maxHeight: "280px",
-                            height: "100px",
+                            // height: "100px",
                             padding: "15px",
                             borderRadius: "10px",
                           }}
                         >
                           <video
-                            height={"100%"}
+                            height={"126px"}
                             width={"100%"}
                             alt="video"
                             controls

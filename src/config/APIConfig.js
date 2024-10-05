@@ -75,8 +75,6 @@ const ApiConfig = {
 
   // Create Video
   createVdoTemplate: `${javaurl}video/video-templates/createVideoTemplate`,
-  customVdoTemplate: `${javaurl}video/video-templates/create-custom-template`,
-  getCustomVdoTemplate: `${javaurl}video/video-templates/get-custom-template`,
   createVideoTemplateReferral: `${javaurl}video/video-templates/createVideoTemplateReferral`,
   updateTemplateVideo: `${javaurl}video/video-templates/updateTemplate`,
   duplicateTemplateVideo: `${javaurl}video/video-templates/duplicate-template-data`,
