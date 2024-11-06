@@ -17,7 +17,8 @@ function PreviewVideo(props) {
   const buttonText = location?.state?.Data?.meetingButtonText;
   const title = location?.state?.Data?.TemplateTitle;
   const description = location?.state?.Data?.meetingDescription;
-
+  console.log(location?.state?.Data?.contract?.image, "logo");
+  const logo = location?.state?.Data?.contract?.image;
   const intervalRef = useRef(null);
 
   const getTemplateId = () => {
@@ -41,31 +42,28 @@ function PreviewVideo(props) {
         <Box
           style={{
             margin: "auto",
-            width: "200px",
-            height: "50px",
+            width: "100px",
+            height: "100px",
           }}
         >
           <img
-            src="images/personaprosvglogo.svg"
+            src={logo ? logo : "images/personaprosvglogo.svg"}
             style={{
               width: "100%",
               height: "100%",
+              objectFit: "contain",
+              aspectRatio: 1.9,
             }}
             alt="Logo"
           />
         </Box>
       </Typography>
-      {/* <Typography
-        variant="h4"
-        style={{ textAlign: "center", paddingTop: "30px" }}
-      >
-        Video creation has started. It'll take some time.
-      </Typography> */}
+
       <Typography
         variant="h2"
         style={{ textAlign: "center", paddingTop: "30px" }}
       >
-        {title ? title : `Nice to meet you, ${firstname}`}
+        {title ? title : `Nice to meet you ${firstname}`}
       </Typography>
 
       {loading ? (
@@ -110,7 +108,7 @@ function PreviewVideo(props) {
       >
         {description
           ? description
-          : "Schedule a 30-minute meeting to learn more."}
+          : `Schedule a 30-minute meeting with ${firstname}`}
       </Typography>
 
       <Typography style={{ textAlign: "center", paddingTop: "48px" }}>

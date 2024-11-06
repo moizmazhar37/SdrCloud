@@ -83,7 +83,7 @@ const CreatedVideo = () => {
         variant="h2"
         style={{ textAlign: "center", padding: "30px 0px" }}
       >
-        {videoData?.TemplateTitle ? videoData?.TemplateTitle : `Nice to meet you, ${firstname}`}
+        {videoData?.TemplateTitle ? videoData?.TemplateTitle : `Nice to meet you ${firstname}`}
 
       </Typography>
 
@@ -136,7 +136,7 @@ const CreatedVideo = () => {
         variant="h4"
         style={{ textAlign: "center", paddingTop: "30px", fontFamily: "inter", fontSize: "16px", fontWeight: "500", color: "#858585" }}
       >
-        {videoData?.meetingDescription ? videoData?.meetingDescription : `Schedule a 30-minute meeting to learn more.`}
+        {videoData?.meetingDescription ? videoData?.meetingDescription : `Schedule a 30-minute meeting with ${firstname}`}
       </Typography>
 
       <Typography style={{ textAlign: "center", paddingTop: "30px" }}>

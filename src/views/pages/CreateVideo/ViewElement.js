@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 function ViewElement({ linkObject, getSummary, setIsSectionCompleted }) {
-  console.log(linkObject?.url, "linkObject");
+  console.log(linkObject, "linkObject");
 
   const classes = useStyles();
   return (
@@ -110,7 +110,8 @@ function ViewElement({ linkObject, getSummary, setIsSectionCompleted }) {
               <TextField
                 className={classes.durationscroll}
                 value={
-                  linkObject?.audioTemplateReferral?.embedded === false
+                  linkObject?.audioTemplateReferral
+                    ?.audioTemplateReferralUrl !== null
                     ? "Yes"
                     : "No"
                 }
@@ -181,7 +182,8 @@ function ViewElement({ linkObject, getSummary, setIsSectionCompleted }) {
                 disabled
                 className={classes.durationscroll}
                 value={
-                  linkObject?.audioTemplateReferral?.embedded === false
+                  linkObject?.audioTemplateReferral
+                    ?.audioTemplateReferralUrl !== null
                     ? "Yes"
                     : "No"
                 }
@@ -253,7 +255,8 @@ function ViewElement({ linkObject, getSummary, setIsSectionCompleted }) {
                 disabled
                 className={classes.durationscroll}
                 value={
-                  linkObject?.audioTemplateReferral?.embedded === false
+                  linkObject?.audioTemplateReferral
+                    ?.audioTemplateReferralUrl !== null
                     ? "Yes"
                     : "No"
                 }
@@ -299,7 +302,8 @@ function ViewElement({ linkObject, getSummary, setIsSectionCompleted }) {
                 disabled
                 className={classes.durationscroll}
                 value={
-                  linkObject?.audioTemplateReferral?.embedded === false
+                  linkObject?.audioTemplateReferral
+                    ?.audioTemplateReferralUrl !== null
                     ? "Yes"
                     : "No"
                 }

@@ -80,7 +80,7 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: "6px",
       },
       "& .MuiSvgIcon-root": {
-        border: "1px solid #ECECEC",
+        // border: "1px solid #ECECEC",
         backgroundColor: "#FCFCFC",
         color: "#858585",
         fill: "#858585",
@@ -154,12 +154,13 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "8px",
     "& .MuiSelect-iconOutlined": {
       borderLeft: "1px solid #ECECEC",
+      marginRight: "-5px !important",
     },
     "& .MuiSelect-iconOpen": {
-      borderLeft: "0px !important",
-      borderRight: "1px solid #ECECEC",
+      borderLeft: "1px solid #ECECEC",
+      // borderRight: "1px solid #ECECEC",
       transform: "rotate(360deg)",
-      marginRight: "-1px !important",
+      marginRight: "-5px !important",
     },
     "& .MuiSelect-icon": {
       top: 0,
@@ -334,7 +335,8 @@ function PPuserlist() {
             variant="body1"
             style={{ fontWeight: 500, color: "#152F40" }}
           >
-            Create New <br /> PersonaPro Admin{" "}
+            Create New <br />
+            SDRCloud.ai Admin{" "}
           </Typography>
         </Box>
 
@@ -493,14 +495,6 @@ function PPuserlist() {
               )}
             </>
           )}
-
-          {/* <Grid item xs={12} className={classes.paginationGrid}>
-                        <Pagination
-                            // count={pageSize} 
-                            shape="rounded" page={pagenumber + 1}
-                            color="primary"
-                            onChange={handlePageChange} />
-                    </Grid> */}
         </Box>
       </Box>
 

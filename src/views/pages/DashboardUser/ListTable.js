@@ -276,7 +276,7 @@ const ListTable = () => {
                               >
                                 <Button
                                   onClick={() => {
-                                    history.push("/View-Myproject", {
+                                    history.push("/view-myproject", {
                                       state: {
                                         errorData:
                                           errorData?.list[0]?.projectListing[
@@ -293,7 +293,7 @@ const ListTable = () => {
                                 <Divider className="dividerbtn" />
                                 <Button
                                   onClick={() => {
-                                    history.push("/View-Myproject", {
+                                    history.push("/view-myproject", {
                                       state: {
                                         errorData:
                                           errorData?.list[0]?.projectListing[

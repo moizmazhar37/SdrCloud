@@ -76,7 +76,7 @@ export const routes = [
   },
   {
     exact: true,
-    path: "/View-Myproject",
+    path: "/view-myproject",
     guard: true,
     layout: DashboardLayout,
     component: lazy(() =>
@@ -85,7 +85,7 @@ export const routes = [
   },
   {
     exact: true,
-    path: "/Edit-Myproject",
+    path: "/edit-myproject",
     guard: true,
     layout: DashboardLayout,
     component: lazy(() =>

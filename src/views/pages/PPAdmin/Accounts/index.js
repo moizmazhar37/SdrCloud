@@ -21,6 +21,7 @@ import {
   DialogContent,
   DialogActions,
   CircularProgress,
+  styled,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import ApiConfig from "src/config/APIConfig";
@@ -30,7 +31,7 @@ import ButtonCircularProgress from "src/component/ButtonCircularProgress";
 import { UserContext } from "src/context/User";
 import { useHistory } from "react-router-dom";
 import moment from "moment";
-import { Pagination } from "@material-ui/lab";
+import { Autocomplete, Pagination } from "@material-ui/lab";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { toast } from "react-toastify";
 import Divider from "@material-ui/core/Divider";
@@ -38,8 +39,6 @@ import { GrFilter } from "react-icons/gr";
 import { menuProps } from "src/utils";
 import { Close } from "@material-ui/icons";
 import FullScreenLoader from "src/component/FullScreenLoader";
-import { Autocomplete } from "@mui/material";
-import { styled } from "@mui/material/styles";
 
 // Styles for the component
 
@@ -143,32 +142,36 @@ const useStyles = makeStyles((theme) => ({
       cursor: "pointer",
     },
   },
-  selectitem: {
-    color: "#152F40",
-    border: "1px solid #ECECEC",
-    height: "44px",
-    marginTop: "20px",
-    background: "transparent",
-    borderRadius: "8px",
-    "& .MuiSelect-iconOutlined": {
-      borderLeft: "1px solid #ECECEC",
-    },
-    "& .MuiSelect-iconOpen": {
-      borderLeft: "0px !important",
-      borderRight: "1px solid #ECECEC",
-      transform: "rotate(360deg)",
-      marginRight: "-1px !important",
-    },
-    "& .MuiSelect-icon": {
-      top: 0,
-      height: "40px",
-      paddingLeft: "8px",
-      color: "#152F40",
-    },
-    "& .MuiPopover-paper": {
-      marginTop: "85px",
-    },
-  },
+  // selectitem: {
+  //   color: "#152F40",
+  //   border: "1px solid #ECECEC",
+  //   height: "44px",
+  //   marginTop: "20px",
+  //   background: "transparent",
+  //   borderRadius: "8px",
+  //   "& .MuiSelect-iconOutlined": {
+  //     borderLeft: "1px solid #ECECEC",
+  //     marginRight: "-5px !important",
+  //   },
+  //   "& .MuiSelect-iconOpen": {
+  //     borderLeft: "1px solid #ECECEC",
+  //     // borderRight: "1px solid #ECECEC",
+  //     transform: "rotate(360deg)",
+  //     marginRight: "-5px !important",
+  //   },
+  //   "& .MuiSelect-icon": {
+  //     top: 0,
+  //     height: "40px",
+  //     paddingLeft: "8px",
+  //     color: "#152F40",
+  //   },
+  //   "& .MuiPopover-paper": {
+  //     marginTop: "85px",
+  //   },
+  //   "& .MuiTableCell-head ": {
+  //     lineheight: "2.5rem",
+  //   },
+  // },
 
   sidebarfilter: {
     marginTop: "16px",
@@ -203,7 +206,9 @@ const useStyles = makeStyles((theme) => ({
         "&  .MuiAutocomplete-popupIndicatorOpen": {
           transform: "none !important",
         },
-
+        "& .MuiIconButton-root:hover": {
+          background: "none !important",
+        },
         popupIcon: {
           transform: "none",
           opacity: "0.5 !important",
@@ -279,9 +284,10 @@ const useStyles = makeStyles((theme) => ({
       },
       "& .MuiSelect-iconOpen": {
         borderLeft: "0px !important",
-        borderRight: "1px solid #ECECEC",
+        borderRight: "none",
         transform: "rotate(360deg)",
         marginRight: "-1px !important",
+        borderLeft: "1px solid #ECECEC",
       },
       "& .MuiSelect-icon": {
         top: 0,
@@ -318,6 +324,40 @@ const useStyles = makeStyles((theme) => ({
     "& .MuiButton-root": {
       color: "#0358AC",
       fontWeight: "600 !important",
+    },
+    "& .MuiSelect-iconOutlined": {
+      borderLeft: "1px solid #ECECEC",
+    },
+    "& .MuiSelect-iconOpen": {
+      borderLeft: "none !important",
+      borderRight: "1px solid #ECECEC",
+    },
+    "& .selectitem": {
+      color: "#152F40",
+      border: "1px solid #ECECEC",
+      height: "44px",
+      marginTop: "20px",
+      background: "transparent",
+      borderRadius: "8px",
+      "& .MuiSelect-iconOutlined": {
+        borderLeft: "1px solid #ECECEC",
+        marginRight: "-5px !important",
+      },
+      "& .MuiSelect-iconOpen": {
+        borderLeft: "1px solid #ECECEC !important",
+        borderRight: "none !important",
+        transform: "rotate(360deg)",
+        marginRight: "-5px !important",
+      },
+      "& .MuiSelect-icon": {
+        top: 0,
+        height: "40px",
+        paddingLeft: "8px",
+        color: "#152F40",
+      },
+      "& .MuiPopover-paper": {
+        marginTop: "85px",
+      },
     },
   },
   active: {
@@ -645,7 +685,7 @@ function SuperAdminAccount() {
                   />
                 </div>
                 <div className="thirdinnerdiv">
-                  <Typography>Search by PersonaPro Admin</Typography>
+                  <Typography>Search by SDRCloud.ai Admin</Typography>
                   <Box ref={autocompleteRef}>
                     <Autocomplete
                       className="AutocompleteCss"
@@ -683,18 +723,20 @@ function SuperAdminAccount() {
                       disableClearable
                       noOptionsText="No PP Admin"
                       popupIcon={
-                        <RiArrowDropDownLine
+                        <ExpandMoreIcon
                           className="popupIcon"
                           style={{
                             borderLeft: "1px solid #E7E7E7",
-                            height: "36px",
-                            fontSize: "25px",
-                            color: "rgb(69 81 88)",
-                            fontWeight: 150,
-                            width: "100%",
+                            height: "42px",
+                            fontSize: "15px",
+                            color: "rgb(21, 47, 64,0.94)",
+                            // fontWeight: 150,
+                            width: "73%",
                             marginLeft: "-2px",
                             transform: "none",
                             pointerEvents: "none",
+                            transition: "transform 0.3s ease-in-out",
+                            paddingLeft: "6px",
                           }}
                         />
                       }
@@ -741,11 +783,13 @@ function SuperAdminAccount() {
                           style={{
                             fontSize: "26px",
                             position: "absolute",
-                            right: "12px",
+                            right: "10px",
                             top: "0%",
                             transform: "none",
                             transition: "transform 0.3s ease-in-out",
                             pointerEvents: "none",
+                            borderRight: "none !important",
+                            height: "100%",
                           }}
                         />
                       )}
@@ -799,10 +843,12 @@ function SuperAdminAccount() {
                     >
                       <TableHead>
                         <TableRow>
-                          <TableCell>Account Name</TableCell>
-                          <TableCell>PP Admin</TableCell>
-                          <TableCell>Users</TableCell>
-                          <TableCell>Account Creation Date</TableCell>
+                          <TableCell align="center">Account Name</TableCell>
+                          <TableCell align="center">PP Admin</TableCell>
+                          <TableCell align="center">Users</TableCell>
+                          <TableCell align="center">
+                            Account Creation Date
+                          </TableCell>
                           <TableCell align="center">Status</TableCell>
                           <TableCell align="center">Action</TableCell>
                         </TableRow>
@@ -819,20 +865,32 @@ function SuperAdminAccount() {
                       <TableBody>
                         {ppadminList?.map((key, index) => (
                           <TableRow className={classes.tablerows}>
-                            <TableCell component="th" scope="row">
+                            <TableCell
+                              component="th"
+                              scope="row"
+                              align="center"
+                            >
                               {key?.accountName && key?.accountName.length > 20
                                 ? `${key?.accountName.slice(0, 10)}...`
                                 : key?.accountName || "--"}
                             </TableCell>
-                            <TableCell component="th" scope="row">
+                            <TableCell
+                              component="th"
+                              scope="row"
+                              align="center"
+                            >
                               {key?.ppAdmin && key?.ppAdmin.length > 20
                                 ? `${key?.ppAdmin.slice(0, 20)}...`
                                 : key?.ppAdmin || "--"}
                             </TableCell>
-                            <TableCell component="th" scope="row">
+                            <TableCell
+                              component="th"
+                              scope="row"
+                              align="center"
+                            >
                               {key?.users === 0 ? 0 : key?.users}
                             </TableCell>
-                            <TableCell>
+                            <TableCell align="center">
                               {new Date(key?.startDate).toLocaleDateString()}
                             </TableCell>
 
@@ -860,7 +918,7 @@ function SuperAdminAccount() {
                                 <Select
                                   style={{ marginTop: "0px" }}
                                   variant="outlined"
-                                  className={classes.selectitem}
+                                  className="selectitem"
                                   id="choose-template"
                                   value={"none"}
                                   MenuProps={menuProps}
@@ -906,7 +964,7 @@ function SuperAdminAccount() {
                                       ? "Block"
                                       : key?.status === "BLOCK"
                                       ? "Unblock"
-                                      : "--"}
+                                      : ""}
                                   </MenuItem>
                                 </Select>
                               </FormControl>

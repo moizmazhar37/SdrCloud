@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -7,8 +8,9 @@ import {
   Theme,
   withStyles,
   createStyles,
+  Tooltip,
 } from "@material-ui/core";
-import React, { useEffect, useState } from "react";
+
 import PeopleOutlineOutlinedIcon from "@material-ui/icons/PeopleOutlineOutlined";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import clsx from "clsx";
@@ -19,8 +21,7 @@ import SingleColumnChartBar from "./SingleColumnChart";
 import GroupBarGraph from "./GroupBarGraph";
 import axios from "axios";
 import ApiConfig from "src/config/APIConfig";
-import Tooltip from "@mui/material/Tooltip";
-// Styles for the component
+
 const useStyles = makeStyles((theme) => ({
   displayFlexColumn: {
     "& .border": {
@@ -750,20 +751,17 @@ function NoProjects() {
                 style={{ gap: "4px", margin: "4px" }}
               >
                 <Typography variant="h5">Your Best Month</Typography>
-                <Tooltip
-                  title={
-                    bestMonth ? `${bestMonth.month} ${bestMonth.year}` : "--"
-                  }
-                  arrow
-                >
-                  {bestMonth && (
+                {bestMonth ? (
+                  <Tooltip title={`${bestMonth.month} ${bestMonth.year}`} arrow>
                     <Typography variant="h2">
-                      {bestMonth ? formatNumber(bestMonth?.totalViews) : "--"}{" "}
-                      Views
+                      {formatNumber(bestMonth.totalViews)} Views
                     </Typography>
-                  )}
-                </Tooltip>
+                  </Tooltip>
+                ) : (
+                  <Typography variant="h2">-- Views</Typography>
+                )}
               </Box>
+
               <Box
                 className={clsx(classes.border, "d-flex column")}
                 style={{ margin: "4px", height: "100%", padding: "10px" }}
@@ -771,8 +769,7 @@ function NoProjects() {
                 <Box className="d-flex" style={{ gap: "12px" }}>
                   <img src="images/tranding.png" alt="" />
                   <Typography variant="body1">
-                    Total Views {" "}
-                    {/* within Total Active Media <br /> */}
+                    Total Views {/* within Total Active Media <br /> */}
                     (Last 4 Months)
                   </Typography>
                 </Box>
@@ -791,7 +788,7 @@ function NoProjects() {
           className={clsx(classes.secondChartBox)}
         >
           <Grid container xs={12} className={classes.border}>
-            {/* <Grid
+            <Grid
               item
               lg={4}
               md={4}
@@ -826,8 +823,8 @@ function NoProjects() {
                   </span>
                 </Typography>
               </Box>
-            </Grid> */}
-            <Grid item lg={12} md={12} sm={12} xs={12}>
+            </Grid>
+            <Grid item lg={8} md={8} sm={8} xs={12}>
               <Box
                 className={classes.border}
                 ml={"10px"}

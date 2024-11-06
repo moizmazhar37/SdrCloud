@@ -357,14 +357,6 @@ function ViewProjects(props) {
                 {adminUserList?.PHONE_NO ? adminUserList?.PHONE_NO : "N/A"}
               </Typography>
             </Grid>
-            {/* <Grid item xs={6} sm={6} md={2} className="allmiddledata">
-              <Typography className="contentHeading">Video Url</Typography>
-            </Grid>
-            <Grid item xs={6} sm={6} md={10}>
-              <Typography className="viewbtn">
-                {adminUserList?.FINAL_VIDEO_URL ? adminUserList?.FINAL_VIDEO_URL : "N/A"}
-              </Typography>
-            </Grid> */}
 
             <Grid item xs={6} sm={6} md={2} className="allmiddledata">
               <Typography className="contentHeading">Company Url</Typography>
@@ -444,49 +436,6 @@ function ViewProjects(props) {
           </Grid>
         </Box>
       </Paper>
-
-      {/* <Box className={classes.groupBtn}>
-        <Box>
-          <Button
-            variant="Contained"
-            onClick={() => {
-              setReprocessOpen(true);
-              setErrorhandle("reprocess");
-            }}
-            className={`${
-              missingFields.length === 0 ? "EndbtnDisables" : "Endbtn"
-            }`}
-            disabled={missingFields.length === 0}
-          >
-            Add Missing Information
-          </Button>
-        </Box>
-        <Box>
-          <Button
-            variant="Contained"
-            onClick={reprocess}
-            className={`${
-              missingFields.length !== 0 ? "EndbtnDisables" : "Endbtn"
-            }`}
-            disabled={missingFields.length !== 0}
-          >
-            Reprocess
-          </Button>
-        </Box>
-      </Box> */}
-
-      {/* {errorhandle === "reprocess" && (
-        <Reprocess
-          reprocessopen={reprocessopen}
-          handleReprocessClose={handleReprocessClose}
-          missingFields={missingFields}
-          sheetUrl={data?.sheetUrl}
-          sheetName={sheetName}
-          CUSTOMER_ID={CUSTOMER_ID}
-          sheetId={sheetId}
-          index={index}
-        />
-      )} */}
     </>
   );
 }

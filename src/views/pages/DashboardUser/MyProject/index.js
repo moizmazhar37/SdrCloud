@@ -413,10 +413,7 @@ function UserProjectList() {
     setSelectedSheet(event.target.value);
     setIsOpen(false);
   };
-  // const handleDropdownChange = (event) => {
-  //   setSelectedOption(event.target.value);
-  //   setIsOpen(false);
-  // };
+
   // Function to toggle dropdown
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -522,7 +519,14 @@ function UserProjectList() {
     }
   };
   const [statusFields, setStatusFields] = useState(null);
+  const [proscpectName, setProscpectName] = useState(null);
   const [urlField, serUrlField] = useState(null);
+  const [firstName, setFirstName] = useState(null);
+  const [lastName, setLastName] = useState(null);
+  const [videoUrl, setVideoUrl] = useState(null);
+  const [hVOUrl, setHVOUrl] = useState(null);
+  const [status, setStatus] = useState(null);
+
   useEffect(() => {
     if (sheetData && sheetData.length > 0) {
       setStatusFields(
@@ -539,6 +543,46 @@ function UserProjectList() {
           )
           .map((item) => item.value)[0]
       );
+      setVideoUrl(
+        sheetData
+          .filter((item) =>
+            item.dataType.includes("Final video URL (Required)")
+          )
+          .map((item) => item.value)[0]
+      );
+      setHVOUrl(
+        sheetData
+          .filter((item) => item.dataType.includes("HVO URL (Required)"))
+          .map((item) => item.value)[0]
+      );
+      setProscpectName(
+        sheetData
+          .filter(
+            (item) =>
+              item.dataType.includes("Customer organization") ||
+              item.dataType.includes("Customer organization (Required)")
+          )
+          .map((item) => item.value)[0]
+      );
+      setFirstName(
+        sheetData
+          .filter(
+            (item) =>
+              item.dataType.includes("First name") ||
+              item.dataType.includes("First name (Required)")
+          )
+          .map((item) => item.value)[0]
+      );
+      setLastName(
+        sheetData
+          .filter((item) => item.dataType.includes("Last name"))
+          .map((item) => item.value)[0]
+      );
+      setStatus(
+        sheetData
+          .filter((item) => item.dataType.includes("Status (Required)"))
+          .map((item) => item.value)[0]
+      );
     }
   }, [sheetData]);
 
@@ -546,25 +590,6 @@ function UserProjectList() {
     getAllSheet();
     userListApi();
   }, [page]);
-  // const [data, setData] = useState({
-  //   customerId: "",
-  //   firstName: "",
-  //   lastName: "",
-  //   email: "",
-  //   companyUrl: "",
-  //   image1: "",
-  //   image2: "",
-  //   linkedIn: "",
-  //   twitter: "",
-  //   password: "",
-  //   hvoUrl: "",
-  //   videoUrl: "",
-  //   customerOrganization: "",
-  //   phoneNo: "",
-  //   finalVideoUrl: "",
-  //   Maps_URL: "",
-  //   facebook: "",
-  // });
 
   const handleSubmit = (values, { setSubmitting }) => {
     console.log("Form Values Submitted: ", values);
@@ -589,7 +614,16 @@ function UserProjectList() {
     try {
       setFormLoading(true);
       // Transform fieldValue into a single object instead of an array of objects
-      const dataToSend = fieldValue.reduce((acc, item) => {
+      const filteredFields = fieldValue.filter(
+        (item) =>
+          item.dataType !== "HVO URL (Required)" &&
+          item.dataType !== "Error (Required)" &&
+          item.dataType !== "Final video URL (Required)" &&
+          item.dataType !== "Status (Required)"
+      );
+
+      // Transform the filtered fieldValue array into a single object
+      const dataToSend = filteredFields.reduce((acc, item) => {
         acc[item.value] = item.dataType;
         return acc;
       }, {});
@@ -632,10 +666,6 @@ function UserProjectList() {
         setFileName(event.target.result);
         setSelectedFile(event.target.result);
         setShowImageName(file?.name);
-        // setData((prevUserData) => ({
-        //   ...prevUserData,
-        //   LOGO: base64Image,
-        // }));
       };
       reader.readAsDataURL(file);
     }
@@ -686,15 +716,16 @@ function UserProjectList() {
                   <Table className={classes.table} aria-label="simple table">
                     <TableHead>
                       <TableRow>
-                        <TableCell align="center">Sheet Name</TableCell>
+                        <TableCell align="center">Prospect Company</TableCell>
 
                         <TableCell align="center">
-                          {tempType === "VIDEO" ? "Video" : "Hvo"} Template Name
+                          {/* {tempType === "VIDEO" ? "Video" : "HVO"} Template  */}
+                          Name
                         </TableCell>
 
                         <TableCell align="center">Status</TableCell>
                         <TableCell align="center">
-                          {tempType === "VIDEO" ? "Video" : "Hvo"} Template Link
+                          {tempType === "VIDEO" ? "Video" : "HVO"} Template Link
                         </TableCell>
                         <TableCell align="center">Action</TableCell>
                       </TableRow>
@@ -707,12 +738,24 @@ function UserProjectList() {
                               (project, projectIndex) => (
                                 <TableRow key={projectIndex}>
                                   <TableCell align="center">
-                                    {data.sheetName ? data.sheetName : ""}
+                                    {project?.[proscpectName]
+                                      ? project?.[proscpectName]
+                                      : "--"}
                                   </TableCell>
                                   <TableCell align="center">
-                                    {data.hvoTemplateName
-                                      ? data.hvoTemplateName
-                                      : ""}
+                                    {project?.[firstName] ||
+                                    project?.[lastName] ? (
+                                      <>
+                                        {project?.[firstName]
+                                          ? project?.[firstName]
+                                          : ""}{" "}
+                                        {project?.[lastName]
+                                          ? project?.[lastName]
+                                          : ""}
+                                      </>
+                                    ) : (
+                                      "--"
+                                    )}
                                   </TableCell>
 
                                   <TableCell
@@ -755,7 +798,7 @@ function UserProjectList() {
                                   >
                                     <Button
                                       onClick={() => {
-                                        history.push("/View-Myproject", {
+                                        history.push("/view-myproject", {
                                           state: {
                                             errorData:
                                               errorData?.list[0]
@@ -766,38 +809,52 @@ function UserProjectList() {
                                             CUSTOMER_ID: CUSTOMER_ID,
                                             videoTemplete: videoTemplete,
                                             projectIndex: projectIndex,
+                                            firstName: project?.[firstName],
+                                            lastName: project?.[lastName],
+                                            proscpectName:
+                                              project?.[proscpectName],
+                                            videoUrl: project?.[videoUrl],
+                                            hVOUrl: project?.[hVOUrl],
+                                            assignUser: data?.assignedUserName,
+                                            status: project?.[status],
+                                            templateType: data?.templateType,
                                           },
                                         });
                                       }}
                                     >
                                       View
                                     </Button>
-                                    {tempType === "VIDEO" && (
-                                      <>
-                                        <Divider className="dividerbtn" />
-                                        <Button
-                                          onClick={() => {
-                                            history.push("/Edit-Myproject", {
-                                              state: {
-                                                errorData:
-                                                  errorData?.list[0]
-                                                    ?.projectListing[
-                                                    projectIndex
-                                                  ],
-                                                sheetUrl: sheetUrl,
-                                                ErrorSheetId: errorSheetId,
-                                                sheetName: sheetName,
-                                                CUSTOMER_ID: CUSTOMER_ID,
-                                                videoTemplete: videoTemplete,
-                                                projectIndex: projectIndex,
-                                              },
-                                            });
-                                          }}
-                                        >
-                                          Edit
-                                        </Button>
-                                      </>
-                                    )}
+
+                                    <Divider className="dividerbtn" />
+                                    <Button
+                                      onClick={() => {
+                                        history.push("/edit-myproject", {
+                                          state: {
+                                            sheetData: sheetData,
+                                            errorData:
+                                              errorData?.list[0]
+                                                ?.projectListing[projectIndex],
+                                            sheetUrl: sheetUrl,
+                                            ErrorSheetId: errorSheetId,
+                                            sheetName: sheetName,
+                                            CUSTOMER_ID: CUSTOMER_ID,
+                                            videoTemplete: videoTemplete,
+                                            projectIndex: projectIndex,
+                                            firstName: project?.[firstName],
+                                            lastName: project?.[lastName],
+                                            proscpectName:
+                                              project?.[proscpectName],
+                                            videoUrl: project?.[videoUrl],
+                                            hVOUrl: project?.[hVOUrl],
+                                            assignUser: data?.assignedUserName,
+                                            status: project?.[status],
+                                            templateType: data?.templateType,
+                                          },
+                                        });
+                                      }}
+                                    >
+                                      Edit
+                                    </Button>
                                   </TableCell>
                                 </TableRow>
                               )

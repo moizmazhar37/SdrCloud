@@ -300,6 +300,7 @@ function ViewElement({
   const [scrollSelect, setScrollSelect] = useState("none");
   const [companyDetails, setCompanyDetails] = useState("");
   const [loading, setLoading] = useState(false);
+  const [accountData, setAccountData] = useState("");
   const [error, setError] = useState({
     selectScroll: "",
     bannerText: "",
@@ -307,7 +308,7 @@ function ViewElement({
   });
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [existcolor, setexistcolor] = useState("");
-  const [fn, setfn] = useState(() => {});
+  const [fn, setfn] = useState(() => { });
   console.log(linkObject, "linkObject");
 
   const [nextButton, setNextButton] = useState(false);
@@ -336,6 +337,34 @@ function ViewElement({
   useEffect(() => {
     companyDetailsdata();
   }, []);
+
+  const getAccountData = async () => {
+    try {
+      setLoading(true);
+      const res = await axios({
+        method: "GET",
+        url: ApiConfig.companyDetails,
+        headers: {
+          token: `${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (res?.data?.status === 200) {
+        setLoading(false);
+        const data = res?.data;
+        setAccountData(data?.data);
+        // setAccountId(res?.data?.data?.accountId);
+      }
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getAccountData()
+  }, []);
+
   //
   return (
     <Box className={classes.secondmaingridBox}>
@@ -375,7 +404,7 @@ function ViewElement({
                     marginRight: "10px",
                   }}
                 >
-                  <img src="/images/experienceremovebg.png" width={"100%"} />
+                  <img src={accountData?.accountDetails?.accountLogo} width={"100%"} />
                 </Box>
                 {linkObject?.firstRowValue && (
                   <Box

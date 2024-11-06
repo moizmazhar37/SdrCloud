@@ -154,6 +154,7 @@ const useStyles = makeStyles((theme) => ({
   textfiledall: {
     "& .MuiInputBase-root": {
       border: "0.5px solid gray",
+      borderRadius: "5px",
     },
     "& .MuiInputBase-input": {
       marginLeft: "10px",
@@ -456,7 +457,7 @@ const EditProfile = () => {
   };
 
   const updateProfilePic = async (values) => {
-    setLoading(true)
+    setLoading(true);
 
     try {
       const res = await axios({
@@ -466,20 +467,18 @@ const EditProfile = () => {
           token: `${localStorage.getItem("token")}`,
         },
         data: {
-          profilePicture: photoURL
+          profilePicture: photoURL,
         },
-
       });
       if (res?.data?.status === 200) {
         console.log(res?.data, "uih");
         toast.success("Image uploaded successfully.");
 
         handleCloseDialog();
-        GetCompanyDetails()
+        GetCompanyDetails();
         setProfileData((prevData) => ({
           ...prevData,
           profilePicture: res?.data?.data,
-
         }));
       } else {
         setLoading(false);
@@ -544,8 +543,8 @@ const EditProfile = () => {
       </Box>
 
       <form onSubmit={formik.handleSubmit}>
-        <Grid container spacing={1} style={{ paddingTop: "20px" }}>
-          <Grid item md={8} sm={8} xs={12} lg={5}>
+        <Grid container spacing={1} style={{ marginTop: "40px" }}>
+          <Grid item md={8} sm={8} xs={12} lg={6}>
             <Box className={classes.headingBox}>
               <Box className="d-flex" style={{ justifyContent: "start" }}>
                 <Typography variant="h5">Personal Details</Typography>
@@ -562,7 +561,11 @@ const EditProfile = () => {
             <Box className={classes.innerbox}>
               {Object.keys(userData).map((key) => (
                 <Box key={key} py={1} className="d-flex">
-                  <Grid container className={classes.maingrid}>
+                  <Grid
+                    container
+                    className={classes.maingrid}
+                    alignItems="center"
+                  >
                     <Grid
                       item
                       lg={3}
@@ -575,10 +578,10 @@ const EditProfile = () => {
                         {key === "profilePicture"
                           ? "Profile Picture"
                           : key === "firstName"
-                            ? "First Name"
-                            : key === "lastName"
-                              ? "Last Name"
-                              : key.charAt(0).toUpperCase() + key.slice(1)}
+                          ? "First Name"
+                          : key === "lastName"
+                          ? "Last Name"
+                          : key.charAt(0).toUpperCase() + key.slice(1)}
                       </Typography>
                     </Grid>
                     <Grid
@@ -607,9 +610,7 @@ const EditProfile = () => {
                               }
                               name={key}
                               disabled={!isEditing || key === "profilePicture"}
-                              value={
-                                userData?.profilePicture
-                              }
+                              value={userData?.profilePicture}
                               InputProps={{
                                 classes: {
                                   notchedOutline: isEditing
@@ -617,7 +618,10 @@ const EditProfile = () => {
                                     : classes.noBorder,
                                 },
                                 endAdornment: (
-                                  <InputAdornment position="start">
+                                  <InputAdornment
+                                    position="start"
+                                    style={{ marginRight: "0px" }}
+                                  >
                                     <Button
                                       variant="contained"
                                       component="label"
@@ -691,14 +695,15 @@ const EditProfile = () => {
                                 : classes.textfiledallbefore
                             }
                             name={key}
-                            placeholder={`${key === "profilePicture"
-                              ? "Upload Your"
-                              : "Enter Your"
-                              } ${key.charAt(0).toUpperCase() + key.slice(1)}`}
+                            placeholder={`${
+                              key === "profilePicture"
+                                ? "Upload Your"
+                                : "Enter Your"
+                            } ${key.charAt(0).toUpperCase() + key.slice(1)}`}
                             value={
                               key === "firstName" || key === "lastName"
                                 ? formik.values[key].charAt(0).toUpperCase() +
-                                formik.values[key].slice(1)
+                                  formik.values[key].slice(1)
                                 : formik.values[key]
                             }
                             onChange={formik.handleChange}
@@ -719,10 +724,10 @@ const EditProfile = () => {
                                 key === "phone"
                                   ? 20
                                   : key === "firstName"
-                                    ? 50
-                                    : key === "lastName"
-                                      ? 50
-                                      : undefined,
+                                  ? 50
+                                  : key === "lastName"
+                                  ? 50
+                                  : undefined,
                               onKeyDown: (e) => {
                                 const isAlphanumericOrSpecial =
                                   /^[A-Za-z0-9!@#$%^&*(),.?":{}|<>]+$/.test(
@@ -756,8 +761,8 @@ const EditProfile = () => {
                           >
                             {userData[key].length > 40
                               ? `${userData[key].slice(0, 15)}...${userData[
-                                key
-                              ].slice(-15)}`
+                                  key
+                                ].slice(-15)}`
                               : userData[key]}
                           </Typography>
                         )}
@@ -813,7 +818,7 @@ const EditProfile = () => {
             setOpenCrop={setOpenCrop}
             setPhotoURL={setPhotoURL}
             setUploadedImage={setSelectedFile}
-            setErrors={() => { }}
+            setErrors={() => {}}
           />
         </Dialog>
       ) : (
@@ -865,7 +870,7 @@ const EditProfile = () => {
             <Button
               onClick={() => {
                 if (isImageChanged) {
-                  updateProfilePic()
+                  updateProfilePic();
                 } else {
                   setSelectedFile(null);
                 }

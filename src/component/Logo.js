@@ -8,7 +8,8 @@ const useStyles = makeStyles((theme) => ({
   logoBoxmain: {
     display: "flex",
     justifyContent: "center",
-    padding: "16px 0px",
+    // padding: "16px 0px",
+    paddingBottom: "16px",
     marginBottom: "16px",
     "& .logoDiv": {
       width: "210.5px",

@@ -15,6 +15,7 @@ import {
   DialogActions,
   ButtonGroup,
   FormHelperText,
+  Tooltip,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import axios from "axios";
@@ -137,6 +138,15 @@ const useStyles = makeStyles((theme) => ({
       height: "42px",
       width: "100%",
     },
+    "& .sheetbtn2": {
+      borderRadius: "6px ",
+      cursor: "pointer",
+      background: "red",
+      color: "white",
+      marginTop: "5px",
+      height: "42px",
+      width: "100%",
+    },
     "& .sheetbtnDisables": {
       borderRadius: " 6px",
       background: "#F4F4F4",
@@ -150,6 +160,14 @@ const useStyles = makeStyles((theme) => ({
       background: "#F4F4F4",
       marginTop: "5px",
       color: "black",
+      height: "42px",
+      width: "100%",
+    },
+    "& .sheetbtnDisables3": {
+      borderRadius: " 6px",
+      backgroundColor: "#FF0000",
+      marginTop: "5px",
+      color: "#FF0000",
       height: "42px",
       width: "100%",
     },
@@ -373,6 +391,18 @@ const useStyles = makeStyles((theme) => ({
     color: "white",
     marginTop: "5px",
     height: "42px",
+    width: "220px",
+    " & .MuiDialogActions-root": {
+      display: "flex",
+      justifyContent: "center",
+    },
+  },
+  sheetbtn2: {
+    borderRadius: "6px ",
+    backgroundColor: "#FF0000",
+    color: "#FF0000",
+    marginTop: "5px",
+    height: "42px",
     width: "100px",
     " & .MuiDialogActions-root": {
       display: "flex",
@@ -446,7 +476,8 @@ const CreateTemplate = (props) => {
   const [selectedCategory, setSelectedCategory] = useState("none");
   const [isShow, setIsShow] = useState(false);
   const [templateDetail, setTemplateDetail] = useState(false);
-
+  const [errorMessage, setErrorMessage] = useState(null);
+  console.log("errorMessage: ", errorMessage);
   const [elements, setElements] = useState([
     { id: 1, name: "Section 1", isCompleted: false, isDisabled: false },
     { id: 2, name: "Section 2", isCompleted: false, isDisabled: true },
@@ -460,6 +491,7 @@ const CreateTemplate = (props) => {
     },
     validationSchema: Yup.object({
       category: Yup.string()
+        .trim()
         .max(
           20,
           "Category is required and must be between 2 and 20 characters."
@@ -826,8 +858,10 @@ const CreateTemplate = (props) => {
       });
       if (res?.status === 200) {
         const data = res?.data?.data;
+
+        setErrorMessage(res?.data?.data?.data?.error || null);
         if (data.video_url) {
-          setVideoUrl(data.video_url);
+          setVideoUrl(data?.video_url);
           setCreationInProgress(false);
         } else {
           setCreationInProgress(true);
@@ -1078,16 +1112,26 @@ const CreateTemplate = (props) => {
                     Template Name
                   </Typography>
                   <Box className="d-flex justify-space-between">
-                    <Typography
-                      style={{
-                        color: "#152F40",
-                        fontSize: "16px",
-                        wordBreak: "break-all",
-                        flexWrap: "wrap",
-                      }}
-                    >
-                      {templateParams?.videoTemplateName}
-                    </Typography>
+                    <Tooltip title={templateParams?.videoTemplateName || ""}>
+                      <Typography
+                        style={{
+                          color: "#152F40",
+                          fontSize: "16px",
+                          wordBreak: "break-all",
+                          flexWrap: "wrap",
+                        }}
+                      >
+                        {/* {templateParams?.videoTemplateName} */}
+                        {templateParams?.videoTemplateName
+                          ? templateParams?.videoTemplateName.length > 40
+                            ? `${templateParams?.videoTemplateName.slice(
+                                0,
+                                40
+                              )}...`
+                            : templateParams?.videoTemplateName
+                          : ""}
+                      </Typography>
+                    </Tooltip>
                     <Button
                       varinat="standard"
                       color="primary"
@@ -1111,12 +1155,13 @@ const CreateTemplate = (props) => {
                     placeholder="Enter Template Name"
                     value={templateName}
                     onBlur={handleBlur}
-                    onChange={(e) => setTemplateName(e.target.value)}
+                    onChange={(e) =>
+                      setTemplateName(e.target.value.trimStart())
+                    }
                     inputProps={{ maxLength: 50 }}
                     InputProps={{
                       endAdornment: (
                         <InputAdornment position="end">
-                          {/* <div onClick={handleSaveClick}> */}
                           <Button
                             className={`${
                               templateName === "" || selectedOption === "none"
@@ -1124,13 +1169,13 @@ const CreateTemplate = (props) => {
                                 : "savebtn"
                             }`}
                             disabled={
-                              templateName === "" || selectedOption === "none"
+                              templateName.trim() === "" ||
+                              selectedOption === "none"
                             }
                             onClick={handleSaveClick}
                           >
                             Save
                           </Button>
-                          {/* </div> */}
                         </InputAdornment>
                       ),
                     }}
@@ -1243,18 +1288,35 @@ const CreateTemplate = (props) => {
               {/* <Typography style={{ color: "#152F40", display: "flex", justifyContent: "center", alignItems: "center" }}>Template</Typography> */}
               <Box style={{ display: "flex" }}>
                 <Button
-                  disabled={connectedSheet === "none"}
+                  disabled={connectedSheet === "none" || templateDetail}
                   className={`${
-                    !(connectedSheet === "none")
+                    !(connectedSheet === "none" || templateDetail)
                       ? "sheetbtn"
                       : "sheetbtnDisables2"
                   }`}
+                  style={{ whiteSpace: "nowrap" }}
                   variant="standard"
                   color="primary"
                   onClick={showTemplateDetail}
                 >
-                  Custom template
+                  Create Custom template
                 </Button>
+                {templateDetail && (
+                  <Button
+                    disabled={connectedSheet === "none"}
+                    className={`${
+                      !(connectedSheet === "none")
+                        ? "sheetbtn2"
+                        : "sheetbtnDisables2"
+                    }`}
+                    style={{ marginLeft: "20px", backgroundColor: "FF0000" }}
+                    variant="standard"
+                    color="primary"
+                    onClick={showTemplateDetail}
+                  >
+                    Close Custom template
+                  </Button>
+                )}
               </Box>
             </Grid>
           </Grid>
@@ -1372,6 +1434,7 @@ const CreateTemplate = (props) => {
                               variant="outlined"
                               onClick={() => {
                                 handleView(linkObject[index]);
+                                setTemplateDetail(false);
                               }}
                             >
                               View
@@ -1423,9 +1486,10 @@ const CreateTemplate = (props) => {
                           disabled={element.isDisabled || !viewParams?.fetchUrl}
                           id={`choose-template-${element.id}`}
                           value={selectedOptionside[element.id] || " "}
-                          onChange={(event) =>
-                            handleChange(event, element.id, index)
-                          }
+                          onChange={(event) => {
+                            handleChange(event, element.id, index);
+                            setTemplateDetail(false);
+                          }}
                           IconComponent={ExpandMoreIcon}
                         >
                           <MenuItem
@@ -1631,11 +1695,17 @@ const CreateTemplate = (props) => {
             ) : creationInProgress ? (
               <>
                 <WarningIcon
-                  style={{ fontSize: 40, color: "#FFA726", marginBottom: 10 }}
+                  style={{
+                    fontSize: 40,
+                    color: "#FFA726",
+                    marginBottom: 10,
+                  }}
                 />
                 <Typography className="heading" variant="h6" align="center">
-                  Video creation has started. It'll take some time. Please check
-                  back later.
+                  {errorMessage
+                    ? errorMessage
+                    : `Video creation has started. It'll take some time. Please
+                      check back later.`}
                 </Typography>
               </>
             ) : videoUrl ? (

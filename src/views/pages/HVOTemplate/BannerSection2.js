@@ -580,7 +580,10 @@ function BannerSection2({
                     pattern: "[0-9]*",
                   }}
                 />
-                <Typography className="error">
+                <Typography
+                  className="error"
+                  style={{ position: "absolute", left: "32%" }}
+                >
                   {error.banner2TextSize}{" "}
                   <span className={classes.hinttext}>(Max 32 px.)</span>
                 </Typography>
@@ -869,7 +872,13 @@ function BannerSection2({
                 {companyDetails !== undefined &&
                   companyDetails.length > 0 &&
                   companyDetails
-                    ?.filter((item) => item?.dataType == "Text Field")
+                    ?.filter(
+                      (item) =>
+                        item?.dataType == "Text Field" ||
+                        item?.dataType == "First name" ||
+                        item?.dataType == "Last name" ||
+                        item?.dataType == "Customer organization"
+                    )
                     ?.map((sheetfield, ind) => (
                       <Tooltip title={sheetfield?.value || "Copy Text"} arrow>
                         <TextField
@@ -956,8 +965,9 @@ function BannerSection2({
           </Button>
           <Button
             variant="contained"
-            className={`${nextButton === false ? "savebtnDisables" : "savebtn"
-              }`}
+            className={`${
+              nextButton === false ? "savebtnDisables" : "savebtn"
+            }`}
             disabled={nextButton === false}
             onClick={handleNext}
           >

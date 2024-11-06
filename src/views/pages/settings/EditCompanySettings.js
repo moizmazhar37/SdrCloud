@@ -331,8 +331,8 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
       .min(7, "Mobile Number must be at least 7 digits."),
 
     PersonaProAdmin: Yup.string()
-      .required("PersonPro Admin is required.")
-      .max(60, "PersonaPro Admin shuold be greater then 60 character")
+      .required("SDRCloud.ai Admin is required.")
+      .max(60, "SDRCloud.ai Admin shuold be greater then 60 character")
       .matches(/^[a-zA-Z ]+$/, "Only alphabet characters are allowed"),
   });
 
@@ -569,7 +569,7 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
 
                       <Grid item lg={4} md={4} sm={6} className="flexCenter">
                         <Typography variant="body1">
-                          PersonaPro Admin:
+                          SDRCloud.ai Admin:
                         </Typography>
                       </Grid>
 

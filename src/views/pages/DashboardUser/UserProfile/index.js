@@ -153,6 +153,7 @@ const useStyles = makeStyles((theme) => ({
   textfiledall: {
     "& .MuiInputBase-root": {
       border: "0.5px solid gray",
+      borderRadius: "5px",
     },
     "& .MuiInputBase-input": {
       marginLeft: "10px",
@@ -458,8 +459,6 @@ const EditProfile = () => {
     setEditing(false);
   };
 
-
-
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -481,7 +480,7 @@ const EditProfile = () => {
   };
 
   const updateProfilePic = async (values) => {
-    setLoading(true)
+    setLoading(true);
 
     try {
       const res = await axios({
@@ -491,20 +490,18 @@ const EditProfile = () => {
           token: `${localStorage.getItem("token")}`,
         },
         data: {
-          profilePicture: photoURL
+          profilePicture: photoURL,
         },
-
       });
       if (res?.data?.status === 200) {
         console.log(res?.data, "uih");
         toast.success("Image uploaded successfully.");
 
         handleCloseDialog();
-        GetCompanyDetails()
+        GetCompanyDetails();
         setProfileData((prevData) => ({
           ...prevData,
           profilePicture: res?.data?.data,
-
         }));
       } else {
         setLoading(false);
@@ -582,8 +579,8 @@ const EditProfile = () => {
       </Box>
 
       <form onSubmit={formik.handleSubmit}>
-        <Grid container spacing={1} style={{ paddingTop: "32px" }}>
-          <Grid item md={8} sm={8} xs={12} lg={5}>
+        <Grid container spacing={1} style={{ paddingTop: "40px" }}>
+          <Grid item md={8} sm={8} xs={12} lg={6}>
             <Box className={classes.headingBox}>
               <Box className="d-flex" style={{ justifyContent: "start" }}>
                 <Typography variant="h5">Personal Details</Typography>
@@ -613,14 +610,14 @@ const EditProfile = () => {
                         {key === "profilephoto"
                           ? "Profile Picture"
                           : key === "firstName"
-                            ? "First Name"
-                            : key === "lastName"
-                              ? "Last Name"
-                              : key === "linkedinUrl"
-                                ? "LinkedIn Url"
-                                : key === "meetLink"
-                                  ? "Meeting ID"
-                                  : key.charAt(0).toUpperCase() + key.slice(1)}
+                          ? "First Name"
+                          : key === "lastName"
+                          ? "Last Name"
+                          : key === "linkedinUrl"
+                          ? "LinkedIn Url"
+                          : key === "meetLink"
+                          ? "Meeting ID"
+                          : key.charAt(0).toUpperCase() + key.slice(1)}
                       </Typography>
                     </Grid>
                     <Grid
@@ -745,12 +742,17 @@ const EditProfile = () => {
                                 : classes.textfiledallbefore
                             }
                             name={key}
-                            placeholder={`Enter Your ${key.charAt(0).toUpperCase() + key.slice(1)
-                              }`}
+                            placeholder={
+                              key === "profilephoto"
+                                ? "Upload Your Profile Photo"
+                                : `Enter Your ${
+                                    key.charAt(0).toUpperCase() + key.slice(1)
+                                  }`
+                            }
                             value={
                               key === "firstName" || key === "lastName"
                                 ? formik.values[key].charAt(0).toUpperCase() +
-                                formik.values[key].slice(1)
+                                  formik.values[key].slice(1)
                                 : formik.values[key]
                             }
                             onChange={formik.handleChange}
@@ -771,10 +773,10 @@ const EditProfile = () => {
                                 key === "phone"
                                   ? 20
                                   : key === "firstName"
-                                    ? 50
-                                    : key === "lastName"
-                                      ? 50
-                                      : undefined,
+                                  ? 50
+                                  : key === "lastName"
+                                  ? 50
+                                  : undefined,
                               onKeyDown: (e) => {
                                 const isAlphanumericOrSpecial =
                                   /^[A-Za-z0-9!@#$%^&*(),.?":{}|<>-]+$/.test(
@@ -811,13 +813,16 @@ const EditProfile = () => {
                     Cancel
                   </Button>
                   <Button
-                    className={`${!formik.isValid || formik.isSubmitting
-                      ? "savebtnDisables"
-                      : "savebtn"
-                      }`}
+                    className={`${
+                      !formik.isValid || formik.isSubmitting
+                        ? "savebtnDisables"
+                        : "savebtn"
+                    }`}
                     // onClick={handleSaveClick}
                     type="submit"
-                    disabled={!formik.isValid || formik.isSubmitting}
+                    disabled={
+                      !formik.isValid || !formik.dirty || formik.isSubmitting
+                    }
                   >
                     Save
                   </Button>
@@ -850,7 +855,7 @@ const EditProfile = () => {
             setOpenCrop={setOpenCrop}
             setPhotoURL={setPhotoURL}
             setUploadedImage={setSelectedFile}
-            setErrors={() => { }}
+            setErrors={() => {}}
           />
         </Dialog>
       ) : (
@@ -902,7 +907,7 @@ const EditProfile = () => {
             <Button
               onClick={() => {
                 if (isImageChanged) {
-                  updateProfilePic()
+                  updateProfilePic();
                 } else {
                   setSelectedFile(null);
                 }

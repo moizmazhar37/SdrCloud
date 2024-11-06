@@ -10,6 +10,7 @@ import {
   FormControl,
   Select,
   Modal,
+  FormHelperText,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Breadcrumbs from "@material-ui/core/Breadcrumbs";
@@ -38,8 +39,7 @@ import "react-phone-input-2/lib/style.css";
 import PhoneInput from "react-phone-input-2";
 import FullScreenLoader from "src/component/FullScreenLoader";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
-import { FormHelperText } from "@mui/material";
-import CropEasyProfile from "../../CreateVideo/Crop/CropEasyProfile";
+import CropEasyCompanyLogo from "../../CreateVideo/Crop/CropEasyCompanyLogo";
 // Styles for the component
 
 const useStyles = makeStyles((theme) => ({
@@ -1052,7 +1052,7 @@ const EditAccount = () => {
                   </div>
                   <div style={{ marginTop: "15px" }}>
                     <Typography variant="body1">
-                      Assigned PersonaPro Admin to this Account
+                      Assigned SDRCloud.ai Admin to this Account
                     </Typography>
                     <FormControl style={{ marginTop: "0px" }}>
                       <TextField
@@ -1321,7 +1321,7 @@ const EditAccount = () => {
                         <TextField
                           variant="outlined"
                           value={values.accountLogo}
-                          placeholder="personapro.456765.jpg"
+                          placeholder="SDRCloud.ai.456765.jpg"
                           InputProps={{
                             endAdornment: (
                               <InputAdornment position="end">
@@ -1817,7 +1817,10 @@ const EditAccount = () => {
                     className="button"
                     variant="outlined"
                     type="submit"
-                    disabled={!isValid || !dirty}
+                    disabled={
+                      !isValid
+                      //  || !dirty
+                    }
                   >
                     {loading === false ? (
                       " Update Account Admin Details"
@@ -1841,7 +1844,7 @@ const EditAccount = () => {
           <Typography variant="body1" className={classes.dialogHeading}>
             Account Logo
           </Typography>
-          <CropEasyProfile
+          <CropEasyCompanyLogo
             photoURL={accountLogo}
             type={false} // Adjust as needed
             setOpenCrop={setOpenCrop}

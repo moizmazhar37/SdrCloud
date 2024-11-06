@@ -53,6 +53,7 @@ const useStyles = makeStyles((theme) => ({
       },
     },
     "& .viewbtnblack": {
+      marginBottom: "10px",
       color: "#152F40",
       minWidth: "35px",
       cursor: "default",
@@ -60,6 +61,9 @@ const useStyles = makeStyles((theme) => ({
       "& .MuiButton-root": {
         fontSize: "14px",
       },
+    },
+    "& .link": {
+      color: "#0358AC",
     },
     "& .janeBtn": {
       color: "#152F40",
@@ -292,15 +296,30 @@ function EditProjects(props) {
   const classes = useStyles();
   const [reprocessOpen, setReprocessOpen] = useState(false);
   const [firstRowData, setFirstRowData] = useState({});
+  console.log("firstRowData: ", firstRowData);
   const [editData, setEditData] = useState({});
   const [headersData, setHeadersData] = useState([]);
+  const [matchStatus, setMatchStatus] = useState();
+  console.log("matchStatus: ", matchStatus);
+
   const [loading, setLoading] = useState(false);
   const history = useHistory();
   const sheetId = props?.location?.state?.state?.ErrorSheetId;
-  const projectIndex = props?.location?.state?.state?.projectIndex;
+  const {
+    projectIndex,
+    videoUrl,
+    firstName,
+    lastName,
+    hVOUrl,
+    proscpectName,
+    assignUser,
+    templateType,
+  } = props?.location?.state?.state || {};
+
   const handleReprocessClose = () => {
     setReprocessOpen(!reprocessOpen);
   };
+  const [sheetType, setSheetType] = useState({});
   const sheetRowData = async () => {
     try {
       setLoading(true);
@@ -316,8 +335,11 @@ function EditProjects(props) {
         },
       });
       if (res?.data?.status === 200) {
+        console.log("Sheet data");
+
         setFirstRowData(res?.data?.data?.firstRowData);
         setHeadersData(res?.data?.data?.datatype);
+        setSheetType(res?.data?.data?.type);
       }
     } catch (error) {
       console.log("error");
@@ -362,6 +384,7 @@ function EditProjects(props) {
       } else {
         statusHeaderName = "";
       }
+
       if (finalHeaderName.length > 0) {
         finalHeaderName = finalHeaderName[0];
         if (newFirstRow.hasOwnProperty(finalHeaderName)) {
@@ -380,6 +403,12 @@ function EditProjects(props) {
     handleReprocessClose();
   };
   const PostProjectDetails = async (values) => {
+    let changeUrl;
+    if (sheetType === "VIDEO") {
+      changeUrl = ApiConfig.reprocessVideo;
+    } else {
+      changeUrl = ApiConfig.reprocessHVO;
+    }
     try {
       setLoading(true);
       const formattedData = Object.keys(values).map((key) => ({
@@ -388,7 +417,7 @@ function EditProjects(props) {
       }));
       const res = await axios({
         method: "PUT",
-        url: ApiConfig.reprocessVideo,
+        url: changeUrl,
         headers: {
           token: `${localStorage.getItem("token")}`,
         },
@@ -421,39 +450,133 @@ function EditProjects(props) {
       return acc;
     }, {})
   );
+  const findMatchingErrorFields = () => {
+    let errorField = headersData?.find(
+      (item) => item.dataType == "Status (Required)"
+    );
+    if (!errorField) {
+      setMatchStatus("");
+      return "";
+    }
+    let IsError = firstRowData[errorField.value];
+    setMatchStatus(IsError);
+    return IsError;
+  };
+  useEffect(() => {
+    // Usage
+    const matchingErrorValues = findMatchingErrorFields();
+    console.log(matchingErrorValues, "jdskldj");
+  }, [headersData, firstRowData]);
 
   return (
     <>
       {loading && <FullScreenLoader />}
       <Typography variant="body1">
         <Link style={{ cursor: "pointer" }} onClick={() => history.goBack()}>
-          Project Listings
+          Prospect Listings
         </Link>{" "}
-        / <span style={{ color: "#0358AC" }}>Project Data</span>
+        / <span style={{ color: "#0358AC" }}>Prospect Data</span>
       </Typography>
 
       <Paper className={classes.tableContainer}>
         <Box className="headingBox">
           <Typography variant="body1" style={{ fontWeight: 500 }}>
-            Project Details
+            Prospect Details
           </Typography>
         </Box>
         <Box className="middledata">
           <Grid container spacing={2} alignItems="baseline">
-            {Object.entries(firstRowData).map(([key, value]) => (
-              <React.Fragment key={key}>
-                <Grid item xs={6} sm={6} md={4} className="allmiddledata">
-                  <Typography className="contentHeading">
+            <React.Fragment>
+              <Grid item xs={6} sm={6} md={4} className="allmiddledata">
+                {/* <Typography className="contentHeading">
                     {key || "N/A"}
-                  </Typography>
-                </Grid>
-                <Grid item xs={6} sm={6} md={8}>
+                  </Typography> */}
+                <Typography className="contentHeading">
+                  Prospect Company
+                </Typography>
+                <Typography className="contentHeading">
+                  Prospect Name
+                </Typography>
+
+                <Typography className="contentHeading">User</Typography>
+                <Typography className="contentHeading">Status</Typography>
+                {templateType === "HVO" ? (
+                  <Typography className="contentHeading">HVO URL</Typography>
+                ) : (
+                  <Typography className="contentHeading">Video URL</Typography>
+                )}
+              </Grid>
+              <Grid item xs={6} sm={6} md={8}>
+                <Typography className="viewbtnblack">
+                  {proscpectName ? proscpectName : "--"}
+                </Typography>
+                <Typography className="viewbtnblack">
+                  {firstName ? firstName : "--"} {lastName ? lastName : "--"}
+                </Typography>
+                <Typography className="viewbtnblack">
+                  {assignUser ? assignUser : "-"}
+                </Typography>
+                <Typography className="viewbtnblack">
+                  {/* {  matchStatus &&  {matchStatus
+                    ? matchStatus
+                    : matchStatus === ""
+                    ? "Pending"
+                    : matchStatus}} */}
+                  {!loading &&
+                    matchStatus !== undefined &&
+                    (matchStatus !== "" ? matchStatus : "Pending")}
+                </Typography>
+                {templateType === "HVO" ? (
                   <Typography className="viewbtnblack">
-                    {value || "N/A"}
+                    {matchStatus === "Failed" ? (
+                      <>
+                        <span style={{ color: "red" }}>
+                          {matchStatus === "Failed" ? "Error" : matchStatus}
+                        </span>{" "}
+                        <Button
+                          disabled
+                          variant="outlined"
+                          style={{
+                            color: "#0358AC",
+                            marginLeft: "10px",
+                            borderRadius: "15px",
+                          }}
+                        >
+                          Reprocess
+                        </Button>
+                      </>
+                    ) : (
+                      <Link href={hVOUrl} className="link">
+                        {hVOUrl ? hVOUrl : ""}
+                      </Link>
+                    )}
                   </Typography>
-                </Grid>
-              </React.Fragment>
-            ))}
+                ) : (
+                  <Typography className="viewbtnblack">
+                    {matchStatus === "Failed" ? (
+                      <>
+                        <span style={{ color: "red" }}>{matchStatus}</span>{" "}
+                        <Button
+                          disabled
+                          variant="outlined"
+                          style={{
+                            color: "#0358AC",
+                            marginLeft: "10px",
+                            borderRadius: "15px",
+                          }}
+                        >
+                          Reprocess
+                        </Button>
+                      </>
+                    ) : (
+                      <Link href={videoUrl} className="link">
+                        {videoUrl ? videoUrl : ""}
+                      </Link>
+                    )}
+                  </Typography>
+                )}
+              </Grid>
+            </React.Fragment>
           </Grid>
         </Box>
       </Paper>
@@ -465,7 +588,7 @@ function EditProjects(props) {
             setReprocessOpen(true);
           }}
         >
-          Edit Missing Information
+          Add Missing Information
         </Button>
       </Box>
       <>
@@ -506,32 +629,35 @@ function EditProjects(props) {
                 <DialogTitle className={classes.DialogTitleFirst} variant="h2">
                   You are still missing information to create media.
                   <br />
-                  <span>Project Details</span>
+                  <span>Prospect Details</span>
                 </DialogTitle>
                 <DialogContent>
                   <Grid container spacing={4}>
-                    {Object.entries(editData)?.map(([key, value]) => (
-                      <Grid item xs={12} md={6} lg={6} sm={12} key={key}>
-                        <Box>
-                          <Typography className="mainTypo" variant="body1">
-                            {key}
-                          </Typography>
-                          <TextField
-                            type="text"
-                            variant="outlined"
-                            fullWidth
-                            name={key}
-                            value={values[key]}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            error={!!(values[key] === "" && dirty)}
-                            helperText={
-                              <ErrorMessage name={key} component="div" />
-                            }
-                          />
-                        </Box>
-                      </Grid>
-                    ))}
+                    {Object.entries(editData)
+                      ?.filter(([key, value]) => value == "")
+                      ?.map(([key, value]) => (
+                        <Grid item xs={12} md={6} lg={6} sm={12} key={key}>
+                          {console.log("rishabh", key, value)}
+                          <Box>
+                            <Typography className="mainTypo" variant="body1">
+                              {key}
+                            </Typography>
+                            <TextField
+                              type="text"
+                              variant="outlined"
+                              fullWidth
+                              name={key}
+                              value={values[key]}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              error={!!(values[key] === "" && dirty)}
+                              helperText={
+                                <ErrorMessage name={key} component="div" />
+                              }
+                            />
+                          </Box>
+                        </Grid>
+                      ))}
                   </Grid>
                 </DialogContent>
                 <DialogActions className={classes.savecancelbtn}>

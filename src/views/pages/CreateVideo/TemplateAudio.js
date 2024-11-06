@@ -174,12 +174,13 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "8px",
     "& .MuiSelect-iconOutlined": {
       borderLeft: "1px solid #ECECEC",
+      marginRight: "-5px !important",
     },
     "& .MuiSelect-iconOpen": {
-      borderLeft: "0px !important",
-      borderRight: "1px solid #ECECEC",
+      borderLeft: "1px solid #ECECEC !important",
+      borderRight: "none !important",
       transform: "rotate(360deg)",
-      marginRight: "-1px !important",
+      marginRight: "-5px !important",
     },
     "& .MuiSelect-icon": {
       top: 0,
@@ -189,9 +190,6 @@ const useStyles = makeStyles((theme) => ({
     },
     "& .MuiPopover-paper": {
       marginTop: "85px",
-    },
-    "& .MuiTableCell-head ": {
-      lineheight: "2.5rem",
     },
   },
 }));

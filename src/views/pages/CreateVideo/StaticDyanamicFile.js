@@ -170,7 +170,9 @@ const StaticDyanamicFile = ({
   const [isSaved, setIsSaved] = useState(false);
   const [nextBtn, setNextBtn] = useState(false);
   const [saveButton, setSaveButton] = useState(false);
+
   const [companyDetails, setCompanyDetails] = useState("");
+  console.log("companyDetails: ", companyDetails);
   const [firstRowData, setFirstRowData] = useState("");
 
   const [matchData, setMatchData] = useState("");
@@ -277,6 +279,7 @@ const StaticDyanamicFile = ({
   let apiData;
 
   if (elementType === "STATICURL") {
+    let isDynamicUrl = link !== "" ? false : true;
     apiData = {
       duration: duration,
       url: link || dymLink,
@@ -294,6 +297,7 @@ const StaticDyanamicFile = ({
           AUDIO: audioFile,
         },
       },
+      isDynamicUrl,
     };
   } else if (elementType === "DYNAMICURL") {
     apiData = {
@@ -352,15 +356,15 @@ const StaticDyanamicFile = ({
       if (selectedOptionsecond === "none") {
         newError.selectedOptionsecond = "Scroll type is required.";
       }
-      if (audioFile === null) {
-        toast.error("Please upload audio file.");
-      }
+      // if (audioFile === null) {
+      //   toast.error("Please upload audio file.");
+      // }
 
       if (
         (link !== "" || dymLink !== "") &&
         duration !== "" &&
-        selectedOptionsecond !== "none" &&
-        audioFile !== null
+        selectedOptionsecond !== "none"
+        // audioFile !== null
       ) {
         try {
           setSaveButton(true);
@@ -413,14 +417,14 @@ const StaticDyanamicFile = ({
       if (selectedOptionsecond === "none") {
         newError.selectedOptionsecond = "Scroll type is required.";
       }
-      if (audioFile === null) {
-        toast.error("Please upload audio file.");
-      }
+      // if (audioFile === null) {
+      //   toast.error("Please upload audio file.");
+      // }
       if (
         selectedOption !== "none" &&
         duration !== "" &&
-        selectedOptionsecond !== "none" &&
-        audioFile !== null
+        selectedOptionsecond !== "none"
+        // audioFile !== null
       ) {
         try {
           setLoading(true);
@@ -562,33 +566,7 @@ const StaticDyanamicFile = ({
             <Grid container spacing={3}>
               <Grid item xs={12} sm={6} marginTop="12px">
                 <Typography className="heading">Enter Static URL</Typography>
-                {/* <TextField
-                  variant="outlined"
-                  placeholder="www.hubspot.com"
-                  value={link}
-                  onChange={(e) => {
-                    let inputValue = e.target.value;
 
-                    // Automatically prepend http:// if not present
-                    if (
-                      !inputValue.startsWith("http://") &&
-                      !inputValue.startsWith("https://")
-                    ) {
-                      inputValue = "https://" + inputValue;
-                    }
-
-                    setLink(inputValue);
-                    setDymLink("none");
-
-                    // Validate the URL
-                    if (!urlPattern.test(inputValue)) {
-                      setErrors({ link: "Please enter a valid Static URL." });
-                    } else {
-                      setErrors({ link: "" });
-                    }
-                  }}
-                /> */}
-                {/* /> */}
                 <TextField
                   variant="outlined"
                   placeholder="https://www.hubspot.com"
@@ -639,8 +617,14 @@ const StaticDyanamicFile = ({
                   value={dymLink}
                   onChange={handleDymLinkChange}
                   IconComponent={ExpandMoreIcon}
-                // error={!!errors.dymLink}
-                // helperText={errors.dymLink}
+                  // error={!!errors.dymLink}
+                  // helperText={errors.dymLink}
+                  disabled={
+                    !Array.isArray(companyDetails) ||
+                    !companyDetails.some(
+                      (item) => item?.dataType === "Static URL"
+                    )
+                  }
                 >
                   <MenuItem value="none" disabled>
                     Select Static URL
@@ -662,6 +646,9 @@ const StaticDyanamicFile = ({
             <Select
               variant="outlined"
               value={selectedOption}
+              id="choose-template"
+              className="selectitem"
+              fullWidth
               MenuProps={menuProps}
               onChange={(e) => {
                 handleSelectChange(e);
@@ -671,8 +658,12 @@ const StaticDyanamicFile = ({
                   setErrors({ dynamic: "" });
                 }
               }}
-              className={classes.menuitemSecond}
+              // className={classes.menuitemSecond}
               IconComponent={ExpandMoreIcon}
+              disabled={
+                !Array.isArray(companyDetails) ||
+                !companyDetails.some((item) => item?.dataType === "Dynamic URL")
+              }
             >
               <MenuItem value="none" disabled>
                 Select Dynamic URL
@@ -714,7 +705,11 @@ const StaticDyanamicFile = ({
               }
 
               // Ensure value does not exceed 3600, has a max length of 10 characters, and is not negative
-              if (value >= 0 && value.toString().length <= 10 && value <= 3600) {
+              if (
+                value >= 0 &&
+                value.toString().length <= 10 &&
+                value <= 3600
+              ) {
                 setDuration(value);
                 if (value === "") {
                   setErrors({ duration: "Duration is required." });
@@ -730,7 +725,6 @@ const StaticDyanamicFile = ({
             variant="outlined"
             placeholder="00"
           />
-
 
           <Typography className="error">{errors.duration}</Typography>
         </div>
@@ -780,8 +774,9 @@ const StaticDyanamicFile = ({
               variant="contained"
               style={{ height: "44px" }}
               onClick={handleOpenDialog}
-              className={`${selectedOptionsecond === "none" ? "savebtnDisables" : "savebtn"
-                }`}
+              className={`${
+                selectedOptionsecond === "none" ? "savebtnDisables" : "savebtn"
+              }`}
               disabled={selectedOptionsecond === "none" || duration === ""}
             >
               Audio
@@ -828,7 +823,7 @@ const StaticDyanamicFile = ({
             handleSetData();
           }}
           className={classes.savebtn}
-          disabled={isSaved || !audioFile}
+          disabled={isSaved || selectedOptionsecond === "none"}
         >
           Save
         </Button>

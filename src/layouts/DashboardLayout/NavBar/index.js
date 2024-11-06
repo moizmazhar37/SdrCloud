@@ -260,11 +260,11 @@ const useStyles = makeStyles((theme) => ({
     overflowY: "scroll",
   },
   sidebarlladmin: {
-    height: "calc(100vh - 140px)",
+    height: "calc(100vh - 220px)",
     marginTop: "0px",
   },
   sidebarllsubadmin: {
-    height: "calc(100vh - 170px)",
+    height: "calc(100vh - 220px)",
   },
 }));
 
@@ -342,7 +342,7 @@ const NavBar = ({ onMobileClose, openMobile, drawerOpen }) => {
               href: "/CreateTemplate",
             },
             {
-              title: "Projects",
+              title: "Prospects",
               icon: "images/template/clipboard-text.svg",
               href: "/Myprojects",
             },
@@ -364,7 +364,7 @@ const NavBar = ({ onMobileClose, openMobile, drawerOpen }) => {
               href: "/user-dashboard",
             },
             {
-              title: "My Project",
+              title: "My Prospects",
               icon: "images/template/clipboard-text.svg",
               href: "/myprojects-list",
             },
@@ -484,7 +484,7 @@ const NavBar = ({ onMobileClose, openMobile, drawerOpen }) => {
                   width="100%"
                   style={{
                     width: "100%",
-                    maxHeight: "80px",
+                    maxHeight: "60px",
                     objectFit: "contain",
                   }}
                 />

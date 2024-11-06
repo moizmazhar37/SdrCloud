@@ -298,9 +298,7 @@ const SheetDetails = ({
                 </Grid>
                 <Grid container spacing={2} className="subGridContainer">
                   <Grid item lg={4} sm={4}>
-                    <Typography variant="body1">
-                      Fetch New Records Every
-                    </Typography>
+                    <Typography variant="body1">New Records Each</Typography>
                   </Grid>
                   <Grid item lg={5} sm={5}>
                     <Typography variant="h6">

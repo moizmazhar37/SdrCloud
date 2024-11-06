@@ -970,44 +970,15 @@ const Intent = (props) => {
     }
   };
   const formValidationSchemaOne = Yup.object().shape({
-    FACEBOOK: Yup.string().matches(
-      /^(ftp|http|https):\/\/[^ "]+$/,
-      "Invalid URL format. Please enter a valid URL."
-    ),
-    LINKEDIN: Yup.string().matches(
-      /^(ftp|http|https):\/\/[^ "]+$/,
-      "Invalid URL format. Please enter a valid URL."
-    ),
-
-    GOOGLE: Yup.string().matches(
-      /^(ftp|http|https):\/\/[^ "]+$/,
-      "Invalid URL format. Please enter a valid URL."
-    ),
-    // .required("URL is required"),
-
-    TERMINUS: Yup.string().matches(
-      /^(ftp|http|https):\/\/[^ "]+$/,
-      "Invalid URL format. Please enter a valid URL."
-    ),
-    // .required("URL is required"),
-
-    HUBSPOT: Yup.string().matches(
-      /^(ftp|http|https):\/\/[^ "]+$/,
-      "Invalid URL format. Please enter a valid URL."
-    ),
-    // .required("URL is required"),
-
-    OUTREACH: Yup.string().matches(
-      /^(ftp|http|https):\/\/[^ "]+$/,
-      "Invalid URL format. Please enter a valid URL."
-    ),
-    // .required("URL is required"),
-
-    EXPERIENCE_COM: Yup.string().matches(
-      /^(ftp|http|https):\/\/[^ "]+$/,
-      "Invalid URL format. Please enter a valid URL."
-    ),
+    FACEBOOK: Yup.string(),
+    LINKEDIN: Yup.string(),
+    GOOGLE: Yup.string(),
+    TERMINUS: Yup.string(),
+    HUBSPOT: Yup.string(),
+    OUTREACH: Yup.string(),
+    EXPERIENCE_COM: Yup.string(),
   });
+
   const hasValidEntries = (footerLinks) => {
     return footerLinks?.some(
       (link) => link.link.trim() !== "" && link.trackingLinkName.trim() !== ""

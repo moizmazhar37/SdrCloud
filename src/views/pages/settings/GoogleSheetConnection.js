@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -30,7 +30,6 @@ import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import { Close } from "@material-ui/icons";
 import ButtonCircularProgress from "src/component/ButtonCircularProgress";
 const useStyles = makeStyles((theme) => ({
-
   dialog: {
     "& .MuiPaper-rounded": {
       borderRadius: "16px",
@@ -45,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
       textAlign: "center",
       padding: "0px 30px",
       color: "#152F40",
-      fontSize: "20px"
+      fontSize: "20px",
     },
     "& .MuiDialogActions-root": {
       justifyContent: "center",
@@ -172,13 +171,18 @@ const GoogleSheetConnection = ({
   const [openDailog, setOpenDailog] = useState(false);
   console.log("openDailog: ", openDailog);
   const history = useHistory();
+  const [userList, setUserList] = useState([]);
+  const [selectedUser, setSelectedUser] = useState("");
+  console.log("userList: ", userList);
 
   const handleClose = () => {
-    setOpenDailog(false)
-  }
+    setOpenDailog(false);
+  };
   const handleCopy = () => {
-    navigator.clipboard.writeText('scott-account@scott-project-416709.iam.gserviceaccount.com');
-    toast.success('Email copied to clipboard!');
+    navigator.clipboard.writeText(
+      "scott-account@scott-project-416709.iam.gserviceaccount.com"
+    );
+    toast.success("Email copied to clipboard!");
   };
 
   const handleBackClick2 = () => {
@@ -186,6 +190,8 @@ const GoogleSheetConnection = ({
   };
 
   const handleSubmit = async (values, setFieldValue) => {
+    console.log(values, "efkef");
+
     try {
       setLoading(true);
       const response = await Axios({
@@ -198,6 +204,7 @@ const GoogleSheetConnection = ({
           rangeName: values.sheetName,
           sheetUrl: values.sheetURL,
           sheetType: sheetType,
+          assignedUser: values.userList,
         },
       });
 
@@ -211,9 +218,7 @@ const GoogleSheetConnection = ({
 
         toast.success("Successfully connected to Google Sheet");
         setLoading(false);
-      }
-
-      else {
+      } else {
         // setOpenDailog(true)
         toast.error(response?.data?.message);
         setFieldValue("sheetURL", "");
@@ -225,14 +230,29 @@ const GoogleSheetConnection = ({
       if (error?.response?.data?.status === 402) {
         setLoading(false);
 
-        setOpenDailog(true)
-      }
-      else {
-
+        setOpenDailog(true);
+      } else {
         toast.error(error?.response?.data?.message);
         console.log(error);
         setLoading(false);
       }
+    }
+  };
+  const getAllUsers = async () => {
+    try {
+      const response = await Axios({
+        url: ApiConfig.getAllUserByAccountId,
+        method: "GET",
+        headers: {
+          token: `${localStorage.getItem("token")}`,
+        },
+      });
+      if (response?.data?.status === 200) {
+        setUserList(response?.data?.data);
+      }
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
     }
   };
 
@@ -241,15 +261,8 @@ const GoogleSheetConnection = ({
   };
 
   const validationSchema = Yup.object().shape({
-    // sheetName: Yup.string()
-    //   .required(
-    //     "Sheet name is required and can only contain letters, numbers, spaces, underscores, hyphens, and periods. It must be between 1 and 50 characters long."
-    //   )
-    //   .matches(
-    //     /^[a-zA-Z0-9\s\-_\.]{1,50}$/,
-    //     "Sheet name is required and can only contain letters, numbers, spaces, underscores, hyphens, and periods. It must be between 1 and 50 characters long."
-    //   ),
     sheetName: Yup.string()
+      .trim()
       .required(
         "Sheet name is required and must be between 1 and 150 characters long."
       )
@@ -264,11 +277,14 @@ const GoogleSheetConnection = ({
         /^https:\/\/docs\.google\.com\/spreadsheets\/d\/([a-zA-Z0-9_-]+)\/?.*$/,
         "A valid Google Sheets URL is required. (e.g., https://docs.google.com/spreadsheets/d/your-spreadsheet-id/edit)"
       ),
+    userList: Yup.string().required("Please select User."),
   });
   const goBackToElementSelection = () => {
     setnextRoutes1("Google Sheet");
   };
-
+  useEffect(() => {
+    getAllUsers();
+  }, []);
   return (
     <>
       <Box className={classes.GoogleSheetContainer}>
@@ -294,7 +310,11 @@ const GoogleSheetConnection = ({
               />
               <Breadcrumbs aria-label="breadcrumb">
                 <Typography variant="body1" style={{ color: "#152F40" }}>
-                  <Link color="inherit" href="/pp-settings" onClick={handleClick}>
+                  <Link
+                    color="inherit"
+                    href="/pp-settings"
+                    onClick={handleClick}
+                  >
                     Settings{" "}
                   </Link>
                 </Typography>
@@ -302,7 +322,11 @@ const GoogleSheetConnection = ({
                   variant="body1"
                   style={{ color: "#152F40", marginLeft: "5px" }}
                 >
-                  <Link color="inherit" href="/integration" onClick={handleClick}>
+                  <Link
+                    color="inherit"
+                    href="/integration"
+                    onClick={handleClick}
+                  >
                     Integration
                   </Link>
                 </Typography>{" "}
@@ -317,15 +341,77 @@ const GoogleSheetConnection = ({
                 sheetType: "",
                 sheetName: "",
                 sheetURL: "",
+                userList: "",
               }}
               validationSchema={validationSchema}
               onSubmit={(values, { setFieldValue }) => {
                 handleSubmit(values, setFieldValue);
               }}
             >
-              {({ handleBlur, handleChange, values }) => (
+              {({ handleBlur, handleChange, values, isValid }) => (
                 <Form>
                   <Grid container spacing={2} className="mainGridContainer">
+                    <Grid item lg={3} xs={12}>
+                      <Box mt={4}>
+                        <Typography>Select User</Typography>
+                        <Field
+                          name="userList"
+                          as="select"
+                          fullWidth
+                          marginTop="20px"
+                        >
+                          {({ field, form }) => (
+                            <>
+                              <Select
+                                {...field}
+                                fullWidth
+                                style={{ marginTop: "5px" }}
+                                variant="outlined"
+                                displayEmpty
+                                onChange={(e) => {
+                                  form.setFieldValue(
+                                    field.name,
+                                    e.target.value
+                                  );
+                                  // setSelectedUser(e.target.value);
+                                }}
+                                IconComponent={ExpandMoreIcon}
+                                MenuProps={menuProps}
+                                marginTop="5px"
+                              >
+                                <MenuItem value="" disabled>
+                                  Select User
+                                </MenuItem>
+                                {userList?.map((data, i) => {
+                                  return (
+                                    <MenuItem
+                                      key={i}
+                                      style={{ color: "#858585" }}
+                                      value={data?.userId}
+                                      name={data?.userName}
+                                    >
+                                      {data?.userName}
+                                    </MenuItem>
+                                  );
+                                })}
+                              </Select>
+                              {form.errors.userList &&
+                                form.touched.userList && (
+                                  <div
+                                    style={{
+                                      fontSize: "12px",
+                                      color: "red",
+                                      marginTop: "7px",
+                                    }}
+                                  >
+                                    {form.errors.userList}
+                                  </div>
+                                )}
+                            </>
+                          )}
+                        </Field>
+                      </Box>
+                    </Grid>
                     <Grid item lg={2} xs={12}>
                       <Box mt={4}>
                         <Typography>Select Sheet Type</Typography>
@@ -343,10 +429,13 @@ const GoogleSheetConnection = ({
                                 style={{ marginTop: "5px" }}
                                 variant="outlined"
                                 displayEmpty
+                                disabled={!values.userList}
                                 onChange={(e) => {
-                                  form.setFieldValue(field.name, e.target.value);
+                                  form.setFieldValue(
+                                    field.name,
+                                    e.target.value
+                                  );
                                   setSheetType(e.target.value);
-                                  // console.log(e.target.value)
                                 }}
                                 IconComponent={ExpandMoreIcon}
                                 MenuProps={menuProps}
@@ -385,34 +474,12 @@ const GoogleSheetConnection = ({
                                 {...field}
                                 variant="outlined"
                                 className="btnTextfield"
-                                placeholder="Enter PersonaPro Sheet Name"
+                                placeholder="Enter SDRCloud.ai Sheet Name"
                                 disabled={!values.sheetType}
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                                 inputProps={{
                                   maxLength: 151,
-                                  // onKeyPress: (event) => {
-                                  //   const charCode = event.which
-                                  //     ? event.which
-                                  //     : event.keyCode;
-                                  //   const charStr = String.fromCharCode(charCode);
-
-                                  //   if (
-                                  //     !(
-                                  //       (
-                                  //         (charCode >= 65 && charCode <= 90) || // A-Z
-                                  //         (charCode >= 97 && charCode <= 122) || // a-z
-                                  //         (charCode >= 48 && charCode <= 57) || // 0-9
-                                  //         charStr === " " || // space
-                                  //         charStr === "_" || // underscore
-                                  //         charStr === "-" || // hyphen
-                                  //         charStr === "."
-                                  //       ) // period
-                                  //     )
-                                  //   ) {
-                                  //     event.preventDefault();
-                                  //   }
-                                  // },
                                 }}
                               />
                               {form.errors.sheetName &&
@@ -443,7 +510,7 @@ const GoogleSheetConnection = ({
                                 variant="outlined"
                                 className="btnTextfield"
                                 disabled={!values.sheetType}
-                                placeholder="Enter PersonaPro Sheet URL"
+                                placeholder="Enter SDRCloud.ai Sheet URL"
                                 InputProps={{
                                   endAdornment: (
                                     <InputAdornment position="end">
@@ -451,6 +518,7 @@ const GoogleSheetConnection = ({
                                         variant="contained"
                                         type="submit"
                                         color="primary"
+                                        disabled={!isValid}
                                         onClick={handleFetchButtonClick}
                                       >
                                         Fetch
@@ -459,32 +527,23 @@ const GoogleSheetConnection = ({
                                   ),
                                 }}
                               />
-                              {form.errors.sheetURL && form.touched.sheetURL && (
-                                <div
-                                  style={{
-                                    fontSize: "12px",
-                                    color: "red",
-                                    marginTop: "7px",
-                                  }}
-                                >
-                                  {form.errors.sheetURL}
-                                </div>
-                              )}
+                              {form.errors.sheetURL &&
+                                form.touched.sheetURL && (
+                                  <div
+                                    style={{
+                                      fontSize: "12px",
+                                      color: "red",
+                                      marginTop: "7px",
+                                    }}
+                                  >
+                                    {form.errors.sheetURL}
+                                  </div>
+                                )}
                             </div>
                           )}
                         </Field>
                       </Box>
                     </Grid>
-                    {/* <Grid item lg={2} xs={12}>
-                    <Box mt={7}>
-                      <Button
-                        variant="containedSecondary"
-                        onClick={handleViewSample}
-                      >
-                        View Sample
-                      </Button>
-                    </Box>
-                  </Grid> */}
                   </Grid>
                 </Form>
               )}
@@ -504,13 +563,19 @@ const GoogleSheetConnection = ({
         </DialogTitle>
         <DialogContent>
           <Typography variant="h4">
-            Kindly share the Excel sheet with us at{' '}
+            Kindly share the Excel sheet with us at{" "}
             <span
               onClick={handleCopy}
-              style={{ textDecoration: 'underline', cursor: 'pointer', color: 'inherit' }}
+              style={{
+                textDecoration: "underline",
+                cursor: "pointer",
+                color: "inherit",
+              }}
             >
               scott-account@scott-project-416709.iam.gserviceaccount.com
-            </span>. This will allow our system to process your file and automatically add the generated URL link directly into the sheet.
+            </span>
+            . This will allow our system to process your file and automatically
+            add the generated URL link directly into the sheet.
           </Typography>
         </DialogContent>
         <DialogActions>
@@ -518,12 +583,8 @@ const GoogleSheetConnection = ({
             {" "}
             Ok
           </Button>
-          {/* <Button variant="containedPrimary" onClick={() => handleDelete()}>
-            {loading === false ? "Delete" : <ButtonCircularProgress />}
-          </Button> */}
         </DialogActions>
       </Dialog>
-
     </>
   );
 };

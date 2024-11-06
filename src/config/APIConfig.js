@@ -99,6 +99,7 @@ const ApiConfig = {
   reprocessVideo: `${javaurl}video/video-templates/re-process`,
   previewVideo: `${javaurl}video/video-templates/preview-video-with-sheet-data`,
   createdVideo: `${javaurl}video/video-templates/video-link`,
+  customVdoTemplate: `${javaurl}video/video-templates/create-custom-template`,
   //google Sheet
   connectedSheet: `${javaurl}hvo/hvoTemplate/connected-all-google-sheets`,
   connectedSheetVideo: `${javaurl}video/video-templates/connected-all-google-sheets`,
@@ -144,6 +145,7 @@ const ApiConfig = {
   deleteSectionById: `${javaurl}hvo/hvoTemplate/delete-section-by-id`,
   companySheetData: `${javaurl}account/hvoTemplate/get-all-sheet-data-hvo`,
   createHVOsheetData: `${javaurl}hvo/hvoTemplate/create-HVO-with-sheet-data`,
+  reprocessHVO: `${javaurl}hvo/hvoTemplate/re-process`,
   // getHvoAndCustomerData: `${javaurl}/account/hvoTemplate/get-hvo-and-customer-data`,
   getHvoAndCustomerData: `${javaurl}hvo/hvoTemplate/get-HVO-and-customer-data`,
   addCategory: `${javaurl}company/add-Category`,

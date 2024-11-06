@@ -18,7 +18,6 @@ import moment from "moment";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import FullScreenLoader from "src/component/FullScreenLoader";
-import { CircularProgress, Select } from "@mui/material";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { menuProps } from "src/utils";
@@ -126,18 +125,6 @@ const useStyles = makeStyles((theme) => ({
     borderLeft: "1px solid var(--light-stroke, #ECECEC)",
   },
 }));
-const currencies = [
-  {
-    value: "Text Field",
-  },
-  {
-    value: "URL",
-  },
-  {
-    value: "Image URL",
-  },
-];
-// React component for viewing details of a Google Sheet integration
 function ViewGoogleSheet(props) {
   console.log("props: ", props);
   const classes = useStyles();
@@ -299,7 +286,7 @@ function ViewGoogleSheet(props) {
     totalRecords: "Total Records",
     recent: "Recent",
     fetchUrl: "Fetch URL",
-    fetchDays: "Fetch New Records Every",
+    fetchDays: "New Records Each",
   };
 
   const truncateUrl = (url) => {
@@ -369,8 +356,13 @@ function ViewGoogleSheet(props) {
         }}
       >
         <Form>
-          <Grid container spacing={1} style={{ paddingTop: "30px" }}>
-            <Grid item md={8} sm={8} xs={12} lg={6}>
+          <Grid
+            container
+            spacing={1}
+            justifyContent="space-around"
+            style={{ paddingTop: "30px" }}
+          >
+            <Grid item xs={12} sm={6} md={6} lg={6}>
               <Box className={classes.headingBox}>
                 <Box className="d-flex" style={{ justifyContent: "start" }}>
                   <Typography variant="h5">Sheet Details</Typography>
@@ -391,7 +383,7 @@ function ViewGoogleSheet(props) {
                         lg={4}
                         md={6}
                         sm={6}
-                        xs={12}
+                        xs={6}
                         className="profileBox d-flex"
                       >
                         <Typography variant="body1">
@@ -399,7 +391,7 @@ function ViewGoogleSheet(props) {
                         </Typography>
                       </Grid>
 
-                      <Grid item lg={6} md={6} sm={6} xs={12}>
+                      <Grid item lg={6} md={6} sm={6} xs={6}>
                         {key === "createdOn" ? (
                           // <Typography style={{ color: "#152F40" }}>
                           //   {viewdata[key] === "Connected"
@@ -502,33 +494,34 @@ function ViewGoogleSheet(props) {
                 </Box>
               )}
             </Grid>
-            <Grid item xs={12} md={12} lg={5} className="gridItem">
+            <Grid item xs={12} sm={6} md={5} lg={5} className="gridItem">
               <Box className={classes.commonBorder}>
                 <Box
                   className="commonHeadingBox"
-                  style={{ padding: "8px 8px 8px 20px" }}
+                  style={{ padding: "10px 10px 10px 20px" }}
                 >
-                  <Typography variant="body1">
-                    Column Headers: Fields
-                  </Typography>
+                  <Typography variant="h5">Column Headers: Fields</Typography>
                 </Box>
               </Box>
-              {/* {loading && (
-                <Box
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    marginTop: "100px",
-                  }}
-                >
-                  <CircularProgress />
-                </Box>
-              )} */}
+
               {sheetData?.map((item, idx) => (
-                <Box className={classes.commomInnerBox}>
+                <Box
+                  className={classes.commomInnerBox}
+                  style={{
+                    borderBottom:
+                      idx === sheetData.length - 1
+                        ? "1px solid var(--light-stroke, #ECECEC)"
+                        : "none",
+                    borderRadius:
+                      idx === sheetData.length - 1 ? "10px" : "none",
+                  }}
+                  key={idx}
+                >
                   <Box pt={2} pl={3} pr={2} pb={2}>
-                    <Typography variant="body1">
+                    <Typography
+                      variant="body1"
+                      style={{ color: "#858585", fontWeight: 500 }}
+                    >
                       {item?.value?.length > 40
                         ? `${item.value.substring(0, 45)}...`
                         : item?.value}

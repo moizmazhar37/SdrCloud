@@ -106,8 +106,8 @@ const useStyles = makeStyles((theme) => ({
   btnConatainer: {
     display: "flex",
     gap: "16px",
-    // padding: "24px 44px 32px 44px",
-    padding: "35px 44px 32px 44px",
+    justifyContent: "space-between",
+    padding: "35px",
     "& .btnCancel": {
       backgroundColor: "#F4F4F4",
       color: "#152F40",
@@ -392,13 +392,14 @@ const CompanySetting = () => {
     setUpdatedType(type);
     if (isEditing) {
       handleEditImage();
+      setEditing(false);
     } else {
       setEditing(true);
     }
   };
   const truncateText = (text, maxLength = 50) => {
     return text?.length > maxLength
-      ? `${text.slice(0, 20)}...${text.slice(-20)}`
+      ? `${text.slice(0, 25)}...${text.slice(-25)}`
       : text;
   };
 
@@ -519,7 +520,6 @@ const CompanySetting = () => {
                       onClick={() => {
                         handleButtonClick("COMPANY_DETAILS");
                       }}
-                      disabled={!isValid || isSubmitting}
                     >
                       {isEditing ? "Save" : "Edit"}
                     </Button>
@@ -533,7 +533,7 @@ const CompanySetting = () => {
                   }
                 >
                   <Box style={{ display: "flex", alignItems: "baseline" }}>
-                    <Typography style={{ width: "200px" }}>
+                    <Typography style={{ width: "190px" }}>
                       {" "}
                       Company Name :
                     </Typography>
@@ -570,19 +570,20 @@ const CompanySetting = () => {
                         )}
                       </Field>
                     ) : (
-                      <Typography
-                        style={{
-                          color: "#152F40",
-                          fontWeight: 500,
-                          fontSize: "14px",
+                      <TextField
+                        value={companyName ? companyName : ""}
+                        type="text"
+                        fullWidth
+                        disabled
+                        InputProps={{
+                          disableUnderline: true,
+                          style: { color: "red" },
                         }}
-                      >
-                        {companyName ? companyName : ""}
-                      </Typography>
+                      />
                     )}
                   </Box>
                   <Box style={{ display: "flex", alignItems: "baseline" }}>
-                    <Typography style={{ width: "200px" }}>
+                    <Typography style={{ width: "170px" }}>
                       {" "}
                       Company URL :
                     </Typography>
@@ -630,15 +631,16 @@ const CompanySetting = () => {
                         )}
                       </Field>
                     ) : (
-                      <Typography
-                        style={{
-                          color: "#152F40",
-                          fontWeight: 500,
-                          fontSize: "14px",
+                      <TextField
+                        value={companyURL ? truncateText(companyURL) : ""}
+                        type="text"
+                        fullWidth
+                        disabled
+                        InputProps={{
+                          disableUnderline: true,
+                          style: { color: "red" },
                         }}
-                      >
-                        {companyURL ? truncateText(companyURL) : ""}
-                      </Typography>
+                      />
                     )}
                   </Box>
                 </Box>

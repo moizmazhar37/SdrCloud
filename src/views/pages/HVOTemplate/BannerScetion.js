@@ -425,7 +425,7 @@ function BannerScetion({
                     const value = e.target.value.replace(htmlTagRegex, "");
                     const isSpecialCase =
                       value.startsWith("[") && value.endsWith("]");
-                    if (isSpecialCase || value.length <= 60) {
+                    if (isSpecialCase || value.length <= 160) {
                       setBannerText(value);
                       setError((prevErrors) => ({
                         ...prevErrors,
@@ -434,7 +434,7 @@ function BannerScetion({
                     } else {
                       setError((prevErrors) => ({
                         ...prevErrors,
-                        bannerText: "Maximum character count is 60.",
+                        bannerText: "Maximum character count is 160.",
                       }));
                     }
                   }}
@@ -444,7 +444,6 @@ function BannerScetion({
                 />
                 <Typography className="error">{error.bannerText}</Typography>
               </Grid>
-
 
               <Grid item xs={1} className="sizeField">
                 <Typography className="label">Size</Typography>
@@ -660,7 +659,13 @@ function BannerScetion({
                 {companyDetails !== undefined &&
                   companyDetails.length > 0 &&
                   companyDetails
-                    ?.filter((item) => item?.dataType === "Text Field")
+                    ?.filter(
+                      (item) =>
+                        item?.dataType == "Text Field" ||
+                        item?.dataType == "First name" ||
+                        item?.dataType == "Last name" ||
+                        item?.dataType == "Customer organization"
+                    )
                     ?.map((sheetfield, ind) => (
                       <Tooltip title={sheetfield?.value || "Copy Text"} arrow>
                         <TextField
@@ -687,7 +692,6 @@ function BannerScetion({
                         />
                       </Tooltip>
                     ))}
-
               </div>
             </Box>
           </Grid>
@@ -704,8 +708,9 @@ function BannerScetion({
           </Button>
           <Button
             variant="contained"
-            className={`${nextButton === false ? "savebtnDisables" : "savebtn"
-              }`}
+            className={`${
+              nextButton === false ? "savebtnDisables" : "savebtn"
+            }`}
             disabled={nextButton === false}
             onClick={handleNext}
           >

@@ -102,8 +102,8 @@ function Login(props) {
         url: ApiConfig.forgotPassword,
         method: "GET",
         params: {
-          email: values.email,
-          webUrl: `${window.location.origin}/otpverify?email=${values.email}`,
+          email: values.email.toLowerCase(),
+          webUrl: `${window.location.origin}/otpverify?email=${values.email.toLowerCase()}`,
         },
       });
 
@@ -207,7 +207,7 @@ function Login(props) {
                           }
                         }}
                         onInput={(e) => {
-                          e.target.value = e.target.value.toLowerCase();
+                          // e.target.value = e.target.value.toLowerCase();
                           handleChange(e);
                         }}
                       />
@@ -245,7 +245,7 @@ function Login(props) {
                             isFromChangePassword
                               ? localStorage.getItem("userType")
                                 ? localStorage.getItem("userType") ==
-                                    "SUBADMIN" ||
+                                  "SUBADMIN" ||
                                   localStorage.getItem("userType") == "USER"
                                   ? "/change-your-password"
                                   : "/edit-profile"

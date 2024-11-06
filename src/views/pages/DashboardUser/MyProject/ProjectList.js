@@ -519,14 +519,14 @@ function ProjectList() {
                   <Table className={classes.table} aria-label="simple table">
                     <TableHead>
                       <TableRow>
-                        <TableCell align="center">Sheet Name</TableCell>
                         <TableCell align="center">
-                          {tempType === "VIDEO"
+                          {/* {tempType === "VIDEO"
                             ? tempType.charAt(0).toUpperCase() +
                               tempType.slice(1).toLowerCase()
-                            : tempType}{" "}
+                            : tempType}{" "} */}
                           Template Name
                         </TableCell>
+                        <TableCell align="center">Sheet Name</TableCell>
 
                         <TableCell align="center">Status</TableCell>
                         <TableCell align="center">Action</TableCell>
@@ -538,10 +538,10 @@ function ProjectList() {
                         allProjectsData?.map((data, index) => (
                           <TableRow key={index}>
                             <TableCell align="center">
-                              {truncateText(data?.title)}
+                              {truncateText(data?.hvoTemplateName)}
                             </TableCell>
                             <TableCell align="center">
-                              {truncateText(data?.hvoTemplateName)}
+                              {truncateText(data?.title)}
                             </TableCell>
 
                             <TableCell

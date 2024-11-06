@@ -42,6 +42,12 @@ const useStyles = makeStyles((theme) => ({
       color: "black",
     },
   },
+  cropContainer: {
+    position: "relative",
+    width: "100%",
+    height: "100%",
+    backgroundColor: "#000",
+  },
 }));
 // Main component to handle the cropping functionality
 const CropEasy = ({
@@ -120,10 +126,16 @@ const CropEasy = ({
           rotation={rotation}
           aspect={16 / 9}
           onZoomChange={setZoom}
-          onRotationChange={setRotation}
           onCropChange={setCrop}
           onCropComplete={cropComplete}
+          cropShape="rect"
+          showGrid={true}
+          restrictPosition={false}
+          cropperClassName={classes.cropContainer}
         />
+
+
+
       </DialogContent>
       <DialogActions className={classes.DialogActionsBox}>
         <Box className={classes.OuterBox}>
@@ -133,7 +145,7 @@ const CropEasy = ({
               color="primary"
               valueLabelDisplay="auto"
               valueLabelFormat={zoomPercent}
-              min={1}
+              min={0.1}
               max={3}
               step={0.1}
               value={zoom}

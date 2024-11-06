@@ -183,11 +183,11 @@ const TopBar = ({ className, onMobileNavOpen, onDrawerAction, ...rest }) => {
     } else if (pathname.includes("CreateTemplate")) {
       setPageTitle1("Create");
     } else if (pathname.includes("Myprojects")) {
-      setPageTitle1("Projects");
-    } else if (pathname.includes("View-Myproject")) {
-      setPageTitle1("Projects");
+      setPageTitle1("Prospects");
+    } else if (pathname.includes("view-myproject")) {
+      setPageTitle1("Prospects");
     } else if (pathname.includes("Edit-Myproject")) {
-      setPageTitle1("Projects");
+      setPageTitle1("Prospects");
     } else if (pathname.includes("userProfile")) {
       setPageTitle1("Settings");
     }
@@ -214,9 +214,9 @@ const TopBar = ({ className, onMobileNavOpen, onDrawerAction, ...rest }) => {
       pathname.includes("View-Myprojects") ||
       pathname.includes("error-list") ||
       pathname.includes("user-myprojects") ||
-      pathname.includes("View-Myproject")
+      pathname.includes("view-myproject")
     ) {
-      setPageTitle2("Projects");
+      setPageTitle2("Prospects");
     } else if (
       pathname.includes("settings") ||
       pathname.includes("viewSheets") ||
@@ -279,7 +279,6 @@ const TopBar = ({ className, onMobileNavOpen, onDrawerAction, ...rest }) => {
             )}
           </div>
           <div className="d-flex avatarBox">
-
             {localStorage.getItem("userType") === "ADMIN" ? (
               <Avatar src={user?.profileData?.profilePicture}></Avatar>
             ) : localStorage.getItem("userType") === "SUBADMIN" ? (
@@ -301,11 +300,11 @@ const TopBar = ({ className, onMobileNavOpen, onDrawerAction, ...rest }) => {
               )}
               <Typography className="accountname" style={{ marginTop: "2px" }}>
                 {user?.profileData?.firstName &&
-                  user?.profileData?.firstName.length > 10
+                user?.profileData?.firstName.length > 10
                   ? user?.profileData?.firstName.slice(0, 10) + "..."
                   : user?.profileData?.firstName}{" "}
                 {user?.profileData?.lastName &&
-                  user?.profileData?.lastName.length > 10
+                user?.profileData?.lastName.length > 10
                   ? user?.profileData?.lastName.slice(0, 10) + "..."
                   : user?.profileData?.lastName}
               </Typography>
@@ -321,8 +320,8 @@ TopBar.propTypes = {
   className: PropTypes.string,
 };
 TopBar.defaultProps = {
-  onMobileNavOpen: () => { },
-  onDrawerAction: () => { },
+  onMobileNavOpen: () => {},
+  onDrawerAction: () => {},
 };
 
 export default TopBar;

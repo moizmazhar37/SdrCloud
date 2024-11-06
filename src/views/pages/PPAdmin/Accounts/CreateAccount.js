@@ -13,6 +13,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  FormHelperText,
 } from "@material-ui/core";
 import { useDropzone } from "react-dropzone";
 import { makeStyles } from "@material-ui/core/styles";
@@ -40,8 +41,7 @@ import { SketchPicker } from "react-color";
 import DeleteIcon from "@material-ui/icons/Delete";
 import "react-phone-input-2/lib/style.css";
 import PhoneInput from "react-phone-input-2";
-import { FormHelperText } from "@mui/material";
-import CropEasyProfile from "../../CreateVideo/Crop/CropEasyProfile";
+import CropEasyCompanyLogo from "../../CreateVideo/Crop/CropEasyCompanyLogo";
 import { useFormik } from "formik";
 import { Close } from "@material-ui/icons";
 const useStyles = makeStyles((theme) => ({
@@ -97,6 +97,9 @@ const useStyles = makeStyles((theme) => ({
       marginBottom: "8px",
       "& .MuiSelect-iconOutlined": {
         borderLeft: "1px solid #ECECEC",
+      },
+      "& .MuiSelect-select:focus": {
+        backgroundColor: "#fff",
       },
       "& .MuiSelect-iconOpen": {
         borderLeft: "0px !important",
@@ -593,17 +596,17 @@ const CreateAccount = () => {
       .required("Contracted users must be a valid number.")
       .positive("Contracted users must be a positive number.")
       .integer("Contracted users must be an integer."),
-    // .max(1000, "Contracted Users cannot be greater than 1000."),
+    // .max(10000, "Contracted Users cannot be greater than 10000.")
     mediaCredits: Yup.number()
       .required("Media credits must be a valid number.")
       .positive("Media credits must be a positive number.")
       .integer("Media credits must be an integer."),
-    // .max(1000, "Media Credits cannot be greater than 1000."),
+    // .max(10000, "Media Credits cannot be greater than 10000.")
     activeMediaLimits: Yup.number()
       .required("Active media limit must be a valid number.")
       .positive("Active media limit must be a positive number.")
       .integer("Active media limit must be an integer."),
-    // .max(1000, "Active Media Limit cannot be greater than 1000."),
+    // .max(10000, "Active Media Limit cannot be greater than 10000.")
     primaryRgb: Yup.string()
       .required("A valid RGB color code is required (e.g., 255, 255, 255).")
       .matches(
@@ -1119,6 +1122,21 @@ const CreateAccount = () => {
     setFieldValue("contractTerm", term);
     setFieldValue("contractEndDate", endDate);
   };
+  const handleContractDateChange = (date, setFieldValue, values) => {
+    setFieldValue("contractedDate", date);
+
+    // Recalculate the end date based on the selected contract term
+    if (values.contractTerm) {
+      handleContractTermChange(
+        { target: { value: values.contractTerm } },
+        setFieldValue,
+        {
+          ...values,
+          contractedDate: date,
+        }
+      );
+    }
+  };
 
   const handleRgbChange = (event, form) => {
     const { value } = event.target;
@@ -1196,7 +1214,7 @@ const CreateAccount = () => {
           dirty,
         }) => (
           <Form onSubmit={handleSubmit}>
-            <Grid container spacing={10} style={{ paddingTop: "20px" }}>
+            <Grid container spacing={10} style={{ paddingTop: "22px" }}>
               <Grid item md={6} sm={12} xs={12} lg={6}>
                 <Box className={classes.headingBox}>
                   <Typography variant="h5">Account Details</Typography>
@@ -1268,7 +1286,7 @@ const CreateAccount = () => {
                   </div>
                   <div>
                     <Typography variant="body1">
-                      Assign PersonaPro Admin to this Account
+                      Assign SDRCloud.ai Admin to this Account
                     </Typography>
 
                     <FormControl style={{ marginTop: "0px" }}>
@@ -1276,7 +1294,15 @@ const CreateAccount = () => {
                         variant="outlined"
                         className="selectitem"
                         id="choose-template"
-                        MenuProps={menuProps}
+                        // MenuProps={menuProps}
+                        MenuProps={{
+                          PaperProps: {
+                            style: {
+                              maxHeight: 500,
+                              width: 200,
+                            },
+                          },
+                        }}
                         value={selectedUser}
                         onChange={handleUserChange}
                         name=""
@@ -1358,7 +1384,10 @@ const CreateAccount = () => {
                       fullWidth
                       value={values.contractedDate}
                       disablePast
-                      onChange={(date) => setFieldValue("contractedDate", date)}
+                      // onChange={(date) => setFieldValue("contractedDate", date)}
+                      onChange={(date) =>
+                        handleContractDateChange(date, setFieldValue, values)
+                      }
                       onBlur={() => setFieldTouched("contractedDate", true)}
                       KeyboardButtonProps={{
                         "aria-label": "change date",
@@ -1371,13 +1400,7 @@ const CreateAccount = () => {
                       "values?.contractedDate",
                       values?.contractedDate
                     )}
-                    <FormHelperText
-                      error
-                      className={classes.errorClass2}
-                      // style={{
-
-                      // }}
-                    >
+                    <FormHelperText error className={classes.errorClass2}>
                       {touched.contractedDate && errors.contractedDate}
                     </FormHelperText>
                   </div>
@@ -1614,7 +1637,7 @@ const CreateAccount = () => {
                     sm={12}
                     xs={12}
                     lg={12}
-                    style={{ paddingTop: "40px" }}
+                    // style={{ paddingTop: "40px" }}
                   >
                     <Box className={classes.headingBox}>
                       <Typography variant="h5">Account Logo</Typography>
@@ -1671,9 +1694,9 @@ const CreateAccount = () => {
                               variant="body1"
                               className={classes.dialogHeading}
                             >
-                              Profile Image
+                              Account Logo
                             </Typography>
-                            <CropEasyProfile
+                            <CropEasyCompanyLogo
                               photoURL={accountLogo}
                               type={false} // Adjust as needed
                               setOpenCrop={setOpenCrop}
@@ -1909,7 +1932,7 @@ const CreateAccount = () => {
                       </Typography>
                       <Grid container spacing={4}>
                         <Grid item xs={12} md={6}>
-                          <Typography variant="body">RGB</Typography>
+                          <Typography variant="body1">RGB</Typography>
                           <Field name="secondaryRgb">
                             {({ field, form }) => (
                               <>
@@ -2166,24 +2189,34 @@ const CreateAccount = () => {
                   </div>
                   <div>
                     <Typography variant="body1">Contracted Users </Typography>
-                    {/* <Field name="contractedUsers">
-                      {({ field }) => ( */}
                     <TextField
                       name="contractedUsers"
                       className={classes.contractedUser}
                       fullWidth
-                      // type="number"
-                      // inputProps={{ maxLength: 4 }}
+                      type="number"
+                      inputProps={{
+                        // max: 10000,
+                        min: 0,
+                        step: 1,
+                      }}
                       margin="normal"
                       variant="outlined"
                       placeholder="00"
                       error={Boolean(
                         touched.contractedUsers && errors.contractedUsers
                       )}
-                      onChange={handleChange}
+                      onChange={(event) => {
+                        const stringValue = event.target.value.toString(); // Convert to string
+                        handleChange({
+                          target: {
+                            name: event.target.name,
+                            value: stringValue,
+                          },
+                        });
+                      }}
                       onBlur={handleBlur}
                     />
-                    {console.log(values?.contractedUsers)}
+
                     <FormHelperText error className={classes.errorClass}>
                       {touched.contractedUsers && errors.contractedUsers}
                     </FormHelperText>
@@ -2194,17 +2227,30 @@ const CreateAccount = () => {
                       name="mediaCredits"
                       className={classes.mediaCredits}
                       fullWidth
-                      // inputProps={{ maxLength: 4 }}
+                      type="number"
+                      inputProps={{
+                        // max: 10000,
+                        min: 0,
+                        step: 1,
+                      }}
                       margin="normal"
                       variant="outlined"
                       placeholder="00"
                       error={Boolean(
                         touched.mediaCredits && errors.mediaCredits
                       )}
-                      onChange={handleChange}
+                      onChange={(event) => {
+                        const stringValue = event.target.value.toString(); // Convert to string
+                        handleChange({
+                          target: {
+                            name: event.target.name,
+                            value: stringValue,
+                          },
+                        });
+                      }}
                       onBlur={handleBlur}
                     />
-                    {console.log(values?.mediaCredits)}
+
                     <FormHelperText error className={classes.errorClass}>
                       {touched.mediaCredits && errors.mediaCredits}
                     </FormHelperText>
@@ -2216,22 +2262,34 @@ const CreateAccount = () => {
                       className={classes.activeMediaLimits}
                       fullWidth
                       margin="normal"
-                      // inputProps={{ maxLength: 4 }}
+                      type="number"
+                      inputProps={{
+                        // max: 10000,
+                        min: 0,
+                        step: 1,
+                      }}
                       variant="outlined"
                       placeholder="00"
                       error={Boolean(
                         touched.activeMediaLimits && errors.activeMediaLimits
                       )}
-                      onChange={handleChange}
+                      onChange={(event) => {
+                        const stringValue = event.target.value.toString(); // Convert to string
+                        handleChange({
+                          target: {
+                            name: event.target.name,
+                            value: stringValue,
+                          },
+                        });
+                      }}
                       onBlur={handleBlur}
                     />
-                    {console.log(values?.activeMediaLimits)}
+
                     <FormHelperText error className={classes.errorClass}>
                       {touched.activeMediaLimits && errors.activeMediaLimits}
                     </FormHelperText>
                   </div>
                 </Box>
-
                 {accountContract?.name ? (
                   <Box className={classes.ContractDetails}>
                     <Box className={classes.headingBox}>

@@ -107,7 +107,7 @@ function AudioDialog({
       reader.readAsDataURL(file);
     }
   };
-  // Function to handle form submission.
+
   const handleSubmit = () => {
     if (audioFile !== null) {
       toast.success("Audio file uploaded successfully.");
@@ -155,15 +155,17 @@ function AudioDialog({
             {audioFile && (
               <audio controls src={audioFile}>
                 Your browser does not support the audio tag.
+                <p>Please try using a different browser or upload an audio file in a supported format.</p>
               </audio>
             )}
             <input
               type="file"
-              accept="audio/mp3, audio/wav ,audio/aiff"
+              accept="audio/mp3, audio/wav, audio/aiff, audio/m4a, audio/x-m4a"
               onChange={handleFileChange}
               id="uploadAudio"
               style={{ display: "none" }}
             />
+
             <label className="labelAudio" htmlFor="uploadAudio">
               <Button
                 variant="contained"

@@ -228,6 +228,9 @@ const useStyles = makeStyles((theme) => ({
       padding: "6px",
       cursor: "pointer",
     },
+    "& .MuiIconButton-root": {
+      position: "absolute",
+    },
   },
   dialogHeading: {
     padding: "24px 44px",
@@ -716,7 +719,7 @@ const ViewAccount = () => {
                   </div>
                   <div>
                     <Typography variant="body1" style={{ marginTop: "20px" }}>
-                      Assigned PersonaPro Admin to this Account
+                      Assigned SDRCloud.ai Admin to this Account
                     </Typography>
                     <FormControl style={{ marginTop: "0px" }}>
                       <TextField
@@ -932,7 +935,7 @@ const ViewAccount = () => {
                           variant="outlined"
                           value={newAccount.accountLogo}
                           disabled={true} // If you want the text field to be editable, set this to false
-                          placeholder="personapro.456765.jpg"
+                          placeholder="SDRCloud.ai.456765.jpg"
                           InputProps={{
                             endAdornment: (
                               <InputAdornment position="end">

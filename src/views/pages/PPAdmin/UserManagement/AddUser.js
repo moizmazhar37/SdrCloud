@@ -291,10 +291,10 @@ function AddUser({ adduser, handleAddUserClose, PPUsers }) {
           <RxCross2 className="closeicon" onClick={handleCancel} />
         </Box>
         <Typography variant="body1" className={classes.adminHeading}>
-          Account Admin / <span>Create New PersonaPro Admin</span>
+          Account Admin / <span>Create New SDRCloud.ai Admin</span>
         </Typography>
         <DialogTitle className={classes.DialogTitleFirst} variant="h4">
-          Create New PersonaPro Employee Admin
+          Create New SDRCloud.ai Employee Admin
         </DialogTitle>
         <DialogContent className={classes.DialogContentBox}>
           <form onSubmit={formik.handleSubmit}>
@@ -509,11 +509,11 @@ const getFieldLabel = (field) => {
 const getFieldPlaceholder = (field) => {
   switch (field) {
     case "firstName":
-      return "Enter PersonaPro Admin First Name ";
+      return "Enter SDRCloud.ai Admin First Name ";
     case "lastName":
-      return "Enter PersonaPro Admin Last Name ";
+      return "Enter SDRCloud.ai Admin Last Name ";
     case "email":
-      return "Enter PersonaPro Admin Email ";
+      return "Enter SDRCloud.ai Admin Email ";
     case "phoneNo":
       return "+1 (___) __ __ ___";
     case "password":

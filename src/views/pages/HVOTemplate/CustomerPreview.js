@@ -42,18 +42,18 @@ const useStyles = makeStyles((theme) => ({
       padding: "10px 15px",
     },
     "& .heroSection": {
-      marginTop: "100px",
+      marginTop: "20px",
       [theme.breakpoints.down("xs")]: {
-        marginTop: "30px", // Extra small screens
+        marginTop: "20px", // Extra small screens
       },
       [theme.breakpoints.up("sm")]: {
-        marginTop: "50px", // Small screens
+        marginTop: "25px", // Small screens
       },
       [theme.breakpoints.up("md")]: {
-        marginTop: "75px", // Medium screens
+        marginTop: "30px", // Medium screens
       },
       [theme.breakpoints.up("lg")]: {
-        marginTop: "100px", // Large screens
+        marginTop: "30px", // Large screens
       },
       marginBottom: "20px",
       "& h1": {
@@ -113,6 +113,77 @@ const useStyles = makeStyles((theme) => ({
         },
       },
     },
+    "& .heroSection1": {
+      marginTop: "100px",
+      [theme.breakpoints.down("xs")]: {
+        marginTop: "30px", // Extra small screens
+      },
+      [theme.breakpoints.up("sm")]: {
+        marginTop: "30px", // Small screens
+      },
+      [theme.breakpoints.up("md")]: {
+        marginTop: "30px", // Medium screens
+      },
+      [theme.breakpoints.up("lg")]: {
+        marginTop: "30px", // Large screens
+      },
+      marginBottom: "20px",
+      "& h1": {
+        fontSize: "54px",
+        color: "#0358AC",
+      },
+      "& h2": {
+        marginTop: "16px",
+        fontSize: "28px",
+        color: "#152F40",
+      },
+      "& .MuiTypography-body1": {
+        fontSize: "16px",
+        color: "#152F40",
+        marginTop: "16px",
+      },
+      "& img": {
+        maxWidth: "100%",
+        height: "350px",
+      },
+      "& .MuiButton-contained": {
+        background: "#0358AC",
+        color: "white",
+        fontSize: "14px",
+        fontWeight: 300,
+        marginTop: "24px",
+      },
+      "& .iconsContainer": {
+        color: "white",
+        fontSize: "16px",
+        fontWeight: 300,
+        marginTop: "24px",
+        display: "flex",
+        justifyContent: "space-between",
+        width: "150px",
+      },
+      "& .icons": {
+        padding: "10px",
+        // background: "#0358AC",
+      },
+      "& .btn": {
+        display: "flex",
+        flexWrap: "wrap",
+        justifyContent: "space-between",
+        gap: "50px",
+        alignItems: "baseline",
+        "& .demobtn": {
+          cursor: "pointer",
+          textTransform: "none",
+          display: "flex",
+          alignItems: "end",
+          gap: "10px",
+          fontSize: "12px",
+          lineHeight: "12px",
+          textTransform: "uppercase",
+        },
+      },
+    },
     "& .AppBarCss": {
       position: "static !important",
       "& .MuiAppBar-positionFixed": {
@@ -151,6 +222,14 @@ const useStyles = makeStyles((theme) => ({
     whiteSpace: "nowrap",
     fontSize: "32px",
   },
+  specificGridItem: {
+    paddingLeft: "30px",
+    paddingTop: "20px",
+    [theme.breakpoints.down("md")]: {
+      paddingLeft: 0,
+      paddingTop: 0,
+    },
+  },
 }));
 
 function CustomerPreview(location) {
@@ -160,6 +239,7 @@ function CustomerPreview(location) {
   const [filteredFooterSection, setFilteredFooterSection] = useState();
   console.log(useParams, "useParams");
   console.log(location, "locationnnnn");
+  const [accountData, setAccountData] = useState("");
 
   const iconMap = {
     Facebook: FaFacebookF,
@@ -214,13 +294,13 @@ function CustomerPreview(location) {
 
   const settings = {
     infinite: true,
-    speed: 25000,
+    speed: 40000,
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 0,
     cssEase: "linear",
-    variableWidth: true,
+    // variableWidth: true,
     pauseOnHover: false,
     prevArrow: <></>,
     nextArrow: <></>,
@@ -259,10 +339,10 @@ function CustomerPreview(location) {
                 <Container>
                   <Toolbar>
                     <img
-                      src="/images/experienceremovebg.png"
+                      src={item?.values?.companyLogo}
                       alt="logo"
-                      height={"250px"}
-                      width={"250px"}
+                      height={"60px"}
+                      width={"100px"}
                     />
                     {item?.values?.headerLogo && (
                       <>
@@ -291,7 +371,7 @@ function CustomerPreview(location) {
             {item?.sectionName === "HERO" && (
               <>
                 <Container>
-                  <Grid container className="heroSection">
+                  <Grid container className="heroSection1">
                     <Grid
                       item
                       sm={5}
@@ -303,20 +383,20 @@ function CustomerPreview(location) {
                         style={{
                           color: item?.values?.headline1Color,
                           fontWeight: 900,
-                          wordBreak: "break-all",
+                          wordWrap: "break-word",
                           fontSize: `${item?.values?.headline1Size}px`,
                         }}
                         variant="h3"
                         // data-aos="fade-up"
                       >
-                        <span
+                        {/* <span
                           style={{
                             color: item?.values?.headline1Color,
                             fontWeight: 300,
                           }}
                         >
                           Welcome{" "}
-                        </span>
+                        </span> */}
                         {item?.values?.headline1}
                       </Typography>
                       <Typography
@@ -326,8 +406,8 @@ function CustomerPreview(location) {
                           fontSize: "45px",
                           fontWeight: 800,
                           marginTop: "8px",
-                          wordBreak: "break-all",
-                          lineHeight: "35px",
+                          wordWrap: "break-word",
+                          lineHeight: "45px",
                         }}
                         variant="h1"
                         // data-aos="fade-up"
@@ -338,7 +418,7 @@ function CustomerPreview(location) {
                         style={{
                           color: item?.values?.bodyTextColor,
                           lineHeight: "30px",
-                          wordBreak: "break-all",
+                          wordWrap: "break-word",
                           fontSize: `${item?.values?.bodyTextSize}px`,
                         }}
                         variant="body1"
@@ -374,6 +454,7 @@ function CustomerPreview(location) {
                                 ? item?.values?.demoButtonColor
                                 : item?.values?.demoButtonTextColor,
                               textTransform: "none",
+                              fontSize: "14px",
                             }}
                             onClick={() =>
                               window.open(
@@ -387,8 +468,9 @@ function CustomerPreview(location) {
                             onMouseEnter={handleMouseEnter}
                             onMouseLeave={handleMouseLeave}
                           >
-                            {item?.values?.demoButtonText} {"  "}
-                            <IoIosArrowForward />
+                            {item?.values?.demoButtonText}
+                            {/* {"  "}
+                            <IoIosArrowForward /> */}
                           </Typography>
                         )}
                       </Box>
@@ -435,8 +517,11 @@ function CustomerPreview(location) {
                           }px !important`,
                           paddingTop: "30px",
                           paddingBottom: "30px",
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
                         }}
-                        display="flex"
+                        // display="flex"
                         key={index}
                       >
                         {item?.values?.bannerText}
@@ -461,6 +546,9 @@ function CustomerPreview(location) {
                           }px !important`,
                           paddingTop: "30px",
                           paddingBottom: "30px",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
                         }}
                         display="flex"
                         key={index}
@@ -493,8 +581,7 @@ function CustomerPreview(location) {
                       item
                       sm={6}
                       xs={12}
-                      className="d-flex column alignstart"
-                      style={{ paddingLeft: "30px", paddingTop: "20px" }}
+                      className={`${classes.specificGridItem} d-flex column alignstart`}
                     >
                       <Typography
                         variant="h1"
@@ -808,8 +895,7 @@ function CustomerPreview(location) {
                             //     : item?.headline1Size,
                           }}
                         >
-                          {item?.values?.benchmarkText1} DBA Experience.com. All
-                          rights reserved.
+                          {item?.values?.accountName}. All rights reserved.
                         </Typography>
                       </Grid>
                       <Grid item sm={4} xs={12}>

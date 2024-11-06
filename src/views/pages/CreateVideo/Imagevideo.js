@@ -412,12 +412,12 @@ const ImageVideo = ({
         newError.duration = "Duration is required.";
       }
 
-      if (audioFile === null) {
-        toast.error("Please upload audio file.");
-      }
+      // if (audioFile === null) {
+      //   toast.error("Please upload audio file.");
+      // }
       if (
         duration !== "" &&
-        audioFile !== null &&
+        // audioFile !== null &&
         (img64 !== null || dynamicImage !== "none ")
       ) {
         try {
@@ -632,7 +632,6 @@ const ImageVideo = ({
     }
   };
 
-
   const file = dynamicImage;
   const reader = new FileReader();
 
@@ -803,8 +802,14 @@ const ImageVideo = ({
                   value={type === "none" ? type : dynamicImage}
                   onChange={(e) => handleDynamicimage(e)}
                   IconComponent={ExpandMoreIcon}
-                // error={!!errors.image}
-                // helperText={errors.image}
+                  // error={!!errors.image}
+                  // helperText={errors.image}
+                  disabled={
+                    !Array.isArray(companyDetails) ||
+                    !companyDetails.some(
+                      (item) => item?.dataType === "Image URL"
+                    )
+                  }
                 >
                   <MenuItem value="none">Select Image Url</MenuItem>
                   {/* <MenuItem value="--">Select None</MenuItem> */}
@@ -889,6 +894,12 @@ const ImageVideo = ({
                   IconComponent={ExpandMoreIcon}
                   error={!!errors.dynamicVideo}
                   helperText={errors.dynamicVideo}
+                  disabled={
+                    !Array.isArray(companyDetails) ||
+                    !companyDetails.some(
+                      (item) => item?.dataType === "Video URL"
+                    )
+                  }
                 >
                   <MenuItem value="none" disabled>
                     Select Dynamic URL to fetch Video
@@ -1076,9 +1087,15 @@ const ImageVideo = ({
             <Button
               variant="contained"
               onClick={() => handleSetData()}
-              className={`${audioFile === null || isSaved ? "savebtnDisables" : "savebtn"
+              className={`${
+                // audioFile === null ||
+                duration === "" || isSaved ? "savebtnDisables" : "savebtn"
                 }`}
-              disabled={isSaved || !audioFile}
+              disabled={
+                duration === "" || isSaved
+
+                // || !audioFile
+              }
             >
               Save
             </Button>

@@ -72,6 +72,7 @@ const useStyles = makeStyles((theme) => ({
         },
         "& .MuiTableCell-root": {
           fontSize: "14px !important",
+          padding: "12px 22px 14px 24px !important",
         },
         "& .tableCellText1": {
           textDecoration: "underline",
@@ -113,7 +114,7 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center",
   },
   failed: {
-    color: "#EC2727",
+    color: "#EC2727 !important",
     fontWeight: 500,
     textAlign: "center",
   },
@@ -534,19 +535,18 @@ const GoogleSheet = ({
                         </TableCell>
                         <TableCell
                           className={`${
-                            key?.sheetStatus === "CONNECTED"
+                            key?.isSheetConnected === true
                               ? classes.active
-                              : key?.sheetStatus === "DISCONNECTED"
+                              : key?.isSheetConnected === false
                               ? classes.failed
                               : ""
                           }`}
                           align="center"
                         >
                           <li>
-                            {key?.sheetStatus
-                              ? key?.sheetStatus.charAt(0) +
-                                key?.sheetStatus.slice(1).toLowerCase()
-                              : "--"}
+                            {key?.isSheetConnected === true
+                              ? "Connected"
+                              : "Disconnected"}
                           </li>
                         </TableCell>
                         <TableCell
@@ -610,12 +610,10 @@ const GoogleSheet = ({
                               {key?.assignedStatus === "ASSIGNED" ? (
                                 <MenuItem
                                   onClick={() => {
-                                    // handleClose();
                                     setSelectedUserId(key);
-                                    // getAllUsers();
+
                                     setUnassignOpen(true);
                                   }}
-                                  // disabled={key.assignedStatus === "ASSIGNED"}
                                 >
                                   Unassign
                                 </MenuItem>
@@ -627,7 +625,6 @@ const GoogleSheet = ({
                                     getAllUsers();
                                     setAssignOpen(true);
                                   }}
-                                  // disabled={key.assignedStatus === "ASSIGNED"}
                                 >
                                   Assign
                                 </MenuItem>
@@ -665,7 +662,6 @@ const GoogleSheet = ({
             </Grid>
           </>
         )}
-        {/* {(userList.length ===0 && <DataNotFoundIMG />)} */}
       </Box>
 
       <Dialog
@@ -682,7 +678,7 @@ const GoogleSheet = ({
           <Close onClick={handleAssignClose} />
         </DialogTitle>
         <DialogContent>
-          <Typography variant="h3">select user </Typography>
+          <Typography variant="h3">Select User </Typography>
           <FormControl>
             <Select
               style={{ marginTop: "0px" }}

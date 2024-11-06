@@ -120,7 +120,8 @@ function HeaderSection({
   const [logoSet, setLogoSet] = useState();
   const [firstRowData, setFirstRowData] = useState("");
   const [matchData, setMatchData] = useState("");
-  console.log(matchData, "matchData");
+  const [accountData, setAccountData] = useState("");
+  console.log(accountData, "matchData");
   console.log(firstRowData, "firstRowData");
   // const [logos, setLogos] = useState({
   //   Logo1: null,
@@ -220,6 +221,7 @@ function HeaderSection({
           },
           data: {
             headerLogo: selectedOption,
+            companyLogo: accountData?.accountDetails?.accountLogo,
             sectionTypeId: videoRefral.find(
               (data) => data.sectionName === elementType
             )?.sectionId,
@@ -270,8 +272,33 @@ function HeaderSection({
       setLoading(false);
     }
   };
+  const getAccountData = async () => {
+    try {
+      setLoading(true);
+      const res = await axios({
+        method: "GET",
+        url: ApiConfig.companyDetails,
+        headers: {
+          token: `${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (res?.data?.status === 200) {
+        setLoading(false);
+        const data = res?.data;
+        setAccountData(data?.data);
+        // setAccountId(res?.data?.data?.accountId);
+      }
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+    }
+  };
+
+
 
   useEffect(() => {
+    getAccountData();
     getSheetType();
     sheetFirstRowData();
   }, []);
@@ -317,7 +344,7 @@ function HeaderSection({
                   marginRight: "10px",
                 }}
               >
-                <img src="/images/experienceremovebg.png" width={"100%"} />
+                <img src={accountData?.accountDetails?.accountLogo} width={100} height={100} />
               </Box>
               {matchData && (
                 <Box
@@ -366,9 +393,9 @@ function HeaderSection({
                   ?.map((item) => (
                     <MenuItem
                       value={item?.value}
-                      // onClick={(e) => {
-                      //   console.log(e);
-                      // }}
+                    // onClick={(e) => {
+                    //   console.log(e);
+                    // }}
                     >
                       {item?.value}
                     </MenuItem>
@@ -389,9 +416,8 @@ function HeaderSection({
           </Button>
           <Button
             variant="contained"
-            className={`${
-              nextButton === false ? "savebtnDisables" : "savebtn"
-            }`}
+            className={`${nextButton === false ? "savebtnDisables" : "savebtn"
+              }`}
             disabled={nextButton === false}
             onClick={handleNext}
           >

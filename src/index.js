@@ -5,10 +5,7 @@ import * as serviceWorker from "./serviceWorker";
 import "src/scss/main.css";
 import { SettingsProvider } from "src/context/SettingsContext";
 
-
-
 ReactDOM.render(
-
   <React.StrictMode>
     <SettingsProvider>
       <App />
@@ -17,6 +14,5 @@ ReactDOM.render(
 
   document.getElementById("root")
 );
-
 
 serviceWorker.unregister();

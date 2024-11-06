@@ -129,6 +129,8 @@ function Summary({
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleteId, setDeleteId] = useState("");
   const [videoTemplateId, setVideoTemplateId] = useState("");
+  const [creationProcess, setCreationProcess] = useState("");
+  console.log("creationProcess: ", creationProcess);
 
   const [previewData, setPreviewData] = useState("");
   const handleDeleteClose = () => {
@@ -160,7 +162,6 @@ function Summary({
         if (res?.data?.status === 200 || res?.data?.status === 201) {
           setLoading(false);
           const Data = res?.data?.data;
-          console.log(res?.data?.data, "huhkhjk");
 
           history.push({
             pathname: "/preview-video",
@@ -170,7 +171,6 @@ function Summary({
         }
       } catch (error) {
         toast.error(error?.response?.data?.message);
-        console.log(error);
         setLoading(false);
         console.log(error, "errorss");
       } finally {
@@ -207,9 +207,35 @@ function Summary({
       setLoading(false);
     }
   };
+  const getTemplate = async () => {
+    try {
+      setLoading(true);
+      const res = await axios({
+        method: "GET",
+        url: ApiConfig.getTemplatebyID,
+        headers: {
+          token: `${localStorage.getItem("token")}`,
+        },
+        params: {
+          templateId: templateId,
+        },
+      });
+
+      if (res?.status === 200) {
+        console.log(res?.data?.data, "creationstatus");
+
+        setCreationProcess(res?.data?.data?.getVideo?.creationStatus);
+      }
+    } catch (error) {
+      console.log(error, "error");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     getTemplateByID(templateId);
+    getTemplate();
   }, []);
 
   return (
@@ -281,10 +307,6 @@ function Summary({
                           <CiClock2 />
                           {item?.duration}sec&nbsp;&nbsp;|&nbsp;&nbsp;Scroll -{" "}
                           {item?.scrollEnabled === true ? "Yes" : "No"}
-                          &nbsp;&nbsp;|&nbsp;&nbsp;Audio -{" "}
-                          {item?.audioTemplateReferral?.embedded === false
-                            ? "Yes"
-                            : "No"}
                         </Typography>
                       </>
                     ) : item?.elementId?.element_Name === "DYNAMICURL" ? (
@@ -314,10 +336,6 @@ function Summary({
                           <CiClock2 />
                           {item?.duration}sec&nbsp;&nbsp;|&nbsp;&nbsp;Scroll -{" "}
                           {item?.scrollEnabled === true ? "Yes" : "No"}
-                          &nbsp;&nbsp;|&nbsp;&nbsp;Audio -{" "}
-                          {item?.audioTemplateReferral?.embedded === false
-                            ? "Yes"
-                            : "No"}
                         </Typography>
                       </>
                     ) : item?.elementId?.element_Name === "UPLOADIMAGE" ? (
@@ -345,8 +363,9 @@ function Summary({
                           style={{ color: "#0358AC", marginTop: "10px" }}
                         >
                           <CiClock2 />
-                          {item?.duration}sec&nbsp;&nbsp;|&nbsp;&nbsp;Audio -
-                          Yes
+                          {item?.duration}sec
+                          {/* &nbsp;&nbsp;|&nbsp;&nbsp;Audio -
+                          Yes */}
                         </Typography>
                       </>
                     ) : item?.elementId?.element_Name === "VIDEOCLIPS" ? (
@@ -375,7 +394,7 @@ function Summary({
                         <Typography
                           style={{ color: "#0358AC", marginTop: "10px" }}
                         >
-                          &nbsp;&nbsp;Audio - Yes
+                          {/* &nbsp;&nbsp;Audio - Yes */}
                         </Typography>
                       </>
                     ) : (
@@ -417,9 +436,16 @@ function Summary({
                 disabled={templateParams?.sheetId === null}
                 onClick={() => {
                   handleSheetData();
+                  getTemplate();
                 }}
               >
-                Create Video
+                {creationProcess === "Pending"
+                  ? "Create Video"
+                  : creationProcess === "Active"
+                  ? "Active"
+                  : creationProcess === "Published"
+                  ? "Published"
+                  : "Create Video"}
               </Button>
             </div>
           </Box>

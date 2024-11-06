@@ -15,6 +15,7 @@ import {
   DialogContent,
   DialogActions,
   ButtonGroup,
+  Tooltip,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import axios from "axios";
@@ -414,6 +415,9 @@ const CreateHVOTemplate = (props) => {
   const [viewData, setViewData] = useState({});
   const [editData, setEditData] = useState({});
   const [renderComponent, setRenderComponent] = useState(false);
+  const [isSheetConnected, setIsSheetConnected] = useState(false);
+  console.log("isSheetConnected: ", isSheetConnected);
+
   const [elements, setElements] = useState([
     { id: 1, name: "Section 1" },
     { id: 2, name: "Section 2" },
@@ -436,9 +440,7 @@ const CreateHVOTemplate = (props) => {
     },
     validationSchema: Yup.object({
       category: Yup.string()
-        // .required(
-        //   "Category is required."
-        // )
+        .trim()
         .max(
           25,
           "Category is required and must be between 2 and 25 characters."
@@ -477,12 +479,14 @@ const CreateHVOTemplate = (props) => {
     setEditSheet(false);
     setActive(false);
   };
-  const connectionHandler = () => {
-    connectSheet("CONNECT");
+  const connectionHandler = async () => {
+    await connectSheet("CONNECT");
+    setIsSheetConnected(true); // Set to true when connected
   };
-  const disConnectionHandler = () => {
-    disconnectSheet();
-    connectSheet("DISCONNECT");
+  const disConnectionHandler = async () => {
+    await disconnectSheet();
+    await connectSheet("DISCONNECT");
+    setIsSheetConnected(false); // Set to false when disconnected
   };
   const addCategory = async (values) => {
     try {
@@ -879,6 +883,7 @@ const CreateHVOTemplate = (props) => {
     if (templateId) {
       getHVOTemplate(templateId);
     }
+    console.log("jsdh", viewParams?.fetchUrl);
   }, []);
   useEffect(() => {
     if (isShow && Category.length > 0) {
@@ -887,6 +892,9 @@ const CreateHVOTemplate = (props) => {
       handleChangetitle({ target: { value: lastCategory._id } });
     }
   }, [isShow, Category, handleChangetitle]);
+  useEffect(() => {
+    setIsSheetConnected(true);
+  }, [viewParams]);
 
   return (
     <>
@@ -1049,15 +1057,24 @@ const CreateHVOTemplate = (props) => {
                     Template Name
                   </Typography>
                   <Box className="d-flex justify-space-between">
-                    <Typography
-                      style={{
-                        color: "#152F40",
-                        fontSize: "16px",
-                        wordBreak: "break-all",
-                      }}
-                    >
-                      {templateParams?.hvoTemplateName}
-                    </Typography>
+                    <Tooltip title={templateParams?.hvoTemplateName || ""}>
+                      <Typography
+                        style={{
+                          color: "#152F40",
+                          fontSize: "16px",
+                          wordBreak: "break-all",
+                        }}
+                      >
+                        {templateParams?.hvoTemplateName
+                          ? templateParams.hvoTemplateName.length > 40
+                            ? `${templateParams.hvoTemplateName.slice(
+                                0,
+                                40
+                              )}...`
+                            : templateParams.hvoTemplateName
+                          : ""}
+                      </Typography>
+                    </Tooltip>
                     <Button
                       varinat="standard"
                       color="primary"
@@ -1084,19 +1101,23 @@ const CreateHVOTemplate = (props) => {
                     placeholder="Enter Template Name"
                     value={templateName}
                     onBlur={handleBlur}
-                    onChange={(e) => setTemplateName(e.target.value)}
+                    onChange={(e) =>
+                      setTemplateName(e.target.value.trimStart())
+                    }
                     inputProps={{ maxLength: 50 }}
                     InputProps={{
                       endAdornment: (
                         <InputAdornment position="end">
                           <Button
                             className={`${
-                              templateName === "" || selectedOption === "none"
+                              templateName.trim() === "" ||
+                              selectedOption === "none"
                                 ? "savebtnDisables"
                                 : "savebtn"
                             }`}
                             disabled={
-                              templateName === "" || selectedOption === "none"
+                              templateName.trim() === "" ||
+                              selectedOption === "none"
                             }
                             onClick={() => CreateVdoTemplate()}
                           >
@@ -1106,6 +1127,7 @@ const CreateHVOTemplate = (props) => {
                       ),
                     }}
                   />
+
                   {isTemplateNameEmpty && (
                     <Typography
                       style={{
@@ -1172,7 +1194,7 @@ const CreateHVOTemplate = (props) => {
                             "templateId"
                           ) === null
                         }
-                        value={connetedSheet || "none"} // Use "none" as the default value
+                        value={connetedSheet || "none"}
                         onChange={(e) => handleSheet(e)}
                         name=""
                         IconComponent={ExpandMoreIcon}
@@ -1180,16 +1202,8 @@ const CreateHVOTemplate = (props) => {
                           PaperProps: {
                             style: {
                               maxHeight: 200,
-                              marginTop: 0, // Set marginTop to 0 to ensure the dropdown opens directly below the text field
+                              marginTop: 80,
                             },
-                          },
-                          anchorOrigin: {
-                            vertical: "bottom",
-                            horizontal: "left",
-                          },
-                          transformOrigin: {
-                            vertical: "top",
-                            horizontal: "left",
                           },
                         }}
                         renderValue={(selected) => {
@@ -1418,7 +1432,10 @@ const CreateHVOTemplate = (props) => {
                               variant="h5"
                               style={{ wordBreak: "break-all" }}
                             >
-                              {linkObject[index]?.sectionType?.sectionName}
+                              {linkObject[index]?.sectionType?.sectionName ===
+                              "HIGHLIGHT_BANNER2"
+                                ? "HIGHLIGHT_BANNER 2"
+                                : linkObject[index]?.sectionType?.sectionName}
                             </Typography>
                           </div>
                           <div style={{ display: "flex", gap: "10px" }}>
@@ -1463,7 +1480,9 @@ const CreateHVOTemplate = (props) => {
                           disabled={
                             new URLSearchParams(window.location.search).get(
                               "templateId"
-                            ) === null || !viewParams?.fetchUrl
+                            ) === null ||
+                            !viewParams?.fetchUrl ||
+                            !isSheetConnected
                           }
                         >
                           <MenuItem
@@ -1486,7 +1505,7 @@ const CreateHVOTemplate = (props) => {
                               {item?.sectionName === "HIGHLIGHT_BANNER" &&
                                 "Highlight Banner"}
                               {item?.sectionName === "HIGHLIGHT_BANNER2" &&
-                                "Highlight Banner2"}
+                                "Highlight Banner 2"}
                               {item?.sectionName === "LEFT_TEXT_RIGHT_IMAGE" &&
                                 "Left Text | Right Image"}
 
@@ -1506,6 +1525,7 @@ const CreateHVOTemplate = (props) => {
               <Button
                 style={{ color: "black", fontSize: "18px" }}
                 onClick={handleAddElement}
+                disabled={!isSheetConnected}
               >
                 + Add New Section
               </Button>
@@ -1523,7 +1543,7 @@ const CreateHVOTemplate = (props) => {
                   getpreviewdata();
                 }}
               >
-                Progress Overview
+                Preview Template
               </Button>
             </Box>
           </Grid>
@@ -1576,6 +1596,12 @@ const CreateHVOTemplate = (props) => {
               name="category"
               value={formik.values.category}
               onChange={formik.handleChange}
+              // onChange={(e) => {
+              //   formik.setFieldValue(
+              //     "category",
+              //     e.target.value.replace(/\s+$/, "")
+              //   );
+              // }}
               onBlur={formik.handleBlur}
               margin="dense"
               error={formik.touched.category && Boolean(formik.errors.category)}

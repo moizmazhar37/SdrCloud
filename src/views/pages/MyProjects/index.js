@@ -335,6 +335,7 @@ function AllCustomerGroup() {
   const [pagesize, setPageSize] = useState(10);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
+  console.log("Koca: search ", search);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState();
   const [accountStatus, setAccountStatus] = useState("");
@@ -343,6 +344,7 @@ function AllCustomerGroup() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedUser, setSelectedUser] = useState("none");
   const [tempType, setTempType] = useState("VIDEO");
+  console.log("Koca: tempType ", tempType);
   const [sheetId, setSheetId] = useState("");
   const [pagination, setPagination] = useState(false);
 
@@ -387,6 +389,7 @@ function AllCustomerGroup() {
     }
   };
   const handleClear = () => {
+    console.log("Koca: handleClear is workig");
     setSelectedOption(" ");
     setSearch("");
   };
@@ -503,6 +506,7 @@ function AllCustomerGroup() {
                 onFocus={() => setIsFocused(true)}
                 onBlur={handleBlur}
                 onChange={(event) => setSearch(event.target.value)}
+                value={search}
                 style={{
                   border: isFocused ? "1px solid " : "1px solid grey",
                   borderRadius: "5px",
@@ -565,14 +569,8 @@ function AllCustomerGroup() {
                   <Table className={classes.table} aria-label="simple table">
                     <TableHead>
                       <TableRow>
+                        <TableCell align="center">Template Name</TableCell>
                         <TableCell align="center">Sheet Name</TableCell>
-                        <TableCell align="center">
-                          {tempType === "VIDEO"
-                            ? tempType.charAt(0).toUpperCase() +
-                              tempType.slice(1).toLowerCase()
-                            : tempType}{" "}
-                          Template Name
-                        </TableCell>
 
                         <TableCell align="center">User</TableCell>
 
@@ -585,10 +583,10 @@ function AllCustomerGroup() {
                         allProjectsData.map((data, index) => (
                           <TableRow key={index}>
                             <TableCell align="center">
-                              {truncateText(data?.title)}
+                              {truncateText(data?.hvoTemplateName)}
                             </TableCell>
                             <TableCell align="center">
-                              {truncateText(data?.hvoTemplateName)}
+                              {truncateText(data?.title)}
                             </TableCell>
                             <TableCell align="center">
                               {data?.assignedUserData?.firstName

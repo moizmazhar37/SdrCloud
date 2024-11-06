@@ -31,7 +31,7 @@ import { parsePhoneNumberFromString } from "libphonenumber-js";
 import { SketchPicker } from "react-color";
 import CloseIcon from "@material-ui/icons/Close";
 import ButtonCircularProgress from "src/component/ButtonCircularProgress";
-import CropEasyProfile from "../CreateVideo/Crop/CropEasyProfile";
+import CropEasyCompanyLogo from "../CreateVideo/Crop/CropEasyCompanyLogo";
 // Styles for the component
 const useStyles = makeStyles((theme) => ({
   uploadButton: {
@@ -164,7 +164,7 @@ const useStyles = makeStyles((theme) => ({
       color: "#152F40",
     },
     "& .gridContainer": {
-      marginTop: "32px",
+      marginTop: "16px",
       justifyContent: "space-between",
       // gap: "90px",
       // "@media(max-width:960px)":{
@@ -827,7 +827,7 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
         },
       });
       if (res?.data?.status === 200) {
-        toast.success(res?.data?.message);
+        // toast.success(res?.data?.message);
         setSelectedImage(res?.data?.data);
         setLoading(false);
         getAccountData();
@@ -863,7 +863,7 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
     if (file) {
       const reader = new FileReader();
       reader.onload = (event) => {
-        // setSelectedImage(event.target.result);
+        setSelectedImage(event.target.result);
         const base64Image = reader.result;
         setAccountData((prevUserData) => ({
           ...prevUserData,
@@ -956,8 +956,8 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
             </Typography>
           </Breadcrumbs>
         </Box>
-        <Grid container spacing={2} className="gridContainer ">
-          <Grid item xs={12} sm={12} md={6} lg={6}>
+        <Grid container spacing={6} className="gridContainer ">
+          <Grid item xs={12} sm={12} md={6} lg={5.5}>
             <Box className="companyDetails commonBorder">
               {accountData && (
                 <Formik
@@ -1002,6 +1002,7 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
                             color="primary"
                             onClick={handleEditClick1}
                             className="EditButton"
+                            style={{ padding: "0px" }}
                           >
                             Edit
                           </Button>
@@ -1137,6 +1138,7 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
                                 height: "30px",
                                 marginTop: "0px",
                                 fontWeight: "normal",
+                                padding: "17.5px",
                               }}
                             />
                             <FormHelperText
@@ -1155,7 +1157,7 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
                             className="flexCenter"
                           >
                             <Typography variant="body1">
-                              PersonaPro Admin:
+                              SDRCloud.ai Admin:
                             </Typography>
                           </Grid>
                           <Grid item lg={8} md={8} sm={6} xs={6}>
@@ -1256,6 +1258,7 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
                             color="primary"
                             onClick={handleEditClick2}
                             className="EditButton"
+                            style={{ padding: "0px" }}
                           >
                             Edit
                           </Button>
@@ -1477,6 +1480,8 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
                                 height: "30px",
                                 marginTop: "0px",
                                 fontWeight: "normal",
+                                paddingTop: "16.5px",
+                                paddingBottom: "16.5px",
                               }}
                             />
 
@@ -1554,6 +1559,7 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
                             color="primary"
                             onClick={handleEditClick3}
                             className="EditButton"
+                            style={{ padding: "0px" }}
                           >
                             Edit
                           </Button>
@@ -1814,7 +1820,7 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
             </Box>
           </Grid>
 
-          <Grid item xs={12} sm={12} md={6} lg={6}>
+          <Grid item xs={12} sm={12} md={6} lg={5.5}>
             <Box className="companyDetails commonBorder">
               {accountData && (
                 <Formik
@@ -2141,18 +2147,10 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
                       color="primary"
                       onClick={handleEditClick6}
                       className="EditButton"
+                      style={{ padding: "0px" }}
                     >
                       Edit
                     </Button>
-
-                    // <Button
-                    //   variant="contained"
-                    //   component="label"
-                    //   className={classes.uploadButton}
-                    //   onClick={handleOpenDialog}
-                    // >
-                    //   Upload
-                    // </Button>
                   )}
                 </Box>
                 <Box className="innerbox commomInnerBox">
@@ -2209,10 +2207,17 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
             )}
 
             {accountData && (
-              <Box className="companyLogo commonBorder topMargin">
+              <Box
+                className="companyLogo commonBorder topMargin"
+                style={{ height: "88px" }}
+              >
                 <Box className="commonHeadingBoxes">
                   <Typography variant="body1">View Agreement</Typography>
-                  <Button className="viewBtn" onClick={handleViewAgreement}>
+                  <Button
+                    className="viewBtn"
+                    onClick={handleViewAgreement}
+                    style={{ padding: "0px" }}
+                  >
                     {" "}
                     View{" "}
                   </Button>
@@ -2247,7 +2252,7 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
           <Typography variant="body1" className={classes.dialogHeading}>
             Account Logo
           </Typography>
-          <CropEasyProfile
+          <CropEasyCompanyLogo
             photoURL={selectedImage}
             type={false}
             setOpenCrop={setOpenCrop}
@@ -2287,7 +2292,10 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
               <input
                 type="file"
                 accept="image/jpeg, image/png, image/jpg"
-                onChange={handleFileUpload}
+                onChange={(e) => {
+                  handleFileUpload(e);
+                  setOpenCrop(true);
+                }}
                 style={{ display: "none" }}
                 id="upload-input"
               />
@@ -2305,7 +2313,8 @@ const EditCompanySettings = ({ settingRoute, handleClick }) => {
             <Button
               onClick={() => {
                 if (isImageChanged) {
-                  toast.success("Image uploaded successfully");
+                  toast.success("Logo uploaded successfully");
+                  handleSaveClick6();
                   handleCloseDialog();
                 } else {
                   setSelectedImage(null);

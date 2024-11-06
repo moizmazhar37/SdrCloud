@@ -38,12 +38,17 @@ const useStyles = makeStyles((theme) => ({
     },
     "& .viewbtnblack": {
       color: "#152F40",
+      marginBottom: "10px",
       minWidth: "35px",
       cursor: "default",
+      fontSize: "14px",
       wordBreak: "break-all",
       "& .MuiButton-root": {
         fontSize: "14px",
       },
+    },
+    "& .link": {
+      color: "#0358AC",
     },
     "& .janeBtn": {
       color: "#152F40",
@@ -125,13 +130,24 @@ function UserViewProject(props) {
   const [loading, setLoading] = useState(false);
   const [missingFields, setMissingFields] = useState([]);
   const [sheetData, setSheetData] = useState([]);
-  const errorData = props?.location?.state?.state?.errorData;
+
   const history = useHistory();
-  const sheetUrl = props?.location?.state?.state?.sheetUrl;
+
   const sheetId = props?.location?.state?.state?.ErrorSheetId;
-  const projectIndex = props?.location?.state?.state?.projectIndex;
-  const videoTemplete = props?.location?.state?.state?.videoTemplete;
-  const sheetName = props?.location?.state?.state?.sheetName;
+
+  const {
+    errorData,
+    projectIndex,
+    sheetUrl,
+    videoUrl,
+    firstName,
+    lastName,
+    hVOUrl,
+    proscpectName,
+    assignUser,
+    templateType,
+    status,
+  } = props?.location?.state?.state || {};
   const CUSTOMER_ID = errorData?.CUSTOMER_ID;
   const getAllSheet = async () => {
     try {
@@ -166,34 +182,79 @@ function UserViewProject(props) {
       {loading && <FullScreenLoader />}
       <Typography variant="body1">
         <Link style={{ cursor: "pointer" }} onClick={() => history.goBack()}>
-          Project Listings
+          Prospect Listings
         </Link>{" "}
-        / <span style={{ color: "#0358AC" }}>Project Data</span>
+        / <span style={{ color: "#0358AC" }}>Prospect Data</span>
       </Typography>
 
       <Paper className={classes.tableContainer}>
         <Box className="headingBox">
           <Typography variant="body1" style={{ fontWeight: 500 }}>
-            Project Details
+            Prospect Details
           </Typography>
         </Box>
         <Box className="middledata">
           <Grid container spacing={2} alignItems="baseline">
-            {sheetData &&
-              sheetData.map((item) => (
-                <React.Fragment key={item.value}>
-                  <Grid item xs={6} sm={6} md={4} className="allmiddledata">
-                    <Typography className="contentHeading">
-                      {item.value}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6} sm={6} md={8}>
-                    <Typography className="viewbtnblack">
-                      {errorData[item.value] || "N/A"}
-                    </Typography>
-                  </Grid>
-                </React.Fragment>
-              ))}
+            {/* {sheetData &&
+              sheetData.map((item) => ( */}
+            <React.Fragment>
+              <Grid item xs={6} sm={6} md={4} className="allmiddledata">
+                <Typography className="contentHeading">
+                  Prospect Company
+                </Typography>
+                <Typography className="contentHeading">
+                  Prospect Name
+                </Typography>
+
+                <Typography className="contentHeading">User</Typography>
+                <Typography className="contentHeading">Status</Typography>
+                {templateType === "HVO" ? (
+                  <Typography className="contentHeading">HVO URL</Typography>
+                ) : (
+                  <Typography className="contentHeading">Video URL</Typography>
+                )}
+              </Grid>
+              <Grid item xs={6} sm={6} md={8}>
+                <Typography className="viewbtnblack">
+                  {proscpectName ? proscpectName : "--"}
+                </Typography>
+                <Typography className="viewbtnblack">
+                  {firstName ? firstName : "--"} {lastName ? lastName : "--"}
+                </Typography>
+                <Typography className="viewbtnblack">
+                  {assignUser ? assignUser : "-"}
+                </Typography>
+                <Typography className="viewbtnblack">
+                  {status ? status : "Pending"}
+                </Typography>
+                {templateType === "HVO" ? (
+                  <Typography className="viewbtnblack">
+                    {status === "Failed" ? (
+                      <>
+                        <span style={{ color: "red" }}>Error</span>{" "}
+                      </>
+                    ) : (
+                      <Link href={hVOUrl} className="link">
+                        {hVOUrl ? hVOUrl : ""}
+                      </Link>
+                    )}
+                  </Typography>
+                ) : (
+                  <Typography className="viewbtnblack">
+                    {status === "Failed" ? (
+                      <>
+                        <span style={{ color: "red" }}>Error</span>{" "}
+                      </>
+                    ) : (
+                      <Link href={videoUrl} className="link">
+                        {videoUrl ? videoUrl : ""}
+                      </Link>
+                    )}
+                  </Typography>
+                )}
+              </Grid>
+            </React.Fragment>
+            {/* ))} */}
           </Grid>
         </Box>
       </Paper>

@@ -273,6 +273,7 @@ function TemplateDetail({ showTemplateDetail }) {
     };
 
     const customVdoTemplate = async () => {
+
         try {
             setLoading(true);
             const res = await axios({

@@ -352,7 +352,7 @@ function ViewUser() {
             User Managment&nbsp;
           </Link>
           <Typography className="breadCrumbText">
-            {allData?.viewss ? "View" : "Edit"} PersonaPro Admin Details
+            {allData?.viewss ? "View" : "Edit"} SDRCloud.ai Admin Details
           </Typography>
         </Breadcrumbs>
       </Box>

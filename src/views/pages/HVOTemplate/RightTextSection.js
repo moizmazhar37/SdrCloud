@@ -11,21 +11,24 @@ import {
   IconButton,
   Modal,
   Tooltip,
+  Dialog,
 } from "@material-ui/core";
 import React, { useEffect, useRef, useState } from "react";
 import { Copy } from "react-feather";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { menuProps } from "src/utils";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import CloseIcon from "@material-ui/icons/Close";
 import ApiConfig from "src/config/APIConfig";
 import Axios from "axios";
 import { toast } from "react-toastify";
-import * as Yup from "yup";
+import ButtonCircularProgress from "src/component/ButtonCircularProgress";
 import FullScreenLoader from "../../../component/FullScreenLoader";
 import { SketchPicker } from "react-color";
 import { CgColorPicker } from "react-icons/cg";
 import axios from "axios";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import CropImageHVO from "./CropImageHVO";
+
 const useStyles = makeStyles((theme) => ({
   menuitem: {
     "& .MuiSelect-iconOutlined": {
@@ -182,6 +185,112 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "12px",
     marginTop: "5px",
   },
+  mainDialog: {
+    "& .MuiDialog-paperWidthSm": {
+      maxWidth: "637px !important",
+      width: "100% !important",
+      height: "537px",
+      borderRadius: "12px",
+    },
+  },
+  dialogHeading: {
+    marginTop: "-15px",
+    padding: "0px 44px 24px 44px",
+    color: "#152F40",
+    fontSize: "18px",
+    fontWeight: 500,
+    "& .btnCancel": {
+      backgroundColor: "#F4F4F4",
+      color: "#152F40",
+      borderRadius: "8px",
+    },
+    "& .btnSave": {
+      backgroundColor: "#0358AC",
+      color: "#F2F7FF",
+      borderRadius: "8px",
+    },
+  },
+  CrossIcon: {
+    display: "flex",
+    justifyContent: "end",
+    // padding: "5px",
+    "& .closeicon": {
+      width: "24px",
+      height: "24px",
+      border: "1px solid #ECECEC",
+      background: "#FFFFFF",
+      borderRadius: "50%",
+      position: "fixed",
+      marginTop: "-19px",
+      marginRight: "-13px",
+      padding: "6px",
+      cursor: "pointer",
+    },
+  },
+  dialogBtnBox: {
+    padding: "130px 123px",
+    textAlign: "center",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    border: "2px dashed #CACACA",
+    borderRadius: "10px",
+    borderSpacing: "10px",
+    margin: "-11px 44px",
+    "& .dialogTypo": {
+      color: "#858585",
+      fontSize: "14px",
+      width: "100%",
+      maxWidth: "273px",
+    },
+    "& .btnUpload": {
+      backgroundColor: "#0358AC",
+      color: "#F2F7FF",
+      height: "40px",
+      width: "80px",
+      marginTop: "17px",
+    },
+  },
+  btnConatainer: {
+    display: "flex",
+    gap: "16px",
+    // padding: "24px 44px 32px 44px",
+    padding: "35px 44px 32px 44px",
+    "& .btnCancel": {
+      backgroundColor: "#F4F4F4",
+      color: "#152F40",
+      width: "100%",
+      maxWidth: "266.5px",
+      height: "48px",
+      borderRadius: "8px",
+    },
+    "& .btnSave": {
+      backgroundColor: "#0358AC",
+      color: "#F2F7FF",
+      width: "100%",
+      maxWidth: "266.5px",
+      height: "48px",
+      borderRadius: "8px",
+    },
+  },
+
+  CrossIcon: {
+    display: "flex",
+    justifyContent: "end",
+    // padding: "5px",
+    "& .closeicon": {
+      width: "24px",
+      height: "24px",
+      border: "1px solid #ECECEC",
+      background: "#FFFFFF",
+      borderRadius: "50%",
+      position: "fixed",
+      marginTop: "-19px",
+      marginRight: "-13px",
+      padding: "6px",
+      cursor: "pointer",
+    },
+  },
 }));
 function RightTextSection({
   elementType,
@@ -213,6 +322,7 @@ function RightTextSection({
   const [companyDetails, setCompanyDetails] = useState("");
   const [image, setImage] = useState("none");
   const [staticImage, setStaticImage] = useState("");
+  console.log("staticImage: ", staticImage);
   const [nextButton, setNextButton] = useState(false);
 
   const [showColorPickerH1, setShowColorPickerH1] = useState(false);
@@ -225,6 +335,11 @@ function RightTextSection({
   const [hexValueBody, setHexValueBody] = useState("");
   const [hexValueBtn, setHexValueBtn] = useState("");
   const [hexValueBtnText, setHexValueBtnText] = useState("");
+  const [open, setOpen] = useState(false);
+  const [openCrop, setOpenCrop] = useState(false);
+  const [selectedImage, setSelectedImage] = useState("");
+  const [isImageChanged, setIsImageChanged] = useState(false);
+  const [photoURL, setPhotoURL] = useState(null);
 
   const handleSaveColorH1 = () => {
     setShowColorPickerH1(false);
@@ -276,9 +391,6 @@ function RightTextSection({
       hexValueBtnText: "",
     }));
   };
-  const handleCancelColorBtnText = () => {
-    setShowColorPickerBtnText(false);
-  };
 
   const handleNext = () => {
     handleScreen("summary");
@@ -318,32 +430,16 @@ function RightTextSection({
     setImage(imageUrl);
     setStaticImage("");
     setImgName("");
-    // setLogo("");
-    // setImgName("");
-    // setErrors((prevErrors) => ({ ...prevErrors, image: "" }));
-    // try {
-    //   const response = await fetch(imageUrl);
-    //   const blob = await response.blob();
-    //   const reader = new FileReader();
-
-    //   reader.onloadend = () => {
-    //     setLogo(reader.result);
-    //   };
-
-    //   reader.readAsDataURL(blob);
-    // } catch (error) {
-    //   console.error("Error converting image URL to base64:", error);
-    // }
   };
   const handleFileInputChange = async (event) => {
+    setLoading(true);
     const file = event.target.files[0];
     setImgName(file);
-    console.log("File:", file);
 
     try {
       const formData = new FormData();
       formData.append("image", file);
-      console.log(formData, "dfgfg");
+
       const res = await axios({
         method: "POST",
         url: ApiConfig.uploadFile,
@@ -354,52 +450,34 @@ function RightTextSection({
       });
 
       if (res?.status == 200) {
-        console.log(res, "abcdef");
-        // setLogo(event.target.result);
-        //       setErrors((prevErrors) => ({ ...prevErrors, image: "" }));
+        setIsImageChanged(true);
         setStaticImage(res?.data?.data);
-
-        // setIsLoading(false);
-        // setSelectedFile(null);
-
-        // sessionStorage.setItem("userImageUrl", res.data.result);
+        setLoading(false);
       }
     } catch (error) {
-      // setIsLoading(false);
+      setLoading(false);
       console.log(error);
     }
   };
-  // const handleFileInputChange = (e) => {
-  //   const file = e.target.files[0];
-  //   setImgName(file);
-  //   if (file) {
-  //     const reader = new FileReader();
-  //     reader.onload = (event) => {
-  //       setLogo(event.target.result);
-  //       setErrors((prevErrors) => ({ ...prevErrors, image: "" }));
-  //     };
-  //     reader.readAsDataURL(file);
-  //   }
-  //   setImage("none");
-  // };
+  const handleOpenDialog = () => {
+    setOpen(true);
+  };
+  const handleCloseDialog = () => {
+    setIsImageChanged(false);
+    setOpen(false);
+  };
+
   const handleIconButtonClick = () => {
     fileInputRef.current.click();
     setImage("none");
   };
   const handleInputChange = (e) => {
     const value = e.target.value;
-    // if (value.length <= 15) {
     setButtonText(value);
     setErrors((prevErrors) => ({
       ...prevErrors,
       CTA: "",
     }));
-    // } else {
-    //   setErrors((prevErrors) => ({
-    //     ...prevErrors,
-    //     CTA: "Maximum character count is 15",
-    //   }));
-    // }
   };
 
   const [errors, setErrors] = useState({
@@ -413,8 +491,6 @@ function RightTextSection({
     bodySize: "",
     CTA: "",
     static: "",
-    // selectedOption: "",
-    // staticURL: "",
     hexValueH1: "",
     hexValueH2: "",
     hexValueBody: "",
@@ -435,16 +511,12 @@ function RightTextSection({
       body: "",
       bodySize: "",
       CTA: "",
-      // static: "",
-      // selectedOption: "",
       h2Size: "",
       h1Size: "",
-      // staticURL: "",
+
       hexValueH1: "",
       hexValueH2: "",
       hexValueBody: "",
-      // hexValueBtn: "",
-      // hexValueBtnText: "",
     };
     if (staticImage === "" && image === "none")
       newError.logo = "Static or Dynamic Image is required.";
@@ -468,21 +540,11 @@ function RightTextSection({
     if (bodySize === "") {
       newError.bodySize = "Body text size is required.";
     }
-    // if (buttonText === "") {
-    //   newError.CTA = "CTA Button text is required.";
-    // }
+
     if (hexValueH1 === "") newError.hexValueH1 = "Choose Color for Headline 1.";
     if (hexValueH2 === "") newError.hexValueH2 = "Choose Color for Headline 2.";
     if (hexValueBody === "")
       newError.hexValueBody = "Choose Color for Body text.";
-    // if (hexValueBtn === "")
-    //   newError.hexValueBtn = "Choose Color for CTA Button.";
-    // if (hexValueBtnText === "")
-    //   newError.hexValueBtnText = "Choose Color for CTA Button Text.";
-    // if (staticURL === "" && selectedOption === "none")
-    //   newError.staticURL = "Static or Dynamic URL is required.";
-    // if (staticURL === "" && selectedOption === "none")
-    //   newError.selectedOption = "Dynamic or Static URL is required.";
 
     if (
       (staticImage !== "" || image !== "none ") &&
@@ -495,8 +557,6 @@ function RightTextSection({
       hexValueH1 !== "" &&
       hexValueH2 !== "" &&
       hexValueBody !== ""
-      // hexValueBtn !== "" &&
-      // hexValueBtnText !== ""
     ) {
       setLoading(true);
       try {
@@ -512,12 +572,8 @@ function RightTextSection({
           data: {
             userId: parseInt(localStorage.getItem("_id")),
             hvoId: templateId,
-            // fileType: {
-            //   IMAGE: logo || image,
-            // },
             staticImage: staticImage,
             leftImageRightText: image,
-            // dynamicUrl: selectedOption,
             headline1: h1,
             headline1Size: h1Size,
             headline2: h2,
@@ -525,9 +581,6 @@ function RightTextSection({
             bodyText: body,
             bodyTextSize: bodySize,
             ctaButtonText: buttonText,
-            // staticUrl: staticURL,
-            // durationSec: duration,
-            // scroll: scroll,
             sectionTypeId: videoRefral.find(
               (data) => data.sectionName === elementType
             )?.sectionId,
@@ -535,8 +588,6 @@ function RightTextSection({
             headline1Color: hexValueH1,
             headline2Color: hexValueH2,
             bodyTextColor: hexValueBody,
-            // ctaButtonColor: hexValueBtn,
-            // ctaButtonTextColor: hexValueBtnText,
           },
         });
         if (res?.data?.status === 200) {
@@ -564,7 +615,6 @@ function RightTextSection({
     setH1("");
     setH2("");
     setBody("");
-    // setStaticURL("");
     setBodySize("");
     setH2Size("");
     setH1Size("");
@@ -578,36 +628,6 @@ function RightTextSection({
     setHexValueBtn("");
     setHexValueBtnText("");
   };
-  const handleButtonClick = () => {
-    setShowTextField(true);
-  };
-  // const handleInputChange = (e) => {
-  //   setButtonText(e.target.value);
-  // };
-
-  // const companyData = async () => {
-  //   try {
-  //     setLoading(true);
-  //     const res = await Axios({
-  //       method: "GET",
-  //       url: ApiConfig.companySheetData,
-  //       headers: {
-  //         authorization: `Bearer ${localStorage.getItem("token")}`,
-  //       },
-  //       params: {
-  //         hvoTemplateId: parseInt(templateId),
-  //       },
-  //     });
-  //     if (res?.status === 200) {
-  //       setCompanyDetails(res?.data?.data);
-  //     }
-  //     console.log("userrrrrrr", res?.data?.data);
-  //   } catch (error) {
-  //     console.log("error", error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
   const getSheetType = async () => {
     try {
@@ -638,9 +658,6 @@ function RightTextSection({
     getSheetType();
   }, []);
 
-  // useEffect(() => {
-  //   companyData();
-  // }, []);
   return (
     <>
       {loading && <FullScreenLoader />}
@@ -678,12 +695,9 @@ function RightTextSection({
                         style={{ display: "none" }}
                         ref={fileInputRef}
                         name="staticImage"
-                        onChange={handleFileInputChange}
+                        onClick={handleOpenDialog}
                       />
-                      <Button
-                        className="savebtn"
-                        onClick={handleIconButtonClick}
-                      >
+                      <Button className="savebtn" onClick={handleOpenDialog}>
                         Upload
                       </Button>
                     </InputAdornment>
@@ -729,55 +743,6 @@ function RightTextSection({
               </Select>
               <Typography className="error">{errors.image}</Typography>
             </Grid>
-            {/* 
-            <Grid item xs={12} sm={6}>
-              <Typography className="label">Duration (sec)</Typography>
-              <TextField
-                fullWidth
-                type="number"
-                name="duration"
-                variant="outlined"
-                value={duration}
-                // }}
-                onChange={(e) => {
-                  setDuration(e.target.value);
-                  setErrors((prevErrors) => ({ ...prevErrors, duration: "" }));
-                }}
-                error={!!errors.duration}
-                helperText={errors.duration}
-                placeholder="07"
-                className="durationField"
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
-              <Typography className="label">Scroll</Typography>
-              <Select
-                variant="outlined"
-                className="selectitem"
-                id="choose-template"
-                MenuProps={menuProps}
-                fullWidth
-                value={scroll}
-                onChange={(e) => {
-                  setScroll(e.target.value);
-                  setErrors((prevErrors) => ({ ...prevErrors, scroll: "" }));
-                }}
-                error={errors.scroll}
-                helperText={errors.scroll}
-                style={{ marginTop: "5px" }}
-                name="scroll"
-                IconComponent={ExpandMoreIcon}
-                displayEmpty
-              >
-                <MenuItem value="" disabled>
-                  Select
-                </MenuItem>
-                <MenuItem value="true">Yes</MenuItem>
-                <MenuItem value="false">No</MenuItem>
-              </Select>
-              <Typography className="error">{errors.scroll}</Typography>
-            </Grid> */}
 
             <Grid item xs={12} sm={8}>
               <Grid container style={{ gap: "15px" }}>
@@ -1100,17 +1065,13 @@ function RightTextSection({
                         }));
                       }
                     }}
-                    // onChange={(e) => {
-                    //   setBody(e.target.value);
-                    //   setErrors((prevErrors) => ({ ...prevErrors, body: "" }));
-                    // }}
                     error={!!errors.body}
                     multiline
                     minRows={5}
                     rows={5}
                     variant="outlined"
                     placeholder="Enter Your Text Here"
-                  // inputProps={{ maxLength: 400 }}
+                    // inputProps={{ maxLength: 400 }}
                   />
                   <Typography className="error">
                     {errors.body}{" "}
@@ -1254,7 +1215,13 @@ function RightTextSection({
                   {companyDetails !== undefined &&
                     companyDetails.length > 0 &&
                     companyDetails
-                      ?.filter((item) => item?.dataType == "Text Field")
+                      ?.filter(
+                        (item) =>
+                          item?.dataType == "Text Field" ||
+                          item?.dataType == "First name" ||
+                          item?.dataType == "Last name" ||
+                          item?.dataType == "Customer organization"
+                      )
                       ?.map((sheetfield, ind) => (
                         <Tooltip title={sheetfield?.value || "Copy Text"} arrow>
                           <TextField
@@ -1287,225 +1254,12 @@ function RightTextSection({
                 </div>
               </Box>
             </Grid>
-            {/* 
-            <Grid item xs={12} sm={4}>
-              <Typography className="label">CTA Button</Typography>
-              <Box mt={2}>
-                {showTextField ? (
-                  <TextField
-                    className="ctabtntext"
-                    placeholder="Enter Button Text"
-                    variant="outlined"
-                    fullWidth
-                    value={buttonText}
-                    onChange={handleInputChange}
-                  />
-                ) : (
-                  <Button
-                    variant="outlined"
-                    className="ctabtn"
-                    onClick={handleButtonClick}
-                  >
-                    Enter Button Text
-                  </Button>
-                )}
-                <Typography className="error">{errors.CTA}</Typography>
-              </Box>
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <Typography className="label">
-                Choose Button Text Color
-              </Typography>
-              <>
-                <TextField
-                  fullWidth
-                  margin="normal"
-                  variant="outlined"
-                  placeholder="Choose Color"
-                  value={hexValueBtnText}
-                  onChange={(event) =>
-                    setHexValueBtnText(event.target.value.toUpperCase())
-                  }
-                  InputProps={{
-                    readOnly: true,
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          onClick={() => setShowColorPickerBtnText(true)}
-                        >
-                          <CgColorPicker
-                            style={{
-                              color: "#0358AC",
-                              padding: "0px",
-                              height: "20px",
-                            }}
-                          />
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                  error={!!errors.hexValueBtnText}
-                  helperText={errors.hexValueBtnText}
-                />
-                <Modal
-                  open={showColorPickerBtnText}
-                  aria-labelledby="color-picker-modal"
-                >
-                  <Box
-                    sx={{
-                      position: "absolute",
-                      top: "50%",
-                      left: "50%",
-                      transform: "translate(-50%, -50%)",
-                      bgcolor: "background.paper",
-                      boxShadow: 24,
-                      p: 4,
-                      maxWidth: 400,
-                      borderRadius: 4,
-                    }}
-                  >
-                    <SketchPicker
-                      className={classes.colorpicker}
-                      color={hexValueBtnText}
-                      onChange={(color) =>
-                        setHexValueBtnText(color.hex.toUpperCase())
-                      }
-                    />
-                    <div className={classes.colorpickerbtndiv}>
-                      <Button
-                        onClick={handleSaveColorBtnText}
-                        variant="outlined"
-                      >
-                        Save
-                      </Button>
-                      <Button
-                        onClick={handleCancelColorBtnText}
-                        variant="contained"
-                      >
-                        Cancel
-                      </Button>
-                    </div>
-                  </Box>
-                </Modal>
-              </>
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <Typography className="label">Choose CTA Button Color</Typography>
-              <>
-                <TextField
-                  fullWidth
-                  margin="normal"
-                  variant="outlined"
-                  placeholder="Choose Color"
-                  value={hexValueBtn}
-                  onChange={(event) =>
-                    setHexValueBtn(event.target.value.toUpperCase())
-                  }
-                  InputProps={{
-                    readOnly: true,
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton onClick={() => setShowColorPickerBtn(true)}>
-                          <CgColorPicker
-                            style={{
-                              color: "#0358AC",
-                              padding: "0px",
-                              height: "20px",
-                            }}
-                          />
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                  error={!!errors.hexValueBtn}
-                  helperText={errors.hexValueBtn}
-                />
-                <Modal
-                  open={showColorPickerBtn}
-                  aria-labelledby="color-picker-modal"
-                >
-                  <Box
-                    sx={{
-                      position: "absolute",
-                      top: "50%",
-                      left: "50%",
-                      transform: "translate(-50%, -50%)",
-                      bgcolor: "background.paper",
-                      boxShadow: 24,
-                      p: 4,
-                      maxWidth: 400,
-                      borderRadius: 4,
-                    }}
-                  >
-                    <SketchPicker
-                      className={classes.colorpicker}
-                      color={hexValueBtn}
-                      onChange={(color) =>
-                        setHexValueBtn(color.hex.toUpperCase())
-                      }
-                    />
-                    <div className={classes.colorpickerbtndiv}>
-                      <Button onClick={handleSaveColorBtn} variant="outlined">
-                        Save
-                      </Button>
-                      <Button
-                        onClick={handleCancelColorBtn}
-                        variant="contained"
-                      >
-                        Cancel
-                      </Button>
-                    </div>
-                  </Box>
-                </Modal>
-              </>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Typography className="label">
-                If Static Enter Static URL Here
-              </Typography>
-              <TextField
-                variant="outlined"
-                fullWidth
-                placeholder="Enter Link URL"
-                value={staticURL}
-                onChange={handleStaticUrl}
-                name="staticURL"
-              />
-              <Typography className="error">{errors.selectedOption}</Typography>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Typography className="label">
-                If Dynamic URL Select Here
-              </Typography>
-              <Select
-                style={{ marginTop: "5px" }}
-                variant="outlined"
-                className="selectitem"
-                id="choose-template"
-                fullWidth
-                MenuProps={menuProps}
-                value={selectedOption}
-                onChange={handleChangeDynamicURL}
-                IconComponent={ExpandMoreIcon}
-              >
-                <MenuItem value="none" disabled>
-                  Select Dynamic Url
-                </MenuItem>
-                {companyDetails !== undefined &&
-                  companyDetails.length > 0 &&
-                  companyDetails
-                    ?.filter((item) => item?.dataType == "URL")
-                    ?.map((item) => (
-                      <MenuItem value={item?.value}>{item?.value}</MenuItem>
-                    ))}
-              </Select>
-              <Typography className="error">{errors.selectedOption}</Typography>
-            </Grid> */}
           </Grid>
           <Box className="secondmaingridbtn" mt={2}>
             <Button
-              className={`${nextButton === true ? "savebtnDisables" : "savebtn"
-                }`}
+              className={`${
+                nextButton === true ? "savebtnDisables" : "savebtn"
+              }`}
               disabled={nextButton === true}
               variant="contained"
               onClick={() => handleSetData()}
@@ -1513,8 +1267,9 @@ function RightTextSection({
               Save
             </Button>
             <Button
-              className={`${nextButton === false ? "savebtnDisables" : "savebtn"
-                }`}
+              className={`${
+                nextButton === false ? "savebtnDisables" : "savebtn"
+              }`}
               disabled={nextButton === false}
               onClick={handleNext}
               variant="contained"
@@ -1524,6 +1279,88 @@ function RightTextSection({
           </Box>
         </Box>
       </Box>
+      {openCrop ? (
+        <Dialog open={open} className={classes.mainDialog}>
+          <IconButton onClick={handleCloseDialog}></IconButton>
+
+          <Typography variant="body1" className={classes.dialogHeading}>
+            Upload Image
+          </Typography>
+          <CropImageHVO
+            photoURL={staticImage}
+            type={false}
+            setOpenCrop={setOpenCrop}
+            setPhotoURL={setPhotoURL}
+            setUploadedImage={setStaticImage}
+            setErrors={() => {}}
+          />
+        </Dialog>
+      ) : (
+        <Dialog open={open} className={classes.mainDialog}>
+          <Box className={classes.CrossIcon}>
+            <IconButton onClick={handleCloseDialog}>
+              <CloseIcon className="closeicon" />
+            </IconButton>
+          </Box>
+          <Typography variant="body1" className={classes.dialogHeading}>
+            Upload Image
+          </Typography>
+          {staticImage ? (
+            <Box style={{ minHeight: "300px", margin: "0 44px" }}>
+              <img
+                src={staticImage}
+                alt="Preview"
+                style={{
+                  width: "100%",
+                  maxHeight: "300px",
+                  aspectRatio: "1.9",
+                  objectFit: "contain",
+                }}
+              />
+            </Box>
+          ) : (
+            <Box className={classes.dialogBtnBox}>
+              <Typography variant="body1" className="dialogTypo">
+                Click to add image from your device.
+              </Typography>
+              <input
+                type="file"
+                accept="image/jpeg, image/png, image/jpg"
+                onChange={(e) => {
+                  handleFileInputChange(e);
+                  setOpenCrop(true);
+                }}
+                style={{ display: "none" }}
+                id="upload-input"
+              />
+              <label htmlFor="upload-input">
+                <Button component="span" className="btnUpload">
+                  Upload
+                </Button>
+              </label>
+            </Box>
+          )}
+          <Box className={classes.btnConatainer}>
+            <Button onClick={handleCloseDialog} className="btnCancel">
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                if (isImageChanged) {
+                  toast.success("Image uploaded successfully");
+                  // handleSaveClick6();
+                  handleCloseDialog();
+                } else {
+                  setStaticImage(null);
+                }
+              }}
+              className="btnSave"
+            >
+              {loading === false ? "Save" : <ButtonCircularProgress />}
+            </Button>
+          </Box>
+        </Dialog>
+      )}
     </>
   );
 }

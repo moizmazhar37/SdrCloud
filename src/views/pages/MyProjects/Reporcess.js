@@ -344,53 +344,7 @@ function Reprocess({
       [inputName]: update,
     }));
   };
-  // const userListApi = async () => {
-  //   setLoading(false);
-  //   const params = {
-  //     page: 0,
-  //     pageSize: 10 || 0,
-  //     templateType: "VIDEO",
-  //     sortBy: "",
-  //   };
-  //   params.name = "";
-  //   try {
-  //     setLoading(true);
-  //     const res = await axios({
-  //       method: "GET",
-  //       url: ApiConfig.userProjectListing,
-  //       headers: {
-  //         Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //         userId: localStorage.getItem("_id"),
-  //       },
-  //       params: params,
-  //     });
-  //     if (res?.data?.status === 200) {
-  //       setLoading(false);
-  //       let errorData = res?.data?.data;
-  //       let sheetUrl = res?.data?.data?.list[0]?.sheetUrl;
-  //       let sheetName = res?.data?.data?.list[0]?.sheetName;
-  //       let CUSTOMER_ID = res?.data?.data?.list[0]?.CUSTOMER_ID;
-  //       let videoTemplete = res?.data?.data?.list[0]?.videoTemplateId;
 
-  //       history.push("/View-Myproject", {
-  //         state: {
-  //           errorData: errorData?.list[0]?.projectListing[projectIndex],
-  //           sheetUrl: sheetUrl,
-  //           sheetName: sheetName,
-  //           CUSTOMER_ID: CUSTOMER_ID,
-  //           videoTemplete: videoTemplete,
-  //           projectIndex: projectIndex,
-  //         },
-  //       });
-  //     } else if (res?.data?.status === 205) {
-  //       // toast.error("No User Found");
-  //       setLoading(false);
-  //     }
-  //   } catch (error) {
-  //     console.log(error, "error");
-  //     setLoading(false);
-  //   }
-  // };
   const errorDataList = async () => {
     setLoading(false);
     const params = {
@@ -412,7 +366,7 @@ function Reprocess({
       if (res?.data?.status === 200) {
         setLoading(false);
         setAdminUserList(res?.data?.data?.failedCustomerData[index]);
-        history.push("/View-Myproject", {
+        history.push("/view-myproject", {
           state: {
             index: index,
             sheetId: sheetId,
@@ -559,9 +513,10 @@ function Reprocess({
                       ) : (
                         <Field
                           name={field}
-                          placeholder={`Enter ${field.replace(/_/g, " ").charAt(0).toUpperCase() +
+                          placeholder={`Enter ${
+                            field.replace(/_/g, " ").charAt(0).toUpperCase() +
                             field.replace(/_/g, " ").slice(1)
-                            }`}
+                          }`}
                           as={TextField}
                           fullWidth
                           // onchange={(e)=>handleChangeInput(e,field)}

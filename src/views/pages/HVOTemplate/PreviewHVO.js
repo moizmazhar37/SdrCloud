@@ -112,6 +112,77 @@ const useStyles = makeStyles((theme) => ({
         },
       },
     },
+    "& .heroSection1": {
+      marginTop: "100px",
+      [theme.breakpoints.down("xs")]: {
+        marginTop: "30px", // Extra small screens
+      },
+      [theme.breakpoints.up("sm")]: {
+        marginTop: "30px", // Small screens
+      },
+      [theme.breakpoints.up("md")]: {
+        marginTop: "30px", // Medium screens
+      },
+      [theme.breakpoints.up("lg")]: {
+        marginTop: "30px", // Large screens
+      },
+      marginBottom: "20px",
+      "& h1": {
+        fontSize: "54px",
+        color: "#0358AC",
+      },
+      "& h2": {
+        marginTop: "16px",
+        fontSize: "28px",
+        color: "#152F40",
+      },
+      "& .MuiTypography-body1": {
+        fontSize: "16px",
+        color: "#152F40",
+        marginTop: "16px",
+      },
+      "& img": {
+        maxWidth: "100%",
+        height: "350px",
+      },
+      "& .MuiButton-contained": {
+        background: "#0358AC",
+        color: "white",
+        fontSize: "14px",
+        fontWeight: 300,
+        marginTop: "24px",
+      },
+      "& .iconsContainer": {
+        color: "white",
+        fontSize: "16px",
+        fontWeight: 300,
+        marginTop: "24px",
+        display: "flex",
+        justifyContent: "space-between",
+        width: "150px",
+      },
+      "& .icons": {
+        padding: "10px",
+        // background: "#0358AC",
+      },
+      "& .btn": {
+        display: "flex",
+        flexWrap: "wrap",
+        justifyContent: "space-between",
+        gap: "50px",
+        alignItems: "baseline",
+        "& .demobtn": {
+          cursor: "pointer",
+          textTransform: "none",
+          display: "flex",
+          alignItems: "end",
+          gap: "10px",
+          fontSize: "12px",
+          lineHeight: "12px",
+          textTransform: "uppercase",
+        },
+      },
+    },
     "& .AppBarCss": {
       position: "static !important",
       "& .MuiAppBar-positionFixed": {
@@ -152,6 +223,14 @@ const useStyles = makeStyles((theme) => ({
     color: "white",
     fontSize: "32px",
   },
+  specificGridItem: {
+    paddingLeft: "30px",
+    paddingTop: "20px",
+    [theme.breakpoints.down("md")]: {
+      paddingLeft: 0,
+      paddingTop: 0,
+    },
+  },
 }));
 
 function PreviewHVO(location) {
@@ -163,6 +242,7 @@ function PreviewHVO(location) {
   console.log("filteredFooterSection: ", filteredFooterSection);
   console.log(useParams, "useParams");
   console.log(pageData, "pageData");
+  const [accountData, setAccountData] = useState("");
 
   const iconMap = {
     Facebook: FaFacebookF,
@@ -233,13 +313,13 @@ function PreviewHVO(location) {
 
   const settings = {
     infinite: true,
-    speed: 25000,
+    speed: 40000,
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 0,
     cssEase: "linear",
-    variableWidth: true,
+    // variableWidth: true,
     pauseOnHover: false,
     prevArrow: <></>,
     nextArrow: <></>,
@@ -266,6 +346,33 @@ function PreviewHVO(location) {
   const [hoveredContact, setHoveredContact] = useState(false);
   const handleMouseEnterContact = () => setHoveredContact(true);
   const handleMouseLeaveContact = () => setHoveredContact(false);
+
+  const getAccountData = async () => {
+    try {
+      setLoading(true);
+      const res = await axios({
+        method: "GET",
+        url: ApiConfig.companyDetails,
+        headers: {
+          token: `${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (res?.data?.status === 200) {
+        setLoading(false);
+        const data = res?.data;
+        setAccountData(data?.data);
+        // setAccountId(res?.data?.data?.accountId);
+      }
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getAccountData();
+  }, []);
   return (
     <>
       {loading && <FullScreenLoader />}
@@ -280,10 +387,10 @@ function PreviewHVO(location) {
                 <Container>
                   <Toolbar>
                     <img
-                      src="/images/experienceremovebg.png"
+                      src={accountData?.accountDetails?.accountLogo}
                       alt="logo"
-                      height={"250px"}
-                      width={"250px"}
+                      height={"60px"}
+                      width={"100px"}
                     />
                     {item?.values?.headerLogo && (
                       <>
@@ -312,32 +419,32 @@ function PreviewHVO(location) {
             {item?.sectionName === "HERO" && (
               <>
                 <Container>
-                  <Grid container className="heroSection">
+                  <Grid container className="heroSection1">
                     <Grid
                       item
                       sm={5}
                       xs={12}
-                      // style={{ marginTop: "100px" }}
+                      style={{ paddingRight: "30px" }}
                       className="d-flex column alignstart"
                     >
                       <Typography
                         style={{
                           color: item?.values?.headline1Color,
                           fontWeight: 900,
-                          wordBreak: "break-all",
+                          wordBreak: "break-word",
                           fontSize: `${item?.values?.headline1Size}px`,
                         }}
                         variant="h3"
                         // data-aos="fade-up"
                       >
-                        <span
+                        {/* <span
                           style={{
                             color: item?.values?.headline1Color,
                             fontWeight: 300,
                           }}
                         >
                           Welcome{" "}
-                        </span>
+                        </span> */}
                         {item?.values?.headline1}
                       </Typography>
                       <Typography
@@ -345,7 +452,7 @@ function PreviewHVO(location) {
                           color: item?.values?.headline2Color,
                           fontSize: `${item?.values?.headline2Size}px`,
                           fontWeight: 800,
-                          wordBreak: "break-all",
+                          wordBreak: "break-word",
                           marginTop: "8px",
                           lineHeight: "35px",
                         }}
@@ -358,7 +465,7 @@ function PreviewHVO(location) {
                         style={{
                           color: item?.values?.bodyTextColor,
                           lineHeight: "30px",
-                          wordBreak: "break-all",
+                          wordBreak: "break-word",
                           fontSize: `${item?.values?.bodyTextSize}px`,
                         }}
                         variant="body1"
@@ -395,6 +502,7 @@ function PreviewHVO(location) {
                                 ? item?.values?.demoButtonColor
                                 : item?.values?.demoButtonTextColor,
                               textTransform: "none",
+                              fontSize: "14px",
                             }}
                             onClick={() =>
                               window.open(
@@ -408,8 +516,9 @@ function PreviewHVO(location) {
                             onMouseEnter={handleMouseEnter}
                             onMouseLeave={handleMouseLeave}
                           >
-                            {item?.values?.demoButtonText} {"  "}
-                            <IoIosArrowForward />
+                            {item?.values?.demoButtonText}
+                            {/* {"  "}
+                            <IoIosArrowForward /> */}
                           </Typography>
                         )}
                       </Box>
@@ -514,8 +623,7 @@ function PreviewHVO(location) {
                       item
                       md={6}
                       xs={12}
-                      className="d-flex column alignstart"
-                      style={{ paddingLeft: "30px", paddingTop: "20px" }}
+                      className={`${classes.specificGridItem} d-flex column alignstart`}
                     >
                       <Typography
                         variant="h1"
@@ -645,7 +753,7 @@ function PreviewHVO(location) {
                       sm={6}
                       xs={12}
                       className="d-flex column alignstart"
-                      style={{ paddingLeft: "30px" }}
+                      style={{ paddingRight: "30px" }}
                     >
                       <Typography
                         variant="h3"
@@ -896,14 +1004,9 @@ function PreviewHVO(location) {
                             color: item?.values?.benchmarkColor,
                             fontSize: `${item?.values?.benchmarkSize}px`,
                             fontWeight: 400,
-                            // fontSize:
-                            //   typeof item?.headline1Size === "number"
-                            //     ? `${item.headline1Size}px`
-                            //     : item?.headline1Size,
                           }}
                         >
-                          {item?.values?.benchmarkText1} DBA Experience.com. All
-                          rights reserved.
+                          {item?.values?.accountName}. All rights reserved.
                         </Typography>
                       </Grid>
                       <Grid item sm={4} xs={12}>

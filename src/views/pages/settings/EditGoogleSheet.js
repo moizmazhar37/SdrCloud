@@ -9,8 +9,8 @@ import {
   TextField,
   ButtonGroup,
   MenuItem,
+  Select,
 } from "@material-ui/core";
-import { CircularProgress, Select } from "@mui/material";
 
 import Link from "@material-ui/core/Link";
 import { Formik, Form } from "formik";
@@ -221,6 +221,15 @@ function EditGoogleSheet(props) {
         value: "Logo",
       },
       {
+        value: "Customer organization",
+      },
+      {
+        value: "First name",
+      },
+      {
+        value: "Last name",
+      },
+      {
         value: "Screenshot from URL",
       },
       {
@@ -255,6 +264,9 @@ function EditGoogleSheet(props) {
       },
       {
         value: "First name (Required)",
+      },
+      {
+        value: "Last name",
       },
       {
         value: "Image URL",
@@ -498,7 +510,7 @@ function EditGoogleSheet(props) {
     totalRecords: "Total Records",
     recent: "Recent",
     fetchUrl: "Fetch URL",
-    fetchDays: "Fetch New Records Every",
+    fetchDays: "New Records Each",
   };
 
   const truncateUrl = (url) => {
@@ -801,11 +813,11 @@ function EditGoogleSheet(props) {
                       onChange={(e) => handleChangeField(e, idx, item)} // P
                       IconComponent={ExpandMoreIcon}
                       disabled={diabledFields == true}
-                    // error={!!errors.image}
-                    // helperText={errors.image}
+                      // error={!!errors.image}
+                      // helperText={errors.image}
                     >
                       <MenuItem value="none" disabled>
-                        Select Field value
+                        Select Field
                       </MenuItem>
                       {values.map((option, optionIdx) => (
                         <MenuItem key={optionIdx} value={option.value}>

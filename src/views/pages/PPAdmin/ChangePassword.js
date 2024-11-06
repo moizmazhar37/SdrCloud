@@ -172,7 +172,16 @@ function Changepassword(props) {
 
               <Box mt={4}>
                 <Formik
-                  onSubmit={(values) => handleResetPassword(values)}
+                  onSubmit={(values) => {
+                    // Check if Current Password and New Password are the same
+                    if (values.password === values.newPassword) {
+                      toast.error(
+                        "New password cannot be the same as the current password."
+                      );
+                    } else {
+                      handleResetPassword(values);
+                    }
+                  }}
                   initialValues={{
                     password: "",
                     newPassword: "",

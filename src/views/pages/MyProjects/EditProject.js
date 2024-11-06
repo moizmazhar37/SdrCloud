@@ -133,6 +133,7 @@ function EditProjects(props) {
   const [errorhandle, setErrorhandle] = useState("error");
   const [reprocessopen, setReprocessOpen] = useState(false);
   const [adminUserList, setAdminUserList] = useState([]);
+  console.log("adminUserList: ", adminUserList);
   const [data, setData] = useState("");
   const [loading, setLoading] = useState(false);
   const [missingFields, setMissingFields] = useState([]);

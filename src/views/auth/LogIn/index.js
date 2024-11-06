@@ -164,7 +164,7 @@ function Login(props) {
         url: ApiConfig.login,
         method: "POST",
         data: {
-          email: values.email,
+          email: values.email.toLowerCase(),
           password: values.password,
         },
       });
@@ -340,7 +340,7 @@ function Login(props) {
                           }
                         }}
                         onInput={(e) => {
-                          e.target.value = e.target.value.toLowerCase();
+                          // e.target.value = e.target.value.toLowerCase();
                           handleChange(e);
                         }}
                       />

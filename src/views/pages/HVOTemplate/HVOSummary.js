@@ -91,13 +91,14 @@ function HVOSummary({ linkObject, sectionId1, reload, viewParams }) {
   const [sections, setSections] = useState(linkObject);
   const [loading, setLoading] = useState(false);
   const [previewData, setPreviewData] = useState();
-  // const templateId = searchParams.get("templateId");
+  console.log(viewParams, "sads");
+
   const searchParams = new URLSearchParams(window.location.search);
   const [templateId, setTempalteId] = useState(searchParams.get("templateId"));
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [sectionId, setSectionId] = useState("");
   const history = useHistory();
-
+  const [creationProcess, setCreationProcess] = useState("");
   useEffect(() => {
     console.log("tester si checiking linkObject", linkObject);
     setSections(linkObject);
@@ -148,19 +149,39 @@ function HVOSummary({ linkObject, sectionId1, reload, viewParams }) {
           hvoTemplateId: templateId,
         },
       });
-      if (res?.data?.status === 200 || res?.data?.status === 201) {
+
+      const status = res?.data?.status;
+
+      if (status === 200 || status === 201) {
         setLoading(false);
         setPreviewData(res?.data?.data?.elementsList);
-        const elementsList = res?.data?.data?.elementsList;
-
-        // history.push("/preview-hvo", { linkObject: elementsList });
         toast.success(res?.data?.message);
         console.log(res?.data);
-        // setEditSheet(true);
-        // setActive(true);
-        // getHVOTemplate(templateId);
-      } else if (res?.data?.status === 205) {
+      } else if (status === 205) {
         toast.error(res?.data?.message);
+      } else if (status === 400) {
+        console.log(res?.data?.message, "uihnjk");
+        toast.error(res?.data?.message || "Bad Request");
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const getHVOTemplate = async () => {
+    try {
+      setLoading(true);
+      const res = await axios({
+        method: "GET",
+        url: ApiConfig.getHVO,
+        headers: {
+          token: `${localStorage.getItem("token")}`,
+        },
+        params: { hvoTemplateId: templateId },
+      });
+      if (res?.status === 200) {
+        setCreationProcess(res?.data?.data?.templateData?.creationStatus);
       }
     } catch (error) {
       console.log(error, "error");
@@ -168,7 +189,9 @@ function HVOSummary({ linkObject, sectionId1, reload, viewParams }) {
       setLoading(false);
     }
   };
-
+  useEffect(() => {
+    getHVOTemplate();
+  }, []);
   return (
     <div className={classes.main}>
       {loading && <FullScreenLoader />}
@@ -190,6 +213,10 @@ function HVOSummary({ linkObject, sectionId1, reload, viewParams }) {
                     <Typography style={{ color: "#0358AC" }}>
                       Right Text | Left Image
                     </Typography>
+                  ) : item?.sectionType?.sectionName === "HIGHLIGHT_BANNER2" ? (
+                    <Typography style={{ color: "#0358AC" }}>
+                      HIGHLIGHT BANNER 2
+                    </Typography>
                   ) : (
                     <Typography style={{ color: "#0358AC" }}>
                       {item?.sectionType?.sectionName}
@@ -201,9 +228,6 @@ function HVOSummary({ linkObject, sectionId1, reload, viewParams }) {
                   </Typography>
                 </Grid>
                 <Grid item xs={6} align="right">
-                  {/* <IconButton onClick={() => deleteSection(item.id) }>
-                    <AiTwotoneDelete color="red" size={35} />
-                  </IconButton> */}
                   <IconButton
                     onClick={() => {
                       setSectionId(item?._id);
@@ -218,15 +242,12 @@ function HVOSummary({ linkObject, sectionId1, reload, viewParams }) {
               <Box mt={2}>
                 {item?.sectionType?.sectionName === "HEADER" ? (
                   <>
-                    <p>{item?.headerLogo}</p>
-                    {/* {item?.logo && (
-                      <img
-                        src={item?.logo}
-                        height="150px"
-                        alt="img"
-                        className={classes.img}
-                      />
-                    )} */}
+                    <p>
+                      {item?.headerLogo === "none"
+                        ? "Company Logo"
+                        : item?.headerLogo}
+                    </p>
+
                     {item?.prospectLogo && (
                       <img
                         src={item?.prospectLogo}
@@ -238,19 +259,12 @@ function HVOSummary({ linkObject, sectionId1, reload, viewParams }) {
                   </>
                 ) : item?.sectionType?.sectionName === "HERO" ? (
                   <>
-                    {/* <img
-                      src={item?.image}
-                      height="150px"
-                      alt="img"
-                      className={classes.img}
-                    /> */}
                     <Typography style={{ color: "#0358AC" }}>
                       H1 | H2 | H3 | CTA
                     </Typography>
                   </>
                 ) : item?.sectionType?.sectionName === "HIGHLIGHT_BANNER" ? (
                   <>
-                    {/* <TextField variant="outlined" value={item?.bannerText} /> */}
                     <Typography style={{ color: "#0358AC" }}>
                       Scroll - {item?.scroll ? "Yes" : "No"}
                     </Typography>
@@ -258,12 +272,6 @@ function HVOSummary({ linkObject, sectionId1, reload, viewParams }) {
                 ) : item?.sectionType?.sectionName ===
                   "RIGHT_TEXT_LEFT_IMAGE" ? (
                   <>
-                    {/* <img
-                      src={item?.image}
-                      height="150px"
-                      alt="img"
-                      className={classes.img}
-                    /> */}
                     <Typography style={{ color: "#0358AC" }}>
                       H1 | H2 | H3 | CTA
                     </Typography>
@@ -271,14 +279,14 @@ function HVOSummary({ linkObject, sectionId1, reload, viewParams }) {
                 ) : item?.sectionType?.sectionName ===
                   "LEFT_TEXT_RIGHT_IMAGE" ? (
                   <>
-                    {/* <img
-                      src={item?.image}
-                      height="150px"
-                      alt="img"
-                      className={classes.img}
-                    /> */}
                     <Typography style={{ color: "#0358AC" }}>
                       H1 | H2 | H3 | CTA
+                    </Typography>
+                  </>
+                ) : item?.sectionType?.sectionName === "HIGHLIGHT_BANNER2" ? (
+                  <>
+                    <Typography style={{ color: "#0358AC" }}>
+                      Banner | CTA
                     </Typography>
                   </>
                 ) : (
@@ -302,11 +310,20 @@ function HVOSummary({ linkObject, sectionId1, reload, viewParams }) {
           {linkObject.length > 0 && (
             <Box mt={2} mb={2}>
               <Button
-                onClick={() => createHVO()}
+                onClick={() => {
+                  createHVO();
+                  getHVOTemplate();
+                }}
                 style={{ height: "48px" }}
                 variant="outlined"
               >
-                Create
+                {creationProcess === "Pending"
+                  ? "Create HVO"
+                  : creationProcess === "Active"
+                  ? "Active"
+                  : creationProcess === "Published"
+                  ? "Published"
+                  : "Create HVO"}
               </Button>
             </Box>
           )}
@@ -316,7 +333,6 @@ function HVOSummary({ linkObject, sectionId1, reload, viewParams }) {
         open={deleteOpen}
         className={classes.dialog}
         onClose={handleDeleteClose}
-        // sectionId={sectionId}
       >
         <DialogTitle>
           <Typography variant="h5">Warning: Permanent Deletion</Typography>
