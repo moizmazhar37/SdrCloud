@@ -670,11 +670,8 @@ const CreateAccount = () => {
   const [selectedcustomerType, setSelectedCustomerType] = useState(" ");
   const [accountLogo, setAccountlogo] = useState(null);
   const [accountlogoUpload, setAccountLogoUpload] = useState(null);
-  console.log("accountlogoUpload: ", accountlogoUpload);
   const [accountLogoName, setAccountLogoName] = useState(null);
-  console.log("accountLogoName: ", accountLogoName);
   const [accountContract, setAccountContract] = useState(null);
-  console.log("accountContract: ", accountContract);
   const [open, setOpen] = useState(false);
   const fileInputRef = useRef(null);
   const [logoFile, setLogoFile] = useState(null);
@@ -744,7 +741,6 @@ const CreateAccount = () => {
 
   const handleAddNewCategory = (values) => {
     addCategory(values);
-    console.log(values, "valuesvalues");
 
     setIsDialogOpen(false);
     setNewCategory("");
@@ -777,7 +773,6 @@ const CreateAccount = () => {
         //   toast.error(res?.data?.message);
       }
     } catch (error) {
-      console.log(error, "error");
       toast.error(error?.response?.data?.message);
     } finally {
       setLoading(false);
@@ -816,7 +811,6 @@ const CreateAccount = () => {
   };
 
   const handlecreateNewAccount = async (values) => {
-    console.log("values: ", values);
     const isImageEmpty = !accountLogo;
     const isContractEmpty = !accountContract?.name;
 
@@ -858,22 +852,18 @@ const CreateAccount = () => {
           method: "POST",
           url: ApiConfig.createNewAccount,
           headers: {
-            token: `${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
           data: formattedNewAccountData,
         });
-        if (res?.data?.status === 200) {
+        if (res?.status === 200) {
           setLoading(false);
           setNewAccount(res?.data?.data);
           toast.success(res?.data?.message);
           history.push("/PP-createaccount");
-        } else if (res?.data?.status === 205) {
-          toast.error(res?.data?.message);
-          setLoading(false);
-        }
+        } 
       } catch (error) {
-        console.log(error, "error");
-        toast.error(error?.response?.data?.message);
+        toast.error(error?.response?.data?.detail);
         setLoading(false);
       }
     }
@@ -898,7 +888,6 @@ const CreateAccount = () => {
         setLoading(false);
       }
     } catch (error) {
-      console.log(error, "error");
       setLoading(false);
     }
   };
@@ -935,7 +924,6 @@ const CreateAccount = () => {
   };
 
   const handlecustomerType = (event) => {
-    console.log("event: ", event.target);
     setIsShow(false);
     const selectedCustomerId = event.target.value;
     setSelectedCustomerType(selectedCustomerId);
@@ -1030,7 +1018,6 @@ const CreateAccount = () => {
   };
 
   const handleUploadButtonClick = () => {
-    console.log("handleUploadButtonClick: is triggering ");
     if (fileInputRef.current) {
       fileInputRef.current.click();
     }
@@ -1150,7 +1137,6 @@ const CreateAccount = () => {
     if (isShow && customerType?.length > 0) {
       const lastIndex = customerType.length - 1;
       const lastItem = customerType[0];
-      console.log("lastItem: ", lastItem);
       setSelectedCustomerType(lastItem?.category_Name);
       setCategoryName(lastItem.category_Name); // Assuming you have a state for category name
     }
@@ -1170,7 +1156,6 @@ const CreateAccount = () => {
       <Formik
         validationSchema={validationSchema}
         onSubmit={(values) => {
-          console.log(values, "formik Values");
           handlecreateNewAccount(values);
         }}
         initialValues={{
@@ -1234,7 +1219,6 @@ const CreateAccount = () => {
                       onBlur={handleBlur}
                       onChange={handleChange}
                     />
-                    {console.log(values?.accountName)}
                     <FormHelperText error className={classes.errorClass}>
                       {touched.accountName && errors.accountName}
                     </FormHelperText>
@@ -1278,7 +1262,6 @@ const CreateAccount = () => {
                           border: "1px solid #e7e7e7",
                         }}
                       />
-                      {console.log("values.country", values.country)}
                     </FormControl>
                     <FormHelperText error className={classes.errorClass}>
                       {touched.accountPhoneNo && errors.accountPhoneNo}
@@ -1396,10 +1379,6 @@ const CreateAccount = () => {
                         touched.contractedDate && errors.contractedDate
                       )}
                     />
-                    {console.log(
-                      "values?.contractedDate",
-                      values?.contractedDate
-                    )}
                     <FormHelperText error className={classes.errorClass2}>
                       {touched.contractedDate && errors.contractedDate}
                     </FormHelperText>
@@ -1487,10 +1466,6 @@ const CreateAccount = () => {
                         touched.contractEndDate && errors.contractEndDate
                       )}
                     />
-                    {console.log(
-                      "values.contractEndDate",
-                      values.contractEndDate
-                    )}
                     <FormHelperText error className={classes.errorClass2}>
                       {touched.contractEndDate && errors.contractEndDate}
                     </FormHelperText>
@@ -1535,7 +1510,6 @@ const CreateAccount = () => {
                             onBlur={handleBlur}
                             onChange={handleChange}
                           />
-                          {console.log(values?.firstName)}
                           <FormHelperText error className={classes.errorClass}>
                             {touched.firstName && errors.firstName}
                           </FormHelperText>
@@ -1556,7 +1530,6 @@ const CreateAccount = () => {
                             onBlur={handleBlur}
                             onChange={handleChange}
                           />
-                          {console.log(values?.lastName)}
                           <FormHelperText error className={classes.errorClass}>
                             {touched.lastName && errors.lastName}
                           </FormHelperText>
@@ -1577,7 +1550,6 @@ const CreateAccount = () => {
                             onBlur={handleBlur}
                             onChange={handleChange}
                           />
-                          {console.log(values?.email)}
                           <FormHelperText error className={classes.errorClass}>
                             {touched.email && errors.email}
                           </FormHelperText>
@@ -1676,10 +1648,6 @@ const CreateAccount = () => {
                             ),
                           }}
                         />
-                        {console.log(
-                          "values?.accountLogo",
-                          values?.accountLogo
-                        )}
                         <FormHelperText error>
                           {touched.accountLogo && errors.accountLogo}
                         </FormHelperText>
@@ -2041,10 +2009,6 @@ const CreateAccount = () => {
                             onBlur={handleBlur}
                             onChange={handleChange}
                           />
-                          {console.log(
-                            values?.bookDemoButton,
-                            "bookDemoButton"
-                          )}
                           <FormHelperText error className={classes.errorClass}>
                             {touched.bookDemoButton && errors.bookDemoButton}
                           </FormHelperText>
@@ -2063,10 +2027,6 @@ const CreateAccount = () => {
                             onBlur={handleBlur}
                             onChange={handleChange}
                           />
-                          {console.log(
-                            values?.redirectLinks,
-                            "redirectLinksredirectLinks"
-                          )}
                           <FormHelperText error className={classes.errorClass}>
                             {touched.redirectLinks && errors.redirectLinks}
                           </FormHelperText>
@@ -2339,7 +2299,6 @@ const CreateAccount = () => {
                         touched.contractFile && errors.contractFile
                       )}
                     />
-                    {console.log(values?.contractFile)}
                     <Button
                       variant="contained"
                       onClick={handleUploadButtonClick}

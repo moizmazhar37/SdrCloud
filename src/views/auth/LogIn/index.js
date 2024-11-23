@@ -168,25 +168,22 @@ function Login(props) {
           password: values.password,
         },
       });
-      if (response?.data?.status === 200) {
-        console.log(response?.data, "yffggv");
+    
+      if (response?.status === 200) {
+        console.log(response, "Login response");
         setLoader(false);
-        window.localStorage.setItem(
-          "email",
-          response?.data?.data?.userDetails?.email
-        );
-        window.localStorage.setItem(
-          "userType",
-          response?.data?.data?.userDetails?.role
-        );
-        window.localStorage.setItem("token", response?.data?.data?.token);
-        window.localStorage.setItem(
-          "_id",
-          response?.data?.data?.userDetails?.userId
-        );
-        // toast.success(response?.data?.message);
-        auth.userLogIn(true, response?.data?.data?.token);
-        const userType = response?.data?.data?.userDetails?.role;
+    
+        window.localStorage.setItem("email", response?.data?.user_details?.email);
+        window.localStorage.setItem("userType", response?.data?.user_details?.role);
+        window.localStorage.setItem("token", response?.data?.token);
+        window.localStorage.setItem("_id", response?.data?.user_details?.id);
+    
+        toast.success(`${response?.data?.user_details?.role} logged in successfully`);
+        auth.userLogIn(true, response?.data?.token);
+    
+        const userType = response?.data?.user_details?.role;
+    
+
         if (userType === "USER") {
           history.push("/user-dashboard");
           toast.success(response?.data?.message);
@@ -195,10 +192,9 @@ function Login(props) {
           toast.success(response?.data?.message);
         } else if (userType === "SUBADMIN") {
           history.push("/dashboard");
-
           toast.success(response?.data?.message);
         }
-
+    
         if (isRememberMe) {
           localStorage.setItem("email", values.email);
           localStorage.setItem("password", values.password);
@@ -206,23 +202,36 @@ function Login(props) {
           localStorage.removeItem("email");
           localStorage.removeItem("password");
         }
-      } else if (response?.data?.status === 404) {
-        toast.warn(response?.data?.message);
       } else {
-        toast.warn(response?.data?.data);
         setLoader(false);
+        toast.warn("Unexpected response. Please try again.");
       }
     } catch (error) {
-      if (error?.response?.data?.status === 401) {
-        setLoader(false);
-        toast.error(error?.response?.data?.message);
+      setLoader(false)
+    
+      if (error?.response) {
+        const status = error.response.status; 
+    
+        switch (status) {
+          case 401:
+            toast.warn("Unauthorized! Please check your credentials.");
+            break;
+          case 403:
+            toast.warn("Access Forbidden! You don't have the required permissions.");
+            break;
+          case 404:
+            toast.warn("Resource not found! Please check the URL or resource availability.");
+            break;
+          default:
+            toast.error("Unexpected error");
+            break;
+        }
+      } else if (error?.message) {
+        console.error("Network error:", error.message);
+        toast.error("Network error: " + error.message);
       } else {
-        setLoader(false);
-        console.log(error);
-        toast.error(
-          error?.response?.data?.message ||
-            "Something went wrong! Try again later."
-        );
+        console.error("Unexpected error:", error);
+        toast.error("Something went wrong! Try again later.");
       }
     }
   };
