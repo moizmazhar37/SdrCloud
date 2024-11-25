@@ -281,14 +281,15 @@ const StaticDyanamicFile = ({
   if (elementType === "STATICURL") {
     let isDynamicUrl = link !== "" ? false : true;
     apiData = {
+      section_name: "STATIC URL",
+      section_number: 1,
       duration: duration,
       url: link || dymLink,
       firstRowValue: link || matchData,
       scrollEnabled: selectedOptionsecond,
       elementId: elementID,
       sequence: typeIndex + 1,
-      videoTemplateId: templateId,
-      userId: localStorage.getItem("_id"),
+      hvo_template_id: templateId,
       status: "PROCESSING",
       audioTemplateReferralDto: {
         audioTypeId: "AUDIOURL",
@@ -301,14 +302,15 @@ const StaticDyanamicFile = ({
     };
   } else if (elementType === "DYNAMICURL") {
     apiData = {
+      section_name: "DYNAMIC URL",
+      section_number: 2,
       duration: duration,
       tagValueName: selectedOption,
       scrollEnabled: selectedOptionsecond,
       firstRowValue: matchDynamic,
       elementId: elementID,
       sequence: typeIndex + 1,
-      videoTemplateId: templateId,
-      userId: localStorage.getItem("_id"),
+      hvo_template_id: templateId,
       status: "PROCESSING",
       audioTemplateReferralDto: {
         audioTypeId: "AUDIOURL",
@@ -373,13 +375,13 @@ const StaticDyanamicFile = ({
             method: "POST",
             url: ApiConfig.createVideoTemplateReferral,
             headers: {
-              token: `${localStorage.getItem("token")}`,
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
 
             data: apiData,
           });
-          if (res?.data?.status === 200) {
-            toast.success(res?.data?.message);
+          if (res?.status === 200) {
+            toast.success("Section saved successfully");
             // setElementData({
             //   firstRowValue: firstRowValue,
             //   index: typeIndex,
@@ -432,13 +434,13 @@ const StaticDyanamicFile = ({
             method: "POST",
             url: ApiConfig.createVideoTemplateReferral,
             headers: {
-              token: `${localStorage.getItem("token")}`,
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
 
             data: apiData,
           });
-          if (res?.data?.status === 200) {
-            toast.success(res?.data?.message);
+          if (res?.status === 200) {
+            toast.success("Section saved successfully");
             // setElementData({
             //   firstRowValue: firstRowValue,
             //   index: typeIndex,

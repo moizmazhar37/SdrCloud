@@ -14,6 +14,19 @@ const upload = `${url}/upload`;
 const ApiConfig = {
   login: `${auth}/signin`,
   createNewAccount: `${admin}/subadmin`,
+  getAllCategories: `${categories}`,
+  ppadminUserListNew: `${admin}`,
+  addUser: `${subadmin}/user`,
+  getAllUserByAccountId: `${subadmin}/users`,
+  fetchSheet: `${googlesheets}`,
+  createVdoTemplate: `${hvotemplates}/`,
+  connectedSheetVideo: `${googlesheets}/all-connected-sheets`,
+  connectSheetTOTemplateVideo: `${hvotemplates}/connect-sheet-with-template`,
+  createVideoTemplateReferral: `${videoelement}/video-section`,
+  getTemplatebyID: `${videoelement}`,
+  previewVideo: `${videoelement}/preview-video-with-sheet-data`,
+  getFirstRowData: `${googlesheets}/first-row-data`,
+  UploadFile: `${upload}/upload-file`,
   // userSignup: `${user}/userSignUp`,
   // // verifyEmail: `${user}/verifyEmail`,
   // goggleLogin: `${user}/googleLogin`,
@@ -65,7 +78,7 @@ const ApiConfig = {
   // getAllUsers: `${javaurl}user/admin/user-management/search-and-filter-user-list`,
   // getUserById: `${javaurl}/userManagement/getUserById`,
   // updateUser: `${javaurl}/userManagement/updateUser`,
-  // addUser: `${javaurl}user/admin/user-management/create-user`,
+  // 
   // deleteUser: `${javaurl}user/sub-admin/delete-user`,
   // projectListing: `${javaurl}sheet/user-projects/project-listing`,
   // addProjectManually: `${javaurl}sheet/add-project-manually`,
@@ -76,15 +89,15 @@ const ApiConfig = {
   // getTemplateList: `${javaurl}video/video-templates/getAllTemplateData`,
 
   // // Create Video
-  // createVdoTemplate: `${javaurl}video/video-templates/createVideoTemplate`,
+
   // createVideoTemplateReferral: `${javaurl}video/video-templates/createVideoTemplateReferral`,
   // updateTemplateVideo: `${javaurl}video/video-templates/updateTemplate`,
   // duplicateTemplateVideo: `${javaurl}video/video-templates/duplicate-template-data`,
-  // getAllCategories: `${javaurl}company/allCategory`,
+  // 
   // getAllTags: `${javaurl}account/api/elements/getAllTags`,
   // deleteElement: `${javaurl}video/video-templates/delete-video-referral`,
 
-  // getFirstRowData: `${javaurl}sheet/first-row-data`,
+  // 
   // getRowData: `${javaurl}sheet/row-data`,
 
   // // getTemplatebyID: `${url}account/videotemplatess/getTemplateById`,
@@ -104,9 +117,9 @@ const ApiConfig = {
   // customVdoTemplate: `${javaurl}video/video-templates/create-custom-template`,
   // //google Sheet
   // connectedSheet: `${javaurl}hvo/hvoTemplate/connected-all-google-sheets`,
-  // connectedSheetVideo: `${javaurl}video/video-templates/connected-all-google-sheets`,
+  // 
   // updateFetchDays: `${javaurl}sheet/update-fetch-days`,
-  // fetchSheet: `${javaurl}sheet/get-sheet-connection`,
+
   // getSheetById: `${javaurl}account/google/api/get-google-sheet-connection-by-id`,
   // getAllSheet: `${javaurl}sheet/get-all-sheet-fields`,
   // setHeadersDataType: `${javaurl}sheet/setHeadersDataType`,
@@ -161,7 +174,7 @@ const ApiConfig = {
   // getAllPPUsers: `${javaurl}user/admin/user-management/search-and-filter-account-list`,
   // viewAccount: `${javaurl}user/get-account-details-by-id`,
   // blockUnblockAccount: `${javaurl}user/admin/user-management/change-account-status`,
-  // getAllUserByAccountId: `${javaurl}user/get-all-users-by-accountId`,
+  // 
   // assignUnassign: `${javaurl}user/assign-or-unassign-sheet-to-user`,
   // companyDetails: `${javaurl}user/sub-admin/get-account-company-details`,
   // EditcompanyDetails: `${javaurl}user/sub-admin/edit-company-information`,
@@ -184,7 +197,7 @@ const ApiConfig = {
 
   // // User
   // ppadminUserList: `${javaurl}user/admin/user-management/pp-admin-list`,
-  // ppadminUserListNew: `${javaurl}user/admin/user-management/get-pp-admins-for-creating-account-and-search`,
+  // 
   // createPPAdmin: `${javaurl}user/admin/user-management/add-new-ppadmin`,
   // deletePPAdmin: `${javaurl}user/admin/user-management/suspend-pp-admin`,
   // getAccountCompanyDetails: `${javaurl}account/admin/user-management/get-account-company-details`,
@@ -193,7 +206,7 @@ const ApiConfig = {
   // userProjectListing: `${javaurl}sheet/user-projects/project-listing-of-user`,
   // subAdminList: `${javaurl}account/sub-admin/view-project-details-by-sheet-id`,
   // PostProjectDetails: `${javaurl}account/user-projects/add-missing-data-in-create-video-in-sheet`,
-  // connectSheetTOTemplateVideo: `${javaurl}video/video-templates/connect-sheet-with-template`,
+  // 
   // AddProjectManually: `${javaurl}account/user-projects/add-project-manually`,
   // ErrorDataListing: `${javaurl}sheet/user-projects/project-listing-of-user`,
   // UserProjectList: `${javaurl}sheet/My-Project-list`,

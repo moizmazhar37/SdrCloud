@@ -877,16 +877,16 @@ const CreateAccount = () => {
         method: "GET",
         url: ApiConfig.ppadminUserListNew,
         headers: {
-          token: `${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      if (res?.data?.status === 200) {
+      // if (res?.data?.status === 200) {
         setLoading(false);
-        setppUserList(res?.data?.data?.ppAdminList);
-      } else if (res?.data?.status === 205) {
-        toast.error("No User Found");
-        setLoading(false);
-      }
+        setppUserList(res?.data);
+      // } else if (res?.data?.status === 205) {
+      //   toast.error("No User Found");
+      //   setLoading(false);
+      // }
     } catch (error) {
       setLoading(false);
     }
@@ -899,11 +899,11 @@ const CreateAccount = () => {
         method: "GET",
         url: ApiConfig.getAllCategories,
         headers: {
-          token: `${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
       if (res?.status === 200) {
-        setCustomerType(res?.data?.data);
+        setCustomerType(res?.data);
         setNewlyAdded(res?.data?.data[res?.data?.data.length - 1]);
       }
     } catch (error) {
@@ -1137,8 +1137,8 @@ const CreateAccount = () => {
     if (isShow && customerType?.length > 0) {
       const lastIndex = customerType.length - 1;
       const lastItem = customerType[0];
-      setSelectedCustomerType(lastItem?.category_Name);
-      setCategoryName(lastItem.category_Name); // Assuming you have a state for category name
+      setSelectedCustomerType(lastItem?.category_name);
+      setCategoryName(lastItem.category_name); // Assuming you have a state for category name
     }
   }, [isShow, addCategory]);
 
@@ -1292,7 +1292,7 @@ const CreateAccount = () => {
                         IconComponent={ExpandMoreIcon}
                         renderValue={(selected) => {
                           const selectedUserObj = ppuserlist.find(
-                            (user) => user.userId === selected
+                            (user) => user.id === selected
                           );
                           return (
                             <span
@@ -1300,7 +1300,7 @@ const CreateAccount = () => {
                                 color: selected === " " ? "#A2A2A2" : "black",
                               }}
                             >
-                              {selectedUserObj?.name || "Select PP Admin"}
+                              {selectedUserObj?.first_name || "Select PP Admin"}
                             </span>
                           );
                         }}
@@ -1311,15 +1311,15 @@ const CreateAccount = () => {
                         {ppuserlist?.map((user) => (
                           <MenuItem
                             key={user.id}
-                            value={user.userId}
+                            value={user.id}
                             style={{
                               color:
-                                selectedUser === user.userId
+                                selectedUser === user.id
                                   ? "black"
                                   : "inherit",
                             }}
                           >
-                            {user.name}
+                            {user.first_name}
                           </MenuItem>
                         ))}
                       </Select>
@@ -2063,7 +2063,7 @@ const CreateAccount = () => {
                         IconComponent={ExpandMoreIcon}
                         renderValue={(selected) => {
                           const selectedCategory = customerType.find(
-                            (category) => category?.category_Name === selected
+                            (category) => category?.category_name === selected
                           );
                           return (
                             <div
@@ -2071,7 +2071,7 @@ const CreateAccount = () => {
                                 color: selectedCategory ? "#000" : "#A2A2A2",
                               }}
                             >
-                              {selectedCategory?.category_Name ||
+                              {selectedCategory?.category_name ||
                                 "Select Category"}
                             </div>
                           );
@@ -2089,7 +2089,7 @@ const CreateAccount = () => {
                           ?.filter(
                             (data) =>
                               !["Start-up", "ENT", "MM", "SMB"].includes(
-                                data?.category_Name
+                                data?.category_name
                               )
                           )
                           .map((data, i) => (
@@ -2103,14 +2103,14 @@ const CreateAccount = () => {
                                 alignItems: "center",
                                 width: "100%",
                               }}
-                              value={data?.category_Name}
-                              name={data?.category_Name}
+                              value={data?.category_name}
+                              name={data?.category_name}
                             >
-                              {data?.category_Name}
+                              {data?.category_name}
                               <IconButton
                                 edge="end"
                                 onClick={() =>
-                                  deleteCategory(data?._id, data?.category_Name)
+                                  deleteCategory(data?._id, data?.category_name)
                                 }
                                 disabled={loading}
                                 style={{ marginRight: "20px" }}
@@ -2124,7 +2124,7 @@ const CreateAccount = () => {
                         {customerType
                           ?.filter((data) =>
                             ["Start-up", "ENT", "MM", "SMB"].includes(
-                              data?.category_Name
+                              data?.category_name
                             )
                           )
                           .map((data, i) => (
@@ -2138,10 +2138,10 @@ const CreateAccount = () => {
                                 alignItems: "center",
                                 width: "100%",
                               }}
-                              value={data?.category_Name}
-                              name={data?.category_Name}
+                              value={data?.category_name}
+                              name={data?.category_name}
                             >
-                              {data?.category_Name}
+                              {data?.category_name}
                             </MenuItem>
                           ))}
                       </Select>

@@ -187,6 +187,7 @@ const ImageVideo = ({
   const [videoName, setVideoName] = useState("");
   const [openCrop, setOpenCrop] = useState(false);
   const [photoURL, setPhotoURL] = useState("");
+  const [imageURL, setImageURL] = useState("");
   const [type, setType] = useState("none");
 
   const [openDialog, setOpenDialog] = useState();
@@ -235,19 +236,30 @@ const ImageVideo = ({
   const sheetFirstRowData = async (type) => {
     try {
       setLoading(true);
+      const response =  await axios({
+        method: "GET",
+        url: `${ApiConfig.getTemplatebyID}/${templateId}`,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+
+      console.log("Response", response)
+      
+      const sheetId = response?.data?.sheet?.googleSheetsId;
+      console.log("Response", sheetId)
+      
+
       const res = await axios({
         method: "GET",
-        url: ApiConfig.getFirstRowData,
+        url: `${ApiConfig.getFirstRowData}/${sheetId}`,
         headers: {
-          token: `${localStorage.getItem("token")}`,
-        },
-        params: {
-          googleSheetId: viewParams?.googleSheetsId,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      if (res.data.status === 200) {
+      if (res.status === 200) {
         setUploadedImage(null);
-        const firstRowData = res?.data?.data;
+        const firstRowData = res?.data;
         setFirstRowDataVideo(firstRowData);
         if (firstRowData) {
           setPhotoURL(firstRowData[type]);
@@ -273,50 +285,47 @@ const ImageVideo = ({
     const reader = new FileReader();
     reader.onloadend = () => {
       const base64String = reader.result;
-      // Do something with the base64 string, e.g., save it in state
 
-      setApiImage(base64String); // Save the base64 string in state or handle it as needed
+      setApiImage(base64String); 
     };
     reader.readAsDataURL(file);
     setType("none");
   };
 
-  const handleDynamicImage = (e) => {
+  const handleDynamicImage = async (e) => {
     const file = e.target.files[0];
-    const imageUrl = URL?.createObjectURL(file);
-    setPhotoURL(imageUrl);
-    if (file) {
-      handleImageToBase64(file);
+    if (!file) return;
+  
+    const formData = new FormData();
+    formData.append('file', file);
+  
+    try {
+      const response = await axios.post(ApiConfig.UploadFile, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+  
+      // The URL returned from the backend after successful upload
+      const { public_url } = response.data;
+      console.log('File uploaded successfully:', public_url);
+  
+      // Set the URL to your state variable
+      setImageURL(public_url);
+    } catch (error) {
+      console.error('Error uploading file:', error.response?.data || error.message);
     }
   };
 
   const handleDynamicimage = async (event) => {
     const imageUrl = event.target.value;
 
-    setUploadedImage1(imageUrl);
-    setUploadedImage(null);
-    setOpenCrop(true);
-    setPhotoURL(imageUrl);
+
     setDynamicImage(imageUrl);
-    setImg64(null);
-    setUploadedImage1(imageUrl);
-    setOpenCrop(true);
 
     // setImgName("");
     setErrors((prevErrors) => ({ ...prevErrors, image: "" }));
-    try {
-      const response = await fetch(imageUrl);
-      const blob = await response.blob();
-      const reader = new FileReader();
-
-      reader.onloadend = () => {
-        setImg64(reader.result);
-      };
-
-      reader.readAsDataURL(blob);
-    } catch (error) {
-      console.error("Error converting image URL to base64:", error);
-    }
   };
 
   // Function to handle checkbox change
@@ -342,45 +351,28 @@ const ImageVideo = ({
       scrollEnabled: false,
       elementId: elementID,
       sequence: typeIndex + 1,
-      videoTemplateId: templateId,
+      hvo_template_id: templateId,
+      section_name: "UPLOAD IMAGE",
+      section_number: 3,
       userId: localStorage.getItem("_id"),
       status: "PROCESSING",
-      firstRowValue: firstRowData[type],
-      audioTemplateReferralDto: {
-        audioTypeId: "AUDIOURL",
-        embedded: false,
-        fileType: {
-          AUDIO: audioFile,
-        },
-      },
-      fileType: {
-        // IMAGE: img64 || dynamicImage,
-        IMAGE: apiImage ? photoURL : "",
-      },
-      url: type,
+      first_row_value: firstRowData[type],
+      scroll: false ,
+      audio_embedded: false,
+      url: imageURL,
     };
   } else if (elementType === "VIDEOCLIPS") {
     apiData = {
       duration: duration,
-      firstRowValue: matchData,
+      // firstRowValue: matchData,
       scrollEnabled: false,
       elementId: elementID,
       sequence: typeIndex + 1,
-      videoTemplateId: templateId,
-      userId: localStorage.getItem("_id"),
+      section_name: "VIDEO CLIPS",
+      section_number: 4,
+      hvo_template_id: templateId,
       status: "PROCESSING",
-      audioTemplateReferralDto: {
-        audioTypeId: !checked ? "EMBEDDED" : "AUDIOURL",
-        embedded: !checked,
-
-        fileType: {
-          AUDIO: audioFile,
-        },
-      },
-      fileType: {
-        VIDEO: uploadedVideo,
-      },
-      tagValueName: dynamicVideo,
+      audio_embedded: false,
     };
   }
   // State for managing form errors
@@ -426,12 +418,12 @@ const ImageVideo = ({
             method: "POST",
             url: ApiConfig.createVideoTemplateReferral,
             headers: {
-              token: `${localStorage.getItem("token")}`,
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
 
             data: apiData,
           });
-          if (res?.data?.status === 200) {
+          if (res?.status === 200) {
             setIsVideoUploaded(false);
             setIsSaved(true);
             reloadData();
@@ -479,12 +471,12 @@ const ImageVideo = ({
             method: "POST",
             url: ApiConfig.createVideoTemplateReferral,
             headers: {
-              token: `${localStorage.getItem("token")}`,
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
 
             data: apiData,
           });
-          if (res?.data?.status === 200) {
+          if (res?.status === 200) {
             setIsSaved(true);
             reloadData();
             setIsVideoUploaded(false);
@@ -762,25 +754,22 @@ const ImageVideo = ({
                           </Button>
                         ) : (
                           <>
-                            <Button
-                              className="savebtn"
-                              onClick={(e) => {
-                                fileInputRef.current.click();
-                                handleDynamicimage(e);
-                                // setDynamicImage('none');
-                              }}
-                            >
-                              Choose
-                            </Button>
-                            <input
-                              type="file"
-                              {...getInputProps({
-                                accept: ".jpg,.jpeg,.png",
-                              })}
-                              ref={fileInputRef}
-                              style={{ display: "none" }}
-                              onChange={handleDynamicImage}
-                            />
+      {/* Button to trigger file input */}
+      <Button
+        className="savebtn"
+        onClick={() => fileInputRef.current.click()} // Open the file dialog on button click
+      >
+        Choose
+      </Button>
+
+      {/* Hidden file input for image selection */}
+      <input
+        type="file"
+        accept=".jpg,.jpeg,.png" // Only allow image files
+        ref={fileInputRef}
+        style={{ display: "none" }} // Hide the input element
+        onChange={handleDynamicImage} // Trigger the upload when a file is selected
+      />
                           </>
                         )}
                       </InputAdornment>
@@ -1135,36 +1124,6 @@ const ImageVideo = ({
           </>
         )}
       </Box>
-      {openCrop && (
-        <Dialog
-          open={openCrop}
-          onClose={handleCloseCrop}
-          maxWidth={"xl"}
-          className={classes.DialogBox}
-        >
-          <DialogTitle>
-            <Typography variant="h2">Crop Image</Typography>
-          </DialogTitle>
-          <CropEasy
-            {...{
-              photoURL,
-              setType,
-              setFirstRightImg,
-              firstRightImg,
-              setApiImage,
-              type,
-              openFullScreen,
-              setOpenCrop,
-              setPhotoURL,
-              setUploadedImage,
-              setUploadedImage1,
-              setErrors,
-              setDynamicImage,
-              setImg64,
-            }}
-          />
-        </Dialog>
-      )}
 
       <AudioDialog
         open={openDialog}

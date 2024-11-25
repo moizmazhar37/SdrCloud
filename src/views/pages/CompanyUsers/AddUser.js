@@ -283,7 +283,7 @@ function AddUser({ adduser, id, roleid, handleAddUserClose }) {
         method: "POST",
         url: ApiConfig.addUser,
         headers: {
-          token: `${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         data: data,
       });

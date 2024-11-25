@@ -516,12 +516,12 @@ const CreateTemplate = (props) => {
         method: "GET",
         url: ApiConfig.getAllCategories,
         headers: {
-          token: `${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      if (res?.status === 200) {
-        setCategory(res?.data?.data);
-      }
+      // if (res?.status === 200) {
+        setCategory(res?.data);
+      // }
     } catch (error) {
       console.log(error, "error");
     } finally {
@@ -667,24 +667,24 @@ const CreateTemplate = (props) => {
           method: "POST",
           url: ApiConfig.createVdoTemplate,
           headers: {
-            token: `${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
           data: {
             categoryId: selectedOption,
-            videoTemplateName: templateName,
+            hvoTemplateName: templateName,
             templateType: "VIDEO",
           },
         });
-        if (res?.data?.status === 200 || res?.data?.status === 201) {
+        if (res?.status === 200 || res?.status === 201) {
           setLoading(false);
-          updateQueryParams(res?.data?.data?.videoTemplateId);
+          updateQueryParams(res?.data?.id);
           setSaveName(true);
-          getTemplateByID(res?.data?.data?.videoTemplateId);
+          getTemplateByID(res?.data?.videoTemplateId);
           setElementType("summary");
           toast.success(res?.data?.message);
         }
       } catch (error) {
-        toast.error(error?.response?.data?.message);
+        toast.error(error?.response?.data?.detail);
         console.log(error, "error");
       } finally {
         setLoading(false);
@@ -707,7 +707,7 @@ const CreateTemplate = (props) => {
           },
         });
 
-        if (res?.data?.status === 200 || res?.data?.status === 201) {
+        if (res?.status === 200 || res?.status === 201) {
           setLoading(false);
           setSaveName(true);
           getTemplateByID(templateId);
@@ -725,15 +725,34 @@ const CreateTemplate = (props) => {
   const getAllVideoRefTypes = async () => {
     try {
       setLoading(true);
-      const res = await axios({
-        method: "GET",
-        url: ApiConfig.getAllVideoRefTypes,
-        headers: {
-          token: `${localStorage.getItem("token")}`,
-        },
-      });
+      const res = {
+        "data": [
+          {
+            "element_Id": "67437bd06a9f5c51387ed447",
+            "element_Name": "STATICURL",
+            "element_Description": null
+          },
+          {
+            "element_Id": "67437bd06a9f5c51387ed448",
+            "element_Name": "DYNAMICURL",
+            "element_Description": null
+          },
+          {
+            "element_Id": "67437bd06a9f5c51387ed449",
+            "element_Name": "UPLOADIMAGE",
+            "element_Description": null
+          },
+          {
+            "element_Id": "67437bd06a9f5c51387ed44a",
+            "element_Name": "VIDEOCLIPS",
+            "element_Description": null
+          }
+        ],
+        "message": "Section types retrieved successfully.",
+        "status": 200
+      }
       if (res?.status === 200) {
-        setVideoRefral(res?.data?.data);
+        setVideoRefral(res?.data);
       }
     } catch (error) {
       console.log(error, "error");
@@ -747,23 +766,23 @@ const CreateTemplate = (props) => {
       setLoading(true);
       const res = await axios({
         method: "GET",
-        url: ApiConfig.getTemplatebyID,
+        url: `${ApiConfig.getTemplatebyID}/${value}`,
         headers: {
-          token: `${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-        params: {
-          templateId: value,
-        },
+        // params: {
+        //   hvo_template_id: value,
+        // },
       });
       if (res?.status === 200) {
         setTemplateParams((prevState) => ({
           ...prevState,
-          ...res?.data?.data?.getVideo,
+          ...res?.data?.getVideo,
         }));
         setSaveName(true);
-        setSelectedOption(res?.data?.data?.categoryId);
-        setLinkObject(res?.data?.data?.getVideo?.videoTemplateReferrals);
-        if (res?.data?.data?.sheet && res?.data?.data?.sheet !== null) {
+        setSelectedOption(res?.data?.categoryId);
+        setLinkObject(res?.data?.elementsList);
+        if (res?.data?.sheet && res?.data?.sheet !== null) {
           setEditSheet(true);
         }
         const videoTemplateReferrals =
@@ -811,12 +830,12 @@ const CreateTemplate = (props) => {
         //     :
         // );
 
-        setTemplateName(res?.data?.data?.getVideo?.videoTemplateName);
+        setTemplateName(res?.data?.getVideo.hvoTemplateName);
         setViewParams((prevState) => ({
           ...prevState,
-          ...res?.data?.data?.sheet,
+          ...res?.data?.sheet,
         }));
-        setConnectedSheet(res?.data?.data?.sheet.googleSheetsId);
+        setConnectedSheet(res?.data?.sheet.googleSheetsId);
       }
     } catch (error) {
       console.log(error, "error");
@@ -832,11 +851,14 @@ const CreateTemplate = (props) => {
         method: "GET",
         url: ApiConfig.connectedSheetVideo,
         headers: {
-          token: `${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
+        params: {
+          isSheetConnected: false,
+        }
       });
       if (res?.status === 200) {
-        setSheetData(res?.data?.data);
+        setSheetData(res?.data);
       }
     } catch (error) {
       console.log(error, "error");
@@ -849,11 +871,13 @@ const CreateTemplate = (props) => {
   const getPreviewdata = async () => {
     try {
       setLoading(true);
+      const searchParams = new URLSearchParams(window.location.search);
+      const templateId = searchParams.get("templateId");
       const res = await axios({
         method: "POST",
-        url: `${ApiConfig.previewVideo}?videoTemplateId=${templateParams?.videoTemplateId}`,
+        url: `${ApiConfig.previewVideo}/${templateId}`,
         headers: {
-          token: `${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
       if (res?.status === 200) {
@@ -903,16 +927,15 @@ const CreateTemplate = (props) => {
         method: "POST",
         url: ApiConfig.connectSheetTOTemplateVideo,
         headers: {
-          token: `${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-        params: {
-          connectionStatus: status,
-          sheetId: connectedSheet,
-          templateId: templateId,
+        data: {
+          sheet_id: connectedSheet,
+          template_id: templateId,
           type: "VIDEO",
         },
       });
-      if (res?.data?.status === 200 || res?.data?.status === 201) {
+      if (res?.status === 200 || res?.status === 201) {
         console.log("res?.data: ", res?.data);
         setLoading(false);
         // toast.success(res?.data?.message);
@@ -931,7 +954,7 @@ const CreateTemplate = (props) => {
         getTemplateByID(templateId);
       }
     } catch (error) {
-      toast.error(error?.response?.data?.message);
+      toast.error(error?.response?.data?.detail);
       console.log(error, "error");
     } finally {
       setLoading(false);
@@ -974,8 +997,8 @@ const CreateTemplate = (props) => {
   useEffect(() => {
     if (isShow && Category.length > 0) {
       const lastCategory = Category[0];
-      setSelectedCategory(lastCategory._id);
-      handleChangetitle({ target: { value: lastCategory._id } });
+      setSelectedCategory(lastCategory.id);
+      handleChangetitle({ target: { value: lastCategory.id } });
     }
   }, [isShow, Category, handleChangetitle]);
 
@@ -1054,10 +1077,10 @@ const CreateTemplate = (props) => {
                       // Use renderValue to display the selected category without the delete icon
                       renderValue={(selected) => {
                         const selectedData = Category.find(
-                          (item) => item._id === selected
+                          (item) => item.id === selected
                         );
                         return selectedData
-                          ? selectedData.category_Name
+                          ? selectedData.category_name
                           : "Select Category";
                       }}
                     >
@@ -1081,17 +1104,17 @@ const CreateTemplate = (props) => {
                             alignItems: "center",
                             width: "100%",
                           }}
-                          value={data?._id}
-                          name={data?.category_Name}
+                          value={data?.id}
+                          name={data?.category_name}
                         >
-                          {data?.category_Name}
+                          {data?.category_name}
 
                           {!["Start-up", "SMB", "MM", "ENT"].includes(
-                            data?.category_Name
+                            data?.category_name
                           ) && (
                             <IconButton
                               edge="end"
-                              onClick={() => deleteCategory(data?._id)}
+                              onClick={() => deleteCategory(data?.id)}
                               disabled={loading}
                               style={{ marginRight: "20px" }}
                             >
@@ -1255,7 +1278,7 @@ const CreateTemplate = (props) => {
                             <MenuItem
                               key={i}
                               style={{ color: "#858585" }}
-                              value={data?._id}
+                              value={data?.id}
                               name={data?.title}
                             >
                               {data?.title}
@@ -1483,7 +1506,7 @@ const CreateTemplate = (props) => {
                           //     "templateId"
                           //   ) === null || !viewParams?.fetchUrl
                           // }
-                          disabled={element.isDisabled || !viewParams?.fetchUrl}
+                          // disabled={element.isDisabled || !viewParams?.fetchUrl}
                           id={`choose-template-${element.id}`}
                           value={selectedOptionside[element.id] || " "}
                           onChange={(event) => {
@@ -1546,9 +1569,7 @@ const CreateTemplate = (props) => {
                 disabled={
                   new URLSearchParams(window.location.search).get(
                     "templateId"
-                  ) === null ||
-                  !viewParams?.fetchUrl ||
-                  linkObject.length <= 0
+                  ) === null
                 }
                 onClick={() => {
                   handleOpen();

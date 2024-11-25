@@ -264,12 +264,13 @@ const GoogleSheet = ({
   // Function to fetch all users
   const getAllUsers = async () => {
     try {
+      console.log("Hello")
       const response = await axios({
         url: ApiConfig.getAllUserByAccountId,
-        method: "GET",
-        headers: {
-          token: `${localStorage.getItem("token")}`,
-        },
+        method: "POST",
+        // headers: {
+        //   Authorization: `Bearer ${localStorage.getItem("token")}`,
+        // },
       });
       if (response?.data?.status === 200) {
         setUserList(response?.data?.data);

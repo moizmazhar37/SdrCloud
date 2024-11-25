@@ -212,19 +212,19 @@ function Summary({
       setLoading(true);
       const res = await axios({
         method: "GET",
-        url: ApiConfig.getTemplatebyID,
+        url: `${ApiConfig.getTemplatebyID}/${templateId}`,
         headers: {
-          token: `${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-        params: {
-          templateId: templateId,
-        },
+        // params: {
+        //   hvo_template_id: templateId,
+        // },
       });
 
       if (res?.status === 200) {
         console.log(res?.data?.data, "creationstatus");
 
-        setCreationProcess(res?.data?.data?.getVideo?.creationStatus);
+        setCreationProcess(res?.data?.getVideo?.creationStatus);
       }
     } catch (error) {
       console.log(error, "error");
@@ -256,22 +256,14 @@ function Summary({
                       <Typography
                         style={{ color: "#0358AC", marginTop: "10px" }}
                       >
-                        {item?.elementId?.element_Name === "DYNAMICURL"
-                          ? "Dynamic URL"
-                          : item?.elementId?.element_Name === "STATICURL"
-                          ? "Static URL"
-                          : item?.elementId?.element_Name === "UPLOADIMAGE"
-                          ? "Upload Image"
-                          : item?.elementId?.element_Name === "VIDEOCLIPS"
-                          ? "Video Clips"
-                          : item?.elementId?.element_Name}
+                        {item?.section_name}
                       </Typography>
                     </Grid>
                     <Grid item xs={6} align="right">
                       <IconButton
                         onClick={() => {
                           setDeleteId(item?._id);
-                          setVideoTemplateId(item?.videoTemplateId);
+                          setVideoTemplateId(item?.hvo_template_id);
                           setDeleteOpen(true);
                         }}
                       >
@@ -280,7 +272,7 @@ function Summary({
                     </Grid>
                   </Grid>
                   <Box mt={2}>
-                    {item?.elementId?.element_Name === "STATICURL" ? (
+                    {item?.section_name === "STATIC URL" ? (
                       <>
                         <Box
                           style={{
@@ -309,7 +301,7 @@ function Summary({
                           {item?.scrollEnabled === true ? "Yes" : "No"}
                         </Typography>
                       </>
-                    ) : item?.elementId?.element_Name === "DYNAMICURL" ? (
+                    ) : item?.section_name === "DYNAMIC URL" ? (
                       <>
                         <Box
                           style={{
@@ -338,7 +330,7 @@ function Summary({
                           {item?.scrollEnabled === true ? "Yes" : "No"}
                         </Typography>
                       </>
-                    ) : item?.elementId?.element_Name === "UPLOADIMAGE" ? (
+                    ) : item?.section_name === "UPLOAD IMAGE" ? (
                       <>
                         <Box
                           style={{
@@ -368,7 +360,7 @@ function Summary({
                           Yes */}
                         </Typography>
                       </>
-                    ) : item?.elementId?.element_Name === "VIDEOCLIPS" ? (
+                    ) : item?.section_name === "VIDEO CLIPS" ? (
                       <>
                         <Box
                           style={{
