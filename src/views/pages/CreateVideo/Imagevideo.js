@@ -236,19 +236,18 @@ const ImageVideo = ({
   const sheetFirstRowData = async (type) => {
     try {
       setLoading(true);
-      const response =  await axios({
+      const response = await axios({
         method: "GET",
         url: `${ApiConfig.getTemplatebyID}/${templateId}`,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-      })
+      });
 
-      console.log("Response", response)
-      
+      console.log("Response", response);
+
       const sheetId = response?.data?.sheet?.googleSheetsId;
-      console.log("Response", sheetId)
-      
+      console.log("Response", sheetId);
 
       const res = await axios({
         method: "GET",
@@ -286,41 +285,99 @@ const ImageVideo = ({
     reader.onloadend = () => {
       const base64String = reader.result;
 
-      setApiImage(base64String); 
+      setApiImage(base64String);
     };
     reader.readAsDataURL(file);
     setType("none");
   };
 
-  const handleDynamicImage = async (e) => {
-    const file = e.target.files[0];
+  const [audioURL, setAudioURL] = useState("");
+  const [audioFiles, setAudioFiles] = useState(null);
+  const [videoURL, setVideoURL] = useState("");
+
+  const handleVideoUploadNew = async (event) => {
+    console.log("Hello")
+    const file = event.target.files[0]; 
     if (!file) return;
-  
-    const formData = new FormData();
-    formData.append('file', file);
-  
+
     try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      // API call to upload video
       const response = await axios.post(ApiConfig.UploadFile, formData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-  
-      // The URL returned from the backend after successful upload
+
+      const { public_url } = response.data; 
+      setVideoURL(public_url); 
+      toast.success("Uploaded video successfully.");
+    } catch (error) {
+      console.error("Error uploading video:", error);
+    }
+  };
+
+  const handleAudioChange = (event) => {
+    console.log("Hello");
+    setAudioFiles(event.target.files[0]);
+  };
+
+  const handleAudioUpload = async () => {
+    if (!audioFiles)
+      return toast.error("Please select an audio file to upload.");
+    console.log("Hello");
+
+    try {
+      const formData = new FormData();
+      formData.append("file", audioFiles);
+
+      const response = await axios.post(ApiConfig.UploadFile, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
       const { public_url } = response.data;
-      console.log('File uploaded successfully:', public_url);
-  
-      // Set the URL to your state variable
+      setAudioURL(public_url);
+      toast.success("Audio video successfully.");
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    }
+  };
+
+  const handleDynamicImage = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const response = await axios.post(ApiConfig.UploadFile, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      const { public_url } = response.data;
+      console.log("File uploaded successfully:", public_url);
+
       setImageURL(public_url);
     } catch (error) {
-      console.error('Error uploading file:', error.response?.data || error.message);
+      console.error(
+        "Error uploading file:",
+        error.response?.data || error.message
+      );
     }
   };
 
   const handleDynamicimage = async (event) => {
     const imageUrl = event.target.value;
-
 
     setDynamicImage(imageUrl);
 
@@ -346,6 +403,10 @@ const ImageVideo = ({
 
   let apiData;
   if (elementType === "UPLOADIMAGE") {
+    let audio_embedded = false;
+    if (audioURL) {
+      audio_embedded = true;
+    }
     apiData = {
       duration: duration,
       scrollEnabled: false,
@@ -354,16 +415,18 @@ const ImageVideo = ({
       hvo_template_id: templateId,
       section_name: "UPLOAD IMAGE",
       section_number: 3,
-      userId: localStorage.getItem("_id"),
       status: "PROCESSING",
-      first_row_value: firstRowData[type],
-      scroll: false ,
-      audio_embedded: false,
+      scroll: false,
+      audio_url: audioURL,
+      audio_embedded,
       url: imageURL,
     };
   } else if (elementType === "VIDEOCLIPS") {
+    let audio_embedded = false;
+    if (audioURL) {
+      audio_embedded = true;
+    }
     apiData = {
-      duration: duration,
       // firstRowValue: matchData,
       scrollEnabled: false,
       elementId: elementID,
@@ -372,7 +435,9 @@ const ImageVideo = ({
       section_number: 4,
       hvo_template_id: templateId,
       status: "PROCESSING",
-      audio_embedded: false,
+      audio_url: audioURL,
+      audio_embedded,
+      url: videoURL,
     };
   }
   // State for managing form errors
@@ -457,14 +522,10 @@ const ImageVideo = ({
       if (duration === "") {
         newError.duration = "Duration is required.";
       }
-      if (checked === true && audioFile === null) {
-        toast.error("Please upload audio file.");
-      }
-      if (
-        (uploadedVideo !== null || dynamicVideo !== "none") &&
-        duration !== "" &&
-        (checked === true ? audioFile !== null : true)
-      ) {
+
+      // if (checked === true && audioFile === null) {
+      //   toast.error("Please upload audio file.");
+      // }
         try {
           setLoading(true);
           const res = await axios({
@@ -480,7 +541,7 @@ const ImageVideo = ({
             setIsSaved(true);
             reloadData();
             setIsVideoUploaded(false);
-            toast.success(res?.data?.message);
+            toast.success("Section saved successfully");
             setElementData({
               index: typeIndex,
               type: elementType,
@@ -497,8 +558,6 @@ const ImageVideo = ({
         } finally {
           setLoading(false);
         }
-      }
-      setErrors(newError);
     }
   };
   // Effect hook to update link data and reset state
@@ -525,104 +584,108 @@ const ImageVideo = ({
     accept: ".jpg,.jpeg,.png",
   });
 
-  const handleDynamicVideo = (e) => {
-    setShowUploadButton(false);
-    const videoDynamicURL = e.target.value;
+  // const handleDynamicVideo = (e) => {
+  //   setShowUploadButton(false);
+  //   const videoDynamicURL = e.target.value;
 
-    setDynamicVideo(videoDynamicURL);
-    setIsVideoUploaded(true);
-    setVideoName("");
-    setUploadedVideo(null);
-    if (videoDynamicURL !== "none" && firstRowDataVideo[videoDynamicURL]) {
-      setDynamicVideo(videoDynamicURL);
-      const videoUrl = firstRowDataVideo[videoDynamicURL];
-      setMatchData(videoUrl);
+  //   setDynamicVideo(videoDynamicURL);
+  //   setIsVideoUploaded(true);
+  //   setVideoName("");
+  //   setUploadedVideo(null);
+  //   if (videoDynamicURL !== "none" && firstRowDataVideo[videoDynamicURL]) {
+  //     setDynamicVideo(videoDynamicURL);
+  //     const videoUrl = firstRowDataVideo[videoDynamicURL];
+  //     setMatchData(videoUrl);
 
-      const videoElement = document.createElement("video");
-      videoElement.addEventListener("loadedmetadata", () => {
-        const duration = videoElement.duration;
-        setDuration(duration.toFixed(0));
-      });
-      videoElement.onerror = () => {
-        console.error(
-          "Failed to load video. Unsupported source or invalid URL."
-        );
-        setMatchData("");
-      };
-      videoElement.src = videoUrl;
-      videoElement.load();
+  //     const videoElement = document.createElement("video");
+  //     videoElement.addEventListener("loadedmetadata", () => {
+  //       const duration = videoElement.duration;
+  //       setDuration(duration.toFixed(0));
+  //     });
+  //     videoElement.onerror = () => {
+  //       console.error(
+  //         "Failed to load video. Unsupported source or invalid URL."
+  //       );
+  //       setMatchData("");
+  //     };
+  //     videoElement.src = videoUrl;
+  //     videoElement.load();
 
-      if (videoRef.current) {
-        videoRef.current.src = videoUrl;
-        videoRef.current.play().catch((error) => { });
-      }
-    } else {
-      setMatchData("");
-    }
-  };
-  useEffect(() => {
-    if (
-      firstRowDataVideo &&
-      Object.keys(firstRowDataVideo).length > 0 &&
-      dynamicVideo !== "none"
-    ) {
-      handleDynamicVideo({ target: { value: dynamicVideo } });
-    }
-  }, [firstRowDataVideo]);
+  //     if (videoRef.current) {
+  //       videoRef.current.src = videoUrl;
+  //       videoRef.current.play().catch((error) => {});
+  //     }
+  //   } else {
+  //     setMatchData("");
+  //   }
+  // };
+  // useEffect(() => {
+  //   if (
+  //     firstRowDataVideo &&
+  //     Object.keys(firstRowDataVideo).length > 0 &&
+  //     dynamicVideo !== "none"
+  //   ) {
+  //     handleDynamicVideo({ target: { value: dynamicVideo } });
+  //   }
+  // }, [firstRowDataVideo]);
 
-  const handleVideoUpload = async (e) => {
-    const uploadedVideoFile = e.target.files[0];
+  // const handleVideoUpload = async (e) => {
+  //   const uploadedVideoFile = e.target.files[0];
 
-    // Check if the file size exceeds 100MB (100 * 1024 * 1024 = 104857600 bytes)
-    if (uploadedVideoFile?.size > 104857600) {
-      toast.error("File size should not exceed 100MB.");
-      return; // Stop execution if the file is too large
-    }
+  //   // Check if the file size exceeds 100MB (100 * 1024 * 1024 = 104857600 bytes)
+  //   if (uploadedVideoFile?.size > 104857600) {
+  //     toast.error("File size should not exceed 100MB.");
+  //     return; // Stop execution if the file is too large
+  //   }
 
-    setVideoName(uploadedVideoFile?.name);
-    setDynamicVideo("none");
+  //   setVideoName(uploadedVideoFile?.name);
+  //   setDynamicVideo("none");
 
-    try {
-      setLoading(true);
-      const formData = new FormData();
-      formData.append("image", uploadedVideoFile);
-      console.log(formData, "dfgfg");
+  //   try {
+  //     setLoading(true);
+  //     const formData = new FormData();
+  //     formData.append("image", uploadedVideoFile);
+  //     console.log(formData, "dfgfg");
 
-      const res = await axios({
-        method: "POST",
-        url: ApiConfig.uploadFile,
-        headers: {
-          token: localStorage.getItem("token"),
-        },
-        data: formData,
-      });
+  //     const res = await axios({
+  //       method: "POST",
+  //       url: ApiConfig.uploadFile,
+  //       headers: {
+  //         token: localStorage.getItem("token"),
+  //       },
+  //       data: formData,
+  //     });
 
-      if (res?.status == 200) {
-        toast.success("Video Uploaded Successfully.");
-        const videoURL = res?.data?.data;
-        setShowUploadButton(false);
-        setUploadedVideo(videoURL);
-        setIsVideoUploaded(true);
+  //     if (res?.status == 200) {
+  //       toast.success("Video Uploaded Successfully.");
+  //       console.log("Hello")
+  //       console.log(res?.data)
+  //       const videoURL = res?.data?.public_url;
+  //       setVideoURL(videoURL)
+  //       console.log(videoURL, "dfgfg");
+  //       setShowUploadButton(false);
+  //       setUploadedVideo(videoURL);
+  //       setIsVideoUploaded(true);
 
-        const videoElement = document.createElement("video");
-        videoElement.addEventListener("loadedmetadata", () => {
-          const duration = videoElement.duration;
-          setDuration(duration.toFixed(0));
-        });
-        videoElement.src = videoURL;
-        videoElement.load();
+  //       const videoElement = document.createElement("video");
+  //       videoElement.addEventListener("loadedmetadata", () => {
+  //         const duration = videoElement.duration;
+  //         setDuration(duration.toFixed(0));
+  //       });
+  //       videoElement.src = videoURL;
+  //       videoElement.load();
 
-        if (videoRef.current) {
-          videoRef.current.src = videoURL;
-          videoRef.current.play();
-        }
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  //       if (videoRef.current) {
+  //         videoRef.current.src = videoURL;
+  //         videoRef.current.play();
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   const file = dynamicImage;
   const reader = new FileReader();
@@ -754,22 +817,22 @@ const ImageVideo = ({
                           </Button>
                         ) : (
                           <>
-      {/* Button to trigger file input */}
-      <Button
-        className="savebtn"
-        onClick={() => fileInputRef.current.click()} // Open the file dialog on button click
-      >
-        Choose
-      </Button>
+                            {/* Button to trigger file input */}
+                            <Button
+                              className="savebtn"
+                              onClick={() => fileInputRef.current.click()} // Open the file dialog on button click
+                            >
+                              Choose
+                            </Button>
 
-      {/* Hidden file input for image selection */}
-      <input
-        type="file"
-        accept=".jpg,.jpeg,.png" // Only allow image files
-        ref={fileInputRef}
-        style={{ display: "none" }} // Hide the input element
-        onChange={handleDynamicImage} // Trigger the upload when a file is selected
-      />
+                            {/* Hidden file input for image selection */}
+                            <input
+                              type="file"
+                              accept=".jpg,.jpeg,.png" // Only allow image files
+                              ref={fileInputRef}
+                              style={{ display: "none" }} // Hide the input element
+                              onChange={handleDynamicImage} // Trigger the upload when a file is selected
+                            />
                           </>
                         )}
                       </InputAdornment>
@@ -852,14 +915,16 @@ const ImageVideo = ({
                         ) : (
                           <>
                             <Button className="savebtn" component="label">
-                              Choose
+                              Choose Video
                               <input
                                 type="file"
                                 accept="video/*"
                                 style={{ display: "none" }}
-                                onChange={handleVideoUpload}
+                                onChange={handleVideoUploadNew} // Trigger file upload on file selection
                               />
                             </Button>
+                            {videoURL && <p>Uploaded Video URL: {videoURL}</p>}{" "}
+                            {/* Display uploaded video URL */}
                           </>
                         )}
                       </InputAdornment>
@@ -879,7 +944,7 @@ const ImageVideo = ({
                   fullWidth
                   MenuProps={menuProps}
                   value={dynamicVideo}
-                  onChange={handleDynamicVideo}
+                  onChange={handleVideoUploadNew}
                   IconComponent={ExpandMoreIcon}
                   error={!!errors.dynamicVideo}
                   helperText={errors.dynamicVideo}
@@ -965,16 +1030,24 @@ const ImageVideo = ({
                 marginTop: "26px",
               }}
             >
-              <Button
-                fullWidth
-                variant={duration ? "contained" : "outlined"}
-                style={{ height: "44px" }}
-                className={`${!duration ? "savebtnDisables" : "savebtn"}`}
-                onClick={handleOpenDialog}
-                disabled={!duration}
-              >
-                Audio
-              </Button>
+              <div>
+                <input
+                  type="file"
+                  accept="audio/*"
+                  onChange={handleAudioChange}
+                  style={{ marginBottom: "1rem" }}
+                />
+                <Button
+                  fullWidth
+                  variant={duration ? "contained" : "outlined"}
+                  style={{ height: "44px" }}
+                  className={`${!duration ? "savebtnDisables" : "savebtn"}`}
+                  onClick={handleAudioUpload}
+                >
+                  Upload Audio
+                </Button>
+                {audioURL && <p>Uploaded Audio URL: {audioURL}</p>}
+              </div>
             </div>
           </>
         ) : (
@@ -992,12 +1065,20 @@ const ImageVideo = ({
             />
             {checked === true && (
               <>
+                <input
+                  type="file"
+                  accept="audio/*"
+                  onChange={handleAudioChange}
+                  style={{ marginBottom: "1rem" }}
+                />
                 <Button
-                  variant="contained"
+                  fullWidth
+                  variant={duration ? "contained" : "outlined"}
                   style={{ height: "44px" }}
-                  onClick={handleOpenDialog}
+                  className={`${!duration ? "savebtnDisables" : "savebtn"}`}
+                  onClick={handleAudioUpload}
                 >
-                  Audio
+                  Upload Audio
                 </Button>
               </>
             )}
@@ -1038,7 +1119,7 @@ const ImageVideo = ({
                           src={photoURL || dynamicImage || firstRightImg}
                           alt="Uploaded"
                           className={classes.secondimage}
-                        // onClick={openFullScreen}
+                          // onClick={openFullScreen}
                         />
                       </>
                     )}
@@ -1079,7 +1160,7 @@ const ImageVideo = ({
               className={`${
                 // audioFile === null ||
                 duration === "" || isSaved ? "savebtnDisables" : "savebtn"
-                }`}
+              }`}
               disabled={
                 duration === "" || isSaved
 
@@ -1104,11 +1185,11 @@ const ImageVideo = ({
             <Button
               variant={isSaved ? "outlined" : "contained"}
               onClick={() => handleSetData()}
-              className={`${isVideoUploaded === false || isSaved
-                ? "savebtnDisables"
-                : "savebtn"
-                }`}
-              disabled={isVideoUploaded === false || isSaved}
+              className={`${
+                isVideoUploaded === false || isSaved
+                  ? "savebtnDisables"
+                  : "savebtn"
+              }`}
             >
               Save
             </Button>
