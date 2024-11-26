@@ -178,6 +178,13 @@ const StaticDyanamicFile = ({
   const [matchData, setMatchData] = useState("");
   const [matchDynamic, setMatchDynamic] = useState("");
 
+  const [selectedUrl, setSelectedUrl] = useState("");
+  const [sheetData, setSheetData] = useState([]);
+
+  const handleUrlChange = (event) => {
+    setSelectedUrl(event.target.value);
+  };
+
   const handleOpenDialog = () => {
     setOpenDialog(true);
   };
@@ -328,6 +335,27 @@ const StaticDyanamicFile = ({
     selectedOptionsecond: "",
     dynamic: "",
   });
+
+  const fetchSheetData = async () => {
+    try {
+      const response = await axios.get(`${ApiConfig.headers}/${templateId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching sheet data:", error);
+      return [];
+    }
+  };
+
+  const handleMenuOpen = async () => {
+    if (sheetData.length === 0) {
+      const data = await fetchSheetData();
+      setSheetData(data);
+    }
+  };
 
   const urlPattern =
     /^(?:(?:https?|ftp):\/\/)?(?:www\.)?([a-zA-Z0-9-]+(?:\.[a-zA-Z]{2,})+)(?:\/[^\s?#]*)?(?:\?[^#\s]*)?(?:#[^\s]*)?$/;
@@ -613,32 +641,28 @@ const StaticDyanamicFile = ({
                   variant="outlined"
                   placeholder="Select Static Url"
                   className="selectitem"
-                  id="choose-template"
+                  id="static-url-selector"
                   fullWidth
-                  MenuProps={menuProps}
-                  value={dymLink}
-                  onChange={handleDymLinkChange}
+                  MenuProps={{
+                    PaperProps: {
+                      style: { maxHeight: 200 },
+                    },
+                  }}
+                  value={selectedUrl}
+                  onChange={handleUrlChange}
                   IconComponent={ExpandMoreIcon}
-                  // error={!!errors.dymLink}
-                  // helperText={errors.dymLink}
-                  disabled={
-                    !Array.isArray(companyDetails) ||
-                    !companyDetails.some(
-                      (item) => item?.dataType === "Static URL"
-                    )
-                  }
+                  onOpen={handleMenuOpen} // Fetch data when the menu opens
                 >
                   <MenuItem value="none" disabled>
                     Select Static URL
                   </MenuItem>
 
-                  {companyDetails !== undefined &&
-                    companyDetails.length > 0 &&
-                    companyDetails
-                      ?.filter((item) => item?.dataType == "Static URL")
-                      ?.map((item) => (
-                        <MenuItem value={item?.value}>{item?.value}</MenuItem>
-                      ))}
+                  {sheetData
+                    ?.map((entry) => (
+                      <MenuItem key={entry?.value} value={entry?.value}>
+                        {entry?.value}
+                      </MenuItem>
+                    ))}
                 </Select>
               </Grid>
             </Grid>

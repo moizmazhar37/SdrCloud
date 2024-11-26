@@ -27,6 +27,7 @@ const ApiConfig = {
   previewVideo: `${videoelement}/preview-video-with-sheet-data`,
   getFirstRowData: `${googlesheets}/first-row-data`,
   UploadFile: `${upload}/upload-file`,
+  headers: `${googlesheets}/sheet-data-types`,
   // userSignup: `${user}/userSignUp`,
   // // verifyEmail: `${user}/verifyEmail`,
   // goggleLogin: `${user}/googleLogin`,
