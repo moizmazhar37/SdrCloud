@@ -183,6 +183,7 @@ const StaticDyanamicFile = ({
 
   const handleUrlChange = (event) => {
     setSelectedUrl(event.target.value);
+    console.log(selectedUrl);
   };
 
   const handleOpenDialog = () => {
@@ -284,6 +285,7 @@ const StaticDyanamicFile = ({
   const searchParams = new URLSearchParams(window.location.search);
   const templateId = searchParams.get("templateId");
   let apiData;
+  console.log(selectedUrl, "selectedUrl");
 
   if (elementType === "STATICURL") {
     let isDynamicUrl = link !== "" ? false : true;
@@ -291,21 +293,15 @@ const StaticDyanamicFile = ({
       section_name: "STATIC URL",
       section_number: 1,
       duration: duration,
-      url: link || dymLink,
       firstRowValue: link || matchData,
       scrollEnabled: selectedOptionsecond,
       elementId: elementID,
       sequence: typeIndex + 1,
       hvo_template_id: templateId,
       status: "PROCESSING",
-      audioTemplateReferralDto: {
-        audioTypeId: "AUDIOURL",
-        embedded: false,
-        fileType: {
-          AUDIO: audioFile,
-        },
-      },
-      isDynamicUrl,
+      audio_url: null,
+      value: link || dymLink,
+      is_dynamic: false
     };
   } else if (elementType === "DYNAMICURL") {
     apiData = {
@@ -319,13 +315,9 @@ const StaticDyanamicFile = ({
       sequence: typeIndex + 1,
       hvo_template_id: templateId,
       status: "PROCESSING",
-      audioTemplateReferralDto: {
-        audioTypeId: "AUDIOURL",
-        embedded: false,
-        fileType: {
-          AUDIO: audioFile,
-        },
-      },
+      audio_url: null,
+      value: selectedUrl,
+      is_dynamic: false
     };
   }
   const [errors, setErrors] = useState({
@@ -369,9 +361,9 @@ const StaticDyanamicFile = ({
         duration: "",
         selectedOptionsecond: "",
       };
-      if (link === "" && dymLink === "none") {
-        newError.link = "Static/Dynamic URL is Required";
-      }
+      // if (link === "" && dymLink === "none") {
+      //   newError.link = "Static/Dynamic URL is Required";
+      // }
       if (link !== "") {
         if (!urlPattern.test(link)) {
           newError.link = "Please enter a valid Static URL.";
@@ -438,9 +430,9 @@ const StaticDyanamicFile = ({
         duration: "",
         selectedOptionsecond: "",
       };
-      if (selectedOption === "none") {
-        newError.dynamic = "Dynamic URL is Required";
-      }
+      // if (selectedOption === "none") {
+      //   newError.dynamic = "Dynamic URL is Required";
+      // }
       if (duration === "") {
         newError.duration = "Duration is required.";
       }
@@ -450,12 +442,12 @@ const StaticDyanamicFile = ({
       // if (audioFile === null) {
       //   toast.error("Please upload audio file.");
       // }
-      if (
-        selectedOption !== "none" &&
-        duration !== "" &&
-        selectedOptionsecond !== "none"
-        // audioFile !== null
-      ) {
+      // if (
+      //   selectedOption !== "none" &&
+      //   duration !== "" &&
+      //   selectedOptionsecond !== "none"
+      //   // audioFile !== null
+      // ) {
         try {
           setLoading(true);
           const res = await axios({
@@ -488,8 +480,8 @@ const StaticDyanamicFile = ({
         } finally {
           setLoading(false);
         }
-      }
-      setErrors(newError);
+      // }
+      // setErrors(newError);
     }
   };
 
@@ -651,18 +643,17 @@ const StaticDyanamicFile = ({
                   value={selectedUrl}
                   onChange={handleUrlChange}
                   IconComponent={ExpandMoreIcon}
-                  onOpen={handleMenuOpen} // Fetch data when the menu opens
+                  onOpen={handleMenuOpen}
                 >
                   <MenuItem value="none" disabled>
                     Select Static URL
                   </MenuItem>
 
-                  {sheetData
-                    ?.map((entry) => (
-                      <MenuItem key={entry?.value} value={entry?.value}>
-                        {entry?.value}
-                      </MenuItem>
-                    ))}
+                  {sheetData?.map((entry) => (
+                    <MenuItem key={entry?.value} value={entry?.value}>
+                      {entry?.value}
+                    </MenuItem>
+                  ))}
                 </Select>
               </Grid>
             </Grid>
@@ -671,36 +662,24 @@ const StaticDyanamicFile = ({
           <>
             <Select
               variant="outlined"
-              value={selectedOption}
               id="choose-template"
               className="selectitem"
               fullWidth
               MenuProps={menuProps}
-              onChange={(e) => {
-                handleSelectChange(e);
-                if (e.target.value === "none") {
-                  setErrors({ dynamic: "Dynamic URL is Required" });
-                } else {
-                  setErrors({ dynamic: "" });
-                }
-              }}
-              // className={classes.menuitemSecond}
+              value={selectedUrl}
+              onChange={handleUrlChange}
               IconComponent={ExpandMoreIcon}
-              disabled={
-                !Array.isArray(companyDetails) ||
-                !companyDetails.some((item) => item?.dataType === "Dynamic URL")
-              }
+              onOpen={handleMenuOpen} // Fetch data when the menu opens
+              // className={classes.menuitemSecond}
             >
               <MenuItem value="none" disabled>
                 Select Dynamic URL
               </MenuItem>
-              {companyDetails !== undefined &&
-                companyDetails.length > 0 &&
-                companyDetails
-                  ?.filter((item) => item?.dataType == "Dynamic URL")
-                  ?.map((item) => (
-                    <MenuItem value={item?.value}>{item?.value}</MenuItem>
-                  ))}
+              {sheetData?.map((entry) => (
+                <MenuItem key={entry?.value} value={entry?.value}>
+                  {entry?.value}
+                </MenuItem>
+              ))}
             </Select>
             <Typography className="error">{errors.dynamic}</Typography>
           </>

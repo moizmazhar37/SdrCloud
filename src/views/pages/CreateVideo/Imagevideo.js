@@ -275,6 +275,39 @@ const ImageVideo = ({
     }
   };
 
+  const [selectedUrl, setSelectedUrl] = useState("");
+  const [selectedVideoUrl, setSelectedVideoUrl] = useState("");
+  const [sheetData, setSheetData] = useState([]);
+
+  const handleUrlChange = (event) => {
+    setSelectedUrl(event.target.value);
+    console.log(selectedUrl);
+  };
+
+  const handleVideoUrlChange = (event) => {
+    setSelectedVideoUrl(event.target.value);
+    console.log(selectedUrl);
+  };
+
+  const fetchSheetData = async () => {
+    try {
+      const response = await axios.get(`${ApiConfig.headers}/${templateId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching sheet data:", error);
+      return [];
+    }
+  };
+
+  const handleMenuOpen = async () => {
+      const data = await fetchSheetData();
+      setSheetData(data);
+  };
+
   useEffect(() => {
     getSheetType();
     sheetFirstRowData(type);
@@ -407,6 +440,15 @@ const ImageVideo = ({
     if (audioURL) {
       audio_embedded = true;
     }
+    let url;
+    let is_dynamic = false;
+    if (selectedUrl) {
+      url = selectedUrl;
+      is_dynamic = true;
+    } else {
+      url= imageURL
+      is_dynamic = false;
+    }
     apiData = {
       duration: duration,
       scrollEnabled: false,
@@ -419,13 +461,24 @@ const ImageVideo = ({
       scroll: false,
       audio_url: audioURL,
       audio_embedded,
-      url: imageURL,
+      value: url,
+      is_dynamic,
     };
   } else if (elementType === "VIDEOCLIPS") {
     let audio_embedded = false;
     if (audioURL) {
       audio_embedded = true;
     }
+    let url;
+    let is_dynamic = false;
+    if (selectedVideoUrl) {
+      url = selectedVideoUrl;
+      is_dynamic = true;
+    } else {
+      url= videoURL
+      is_dynamic = false;
+    }
+    console.log(url, "url")
     apiData = {
       // firstRowValue: matchData,
       scrollEnabled: false,
@@ -437,7 +490,8 @@ const ImageVideo = ({
       status: "PROCESSING",
       audio_url: audioURL,
       audio_embedded,
-      url: videoURL,
+      value: url,
+      is_dynamic,
     };
   }
   // State for managing form errors
@@ -460,14 +514,14 @@ const ImageVideo = ({
       dynamicVideo: "",
     };
     if (elementType === "UPLOADIMAGE") {
-      if (img64 === null || dynamicImage === "none")
-        newError.image = "Static or Dynamic Image URL is required.";
-      if (img64 === null || dynamicImage === "none")
-        newError.dynamicImage = "Dynamic or Static Image URL is required.";
+      // if (img64 === null || dynamicImage === "none")
+      //   newError.image = "Static or Dynamic Image URL is required.";
+      // if (img64 === null || dynamicImage === "none")
+      //   newError.dynamicImage = "Dynamic or Static Image URL is required.";
 
-      if (duration === "") {
-        newError.duration = "Duration is required.";
-      }
+      // if (duration === "") {
+      //   newError.duration = "Duration is required.";
+      // }
 
       // if (audioFile === null) {
       //   toast.error("Please upload audio file.");
@@ -851,35 +905,20 @@ const ImageVideo = ({
                   id="choose-template"
                   fullWidth
                   MenuProps={menuProps}
-                  value={type === "none" ? type : dynamicImage}
-                  onChange={(e) => handleDynamicimage(e)}
                   IconComponent={ExpandMoreIcon}
                   // error={!!errors.image}
                   // helperText={errors.image}
-                  disabled={
-                    !Array.isArray(companyDetails) ||
-                    !companyDetails.some(
-                      (item) => item?.dataType === "Image URL"
-                    )
-                  }
+                  value={selectedUrl}
+                  onChange={handleUrlChange}
+                  onOpen={handleMenuOpen}
                 >
-                  <MenuItem value="none">Select Image Url</MenuItem>
+                  <MenuItem disabled value="none">Select Image Url</MenuItem>
                   {/* <MenuItem value="--">Select None</MenuItem> */}
-                  {companyDetails !== undefined &&
-                    companyDetails.length > 0 &&
-                    companyDetails
-                      ?.filter((item) => item?.dataType == "Image URL")
-                      ?.map((item) => (
-                        <MenuItem
-                          value={item?.value}
-                          onClick={() => {
-                            setType(item?.value);
-                            sheetFirstRowData(item?.value);
-                          }}
-                        >
-                          {item?.value}
-                        </MenuItem>
-                      ))}
+                  {sheetData?.map((entry) => (
+                    <MenuItem key={entry?.value} value={entry?.value}>
+                      {entry?.value}
+                    </MenuItem>
+                  ))}
                 </Select>
                 <Typography className="error">{errors.image}</Typography>
               </Grid>
@@ -943,28 +982,21 @@ const ImageVideo = ({
                   id="choose-template"
                   fullWidth
                   MenuProps={menuProps}
-                  value={dynamicVideo}
-                  onChange={handleVideoUploadNew}
-                  IconComponent={ExpandMoreIcon}
                   error={!!errors.dynamicVideo}
                   helperText={errors.dynamicVideo}
-                  disabled={
-                    !Array.isArray(companyDetails) ||
-                    !companyDetails.some(
-                      (item) => item?.dataType === "Video URL"
-                    )
-                  }
+                  onChange={handleVideoUrlChange}
+                  IconComponent={ExpandMoreIcon}
+                  onOpen={handleMenuOpen}
+                  value={selectedVideoUrl}
                 >
                   <MenuItem value="none" disabled>
                     Select Dynamic URL to fetch Video
                   </MenuItem>
-                  {companyDetails !== undefined &&
-                    companyDetails.length > 0 &&
-                    companyDetails
-                      ?.filter((item) => item?.dataType == "Video URL")
-                      ?.map((item) => (
-                        <MenuItem value={item?.value}>{item?.value}</MenuItem>
-                      ))}
+                  {sheetData?.map((entry) => (
+                    <MenuItem key={entry?.value} value={entry?.value}>
+                      {entry?.value}
+                    </MenuItem>
+                  ))}
                 </Select>
                 <Typography className="error">{errors.dynamicVideo}</Typography>
               </Grid>
