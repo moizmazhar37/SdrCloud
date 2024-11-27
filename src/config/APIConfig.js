@@ -28,6 +28,7 @@ const ApiConfig = {
   getFirstRowData: `${googlesheets}/first-row-data`,
   UploadFile: `${upload}/upload-file`,
   headers: `${googlesheets}/sheet-data-types`,
+  createVideo: `${videoelement}/create-video`,
   // userSignup: `${user}/userSignUp`,
   // // verifyEmail: `${user}/verifyEmail`,
   // goggleLogin: `${user}/googleLogin`,

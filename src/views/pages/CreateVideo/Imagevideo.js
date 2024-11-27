@@ -354,7 +354,6 @@ const ImageVideo = ({
   };
 
   const handleAudioChange = (event) => {
-    console.log("Hello");
     setAudioFiles(event.target.files[0]);
   };
 
@@ -1078,7 +1077,6 @@ const ImageVideo = ({
                 >
                   Upload Audio
                 </Button>
-                {audioURL && <p>Uploaded Audio URL: {audioURL}</p>}
               </div>
             </div>
           </>

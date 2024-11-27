@@ -186,6 +186,37 @@ const StaticDyanamicFile = ({
     console.log(selectedUrl);
   };
 
+  const [audioURL, setAudioURL] = useState("");
+  const [audioFiles, setAudioFiles] = useState(null);
+
+  const handleAudioChange = (event) => {
+    setAudioFiles(event.target.files[0]);
+  };
+
+  const handleAudioUpload = async () => {
+    if (!audioFiles)
+      return toast.error("Please select an audio file to upload.");
+    console.log("Hello");
+
+    try {
+      const formData = new FormData();
+      formData.append("file", audioFiles);
+
+      const response = await axios.post(ApiConfig.UploadFile, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      const { public_url } = response.data;
+      setAudioURL(public_url);
+      toast.success("Audio video successfully.");
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    }
+  };
+
   const handleOpenDialog = () => {
     setOpenDialog(true);
   };
@@ -289,6 +320,10 @@ const StaticDyanamicFile = ({
 
   if (elementType === "STATICURL") {
     let isDynamicUrl = link !== "" ? false : true;
+    let audio_embedded = false;
+    if (audioURL) {
+      audio_embedded = true;
+    }
     apiData = {
       section_name: "STATIC URL",
       section_number: 1,
@@ -299,11 +334,20 @@ const StaticDyanamicFile = ({
       sequence: typeIndex + 1,
       hvo_template_id: templateId,
       status: "PROCESSING",
-      audio_url: null,
+      audio_url: audioURL,
       value: link || dymLink,
-      is_dynamic: false
+      is_dynamic: false,
+      audio_embedded,
     };
   } else if (elementType === "DYNAMICURL") {
+    let audio_embedded = false;
+    if (audioURL) {
+      audio_embedded = true;
+    }
+    let is_dynamic = false;
+    if(selectedUrl) {
+      is_dynamic = true;
+    }
     apiData = {
       section_name: "DYNAMIC URL",
       section_number: 2,
@@ -315,9 +359,10 @@ const StaticDyanamicFile = ({
       sequence: typeIndex + 1,
       hvo_template_id: templateId,
       status: "PROCESSING",
-      audio_url: null,
+      audio_url: audioURL,
       value: selectedUrl,
-      is_dynamic: false
+      is_dynamic,
+      audio_embedded,
     };
   }
   const [errors, setErrors] = useState({
@@ -764,30 +809,23 @@ const StaticDyanamicFile = ({
           </Typography>
         </div>
 
-        <div
-          style={{
-            width: "100%",
-            maxWidth: "100px",
-            display: "flex",
-            justifyContent: "end",
-            marginTop: "26px",
-          }}
-        >
-          <div onClick={handleSaveClick}>
-            <Button
-              fullWidth
-              variant="contained"
-              style={{ height: "44px" }}
-              onClick={handleOpenDialog}
-              className={`${
-                selectedOptionsecond === "none" ? "savebtnDisables" : "savebtn"
-              }`}
-              disabled={selectedOptionsecond === "none" || duration === ""}
-            >
-              Audio
-            </Button>
-          </div>
-        </div>
+        <div>
+                <input
+                  type="file"
+                  accept="audio/*"
+                  onChange={handleAudioChange}
+                  style={{ marginBottom: "1rem" }}
+                />
+                <Button
+                  fullWidth
+                  variant={duration ? "contained" : "outlined"}
+                  style={{ height: "44px" }}
+                  className={`${!duration ? "savebtnDisables" : "savebtn"}`}
+                  onClick={handleAudioUpload}
+                >
+                  Upload Audio
+                </Button>
+              </div>
       </Box>
       {elementType === "STATICURL" ? (
         <>

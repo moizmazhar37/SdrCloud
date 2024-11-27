@@ -233,6 +233,30 @@ function Summary({
     }
   };
 
+  const handleCreateVideo = async () => {
+    try {
+      setLoading(true);
+      const res = await axios({
+        method: "GET",
+        url: `${ApiConfig.createVideo}/${templateId}`,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (res?.status === 200) {
+        console.log(res?.data, "creationstatus");
+        toast.success("Video Creation Started")
+
+        setCreationProcess(res?.data?.getVideo?.creationStatus);
+      }
+    } catch (error) {
+      console.log(error, "error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     getTemplateByID(templateId);
     getTemplate();
@@ -425,19 +449,21 @@ function Summary({
                     ? "sheetbtnDisables"
                     : "sheetbtn"
                 }`}
-                disabled={templateParams?.sheetId === null}
                 onClick={() => {
-                  handleSheetData();
-                  getTemplate();
+                  // handleSheetData();
+                  // getTemplate();
+                  handleCreateVideo();
                 }}
               >
-                {creationProcess === "Pending"
+                {/* {creationProcess === "Pending"
                   ? "Create Video"
                   : creationProcess === "Active"
                   ? "Active"
                   : creationProcess === "Published"
-                  ? "Published"
-                  : "Create Video"}
+                  ? "Published" */}
+                  {/* : " */}
+                  Create Video
+                  {/* "} */}
               </Button>
             </div>
           </Box>
