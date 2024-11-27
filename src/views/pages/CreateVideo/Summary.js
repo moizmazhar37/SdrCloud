@@ -237,7 +237,7 @@ function Summary({
     try {
       setLoading(true);
       const res = await axios({
-        method: "GET",
+        method: "POST",
         url: `${ApiConfig.createVideo}/${templateId}`,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
