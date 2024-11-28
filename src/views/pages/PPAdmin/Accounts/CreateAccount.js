@@ -844,6 +844,7 @@ const CreateAccount = () => {
           PDF: accountContract.base64,
         },
         roleStatus: "SUBADMIN",
+        userName: values.accountName,
       };
 
       setLoading(true);
