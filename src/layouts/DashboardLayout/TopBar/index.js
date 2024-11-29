@@ -299,14 +299,14 @@ const TopBar = ({ className, onMobileNavOpen, onDrawerAction, ...rest }) => {
                 ""
               )}
               <Typography className="accountname" style={{ marginTop: "2px" }}>
-                {user?.profileData?.firstName &&
-                user?.profileData?.firstName.length > 10
-                  ? user?.profileData?.firstName.slice(0, 10) + "..."
-                  : user?.profileData?.firstName}{" "}
-                {user?.profileData?.lastName &&
-                user?.profileData?.lastName.length > 10
-                  ? user?.profileData?.lastName.slice(0, 10) + "..."
-                  : user?.profileData?.lastName}
+                {user?.profileData?.first_name &&
+                user?.profileData?.first_name.length > 10
+                  ? user?.profileData?.first_name.slice(0, 10) + "..."
+                  : user?.profileData?.first_name}{" "}
+                {user?.profileData?.last_name &&
+                user?.profileData?.last_name.length > 10
+                  ? user?.profileData?.last_name.slice(0, 10) + "..."
+                  : user?.profileData?.last_name}
               </Typography>
             </div>
           </div>

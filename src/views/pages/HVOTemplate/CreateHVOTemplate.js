@@ -555,11 +555,11 @@ const CreateHVOTemplate = (props) => {
         method: "GET",
         url: ApiConfig.getAllCategories,
         headers: {
-          token: `${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
       if (res?.status === 200) {
-        setCategory(res?.data?.data);
+        setCategory(res?.data);
         setNewlyCategory(res?.data?.data[res?.data?.data.length - 1]);
       }
     } catch (error) {

@@ -1,4 +1,5 @@
-const url = "http://localhost:8000";
+const url = "https://backend-283763506150.us-central1.run.app";
+// const url = "http://localhost:8000";
 
 const auth = `${url}/auth`;
 const users = `${url}/users`;
@@ -14,7 +15,7 @@ const upload = `${url}/upload`;
 const ApiConfig = {
   login: `${auth}/signin`,
   createNewAccount: `${admin}/subadmin`,
-  getAllCategories: `${categories}`,
+  getAllCategories: `${categories}/`,
   ppadminUserListNew: `${admin}`,
   addUser: `${subadmin}/user`,
   getAllUserByAccountId: `${subadmin}/users`,
@@ -29,6 +30,13 @@ const ApiConfig = {
   UploadFile: `${upload}/upload-file`,
   headers: `${googlesheets}/sheet-data-types`,
   createVideo: `${videoelement}/create-video`,
+  getAllPPUsers: `${admin}/subadmin`,
+  googleSheet: `${googlesheets}`,
+  googleSheetDataTypes: `${googlesheets}/get-headers`,
+  getTemplateList: `${hvotemplates}`,
+  deleteTemplate: `${hvotemplates}`,
+  deleteElement: `${videoelement}`,
+  profile: `${users}/profile`,
   // userSignup: `${user}/userSignUp`,
   // // verifyEmail: `${user}/verifyEmail`,
   // goggleLogin: `${user}/googleLogin`,
@@ -173,7 +181,7 @@ const ApiConfig = {
 
   // // Account
   
-  // getAllPPUsers: `${javaurl}user/admin/user-management/search-and-filter-account-list`,
+  // 
   // viewAccount: `${javaurl}user/get-account-details-by-id`,
   // blockUnblockAccount: `${javaurl}user/admin/user-management/change-account-status`,
   // 

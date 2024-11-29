@@ -454,14 +454,12 @@ function SuperAdminAccount() {
         method: "GET",
         url: ApiConfig.getAllPPUsers,
         headers: {
-          token: `${localStorage.getItem("token")}`,
-        },
-        params: params,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        }
       });
-      if (res?.data?.status === 200) {
-        setPPAdminList(res?.data?.data?.list);
-        setPageSize(res?.data?.data?.pageCount);
-      } else if (res?.data?.status === 205) {
+      if (res?.status === 200) {
+        setPPAdminList(res?.data);
+      } else {
         toast.error("No PP Admin Found");
       }
     } catch (error) {
@@ -870,18 +868,18 @@ function SuperAdminAccount() {
                               scope="row"
                               align="center"
                             >
-                              {key?.accountName && key?.accountName.length > 20
-                                ? `${key?.accountName.slice(0, 10)}...`
-                                : key?.accountName || "--"}
+                              {key?.user_name && key?.user_name.length > 20
+                                ? `${key?.user_name.slice(0, 10)}...`
+                                : key?.user_name || "--"}
                             </TableCell>
                             <TableCell
                               component="th"
                               scope="row"
                               align="center"
                             >
-                              {key?.ppAdmin && key?.ppAdmin.length > 20
-                                ? `${key?.ppAdmin.slice(0, 20)}...`
-                                : key?.ppAdmin || "--"}
+                              {key?.pp_admin && key?.pp_admin.length > 20
+                                ? `${key?.pp_admin.slice(0, 20)}...`
+                                : key?.pp_admin || "--"}
                             </TableCell>
                             <TableCell
                               component="th"
@@ -891,7 +889,7 @@ function SuperAdminAccount() {
                               {key?.users === 0 ? 0 : key?.users}
                             </TableCell>
                             <TableCell align="center">
-                              {new Date(key?.startDate).toLocaleDateString()}
+                              {new Date(key?.created_at).toLocaleDateString()}
                             </TableCell>
 
                             <TableCell

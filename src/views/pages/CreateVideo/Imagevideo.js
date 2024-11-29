@@ -450,7 +450,6 @@ const ImageVideo = ({
     }
     apiData = {
       duration: duration,
-      scrollEnabled: false,
       elementId: elementID,
       sequence: typeIndex + 1,
       hvo_template_id: templateId,
@@ -480,7 +479,7 @@ const ImageVideo = ({
     console.log(url, "url")
     apiData = {
       // firstRowValue: matchData,
-      scrollEnabled: false,
+      scroll: false,
       elementId: elementID,
       sequence: typeIndex + 1,
       section_name: "VIDEO CLIPS",

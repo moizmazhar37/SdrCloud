@@ -219,17 +219,15 @@ const TemplateAudio = (props) => {
         url: ApiConfig.getTemplateList,
         method: "GET",
         headers: {
-          token: `${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
           // userId: localStorage.getItem("_id"),
         },
         params: {
-          page: page || 1,
-          pageSize: 10,
+          templateType: tempType,
         },
       });
-      if (response?.data?.status === 200) {
-        setTemplateList(response?.data?.data?.list);
-        setPageSize(response?.data?.data?.totalPageCount);
+      if (response?.status === 200) {
+        setTemplateList(response?.data);
       }
     } catch (error) {
       setTemplateList([]);
@@ -242,19 +240,17 @@ const TemplateAudio = (props) => {
     setLoading(true);
     try {
       const response = await axios({
-        url: ApiConfig.hvoList,
+        url: ApiConfig.getTemplateList,
         method: "GET",
         headers: {
-          token: `${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         params: {
-          page: page || 1,
-          pageSize: 10,
+          templateType: tempType,
         },
       });
-      if (response?.data?.status === 200) {
-        setTemplateList(response?.data?.data?.hvoTemplate);
-        setPageSize(response?.data?.data?.totalPageCount);
+      if (response?.status === 200) {
+        setTemplateList(response?.data);
       }
     } catch (error) {
       setTemplateList([]);
@@ -264,23 +260,17 @@ const TemplateAudio = (props) => {
   };
   // Function to delete a template
   const deleteTemplate = async () => {
+    handleDeleteClose();
     setLoading(true);
     try {
       const response = await axios({
-        url: `${
-          tempType === "VIDEO"
-            ? ApiConfig.deletedVideoTemplateById
-            : ApiConfig.deleteHVO
-        }`,
+        url: `${ApiConfig.deleteTemplate}/${deleteId}`,
         method: "DELETE",
         headers: {
-          token: `${localStorage.getItem("token")}`,
-        },
-        params: {
-          templateId: deleteId,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      if (response?.data?.status === 200) {
+      if (response?.status === 200) {
         setLoading(false);
 
         if (tempType === "VIDEO") {
@@ -288,7 +278,6 @@ const TemplateAudio = (props) => {
         } else if (tempType === "HVO") {
           getHVOTemplateList();
         }
-        handleDeleteClose();
         toast.success("Template Deleted Successfully");
       } else {
         setLoading(false);
@@ -460,28 +449,28 @@ const TemplateAudio = (props) => {
                   templateList?.map((key, index) => (
                     <TableRow key={index}>
                       <TableCell className="tableCellText">
-                        <Tooltip title={key?.videoTemplateName || ""}>
+                        <Tooltip title={key?.hvo_template_name || ""}>
                           <span>
-                            {key?.videoTemplateName &&
-                            key?.videoTemplateName.length > 20
-                              ? `${key?.videoTemplateName.slice(0, 20)}...`
-                              : key?.videoTemplateName || "--"}
+                            {key?.hvo_template_name &&
+                            key?.hvo_template_name.length > 20
+                              ? `${key?.hvo_template_name.slice(0, 20)}...`
+                              : key?.hvo_template_name || "--"}
                           </span>
                         </Tooltip>
                       </TableCell>
                       <TableCell className="tableCellText">
-                        {key.templateType ? key.templateType : "--"}
+                        {key.template_type ? key.template_type : "--"}
                       </TableCell>
                       <TableCell className="tableCellText">
-                        {new Date(key?.createdAt).toLocaleDateString()}
+                        {new Date(key?.created_at).toLocaleDateString()}
                       </TableCell>
                       <TableCell className="tableCellText">
                         <Box className={classes.tableBox}>
-                          {key?.categoryName}
+                          {key?.category_name}
                         </Box>
                       </TableCell>
                       <TableCell className="tableCellText" align="center">
-                        {key.totalRecords ? key.totalRecords : "--"}
+                        {key.total_records ? key.total_records : "--"}
                       </TableCell>
                       <TableCell className="tableCellText" align="center">
                         {key.sent ? key.sent : "--"}
@@ -505,7 +494,7 @@ const TemplateAudio = (props) => {
                                 history.push({
                                   pathname: `/createtemplate&Video`,
                                   state: "summary",
-                                  search: `templateId=${key?.videoTemplateId}`,
+                                  search: `templateId=${key?.id}`,
                                 });
                               }}
                             >
@@ -514,7 +503,7 @@ const TemplateAudio = (props) => {
                             <MenuItem
                               onClick={() => {
                                 handleClose();
-                                duplicateTemplate(key?.videoTemplateId);
+                                duplicateTemplate(key?.id);
                               }}
                             >
                               Duplicate
@@ -522,7 +511,7 @@ const TemplateAudio = (props) => {
                             <MenuItem
                               onClick={() => {
                                 handleClose();
-                                setDeleteId(key?.videoTemplateId);
+                                setDeleteId(key?.id);
                                 setDeleteOpen(true);
                               }}
                             >

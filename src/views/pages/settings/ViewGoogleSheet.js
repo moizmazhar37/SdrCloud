@@ -134,18 +134,18 @@ function ViewGoogleSheet(props) {
   const [fieldValue, setFieldValue] = useState("Text Field");
   const [viewdata, setViewData] = useState({
     title: "",
-    fieldsCount: "",
-    createdOn: "",
-    totalRecords: "",
+    field_count: "",
+    created_at: "",
+    total_records: "",
     recent: "",
-    fetchUrl: "",
+    fetch_url: "",
     records: "",
+    sheet_type: "",
   });
-  const [sheetType, setSheetType] = useState(viewdata?.sheetType);
+  const [sheet_type, setSheetType] = useState(viewdata?.sheet_type);
   useEffect(() => {
-    setSheetType(viewdata?.sheetType);
+    setSheetType(viewdata?.sheet_type);
   }, [viewdata]);
-  console.log(viewdata?.sheetType, "sheetTypesdd");
 
   const [recordCount, setRecordCount] = useState(1);
   // Function to handle incrementing record count
@@ -167,23 +167,21 @@ function ViewGoogleSheet(props) {
   const handleViewData = async () => {
     try {
       const response = await axios({
-        url: ApiConfig.viewgooglesheet,
+        url: `${ApiConfig.googleSheet}/${sheetid}`,
         method: "GET",
         headers: {
-          token: `${localStorage.getItem("token")}`,
-        },
-        params: {
-          googleSheetId: sheetid,
-        },
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        }
       });
-      if (response?.data?.status === 200) {
-        console.log(response);
-        setViewData(response?.data?.data);
-        setRecordCount(response?.data?.data?.fetchDays);
-        getAllSheet(
-          response?.data?.data?.title,
-          response?.data?.data?.fetchUrl
-        );
+      if (response?.status === 200) {
+        setViewData(response?.data);
+        setLoading(false);
+        // setRecordCount(response?.data?.data?.fetchDays);
+        // getAllSheet(
+        //   response?.data?.data?.title,
+        //   response?.data?.data?.fetchUrl
+        // );
+        getAllSheet()
       }
     } catch (error) {
       console.log(error);
@@ -195,13 +193,10 @@ function ViewGoogleSheet(props) {
       setLoading(true);
       const res = await axios({
         method: "GET",
-        url: ApiConfig.getAllSheet,
+        url: `${ApiConfig.googleSheetDataTypes}/${sheetid}`,
         headers: {
-          token: `${localStorage.getItem("token")}`,
-        },
-        params: {
-          googleSheetId: sheetid,
-        },
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        }
       });
       if (res?.status === 200) {
         setLoading(false);
@@ -219,7 +214,7 @@ function ViewGoogleSheet(props) {
         //   twitter: res?.data?.data[10],
         //   facebook: res?.data?.data[9],
         // };
-        setSheetData(res?.data?.data);
+        setSheetData(res?.data);
       }
     } catch (error) {
       setLoading(false);
@@ -234,11 +229,11 @@ function ViewGoogleSheet(props) {
 
   const fieldsToDisplay = [
     "title",
-    "fieldsCount",
-    "createdOn",
-    "totalRecords",
+    "field_count",
+    "created_at",
+    "total_records",
     "recent",
-    "fetchUrl",
+    "fetch_url",
     "fetchDays",
   ];
   // Function to capitalize first letter of a string
@@ -281,11 +276,11 @@ function ViewGoogleSheet(props) {
   // Object containing display names for fields
   const displayNames = {
     title: "Title",
-    fieldsCount: "Field Count",
-    createdOn: "Connected",
-    totalRecords: "Total Records",
+    field_count: "Field Count",
+    created_at: "Connected",
+    total_records: "Total Records",
     recent: "Recent",
-    fetchUrl: "Fetch URL",
+    fetch_url: "Fetch URL",
     fetchDays: "New Records Each",
   };
 
@@ -392,7 +387,7 @@ function ViewGoogleSheet(props) {
                       </Grid>
 
                       <Grid item lg={6} md={6} sm={6} xs={6}>
-                        {key === "createdOn" ? (
+                        {key === "created_at" ? (
                           // <Typography style={{ color: "#152F40" }}>
                           //   {viewdata[key] === "Connected"
                           //     ? "Connected"
@@ -405,7 +400,7 @@ function ViewGoogleSheet(props) {
                               ? moment(viewdata[key]).format("MM/DD/YYYY")
                               : ""}
                           </Typography>
-                        ) : key === "fetchUrl" ? (
+                        ) : key === "fetch_url" ? (
                           <Box
                             className="d-flex"
                             style={{ justifyContent: "start" }}
@@ -422,9 +417,9 @@ function ViewGoogleSheet(props) {
                                 target="_blank"
                                 rel="noopener noreferrer"
                               >
-                                {/* {viewdata[key].length > 25
+                                {viewdata[key].length > 25
                                   ? viewdata[key].substring(0, 25) + "..."
-                                  : viewdata[key]} */}
+                                  : viewdata[key]}
 
                                 {truncateUrl(viewdata[key])}
                               </a>
@@ -459,7 +454,7 @@ function ViewGoogleSheet(props) {
                   <Typography variant="h5">Sheet Type</Typography>
                 </Box>
               </Box>
-              {sheetType && (
+              {sheet_type && (
                 <Box className={classes.innerbox}>
                   <Typography>Selected Sheet Type</Typography>
                   <>
@@ -486,7 +481,7 @@ function ViewGoogleSheet(props) {
                     </Select> */}
                     <TextField
                       id="outlined-select-currency-native"
-                      value={sheetType}
+                      value={sheet_type}
                       variant="outlined"
                       disabled
                     ></TextField>

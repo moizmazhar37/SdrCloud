@@ -664,12 +664,12 @@ const EditAccount = () => {
         method: "GET",
         url: ApiConfig.getAllCategories,
         headers: {
-          token: `${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
       if (res?.status === 200) {
         toast.success(res?.message);
-        setCustomerType(res?.data?.data);
+        setCustomerType(res?.data);
       }
     } catch (error) {
       toast.error(error?.message);
