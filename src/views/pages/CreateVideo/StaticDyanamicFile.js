@@ -178,6 +178,45 @@ const StaticDyanamicFile = ({
   const [matchData, setMatchData] = useState("");
   const [matchDynamic, setMatchDynamic] = useState("");
 
+  const [selectedUrl, setSelectedUrl] = useState("");
+  const [sheetData, setSheetData] = useState([]);
+
+  const handleUrlChange = (event) => {
+    setSelectedUrl(event.target.value);
+    console.log(selectedUrl);
+  };
+
+  const [audioURL, setAudioURL] = useState("");
+  const [audioFiles, setAudioFiles] = useState(null);
+
+  const handleAudioChange = (event) => {
+    setAudioFiles(event.target.files[0]);
+  };
+
+  const handleAudioUpload = async () => {
+    if (!audioFiles)
+      return toast.error("Please select an audio file to upload.");
+    console.log("Hello");
+
+    try {
+      const formData = new FormData();
+      formData.append("file", audioFiles);
+
+      const response = await axios.post(ApiConfig.UploadFile, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      const { public_url } = response.data;
+      setAudioURL(public_url);
+      toast.success("Audio video successfully.");
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    }
+  };
+
   const handleOpenDialog = () => {
     setOpenDialog(true);
   };
@@ -277,46 +316,53 @@ const StaticDyanamicFile = ({
   const searchParams = new URLSearchParams(window.location.search);
   const templateId = searchParams.get("templateId");
   let apiData;
+  console.log(selectedUrl, "selectedUrl");
 
   if (elementType === "STATICURL") {
     let isDynamicUrl = link !== "" ? false : true;
+    let audio_embedded = false;
+    if (audioURL) {
+      audio_embedded = true;
+    }
     apiData = {
+      section_name: "STATIC URL",
+      section_number: 1,
       duration: duration,
-      url: link || dymLink,
       firstRowValue: link || matchData,
-      scrollEnabled: selectedOptionsecond,
+      scroll: selectedOptionsecond,
       elementId: elementID,
       sequence: typeIndex + 1,
-      videoTemplateId: templateId,
-      userId: localStorage.getItem("_id"),
+      hvo_template_id: templateId,
       status: "PROCESSING",
-      audioTemplateReferralDto: {
-        audioTypeId: "AUDIOURL",
-        embedded: false,
-        fileType: {
-          AUDIO: audioFile,
-        },
-      },
-      isDynamicUrl,
+      audio_url: audioURL,
+      value: link || dymLink,
+      is_dynamic: false,
+      audio_embedded,
     };
   } else if (elementType === "DYNAMICURL") {
+    let audio_embedded = false;
+    if (audioURL) {
+      audio_embedded = true;
+    }
+    let is_dynamic = false;
+    if(selectedUrl) {
+      is_dynamic = true;
+    }
     apiData = {
+      section_name: "DYNAMIC URL",
+      section_number: 2,
       duration: duration,
       tagValueName: selectedOption,
-      scrollEnabled: selectedOptionsecond,
+      scroll: selectedOptionsecond,
       firstRowValue: matchDynamic,
       elementId: elementID,
       sequence: typeIndex + 1,
-      videoTemplateId: templateId,
-      userId: localStorage.getItem("_id"),
+      hvo_template_id: templateId,
       status: "PROCESSING",
-      audioTemplateReferralDto: {
-        audioTypeId: "AUDIOURL",
-        embedded: false,
-        fileType: {
-          AUDIO: audioFile,
-        },
-      },
+      audio_url: audioURL,
+      value: selectedUrl,
+      is_dynamic,
+      audio_embedded,
     };
   }
   const [errors, setErrors] = useState({
@@ -326,6 +372,27 @@ const StaticDyanamicFile = ({
     selectedOptionsecond: "",
     dynamic: "",
   });
+
+  const fetchSheetData = async () => {
+    try {
+      const response = await axios.get(`${ApiConfig.headers}/${templateId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching sheet data:", error);
+      return [];
+    }
+  };
+
+  const handleMenuOpen = async () => {
+    if (sheetData.length === 0) {
+      const data = await fetchSheetData();
+      setSheetData(data);
+    }
+  };
 
   const urlPattern =
     /^(?:(?:https?|ftp):\/\/)?(?:www\.)?([a-zA-Z0-9-]+(?:\.[a-zA-Z]{2,})+)(?:\/[^\s?#]*)?(?:\?[^#\s]*)?(?:#[^\s]*)?$/;
@@ -339,9 +406,9 @@ const StaticDyanamicFile = ({
         duration: "",
         selectedOptionsecond: "",
       };
-      if (link === "" && dymLink === "none") {
-        newError.link = "Static/Dynamic URL is Required";
-      }
+      // if (link === "" && dymLink === "none") {
+      //   newError.link = "Static/Dynamic URL is Required";
+      // }
       if (link !== "") {
         if (!urlPattern.test(link)) {
           newError.link = "Please enter a valid Static URL.";
@@ -373,13 +440,13 @@ const StaticDyanamicFile = ({
             method: "POST",
             url: ApiConfig.createVideoTemplateReferral,
             headers: {
-              token: `${localStorage.getItem("token")}`,
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
 
             data: apiData,
           });
-          if (res?.data?.status === 200) {
-            toast.success(res?.data?.message);
+          if (res?.status === 200) {
+            toast.success("Section saved successfully");
             // setElementData({
             //   firstRowValue: firstRowValue,
             //   index: typeIndex,
@@ -408,9 +475,9 @@ const StaticDyanamicFile = ({
         duration: "",
         selectedOptionsecond: "",
       };
-      if (selectedOption === "none") {
-        newError.dynamic = "Dynamic URL is Required";
-      }
+      // if (selectedOption === "none") {
+      //   newError.dynamic = "Dynamic URL is Required";
+      // }
       if (duration === "") {
         newError.duration = "Duration is required.";
       }
@@ -420,25 +487,25 @@ const StaticDyanamicFile = ({
       // if (audioFile === null) {
       //   toast.error("Please upload audio file.");
       // }
-      if (
-        selectedOption !== "none" &&
-        duration !== "" &&
-        selectedOptionsecond !== "none"
-        // audioFile !== null
-      ) {
+      // if (
+      //   selectedOption !== "none" &&
+      //   duration !== "" &&
+      //   selectedOptionsecond !== "none"
+      //   // audioFile !== null
+      // ) {
         try {
           setLoading(true);
           const res = await axios({
             method: "POST",
             url: ApiConfig.createVideoTemplateReferral,
             headers: {
-              token: `${localStorage.getItem("token")}`,
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
 
             data: apiData,
           });
-          if (res?.data?.status === 200) {
-            toast.success(res?.data?.message);
+          if (res?.status === 200) {
+            toast.success("Section saved successfully");
             // setElementData({
             //   firstRowValue: firstRowValue,
             //   index: typeIndex,
@@ -458,8 +525,8 @@ const StaticDyanamicFile = ({
         } finally {
           setLoading(false);
         }
-      }
-      setErrors(newError);
+      // }
+      // setErrors(newError);
     }
   };
 
@@ -611,32 +678,27 @@ const StaticDyanamicFile = ({
                   variant="outlined"
                   placeholder="Select Static Url"
                   className="selectitem"
-                  id="choose-template"
+                  id="static-url-selector"
                   fullWidth
-                  MenuProps={menuProps}
-                  value={dymLink}
-                  onChange={handleDymLinkChange}
+                  MenuProps={{
+                    PaperProps: {
+                      style: { maxHeight: 200 },
+                    },
+                  }}
+                  value={selectedUrl}
+                  onChange={handleUrlChange}
                   IconComponent={ExpandMoreIcon}
-                  // error={!!errors.dymLink}
-                  // helperText={errors.dymLink}
-                  disabled={
-                    !Array.isArray(companyDetails) ||
-                    !companyDetails.some(
-                      (item) => item?.dataType === "Static URL"
-                    )
-                  }
+                  onOpen={handleMenuOpen}
                 >
                   <MenuItem value="none" disabled>
                     Select Static URL
                   </MenuItem>
 
-                  {companyDetails !== undefined &&
-                    companyDetails.length > 0 &&
-                    companyDetails
-                      ?.filter((item) => item?.dataType == "Static URL")
-                      ?.map((item) => (
-                        <MenuItem value={item?.value}>{item?.value}</MenuItem>
-                      ))}
+                  {sheetData?.map((entry) => (
+                    <MenuItem key={entry?.value} value={entry?.value}>
+                      {entry?.value}
+                    </MenuItem>
+                  ))}
                 </Select>
               </Grid>
             </Grid>
@@ -645,36 +707,24 @@ const StaticDyanamicFile = ({
           <>
             <Select
               variant="outlined"
-              value={selectedOption}
               id="choose-template"
               className="selectitem"
               fullWidth
               MenuProps={menuProps}
-              onChange={(e) => {
-                handleSelectChange(e);
-                if (e.target.value === "none") {
-                  setErrors({ dynamic: "Dynamic URL is Required" });
-                } else {
-                  setErrors({ dynamic: "" });
-                }
-              }}
-              // className={classes.menuitemSecond}
+              value={selectedUrl}
+              onChange={handleUrlChange}
               IconComponent={ExpandMoreIcon}
-              disabled={
-                !Array.isArray(companyDetails) ||
-                !companyDetails.some((item) => item?.dataType === "Dynamic URL")
-              }
+              onOpen={handleMenuOpen} // Fetch data when the menu opens
+              // className={classes.menuitemSecond}
             >
               <MenuItem value="none" disabled>
                 Select Dynamic URL
               </MenuItem>
-              {companyDetails !== undefined &&
-                companyDetails.length > 0 &&
-                companyDetails
-                  ?.filter((item) => item?.dataType == "Dynamic URL")
-                  ?.map((item) => (
-                    <MenuItem value={item?.value}>{item?.value}</MenuItem>
-                  ))}
+              {sheetData?.map((entry) => (
+                <MenuItem key={entry?.value} value={entry?.value}>
+                  {entry?.value}
+                </MenuItem>
+              ))}
             </Select>
             <Typography className="error">{errors.dynamic}</Typography>
           </>
@@ -759,30 +809,23 @@ const StaticDyanamicFile = ({
           </Typography>
         </div>
 
-        <div
-          style={{
-            width: "100%",
-            maxWidth: "100px",
-            display: "flex",
-            justifyContent: "end",
-            marginTop: "26px",
-          }}
-        >
-          <div onClick={handleSaveClick}>
-            <Button
-              fullWidth
-              variant="contained"
-              style={{ height: "44px" }}
-              onClick={handleOpenDialog}
-              className={`${
-                selectedOptionsecond === "none" ? "savebtnDisables" : "savebtn"
-              }`}
-              disabled={selectedOptionsecond === "none" || duration === ""}
-            >
-              Audio
-            </Button>
-          </div>
-        </div>
+        <div>
+                <input
+                  type="file"
+                  accept="audio/*"
+                  onChange={handleAudioChange}
+                  style={{ marginBottom: "1rem" }}
+                />
+                <Button
+                  fullWidth
+                  variant={duration ? "contained" : "outlined"}
+                  style={{ height: "44px" }}
+                  className={`${!duration ? "savebtnDisables" : "savebtn"}`}
+                  onClick={handleAudioUpload}
+                >
+                  Upload Audio
+                </Button>
+              </div>
       </Box>
       {elementType === "STATICURL" ? (
         <>

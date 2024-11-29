@@ -244,16 +244,11 @@ const GoogleSheet = ({
         url: ApiConfig.googleSheet,
         method: "GET",
         headers: {
-          token: `${localStorage.getItem("token")}`,
-        },
-        params: {
-          page: page,
-          pageSize: 10,
-        },
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        }
       });
-      if (response?.data?.status === 200) {
-        setData(response?.data?.data?.list);
-        setPageSize(response?.data?.data?.count);
+      if (response?.status === 200) {
+        setData(response?.data);
         setLoading(false);
       }
     } catch (error) {
@@ -264,12 +259,13 @@ const GoogleSheet = ({
   // Function to fetch all users
   const getAllUsers = async () => {
     try {
+      console.log("Hello")
       const response = await axios({
         url: ApiConfig.getAllUserByAccountId,
-        method: "GET",
-        headers: {
-          token: `${localStorage.getItem("token")}`,
-        },
+        method: "POST",
+        // headers: {
+        //   Authorization: `Bearer ${localStorage.getItem("token")}`,
+        // },
       });
       if (response?.data?.status === 200) {
         setUserList(response?.data?.data);
@@ -355,16 +351,13 @@ const GoogleSheet = ({
     setLoading(true);
     try {
       const response = await axios({
-        url: ApiConfig.deleteSheet,
+        url: `${ApiConfig.googleSheet}/${deleteSheetId}`,
         method: "DELETE",
         headers: {
-          token: `${localStorage.getItem("token")}`,
-        },
-        params: {
-          googleSheetId: deleteSheetId,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      if (response?.data?.status === 200) {
+      if (response?.status === 200) {
         setLoading(false);
         handleSubmit();
         handleDeleteClose();
@@ -516,7 +509,7 @@ const GoogleSheet = ({
                             history.push({
                               pathname: "/viewSheets",
                               state: {
-                                id: key.googleSheetId,
+                                id: key.id,
                                 nextRoute: nextRoute,
                               },
                             });
@@ -528,42 +521,42 @@ const GoogleSheet = ({
                         </TableCell>
 
                         <TableCell className="tableCellText">
-                          {key?.fieldsCount}
+                          {key?.fields}
                         </TableCell>
                         <TableCell className="tableCellText">
                           {moment(key?.createdOn).format("MM.DD.YYYY")}
                         </TableCell>
                         <TableCell
                           className={`${
-                            key?.isSheetConnected === true
+                            key?.is_sheet_connected === true
                               ? classes.active
-                              : key?.isSheetConnected === false
+                              : key?.is_sheet_connected === false
                               ? classes.failed
                               : ""
                           }`}
                           align="center"
                         >
                           <li>
-                            {key?.isSheetConnected === true
+                            {key?.is_sheet_connected === true
                               ? "Connected"
                               : "Disconnected"}
                           </li>
                         </TableCell>
                         <TableCell
                           className={`${
-                            key?.assignedStatus === "ASSIGNED"
+                            key?.status === "ASSIGNED"
                               ? classes.active
                               : classes.failed
                           }`}
                           align="center"
                         >
-                          {key?.assignedStatus
-                            ? key?.assignedStatus.charAt(0).toUpperCase() +
-                              key?.assignedStatus.slice(1).toLowerCase()
+                          {key?.status
+                            ? key?.status.charAt(0).toUpperCase() +
+                              key?.status.slice(1).toLowerCase()
                             : "--"}
                         </TableCell>
                         <TableCell className="tableCellText">
-                          {key?.totalRecords || "--"}
+                          {key?.total_records || "--"}
                         </TableCell>
                         <TableCell className="tableCellText">
                           {key?.recent}
@@ -586,7 +579,7 @@ const GoogleSheet = ({
                                   history.push({
                                     pathname: "/viewSheets",
                                     state: {
-                                      id: key.googleSheetId,
+                                      id: key.id,
                                       nextRoute: nextRoute,
                                     },
                                   });
@@ -599,7 +592,7 @@ const GoogleSheet = ({
                                   history.push({
                                     pathname: "/editSheets",
                                     state: {
-                                      id: key.googleSheetId,
+                                      id: key.id,
                                       nextRoute: nextRoute,
                                     },
                                   });
@@ -607,7 +600,7 @@ const GoogleSheet = ({
                               >
                                 Edit
                               </MenuItem>
-                              {key?.assignedStatus === "ASSIGNED" ? (
+                              {/* {key?.assignedStatus === "ASSIGNED" ? (
                                 <MenuItem
                                   onClick={() => {
                                     setSelectedUserId(key);
@@ -628,10 +621,10 @@ const GoogleSheet = ({
                                 >
                                   Assign
                                 </MenuItem>
-                              )}
+                              )} */}
                               <MenuItem
                                 onClick={() => {
-                                  setDeleteSheetId(key.googleSheetId);
+                                  setDeleteSheetId(key.id);
                                   setDeleteOpen(true);
                                 }}
                               >

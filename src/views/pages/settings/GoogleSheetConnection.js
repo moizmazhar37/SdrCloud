@@ -173,7 +173,7 @@ const GoogleSheetConnection = ({
   const history = useHistory();
   const [userList, setUserList] = useState([]);
   const [selectedUser, setSelectedUser] = useState("");
-  console.log("userList: ", userList);
+  
 
   const handleClose = () => {
     setOpenDailog(false);
@@ -194,13 +194,14 @@ const GoogleSheetConnection = ({
 
     try {
       setLoading(true);
+      console.log(values.userList)
       const response = await Axios({
         url: ApiConfig.fetchSheet,
-        method: "GET",
+        method: "POST",
         headers: {
-          token: `${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-        params: {
+        data: {
           rangeName: values.sheetName,
           sheetUrl: values.sheetURL,
           sheetType: sheetType,
@@ -208,34 +209,21 @@ const GoogleSheetConnection = ({
         },
       });
 
-      if (response?.data?.status === 200) {
-        console.log(response?.data?.data?._id);
+      if (response?.status === 200) {
         history.push("/editSheets", {
-          state: { id: response?.data?.data?._id },
+          state: { id: response?.data?.id },
         });
         console.log(response);
-        setSheetData(response?.data?.data);
+        setSheetData(response?.data);
 
         toast.success("Successfully connected to Google Sheet");
-        setLoading(false);
-      } else {
-        // setOpenDailog(true)
-        toast.error(response?.data?.message);
-        setFieldValue("sheetURL", "");
-        setIsSheetURLSet(false);
         setLoading(false);
       }
     } catch (error) {
       console.log("error: ", error);
-      if (error?.response?.data?.status === 402) {
         setLoading(false);
-
-        setOpenDailog(true);
-      } else {
-        toast.error(error?.response?.data?.message);
-        console.log(error);
-        setLoading(false);
-      }
+        // setOpenDailog(true);
+        toast.error(error?.response?.data?.detail);
     }
   };
   const getAllUsers = async () => {
@@ -244,12 +232,12 @@ const GoogleSheetConnection = ({
         url: ApiConfig.getAllUserByAccountId,
         method: "GET",
         headers: {
-          token: `${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      if (response?.data?.status === 200) {
-        setUserList(response?.data?.data);
-      }
+      // if (response?.data?.status === 200) {
+        setUserList(response?.data);
+      // }
     } catch (error) {
       console.log(error);
       setLoading(false);
@@ -387,10 +375,10 @@ const GoogleSheetConnection = ({
                                     <MenuItem
                                       key={i}
                                       style={{ color: "#858585" }}
-                                      value={data?.userId}
-                                      name={data?.userName}
+                                      value={data?.id}
+                                      name={data?.first_name}
                                     >
-                                      {data?.userName}
+                                      {data?.first_name}
                                     </MenuItem>
                                   );
                                 })}

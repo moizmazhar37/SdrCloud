@@ -152,19 +152,17 @@ function EditGoogleSheet(props) {
   const location = useLocation();
   const [viewdata, setViewData] = useState({
     title: "",
-    fieldsCount: "",
-    createdOn: "",
-    totalRecords: "",
+    field_count: "",
+    created_at: "",
+    total_records: "",
     recent: "",
-    fetchUrl: "",
+    fetch_url: "",
     records: "",
-    sheetType: null,
+    sheet_type: null,
   });
-  console.log(viewdata.sheetType, "ojopjo");
-  const [sheetType, setSheetType] = useState(viewdata?.sheetType);
-  console.log(viewdata?.sheetType, "sheetType");
+  const [sheet_type, setSheetType] = useState(viewdata?.sheet_type);
   useEffect(() => {
-    setSheetType(viewdata?.sheetType);
+    setSheetType(viewdata?.sheet_type);
   }, [viewdata]);
   const [recordCount, setRecordCount] = useState(0);
   const [tempRecordCount, setTempRecordCount] = useState(0);
@@ -184,20 +182,17 @@ function EditGoogleSheet(props) {
       // setLoading(true);
       setLoadingSheetType(true);
       const response = await axios({
-        url: ApiConfig.viewgooglesheet,
+        url: `${ApiConfig.googleSheet}/${sheetid}`,
         method: "GET",
         headers: {
-          token: `${localStorage.getItem("token")}`,
-        },
-        params: {
-          googleSheetId: sheetid,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      if (response?.data?.status === 200) {
+      if (response?.status === 200) {
         // setLoading(false);
-        setViewData(response?.data?.data);
-        setRecordCount(response?.data?.data?.fetchDays);
-        setTempRecordCount(response?.data?.data?.fetchDays);
+        setViewData(response?.data);
+        // setRecordCount(response?.data?.data?.fetchDays);
+        // setTempRecordCount(response?.data?.data?.fetchDays);
         // getAllSheet(
         //   response?.data?.data?.title,
         //   response?.data?.data?.fetchUrl
@@ -212,7 +207,7 @@ function EditGoogleSheet(props) {
   };
   let values;
 
-  if (viewdata && viewdata.sheetType === "HVO") {
+  if (viewdata && viewdata.sheet_type === "HVO") {
     values = [
       {
         value: "Image URL",
@@ -233,7 +228,7 @@ function EditGoogleSheet(props) {
         value: "Screenshot from URL",
       },
       {
-        value: "Text Field",
+        value: "Text",
       },
       {
         value: "URL",
@@ -275,7 +270,7 @@ function EditGoogleSheet(props) {
         value: "Static URL",
       },
       {
-        value: "Text Field",
+        value: "Text",
       },
       {
         value: "Video URL",
@@ -300,18 +295,15 @@ function EditGoogleSheet(props) {
       setLoadingFirstRowData(true);
       const res = await axios({
         method: "GET",
-        url: ApiConfig.getAllSheet,
+        url: `${ApiConfig.googleSheetDataTypes}/${sheetid}`,
         headers: {
-          token: `${localStorage.getItem("token")}`,
-        },
-        params: {
-          googleSheetId: sheetid,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
       if (res?.status === 200) {
         // setLoading(false);
-        setSheetData(res?.data?.data);
-        setFieldValue(res?.data?.data);
+        setSheetData(res?.data);
+        setFieldValue(res?.data);
       }
     } catch (error) {
       // setLoading(false);
@@ -327,12 +319,12 @@ function EditGoogleSheet(props) {
 
   const fieldsToDisplay = [
     "title",
-    "fieldsCount",
-    "createdOn",
-    "totalRecords",
+    "field_count",
+    "created_at",
+    "total_records",
     "recent",
-    "fetchUrl",
-    "fetchDays",
+    "fetch_url",
+    "fetch_days",
   ];
 
   const capitalizeFirstLetter = (string) => {
@@ -390,7 +382,7 @@ function EditGoogleSheet(props) {
         },
         params: {
           googleSheetId: sheetid,
-          type: sheetType,
+          type: sheet_type,
         },
       });
       if (response?.data?.status === 200) {
@@ -505,12 +497,12 @@ function EditGoogleSheet(props) {
 
   const displayNames = {
     title: "Title",
-    fieldsCount: "Field Count",
-    createdOn: "Connected",
-    totalRecords: "Total Records",
+    field_count: "Field Count",
+    created_at: "Connected",
+    total_records: "Total Records",
     recent: "Recent",
-    fetchUrl: "Fetch URL",
-    fetchDays: "New Records Each",
+    fetch_url: "Fetch URL",
+    fetch_days: "New Records Each",
   };
 
   const truncateUrl = (url) => {
@@ -623,7 +615,7 @@ function EditGoogleSheet(props) {
                       </Grid>
 
                       <Grid item lg={6} md={6} sm={6} xs={12}>
-                        {isEditing && key === "fetchDays" ? (
+                        {isEditing && key === "fetch_days" ? (
                           <Box
                             className="d-flex"
                             style={{ justifyContent: "start", gap: "5px" }}
@@ -656,7 +648,7 @@ function EditGoogleSheet(props) {
                           </Box>
                         ) : (
                           <Typography style={{ color: "#152F40" }}>
-                            {key === "createdOn" ? (
+                            {key === "created_at" ? (
                               viewdata[key] === "Connected" ? (
                                 "Connected"
                               ) : viewdata[key] ? (
@@ -664,7 +656,7 @@ function EditGoogleSheet(props) {
                               ) : (
                                 ""
                               )
-                            ) : key === "fetchUrl" ? (
+                            ) : key === "fetch_url" ? (
                               <Box
                                 className="d-flex"
                                 style={{ justifyContent: "start" }}
@@ -688,7 +680,7 @@ function EditGoogleSheet(props) {
                                   </a>
                                 </Typography>
                               </Box>
-                            ) : key === "fetchDays" ? (
+                            ) : key === "fetch_days" ? (
                               <Typography style={{ color: "#152F40" }}>
                                 {viewdata?.title &&
                                   (recordCount > 1
@@ -729,12 +721,12 @@ function EditGoogleSheet(props) {
                   )}
                 </Box>
               </Box>
-              {sheetType && (
+              {sheet_type && (
                 <Box className={classes.innerbox}>
                   <Typography>Select Sheet Type</Typography>
                   <>
                     <Select
-                      value={sheetType}
+                      value={sheet_type}
                       fullWidth
                       style={{ marginTop: "5px" }}
                       variant="outlined"
@@ -778,7 +770,7 @@ function EditGoogleSheet(props) {
                         setDisabledFields(!diabledFields);
                       } else {
                         // Conditionally call the appropriate function based on viewdata.sheetType
-                        if (viewdata.sheetType === "HVO") {
+                        if (viewdata.sheet_type === "HVO") {
                           saveFieldDataType();
                         } else {
                           saveFieldDataTypeVideo();

@@ -187,6 +187,7 @@ const ImageVideo = ({
   const [videoName, setVideoName] = useState("");
   const [openCrop, setOpenCrop] = useState(false);
   const [photoURL, setPhotoURL] = useState("");
+  const [imageURL, setImageURL] = useState("");
   const [type, setType] = useState("none");
 
   const [openDialog, setOpenDialog] = useState();
@@ -235,19 +236,29 @@ const ImageVideo = ({
   const sheetFirstRowData = async (type) => {
     try {
       setLoading(true);
-      const res = await axios({
+      const response = await axios({
         method: "GET",
-        url: ApiConfig.getFirstRowData,
+        url: `${ApiConfig.getTemplatebyID}/${templateId}`,
         headers: {
-          token: `${localStorage.getItem("token")}`,
-        },
-        params: {
-          googleSheetId: viewParams?.googleSheetsId,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      if (res.data.status === 200) {
+
+      console.log("Response", response);
+
+      const sheetId = response?.data?.sheet?.googleSheetsId;
+      console.log("Response", sheetId);
+
+      const res = await axios({
+        method: "GET",
+        url: `${ApiConfig.getFirstRowData}/${sheetId}`,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      if (res.status === 200) {
         setUploadedImage(null);
-        const firstRowData = res?.data?.data;
+        const firstRowData = res?.data;
         setFirstRowDataVideo(firstRowData);
         if (firstRowData) {
           setPhotoURL(firstRowData[type]);
@@ -264,6 +275,39 @@ const ImageVideo = ({
     }
   };
 
+  const [selectedUrl, setSelectedUrl] = useState("");
+  const [selectedVideoUrl, setSelectedVideoUrl] = useState("");
+  const [sheetData, setSheetData] = useState([]);
+
+  const handleUrlChange = (event) => {
+    setSelectedUrl(event.target.value);
+    console.log(selectedUrl);
+  };
+
+  const handleVideoUrlChange = (event) => {
+    setSelectedVideoUrl(event.target.value);
+    console.log(selectedUrl);
+  };
+
+  const fetchSheetData = async () => {
+    try {
+      const response = await axios.get(`${ApiConfig.headers}/${templateId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching sheet data:", error);
+      return [];
+    }
+  };
+
+  const handleMenuOpen = async () => {
+      const data = await fetchSheetData();
+      setSheetData(data);
+  };
+
   useEffect(() => {
     getSheetType();
     sheetFirstRowData(type);
@@ -273,50 +317,104 @@ const ImageVideo = ({
     const reader = new FileReader();
     reader.onloadend = () => {
       const base64String = reader.result;
-      // Do something with the base64 string, e.g., save it in state
 
-      setApiImage(base64String); // Save the base64 string in state or handle it as needed
+      setApiImage(base64String);
     };
     reader.readAsDataURL(file);
     setType("none");
   };
 
-  const handleDynamicImage = (e) => {
+  const [audioURL, setAudioURL] = useState("");
+  const [audioFiles, setAudioFiles] = useState(null);
+  const [videoURL, setVideoURL] = useState("");
+
+  const handleVideoUploadNew = async (event) => {
+    console.log("Hello")
+    const file = event.target.files[0]; 
+    if (!file) return;
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      // API call to upload video
+      const response = await axios.post(ApiConfig.UploadFile, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      const { public_url } = response.data; 
+      setVideoURL(public_url); 
+      toast.success("Uploaded video successfully.");
+    } catch (error) {
+      console.error("Error uploading video:", error);
+    }
+  };
+
+  const handleAudioChange = (event) => {
+    setAudioFiles(event.target.files[0]);
+  };
+
+  const handleAudioUpload = async () => {
+    if (!audioFiles)
+      return toast.error("Please select an audio file to upload.");
+    console.log("Hello");
+
+    try {
+      const formData = new FormData();
+      formData.append("file", audioFiles);
+
+      const response = await axios.post(ApiConfig.UploadFile, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      const { public_url } = response.data;
+      setAudioURL(public_url);
+      toast.success("Audio video successfully.");
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    }
+  };
+
+  const handleDynamicImage = async (e) => {
     const file = e.target.files[0];
-    const imageUrl = URL?.createObjectURL(file);
-    setPhotoURL(imageUrl);
-    if (file) {
-      handleImageToBase64(file);
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const response = await axios.post(ApiConfig.UploadFile, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      const { public_url } = response.data;
+      console.log("File uploaded successfully:", public_url);
+
+      setImageURL(public_url);
+    } catch (error) {
+      console.error(
+        "Error uploading file:",
+        error.response?.data || error.message
+      );
     }
   };
 
   const handleDynamicimage = async (event) => {
     const imageUrl = event.target.value;
 
-    setUploadedImage1(imageUrl);
-    setUploadedImage(null);
-    setOpenCrop(true);
-    setPhotoURL(imageUrl);
     setDynamicImage(imageUrl);
-    setImg64(null);
-    setUploadedImage1(imageUrl);
-    setOpenCrop(true);
 
     // setImgName("");
     setErrors((prevErrors) => ({ ...prevErrors, image: "" }));
-    try {
-      const response = await fetch(imageUrl);
-      const blob = await response.blob();
-      const reader = new FileReader();
-
-      reader.onloadend = () => {
-        setImg64(reader.result);
-      };
-
-      reader.readAsDataURL(blob);
-    } catch (error) {
-      console.error("Error converting image URL to base64:", error);
-    }
   };
 
   // Function to handle checkbox change
@@ -337,50 +435,61 @@ const ImageVideo = ({
 
   let apiData;
   if (elementType === "UPLOADIMAGE") {
+    let audio_embedded = false;
+    if (audioURL) {
+      audio_embedded = true;
+    }
+    let url;
+    let is_dynamic = false;
+    if (selectedUrl) {
+      url = selectedUrl;
+      is_dynamic = true;
+    } else {
+      url= imageURL
+      is_dynamic = false;
+    }
     apiData = {
       duration: duration,
-      scrollEnabled: false,
       elementId: elementID,
       sequence: typeIndex + 1,
-      videoTemplateId: templateId,
-      userId: localStorage.getItem("_id"),
+      hvo_template_id: templateId,
+      section_name: "UPLOAD IMAGE",
+      section_number: 3,
       status: "PROCESSING",
-      firstRowValue: firstRowData[type],
-      audioTemplateReferralDto: {
-        audioTypeId: "AUDIOURL",
-        embedded: false,
-        fileType: {
-          AUDIO: audioFile,
-        },
-      },
-      fileType: {
-        // IMAGE: img64 || dynamicImage,
-        IMAGE: apiImage ? photoURL : "",
-      },
-      url: type,
+      scroll: false,
+      audio_url: audioURL,
+      audio_embedded,
+      value: url,
+      is_dynamic,
     };
   } else if (elementType === "VIDEOCLIPS") {
+    let audio_embedded = false;
+    if (audioURL) {
+      audio_embedded = true;
+    }
+    let url;
+    let is_dynamic = false;
+    if (selectedVideoUrl) {
+      url = selectedVideoUrl;
+      is_dynamic = true;
+    } else {
+      url= videoURL
+      is_dynamic = false;
+    }
+    console.log(url, "url")
     apiData = {
-      duration: duration,
-      firstRowValue: matchData,
-      scrollEnabled: false,
+      // firstRowValue: matchData,
+      scroll: false,
       elementId: elementID,
       sequence: typeIndex + 1,
-      videoTemplateId: templateId,
-      userId: localStorage.getItem("_id"),
+      section_name: "VIDEO CLIPS",
+      section_number: 4,
+      hvo_template_id: templateId,
       status: "PROCESSING",
-      audioTemplateReferralDto: {
-        audioTypeId: !checked ? "EMBEDDED" : "AUDIOURL",
-        embedded: !checked,
-
-        fileType: {
-          AUDIO: audioFile,
-        },
-      },
-      fileType: {
-        VIDEO: uploadedVideo,
-      },
-      tagValueName: dynamicVideo,
+      audio_url: audioURL,
+      audio_embedded,
+      value: url,
+      is_dynamic,
     };
   }
   // State for managing form errors
@@ -403,14 +512,14 @@ const ImageVideo = ({
       dynamicVideo: "",
     };
     if (elementType === "UPLOADIMAGE") {
-      if (img64 === null || dynamicImage === "none")
-        newError.image = "Static or Dynamic Image URL is required.";
-      if (img64 === null || dynamicImage === "none")
-        newError.dynamicImage = "Dynamic or Static Image URL is required.";
+      // if (img64 === null || dynamicImage === "none")
+      //   newError.image = "Static or Dynamic Image URL is required.";
+      // if (img64 === null || dynamicImage === "none")
+      //   newError.dynamicImage = "Dynamic or Static Image URL is required.";
 
-      if (duration === "") {
-        newError.duration = "Duration is required.";
-      }
+      // if (duration === "") {
+      //   newError.duration = "Duration is required.";
+      // }
 
       // if (audioFile === null) {
       //   toast.error("Please upload audio file.");
@@ -426,12 +535,12 @@ const ImageVideo = ({
             method: "POST",
             url: ApiConfig.createVideoTemplateReferral,
             headers: {
-              token: `${localStorage.getItem("token")}`,
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
 
             data: apiData,
           });
-          if (res?.data?.status === 200) {
+          if (res?.status === 200) {
             setIsVideoUploaded(false);
             setIsSaved(true);
             reloadData();
@@ -465,30 +574,26 @@ const ImageVideo = ({
       if (duration === "") {
         newError.duration = "Duration is required.";
       }
-      if (checked === true && audioFile === null) {
-        toast.error("Please upload audio file.");
-      }
-      if (
-        (uploadedVideo !== null || dynamicVideo !== "none") &&
-        duration !== "" &&
-        (checked === true ? audioFile !== null : true)
-      ) {
+
+      // if (checked === true && audioFile === null) {
+      //   toast.error("Please upload audio file.");
+      // }
         try {
           setLoading(true);
           const res = await axios({
             method: "POST",
             url: ApiConfig.createVideoTemplateReferral,
             headers: {
-              token: `${localStorage.getItem("token")}`,
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
 
             data: apiData,
           });
-          if (res?.data?.status === 200) {
+          if (res?.status === 200) {
             setIsSaved(true);
             reloadData();
             setIsVideoUploaded(false);
-            toast.success(res?.data?.message);
+            toast.success("Section saved successfully");
             setElementData({
               index: typeIndex,
               type: elementType,
@@ -505,8 +610,6 @@ const ImageVideo = ({
         } finally {
           setLoading(false);
         }
-      }
-      setErrors(newError);
     }
   };
   // Effect hook to update link data and reset state
@@ -533,104 +636,108 @@ const ImageVideo = ({
     accept: ".jpg,.jpeg,.png",
   });
 
-  const handleDynamicVideo = (e) => {
-    setShowUploadButton(false);
-    const videoDynamicURL = e.target.value;
+  // const handleDynamicVideo = (e) => {
+  //   setShowUploadButton(false);
+  //   const videoDynamicURL = e.target.value;
 
-    setDynamicVideo(videoDynamicURL);
-    setIsVideoUploaded(true);
-    setVideoName("");
-    setUploadedVideo(null);
-    if (videoDynamicURL !== "none" && firstRowDataVideo[videoDynamicURL]) {
-      setDynamicVideo(videoDynamicURL);
-      const videoUrl = firstRowDataVideo[videoDynamicURL];
-      setMatchData(videoUrl);
+  //   setDynamicVideo(videoDynamicURL);
+  //   setIsVideoUploaded(true);
+  //   setVideoName("");
+  //   setUploadedVideo(null);
+  //   if (videoDynamicURL !== "none" && firstRowDataVideo[videoDynamicURL]) {
+  //     setDynamicVideo(videoDynamicURL);
+  //     const videoUrl = firstRowDataVideo[videoDynamicURL];
+  //     setMatchData(videoUrl);
 
-      const videoElement = document.createElement("video");
-      videoElement.addEventListener("loadedmetadata", () => {
-        const duration = videoElement.duration;
-        setDuration(duration.toFixed(0));
-      });
-      videoElement.onerror = () => {
-        console.error(
-          "Failed to load video. Unsupported source or invalid URL."
-        );
-        setMatchData("");
-      };
-      videoElement.src = videoUrl;
-      videoElement.load();
+  //     const videoElement = document.createElement("video");
+  //     videoElement.addEventListener("loadedmetadata", () => {
+  //       const duration = videoElement.duration;
+  //       setDuration(duration.toFixed(0));
+  //     });
+  //     videoElement.onerror = () => {
+  //       console.error(
+  //         "Failed to load video. Unsupported source or invalid URL."
+  //       );
+  //       setMatchData("");
+  //     };
+  //     videoElement.src = videoUrl;
+  //     videoElement.load();
 
-      if (videoRef.current) {
-        videoRef.current.src = videoUrl;
-        videoRef.current.play().catch((error) => { });
-      }
-    } else {
-      setMatchData("");
-    }
-  };
-  useEffect(() => {
-    if (
-      firstRowDataVideo &&
-      Object.keys(firstRowDataVideo).length > 0 &&
-      dynamicVideo !== "none"
-    ) {
-      handleDynamicVideo({ target: { value: dynamicVideo } });
-    }
-  }, [firstRowDataVideo]);
+  //     if (videoRef.current) {
+  //       videoRef.current.src = videoUrl;
+  //       videoRef.current.play().catch((error) => {});
+  //     }
+  //   } else {
+  //     setMatchData("");
+  //   }
+  // };
+  // useEffect(() => {
+  //   if (
+  //     firstRowDataVideo &&
+  //     Object.keys(firstRowDataVideo).length > 0 &&
+  //     dynamicVideo !== "none"
+  //   ) {
+  //     handleDynamicVideo({ target: { value: dynamicVideo } });
+  //   }
+  // }, [firstRowDataVideo]);
 
-  const handleVideoUpload = async (e) => {
-    const uploadedVideoFile = e.target.files[0];
+  // const handleVideoUpload = async (e) => {
+  //   const uploadedVideoFile = e.target.files[0];
 
-    // Check if the file size exceeds 100MB (100 * 1024 * 1024 = 104857600 bytes)
-    if (uploadedVideoFile?.size > 104857600) {
-      toast.error("File size should not exceed 100MB.");
-      return; // Stop execution if the file is too large
-    }
+  //   // Check if the file size exceeds 100MB (100 * 1024 * 1024 = 104857600 bytes)
+  //   if (uploadedVideoFile?.size > 104857600) {
+  //     toast.error("File size should not exceed 100MB.");
+  //     return; // Stop execution if the file is too large
+  //   }
 
-    setVideoName(uploadedVideoFile?.name);
-    setDynamicVideo("none");
+  //   setVideoName(uploadedVideoFile?.name);
+  //   setDynamicVideo("none");
 
-    try {
-      setLoading(true);
-      const formData = new FormData();
-      formData.append("image", uploadedVideoFile);
-      console.log(formData, "dfgfg");
+  //   try {
+  //     setLoading(true);
+  //     const formData = new FormData();
+  //     formData.append("image", uploadedVideoFile);
+  //     console.log(formData, "dfgfg");
 
-      const res = await axios({
-        method: "POST",
-        url: ApiConfig.uploadFile,
-        headers: {
-          token: localStorage.getItem("token"),
-        },
-        data: formData,
-      });
+  //     const res = await axios({
+  //       method: "POST",
+  //       url: ApiConfig.uploadFile,
+  //       headers: {
+  //         token: localStorage.getItem("token"),
+  //       },
+  //       data: formData,
+  //     });
 
-      if (res?.status == 200) {
-        toast.success("Video Uploaded Successfully.");
-        const videoURL = res?.data?.data;
-        setShowUploadButton(false);
-        setUploadedVideo(videoURL);
-        setIsVideoUploaded(true);
+  //     if (res?.status == 200) {
+  //       toast.success("Video Uploaded Successfully.");
+  //       console.log("Hello")
+  //       console.log(res?.data)
+  //       const videoURL = res?.data?.public_url;
+  //       setVideoURL(videoURL)
+  //       console.log(videoURL, "dfgfg");
+  //       setShowUploadButton(false);
+  //       setUploadedVideo(videoURL);
+  //       setIsVideoUploaded(true);
 
-        const videoElement = document.createElement("video");
-        videoElement.addEventListener("loadedmetadata", () => {
-          const duration = videoElement.duration;
-          setDuration(duration.toFixed(0));
-        });
-        videoElement.src = videoURL;
-        videoElement.load();
+  //       const videoElement = document.createElement("video");
+  //       videoElement.addEventListener("loadedmetadata", () => {
+  //         const duration = videoElement.duration;
+  //         setDuration(duration.toFixed(0));
+  //       });
+  //       videoElement.src = videoURL;
+  //       videoElement.load();
 
-        if (videoRef.current) {
-          videoRef.current.src = videoURL;
-          videoRef.current.play();
-        }
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  //       if (videoRef.current) {
+  //         videoRef.current.src = videoURL;
+  //         videoRef.current.play();
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   const file = dynamicImage;
   const reader = new FileReader();
@@ -762,24 +869,21 @@ const ImageVideo = ({
                           </Button>
                         ) : (
                           <>
+                            {/* Button to trigger file input */}
                             <Button
                               className="savebtn"
-                              onClick={(e) => {
-                                fileInputRef.current.click();
-                                handleDynamicimage(e);
-                                // setDynamicImage('none');
-                              }}
+                              onClick={() => fileInputRef.current.click()} // Open the file dialog on button click
                             >
                               Choose
                             </Button>
+
+                            {/* Hidden file input for image selection */}
                             <input
                               type="file"
-                              {...getInputProps({
-                                accept: ".jpg,.jpeg,.png",
-                              })}
+                              accept=".jpg,.jpeg,.png" // Only allow image files
                               ref={fileInputRef}
-                              style={{ display: "none" }}
-                              onChange={handleDynamicImage}
+                              style={{ display: "none" }} // Hide the input element
+                              onChange={handleDynamicImage} // Trigger the upload when a file is selected
                             />
                           </>
                         )}
@@ -799,35 +903,20 @@ const ImageVideo = ({
                   id="choose-template"
                   fullWidth
                   MenuProps={menuProps}
-                  value={type === "none" ? type : dynamicImage}
-                  onChange={(e) => handleDynamicimage(e)}
                   IconComponent={ExpandMoreIcon}
                   // error={!!errors.image}
                   // helperText={errors.image}
-                  disabled={
-                    !Array.isArray(companyDetails) ||
-                    !companyDetails.some(
-                      (item) => item?.dataType === "Image URL"
-                    )
-                  }
+                  value={selectedUrl}
+                  onChange={handleUrlChange}
+                  onOpen={handleMenuOpen}
                 >
-                  <MenuItem value="none">Select Image Url</MenuItem>
+                  <MenuItem disabled value="none">Select Image Url</MenuItem>
                   {/* <MenuItem value="--">Select None</MenuItem> */}
-                  {companyDetails !== undefined &&
-                    companyDetails.length > 0 &&
-                    companyDetails
-                      ?.filter((item) => item?.dataType == "Image URL")
-                      ?.map((item) => (
-                        <MenuItem
-                          value={item?.value}
-                          onClick={() => {
-                            setType(item?.value);
-                            sheetFirstRowData(item?.value);
-                          }}
-                        >
-                          {item?.value}
-                        </MenuItem>
-                      ))}
+                  {sheetData?.map((entry) => (
+                    <MenuItem key={entry?.value} value={entry?.value}>
+                      {entry?.value}
+                    </MenuItem>
+                  ))}
                 </Select>
                 <Typography className="error">{errors.image}</Typography>
               </Grid>
@@ -863,14 +952,16 @@ const ImageVideo = ({
                         ) : (
                           <>
                             <Button className="savebtn" component="label">
-                              Choose
+                              Choose Video
                               <input
                                 type="file"
                                 accept="video/*"
                                 style={{ display: "none" }}
-                                onChange={handleVideoUpload}
+                                onChange={handleVideoUploadNew} // Trigger file upload on file selection
                               />
                             </Button>
+                            {videoURL && <p>Uploaded Video URL: {videoURL}</p>}{" "}
+                            {/* Display uploaded video URL */}
                           </>
                         )}
                       </InputAdornment>
@@ -889,28 +980,21 @@ const ImageVideo = ({
                   id="choose-template"
                   fullWidth
                   MenuProps={menuProps}
-                  value={dynamicVideo}
-                  onChange={handleDynamicVideo}
-                  IconComponent={ExpandMoreIcon}
                   error={!!errors.dynamicVideo}
                   helperText={errors.dynamicVideo}
-                  disabled={
-                    !Array.isArray(companyDetails) ||
-                    !companyDetails.some(
-                      (item) => item?.dataType === "Video URL"
-                    )
-                  }
+                  onChange={handleVideoUrlChange}
+                  IconComponent={ExpandMoreIcon}
+                  onOpen={handleMenuOpen}
+                  value={selectedVideoUrl}
                 >
                   <MenuItem value="none" disabled>
                     Select Dynamic URL to fetch Video
                   </MenuItem>
-                  {companyDetails !== undefined &&
-                    companyDetails.length > 0 &&
-                    companyDetails
-                      ?.filter((item) => item?.dataType == "Video URL")
-                      ?.map((item) => (
-                        <MenuItem value={item?.value}>{item?.value}</MenuItem>
-                      ))}
+                  {sheetData?.map((entry) => (
+                    <MenuItem key={entry?.value} value={entry?.value}>
+                      {entry?.value}
+                    </MenuItem>
+                  ))}
                 </Select>
                 <Typography className="error">{errors.dynamicVideo}</Typography>
               </Grid>
@@ -976,16 +1060,23 @@ const ImageVideo = ({
                 marginTop: "26px",
               }}
             >
-              <Button
-                fullWidth
-                variant={duration ? "contained" : "outlined"}
-                style={{ height: "44px" }}
-                className={`${!duration ? "savebtnDisables" : "savebtn"}`}
-                onClick={handleOpenDialog}
-                disabled={!duration}
-              >
-                Audio
-              </Button>
+              <div>
+                <input
+                  type="file"
+                  accept="audio/*"
+                  onChange={handleAudioChange}
+                  style={{ marginBottom: "1rem" }}
+                />
+                <Button
+                  fullWidth
+                  variant={duration ? "contained" : "outlined"}
+                  style={{ height: "44px" }}
+                  className={`${!duration ? "savebtnDisables" : "savebtn"}`}
+                  onClick={handleAudioUpload}
+                >
+                  Upload Audio
+                </Button>
+              </div>
             </div>
           </>
         ) : (
@@ -1003,12 +1094,20 @@ const ImageVideo = ({
             />
             {checked === true && (
               <>
+                <input
+                  type="file"
+                  accept="audio/*"
+                  onChange={handleAudioChange}
+                  style={{ marginBottom: "1rem" }}
+                />
                 <Button
-                  variant="contained"
+                  fullWidth
+                  variant={duration ? "contained" : "outlined"}
                   style={{ height: "44px" }}
-                  onClick={handleOpenDialog}
+                  className={`${!duration ? "savebtnDisables" : "savebtn"}`}
+                  onClick={handleAudioUpload}
                 >
-                  Audio
+                  Upload Audio
                 </Button>
               </>
             )}
@@ -1049,7 +1148,7 @@ const ImageVideo = ({
                           src={photoURL || dynamicImage || firstRightImg}
                           alt="Uploaded"
                           className={classes.secondimage}
-                        // onClick={openFullScreen}
+                          // onClick={openFullScreen}
                         />
                       </>
                     )}
@@ -1090,7 +1189,7 @@ const ImageVideo = ({
               className={`${
                 // audioFile === null ||
                 duration === "" || isSaved ? "savebtnDisables" : "savebtn"
-                }`}
+              }`}
               disabled={
                 duration === "" || isSaved
 
@@ -1115,11 +1214,11 @@ const ImageVideo = ({
             <Button
               variant={isSaved ? "outlined" : "contained"}
               onClick={() => handleSetData()}
-              className={`${isVideoUploaded === false || isSaved
-                ? "savebtnDisables"
-                : "savebtn"
-                }`}
-              disabled={isVideoUploaded === false || isSaved}
+              className={`${
+                isVideoUploaded === false || isSaved
+                  ? "savebtnDisables"
+                  : "savebtn"
+              }`}
             >
               Save
             </Button>
@@ -1135,36 +1234,6 @@ const ImageVideo = ({
           </>
         )}
       </Box>
-      {openCrop && (
-        <Dialog
-          open={openCrop}
-          onClose={handleCloseCrop}
-          maxWidth={"xl"}
-          className={classes.DialogBox}
-        >
-          <DialogTitle>
-            <Typography variant="h2">Crop Image</Typography>
-          </DialogTitle>
-          <CropEasy
-            {...{
-              photoURL,
-              setType,
-              setFirstRightImg,
-              firstRightImg,
-              setApiImage,
-              type,
-              openFullScreen,
-              setOpenCrop,
-              setPhotoURL,
-              setUploadedImage,
-              setUploadedImage1,
-              setErrors,
-              setDynamicImage,
-              setImg64,
-            }}
-          />
-        </Dialog>
-      )}
 
       <AudioDialog
         open={openDialog}

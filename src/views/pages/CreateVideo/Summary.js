@@ -142,6 +142,9 @@ function Summary({
       toast.error("Please connect google sheet.");
     }
   };
+  console.log("JKLDFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF")
+  console.log(linkObject)
+  console.log(linkObject.length)
 
   const searchParams = new URLSearchParams(window.location.search);
   const templateId = searchParams.get("templateId");
@@ -185,21 +188,17 @@ function Summary({
       setLoading(true);
       const res = await axios({
         method: "DELETE",
-        url: ApiConfig.deleteElement,
+        url: `${ApiConfig.deleteElement}/${deleteId}`,
         headers: {
-          token: `${localStorage.getItem("token")}`,
-        },
-        params: {
-          videoTempalteRefferalId: deleteId,
-          videoTemplateId: videoTemplateId,
-        },
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        }
       });
-      if (res?.data?.status === 200) {
+      if (res?.status === 200) {
         setIsSectionCompleted(true);
         setLoading(false);
         setDeleteOpen(false);
         reloadData();
-        toast.success(res?.data?.message);
+        toast.success("Element Deleted Successfully");
       }
     } catch (error) {
       console.log(error, "error");
@@ -212,19 +211,43 @@ function Summary({
       setLoading(true);
       const res = await axios({
         method: "GET",
-        url: ApiConfig.getTemplatebyID,
+        url: `${ApiConfig.getTemplatebyID}/${templateId}`,
         headers: {
-          token: `${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-        params: {
-          templateId: templateId,
-        },
+        // params: {
+        //   hvo_template_id: templateId,
+        // },
       });
 
       if (res?.status === 200) {
         console.log(res?.data?.data, "creationstatus");
 
-        setCreationProcess(res?.data?.data?.getVideo?.creationStatus);
+        setCreationProcess(res?.data?.getVideo?.creationStatus);
+      }
+    } catch (error) {
+      console.log(error, "error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCreateVideo = async () => {
+    try {
+      setLoading(true);
+      const res = await axios({
+        method: "POST",
+        url: `${ApiConfig.createVideo}/${templateId}`,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (res?.status === 200) {
+        console.log(res?.data, "creationstatus");
+        toast.success("Video Creation Started")
+
+        setCreationProcess(res?.data?.getVideo?.creationStatus);
       }
     } catch (error) {
       console.log(error, "error");
@@ -256,22 +279,14 @@ function Summary({
                       <Typography
                         style={{ color: "#0358AC", marginTop: "10px" }}
                       >
-                        {item?.elementId?.element_Name === "DYNAMICURL"
-                          ? "Dynamic URL"
-                          : item?.elementId?.element_Name === "STATICURL"
-                          ? "Static URL"
-                          : item?.elementId?.element_Name === "UPLOADIMAGE"
-                          ? "Upload Image"
-                          : item?.elementId?.element_Name === "VIDEOCLIPS"
-                          ? "Video Clips"
-                          : item?.elementId?.element_Name}
+                        {item.section_name}
                       </Typography>
                     </Grid>
                     <Grid item xs={6} align="right">
                       <IconButton
                         onClick={() => {
-                          setDeleteId(item?._id);
-                          setVideoTemplateId(item?.videoTemplateId);
+                          setDeleteId(item?.id);
+                          setVideoTemplateId(item?.hvo_template_id);
                           setDeleteOpen(true);
                         }}
                       >
@@ -280,7 +295,7 @@ function Summary({
                     </Grid>
                   </Grid>
                   <Box mt={2}>
-                    {item?.elementId?.element_Name === "STATICURL" ? (
+                    {item?.section_name === "STATIC URL" ? (
                       <>
                         <Box
                           style={{
@@ -306,10 +321,10 @@ function Summary({
                         >
                           <CiClock2 />
                           {item?.duration}sec&nbsp;&nbsp;|&nbsp;&nbsp;Scroll -{" "}
-                          {item?.scrollEnabled === true ? "Yes" : "No"}
+                          {item?.scroll_enabled === true ? "Yes" : "No"}
                         </Typography>
                       </>
-                    ) : item?.elementId?.element_Name === "DYNAMICURL" ? (
+                    ) : item?.section_name === "DYNAMIC URL" ? (
                       <>
                         <Box
                           style={{
@@ -335,10 +350,10 @@ function Summary({
                         >
                           <CiClock2 />
                           {item?.duration}sec&nbsp;&nbsp;|&nbsp;&nbsp;Scroll -{" "}
-                          {item?.scrollEnabled === true ? "Yes" : "No"}
+                          {item?.scroll_enabled === true ? "Yes" : "No"}
                         </Typography>
                       </>
-                    ) : item?.elementId?.element_Name === "UPLOADIMAGE" ? (
+                    ) : item?.section_name === "UPLOAD IMAGE" ? (
                       <>
                         <Box
                           style={{
@@ -368,7 +383,7 @@ function Summary({
                           Yes */}
                         </Typography>
                       </>
-                    ) : item?.elementId?.element_Name === "VIDEOCLIPS" ? (
+                    ) : item?.section_name === "VIDEO CLIPS" ? (
                       <>
                         <Box
                           style={{
@@ -433,19 +448,21 @@ function Summary({
                     ? "sheetbtnDisables"
                     : "sheetbtn"
                 }`}
-                disabled={templateParams?.sheetId === null}
                 onClick={() => {
-                  handleSheetData();
-                  getTemplate();
+                  // handleSheetData();
+                  // getTemplate();
+                  handleCreateVideo();
                 }}
               >
-                {creationProcess === "Pending"
+                {/* {creationProcess === "Pending"
                   ? "Create Video"
                   : creationProcess === "Active"
                   ? "Active"
                   : creationProcess === "Published"
-                  ? "Published"
-                  : "Create Video"}
+                  ? "Published" */}
+                  {/* : " */}
+                  Create Video
+                  {/* "} */}
               </Button>
             </div>
           </Box>
