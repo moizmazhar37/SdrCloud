@@ -142,6 +142,9 @@ function Summary({
       toast.error("Please connect google sheet.");
     }
   };
+  console.log("JKLDFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF")
+  console.log(linkObject)
+  console.log(linkObject.length)
 
   const searchParams = new URLSearchParams(window.location.search);
   const templateId = searchParams.get("templateId");
@@ -185,21 +188,17 @@ function Summary({
       setLoading(true);
       const res = await axios({
         method: "DELETE",
-        url: ApiConfig.deleteElement,
+        url: `${ApiConfig.deleteElement}/${deleteId}`,
         headers: {
-          token: `${localStorage.getItem("token")}`,
-        },
-        params: {
-          videoTempalteRefferalId: deleteId,
-          videoTemplateId: videoTemplateId,
-        },
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        }
       });
-      if (res?.data?.status === 200) {
+      if (res?.status === 200) {
         setIsSectionCompleted(true);
         setLoading(false);
         setDeleteOpen(false);
         reloadData();
-        toast.success(res?.data?.message);
+        toast.success("Element Deleted Successfully");
       }
     } catch (error) {
       console.log(error, "error");
@@ -280,13 +279,13 @@ function Summary({
                       <Typography
                         style={{ color: "#0358AC", marginTop: "10px" }}
                       >
-                        {item?.section_name}
+                        {item.section_name}
                       </Typography>
                     </Grid>
                     <Grid item xs={6} align="right">
                       <IconButton
                         onClick={() => {
-                          setDeleteId(item?._id);
+                          setDeleteId(item?.id);
                           setVideoTemplateId(item?.hvo_template_id);
                           setDeleteOpen(true);
                         }}
@@ -322,7 +321,7 @@ function Summary({
                         >
                           <CiClock2 />
                           {item?.duration}sec&nbsp;&nbsp;|&nbsp;&nbsp;Scroll -{" "}
-                          {item?.scrollEnabled === true ? "Yes" : "No"}
+                          {item?.scroll_enabled === true ? "Yes" : "No"}
                         </Typography>
                       </>
                     ) : item?.section_name === "DYNAMIC URL" ? (
@@ -351,7 +350,7 @@ function Summary({
                         >
                           <CiClock2 />
                           {item?.duration}sec&nbsp;&nbsp;|&nbsp;&nbsp;Scroll -{" "}
-                          {item?.scrollEnabled === true ? "Yes" : "No"}
+                          {item?.scroll_enabled === true ? "Yes" : "No"}
                         </Typography>
                       </>
                     ) : item?.section_name === "UPLOAD IMAGE" ? (

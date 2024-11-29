@@ -763,10 +763,12 @@ const CreateTemplate = (props) => {
   // Function to get template details by template ID
   const getTemplateByID = async (value) => {
     try {
+      const searchParams = new URLSearchParams(window.location.search);
+      const templateId = searchParams.get("templateId");
       setLoading(true);
       const res = await axios({
         method: "GET",
-        url: `${ApiConfig.getTemplatebyID}/${value}`,
+        url: `${ApiConfig.getTemplatebyID}/${templateId}`,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -782,21 +784,21 @@ const CreateTemplate = (props) => {
         setSaveName(true);
         setSelectedOption(res?.data?.categoryId);
         setLinkObject(res?.data?.elementsList);
-        if (res?.data?.sheet && res?.data?.sheet !== null) {
+        if (res?.data?.sheet && res?.data?.sheet?.title !== null) {
           setEditSheet(true);
         }
-        const videoTemplateReferrals =
-          res?.data?.data?.getVideo?.videoTemplateReferrals;
-        const newElements = videoTemplateReferrals.map((item, index) => ({
-          id: index + 1,
-          name: `Section ${index + 1}`,
-          isCompleted: false,
-          isDisabled: false,
-        }));
+        // const videoTemplateReferrals =
+        //   res?.data?.getVideo?.videoTemplateReferrals;
+        // const newElements = videoTemplateReferrals.map((item, index) => ({
+        //   id: index + 1,
+        //   name: `Section ${index + 1}`,
+        //   isCompleted: false,
+        //   isDisabled: false,
+        // }));
 
-        if (videoTemplateReferrals && videoTemplateReferrals.length !== 0) {
-          setElements(newElements);
-        } else {
+        // if (videoTemplateReferrals && videoTemplateReferrals.length !== 0) {
+        //   setElements(newElements);
+        // } else {
           setElements([
             {
               id: 1,
@@ -823,18 +825,20 @@ const CreateTemplate = (props) => {
               isDisabled: true,
             },
           ]);
-        }
+        // }
         // setElements(
         //   videoTemplateReferrals && videoTemplateReferrals.length !== 0
         //     ? videoTemplateReferrals
         //     :
         // );
 
+        console.log("Hello")
         setTemplateName(res?.data?.getVideo.hvoTemplateName);
         setViewParams((prevState) => ({
           ...prevState,
           ...res?.data?.sheet,
         }));
+        console.log(viewParams, "setViewParams")
         setConnectedSheet(res?.data?.sheet.googleSheetsId);
       }
     } catch (error) {
@@ -1132,10 +1136,10 @@ const CreateTemplate = (props) => {
               {saveName ? (
                 <Box className="nameBox">
                   <Typography style={{ color: "#858585" }}>
-                    Template Name
+                    Template Names
                   </Typography>
                   <Box className="d-flex justify-space-between">
-                    <Tooltip title={templateParams?.videoTemplateName || ""}>
+                    <Tooltip title={templateParams?.hvoTemplateName || ""}>
                       <Typography
                         style={{
                           color: "#152F40",
@@ -1145,13 +1149,13 @@ const CreateTemplate = (props) => {
                         }}
                       >
                         {/* {templateParams?.videoTemplateName} */}
-                        {templateParams?.videoTemplateName
-                          ? templateParams?.videoTemplateName.length > 40
-                            ? `${templateParams?.videoTemplateName.slice(
+                        {templateParams?.hvoTemplateName
+                          ? templateParams?.hvoTemplateName.length > 40
+                            ? `${templateParams?.hvoTemplateName.slice(
                                 0,
                                 40
                               )}...`
-                            : templateParams?.videoTemplateName
+                            : templateParams?.hvoTemplateName
                           : ""}
                       </Typography>
                     </Tooltip>
@@ -1221,7 +1225,7 @@ const CreateTemplate = (props) => {
                       className="d-flex justify-space-between nameBox2"
                       style={{ width: "100%", flexWrap: "wrap" }}
                     >
-                      <Typography>{viewParams && viewParams?.title}</Typography>
+                      <Typography>{viewParams.title}</Typography>
 
                       <ButtonGroup variant="text">
                         <Button

@@ -133,11 +133,11 @@ export default function AuthProvider(props) {
         method: "GET",
         url: ApiConfig.getAllCategories,
         headers: {
-          token: `${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
       if (res?.status === 200) {
-        setCategory(res?.data?.data);
+        setCategory(res?.data);
       }
     } catch (error) {
       console.log(error, "error");
@@ -156,11 +156,11 @@ export default function AuthProvider(props) {
         method: "GET",
         url: ApiConfig.profile,
         headers: {
-          token: `${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      if (res?.data?.status === 200) {
-        const data = res?.data?.data;
+      if (res?.status === 200) {
+        const data = res?.data;
 
         localStorage.setItem("accountId", data?.accountId);
 

@@ -1,5 +1,5 @@
-const url = "https://backend-283763506150.us-central1.run.app";
-// const url = "http://localhost:5600";
+// const url = "https://backend-283763506150.us-central1.run.app";
+const url = "http://localhost:8000";
 
 const auth = `${url}/auth`;
 const users = `${url}/users`;
@@ -15,7 +15,7 @@ const upload = `${url}/upload`;
 const ApiConfig = {
   login: `${auth}/signin`,
   createNewAccount: `${admin}/subadmin`,
-  getAllCategories: `${categories}`,
+  getAllCategories: `${categories}/`,
   ppadminUserListNew: `${admin}`,
   addUser: `${subadmin}/user`,
   getAllUserByAccountId: `${subadmin}/users`,
@@ -33,6 +33,10 @@ const ApiConfig = {
   getAllPPUsers: `${admin}/subadmin`,
   googleSheet: `${googlesheets}`,
   googleSheetDataTypes: `${googlesheets}/get-headers`,
+  getTemplateList: `${hvotemplates}`,
+  deleteTemplate: `${hvotemplates}`,
+  deleteElement: `${videoelement}`,
+  profile: `${users}/profile`,
   // userSignup: `${user}/userSignUp`,
   // // verifyEmail: `${user}/verifyEmail`,
   // goggleLogin: `${user}/googleLogin`,
