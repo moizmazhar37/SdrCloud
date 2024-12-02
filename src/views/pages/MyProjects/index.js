@@ -616,7 +616,8 @@ function AllCustomerGroup() {
                                   console.log(data?.template_id);
                                   history.push("/user-myprojects", {
                                     state: {
-                                      template_id: data?.template_id
+                                      template_id: data?.template_id,
+                                      tempType: "VIDEO"
                                     },
                                   });
                                 }}
