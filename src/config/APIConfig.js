@@ -6,23 +6,24 @@ const users = `${url}/users`;
 const admin = `${url}/admin`;
 const subadmin = `${url}/subadmin`;
 const categories = `${url}/categories`;
-const hvotemplates = `${url}/hvotemplates`;
+const templates = `${url}/templates`;
 const hvoelement = `${url}/hvoelement`;
 const videoelement = `${url}/videoelement`;
 const googlesheets = `${url}/googlesheets`;
 const upload = `${url}/upload`;
+const prospects = `${url}/prospect`;
 
 const ApiConfig = {
   login: `${auth}/signin`,
   createNewAccount: `${admin}/subadmin`,
   getAllCategories: `${categories}/`,
-  ppadminUserListNew: `${admin}`,
+  ppadminUserListNew: `${admin}/`,
   addUser: `${subadmin}/user`,
   getAllUserByAccountId: `${subadmin}/users`,
   fetchSheet: `${googlesheets}`,
-  createVdoTemplate: `${hvotemplates}/`,
+  createVdoTemplate: `${templates}/`,
   connectedSheetVideo: `${googlesheets}/all-connected-sheets`,
-  connectSheetTOTemplateVideo: `${hvotemplates}/connect-sheet-with-template`,
+  connectSheetTOTemplateVideo: `${templates}/connect-sheet-with-template`,
   createVideoTemplateReferral: `${videoelement}/video-section`,
   getTemplatebyID: `${videoelement}`,
   previewVideo: `${videoelement}/preview-video-with-sheet-data`,
@@ -33,10 +34,13 @@ const ApiConfig = {
   getAllPPUsers: `${admin}/subadmin`,
   googleSheet: `${googlesheets}`,
   googleSheetDataTypes: `${googlesheets}/get-headers`,
-  getTemplateList: `${hvotemplates}`,
-  deleteTemplate: `${hvotemplates}`,
+  getTemplateList: `${templates}`,
+  deleteTemplate: `${templates}`,
   deleteElement: `${videoelement}`,
   profile: `${users}/profile`,
+  getAllUsers: `${subadmin}/users`,
+  category: `${categories}/`,
+  prospects: `${prospects}`,
   // userSignup: `${user}/userSignUp`,
   // // verifyEmail: `${user}/verifyEmail`,
   // goggleLogin: `${user}/googleLogin`,

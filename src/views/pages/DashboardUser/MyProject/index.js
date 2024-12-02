@@ -375,6 +375,7 @@ function UserProjectList() {
   const [sheetData, setSheetData] = useState();
   console.log("sheetData: ", sheetData);
   const [sheetId, setSheetId] = useState(location?.state?.state?.sheetId);
+  const [templateId, setTemplateId] = useState(location?.state?.state?.template_id);
   const [tempType, setTempType] = useState(
     location?.state?.state?.tempType || ""
   );
@@ -456,38 +457,22 @@ function UserProjectList() {
   const handlePageChange = (event, page) => {
     setPage(page);
   };
+  
+  const [data, setData] = useState([])
 
   const userListApi = async () => {
-    // setLoading(true);
-    const params = {
-      page: page,
-      pageSize: 10,
-    };
-    if (location?.state?.state?.sheetId) {
-      params.sheetId = location?.state?.state?.sheetId;
-    }
-    if (location?.state?.state?.tempType) {
-      params.tempType = location?.state?.state?.tempType;
-    }
+    setLoading(true);
     try {
       const res = await axios({
         method: "GET",
-        url: ApiConfig.userProjectListing,
+        url: `${ApiConfig.prospects}/video/${templateId}`,
         headers: {
-          token: `${localStorage.getItem("token")}`,
-        },
-        params: params,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        }
       });
-      if (res?.data?.status === 200) {
+      if (res?.status === 200) {
+        setData(res?.data?.sheet_data)
         setLoading(false);
-        setIsUserList(res?.data?.data);
-        setErrorData(res?.data?.data);
-        setSheetUrl(res?.data?.data?.list[0]?.sheetUrl);
-        setErrorSheetId(res?.data?.data?.list[0]?.sheetId);
-        setSheetName(res?.data?.data?.list[0]?.sheetName);
-        setCUSTOMER_ID(res?.data?.data?.list[0]?.CUSTOMER_ID);
-        setVideoTemplete(res?.data?.data?.list[0]?.videoTemplateId);
-        setPageSize(res?.data?.data?.pageCount);
       }
     } catch (error) {
       console.log(error, "error");
@@ -515,7 +500,7 @@ function UserProjectList() {
     } catch (error) {
       console.log(error, "error");
     } finally {
-      // setLoading(false);
+      setLoading(false);
     }
   };
   const [statusFields, setStatusFields] = useState(null);
@@ -683,7 +668,7 @@ function UserProjectList() {
     onDrop,
     accept: "image/jpeg,image/png,image/gif,image/jpg",
   });
-  if (!sheetData || sheetData.length === 0) {
+  if (!data || data.length === 0) {
     return <FullScreenLoader />;
   }
 
@@ -731,58 +716,48 @@ function UserProjectList() {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {isUserList &&
+                      {/* {isUserList &&
                         isUserList?.list?.map((data, index) => (
-                          <React.Fragment key={index}>
-                            {data?.projectListing?.map(
+                          <React.Fragment key={index}> */}
+                            {data?.map(
                               (project, projectIndex) => (
                                 <TableRow key={projectIndex}>
                                   <TableCell align="center">
-                                    {project?.[proscpectName]
-                                      ? project?.[proscpectName]
+                                    {project?.prospect_company
+                                      ? project?.prospect_company
                                       : "--"}
                                   </TableCell>
                                   <TableCell align="center">
-                                    {project?.[firstName] ||
-                                    project?.[lastName] ? (
-                                      <>
-                                        {project?.[firstName]
-                                          ? project?.[firstName]
-                                          : ""}{" "}
-                                        {project?.[lastName]
-                                          ? project?.[lastName]
-                                          : ""}
-                                      </>
-                                    ) : (
-                                      "--"
-                                    )}
+                                  {project?.name
+                                      ? project?.name
+                                      : "--"}
                                   </TableCell>
 
                                   <TableCell
                                     align="center"
                                     className={`${
-                                      project?.[statusFields] === "FAILED"
+                                      project?.status === "FAILED"
                                         ? classes.failed
                                         : ""
                                     }`}
                                   >
-                                    {project?.[statusFields]
-                                      ? project?.[statusFields]
+                                    {project?.status
+                                      ? project?.status
                                           .charAt(0)
                                           .toUpperCase() +
-                                        project?.[statusFields]
+                                        project?.status
                                           .slice(1)
                                           .toLowerCase()
                                       : "Pending"}
                                   </TableCell>
                                   <TableCell align="center">
-                                    {project?.[urlField] ? (
+                                    {project?.video_template_url ? (
                                       <a
                                         style={{
                                           color: "rgb(3, 88, 172)",
                                           textDecoration: "none",
                                         }}
-                                        href={project?.[urlField]}
+                                        href={project?.video_template_url}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                       >
@@ -816,7 +791,7 @@ function UserProjectList() {
                                             videoUrl: project?.[videoUrl],
                                             hVOUrl: project?.[hVOUrl],
                                             assignUser: data?.assignedUserName,
-                                            status: project?.[status],
+                                            status: project?.status,
                                             templateType: data?.templateType,
                                           },
                                         });
@@ -847,7 +822,7 @@ function UserProjectList() {
                                             videoUrl: project?.[videoUrl],
                                             hVOUrl: project?.[hVOUrl],
                                             assignUser: data?.assignedUserName,
-                                            status: project?.[status],
+                                            status: project?.status,
                                             templateType: data?.templateType,
                                           },
                                         });
@@ -859,8 +834,8 @@ function UserProjectList() {
                                 </TableRow>
                               )
                             )}
-                          </React.Fragment>
-                        ))}
+                          {/* </React.Fragment>
+                        ))} */}
                     </TableBody>
                   </Table>
                   {isUserList && pagesize > 1 && (

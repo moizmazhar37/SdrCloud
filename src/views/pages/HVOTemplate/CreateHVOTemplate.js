@@ -560,7 +560,7 @@ const CreateHVOTemplate = (props) => {
       });
       if (res?.status === 200) {
         setCategory(res?.data);
-        setNewlyCategory(res?.data?.data[res?.data?.data.length - 1]);
+        setNewlyCategory(res?.data[res?.data.length - 1]);
       }
     } catch (error) {
       console.log(error, "error");
@@ -726,9 +726,9 @@ const CreateHVOTemplate = (props) => {
         setLoading(true);
         const res = await axios({
           method: "POST",
-          url: ApiConfig.createHVOTemplate,
+          url: ApiConfig.createVdoTemplate,
           headers: {
-            token: `${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
           data: {
             categoryId: selectedOption,
@@ -736,14 +736,14 @@ const CreateHVOTemplate = (props) => {
             templateType: "HVO",
           },
         });
-        if (res?.data?.status === 200 || res?.data?.status === 201) {
-          toast.success(res?.data?.message);
+        if (res?.status === 200 || res?.status === 201) {
+          toast.success("Template Created Successfully");
           setLoading(false);
-          updateQueryParams(res?.data?.data?.hvoId);
+          updateQueryParams(res?.data?.hvoId);
           setSaveName(true);
-          getHVOTemplate(res?.data?.data?.hvoId);
-        } else if (res?.data?.status === 205) {
-          toast.error(res?.data?.message);
+          getHVOTemplate(res?.data?.hvoId);
+        } else if (res?.status === 205) {
+          toast.error("Some error occured");
         }
       } catch (error) {
         console.log(error, "error");
@@ -889,7 +889,7 @@ const CreateHVOTemplate = (props) => {
     if (isShow && Category.length > 0) {
       const lastCategory = Category[0];
       setSelectedOption(lastCategory._id);
-      handleChangetitle({ target: { value: lastCategory._id } });
+      handleChangetitle({ target: { value: lastCategory.id } });
     }
   }, [isShow, Category, handleChangetitle]);
   useEffect(() => {
@@ -929,7 +929,7 @@ const CreateHVOTemplate = (props) => {
                   <Typography style={{ color: "#858585" }}>Category</Typography>
                   <Box className="d-flex justify-space-between">
                     <Typography style={{ color: "#152F40", fontSize: "16px" }}>
-                      {templateParams?.categoryName}
+                      {templateParams?.category_name}
                     </Typography>
                     <Button
                       varinat="standard"
@@ -989,8 +989,8 @@ const CreateHVOTemplate = (props) => {
 
                       {Category.filter(
                         (data) =>
-                          !["Start-up", "SMB", "MM", "ENT"].includes(
-                            data.category_Name
+                          !["Startup", "SMB", "MM", "ENT"].includes(
+                            data.category_name
                           )
                       ).map((data, i) => (
                         <MenuItem
@@ -1003,13 +1003,13 @@ const CreateHVOTemplate = (props) => {
                             alignItems: "center",
                             width: "100%",
                           }}
-                          value={data?._id}
-                          name={data?.category_Name}
+                          value={data?.id}
+                          name={data?.category_name}
                         >
-                          {data?.category_Name}
+                          {data?.category_name}
                           <IconButton
                             edge="end"
-                            onClick={() => deleteCategory(data?._id)}
+                            onClick={() => deleteCategory(data?.id)}
                             disabled={loading}
                             style={{ marginRight: "20px" }}
                           >
@@ -1018,10 +1018,10 @@ const CreateHVOTemplate = (props) => {
                         </MenuItem>
                       ))}
 
-                      {["Start-up", "SMB", "MM", "ENT"].map(
-                        (categoryName, i) => {
+                      {["Startup", "SMB", "MM", "ENT"].map(
+                        (category_name, i) => {
                           const category = Category.find(
-                            (cat) => cat.category_Name === categoryName
+                            (cat) => cat.category_name === category_name
                           );
                           return (
                             category && (
@@ -1035,10 +1035,10 @@ const CreateHVOTemplate = (props) => {
                                   alignItems: "center",
                                   width: "100%",
                                 }}
-                                value={category._id}
-                                name={category.category_Name}
+                                value={category.id}
+                                name={category.category_name}
                               >
-                                {category.category_Name}
+                                {category.category_name}
                               </MenuItem>
                             )
                           );

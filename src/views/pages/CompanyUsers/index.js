@@ -211,18 +211,13 @@ function CompanyUserList() {
         method: "GET",
         url: ApiConfig.getAllUsers,
         headers: {
-          token: `${localStorage.getItem("token")}`,
-        },
-        params: {
-          page: page,
-          size: pageSize,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      if (res?.data?.status === 200) {
+      if (res?.status === 200) {
         setLoading(false);
-        setCompanyUserList(res?.data?.data?.list);
-        setPageCount(res?.data?.data?.pageCount);
-      } else if (res?.data?.status === 205) {
+        setCompanyUserList(res?.data);
+      } else if (res?.status === 205) {
         toast.error("No User Found");
         setLoading(false);
       }
@@ -272,17 +267,14 @@ function CompanyUserList() {
       setLoading(true);
       const res = await axios({
         method: "DELETE",
-        url: ApiConfig.deleteUser,
+        url: `${ApiConfig.getAllUsers}/${selectedUserId}`,
         headers: {
-          token: `${localStorage.getItem("token")}`,
-        },
-        params: {
-          userIdToDelte: selectedUserId,
-        },
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        }
       });
-      if (res?.data?.status === 200) {
+      if (res?.status === 200) {
         setLoading(false);
-        toast.success(res?.data?.message);
+        toast.success("User Deleted Successfuly");
         setDeleteOpen(false);
         setSelectedUserId(null);
         allProjectsHandler();
@@ -350,14 +342,14 @@ function CompanyUserList() {
                       <TableRow>
                         <TableCell component="th" scope="row">
                           {sliceUserName(
-                            key.firstName
-                              ? key.firstName +
-                                  (key.lastName ? ` ${key.lastName}` : "")
+                            key.first_name
+                              ? key.first_name +
+                                  (key.last_name ? ` ${key.last_name}` : "")
                               : "--"
                           )}
                         </TableCell>
                         <TableCell>
-                          {new Date(key?.startDate).toLocaleDateString()}
+                          {new Date(key?.created_at).toLocaleDateString()}
                         </TableCell>
                         <TableCell component="th" scope="row">
                           {key.projects !== null && key.projects !== undefined
@@ -391,21 +383,22 @@ function CompanyUserList() {
                               name=""
                               IconComponent={ExpandMoreIcon}
                             >
-                              <MenuItem
+                              {/* <MenuItem
                                 value="none"
                                 onClick={() => {
                                   history.push({
                                     pathname: "/Viewuser",
-                                    state: { userid: key?.userId },
+                                    state: { userid: key?.id },
                                   });
                                 }}
                               >
                                 View
-                              </MenuItem>
+                              </MenuItem> */}
                               <MenuItem
+                              value="none"
                                 onClick={() => {
                                   handleClose();
-                                  setSelectedUserId(key?.userId);
+                                  setSelectedUserId(key?.id);
                                   setDeleteOpen(true);
                                 }}
                               >
