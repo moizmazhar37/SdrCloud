@@ -736,16 +736,16 @@ function UserProjectList() {
                                   <TableCell
                                     align="center"
                                     className={`${
-                                      project?.[status] === "FAILED"
+                                      project?.status === "FAILED"
                                         ? classes.failed
                                         : ""
                                     }`}
                                   >
-                                    {project?.[status]
-                                      ? project?.[status]
+                                    {project?.status
+                                      ? project?.status
                                           .charAt(0)
                                           .toUpperCase() +
-                                        project?.[status]
+                                        project?.status
                                           .slice(1)
                                           .toLowerCase()
                                       : "Pending"}
@@ -791,7 +791,7 @@ function UserProjectList() {
                                             videoUrl: project?.[videoUrl],
                                             hVOUrl: project?.[hVOUrl],
                                             assignUser: data?.assignedUserName,
-                                            status: project?.[status],
+                                            status: project?.status,
                                             templateType: data?.templateType,
                                           },
                                         });
@@ -822,7 +822,7 @@ function UserProjectList() {
                                             videoUrl: project?.[videoUrl],
                                             hVOUrl: project?.[hVOUrl],
                                             assignUser: data?.assignedUserName,
-                                            status: project?.[status],
+                                            status: project?.status,
                                             templateType: data?.templateType,
                                           },
                                         });
