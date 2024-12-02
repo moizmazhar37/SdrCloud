@@ -216,7 +216,7 @@ const TemplateAudio = (props) => {
     setLoading(true);
     try {
       const response = await axios({
-        url: ApiConfig.getTemplateList,
+        url: `${ApiConfig.getTemplateList}/`,
         method: "GET",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -527,28 +527,28 @@ const TemplateAudio = (props) => {
                   templateList?.map((key, index) => (
                     <TableRow key={index}>
                       <TableCell className="tableCellText">
-                        <Tooltip title={key?.hvoTemplateName || ""}>
+                        <Tooltip title={key?.hvo_template_name || ""}>
                           <span>
-                            {key?.hvoTemplateName &&
-                            key?.hvoTemplateName.length > 20
-                              ? `${key?.hvoTemplateName.slice(0, 20)}...`
-                              : key?.hvoTemplateName || "--"}
+                            {key?.hvo_template_name &&
+                            key?.hvo_template_name.length > 20
+                              ? `${key?.hvo_template_name.slice(0, 20)}...`
+                              : key?.hvo_template_name || "--"}
                           </span>
                         </Tooltip>
                       </TableCell>
                       <TableCell className="tableCellText">
-                        {key.templateType ? key.templateType : "--"}
+                        {key.template_type ? key.template_type : "--"}
                       </TableCell>
                       <TableCell className="tableCellText">
                         {moment(key.createdAt).format("MM.DD.YYYY")}
                       </TableCell>
                       <TableCell className="tableCellText">
                         <Box className={classes.tableBox}>
-                          {key.categoryName ? key.categoryName : "--"}
+                          {key.category_name ? key.category_name : "--"}
                         </Box>
                       </TableCell>
                       <TableCell className="tableCellText" align="center">
-                        {key.totalRecords ? key.totalRecords : "--"}
+                        {key.total_records ? key.total_records : "--"}
                       </TableCell>
                       <TableCell className="tableCellText" align="center">
                         {key.sendCount ? key.sendCount : "--"}
@@ -572,7 +572,7 @@ const TemplateAudio = (props) => {
                                 history.push({
                                   pathname: `/Create-hvo-template`,
                                   state: "summary",
-                                  search: `templateId=${key?.hvoId}`,
+                                  search: `templateId=${key?.id}`,
                                 });
                               }}
                             >
@@ -581,7 +581,7 @@ const TemplateAudio = (props) => {
                             <MenuItem
                               onClick={() => {
                                 handleClose();
-                                duplicateTemplate(key?.hvoId);
+                                duplicateTemplate(key?.id);
                               }}
                             >
                               Duplicate
@@ -589,7 +589,7 @@ const TemplateAudio = (props) => {
                             <MenuItem
                               onClick={() => {
                                 handleClose();
-                                setDeleteId(key?.hvoId);
+                                setDeleteId(key?.id);
                                 setDeleteOpen(true);
                               }}
                             >

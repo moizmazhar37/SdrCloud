@@ -503,11 +503,12 @@ const CreateTemplate = (props) => {
       setIsDialogOpen(false);
     },
   });
-  const handleAddNewCategory = (values) => {
-    addCategory(values);
+  const handleAddNewCategory = async (values) => {
+    await addCategory(values);
 
     setIsDialogOpen(false);
     setNewCategory("");
+    getVdoCategories()
   };
   const getVdoCategories = async () => {
     try {
@@ -520,6 +521,7 @@ const CreateTemplate = (props) => {
         },
       });
       // if (res?.status === 200) {
+        setCategory([])
         setCategory(res?.data);
       // }
     } catch (error) {
@@ -533,12 +535,12 @@ const CreateTemplate = (props) => {
       setLoading(true);
       const res = await axios({
         method: "POST",
-        url: ApiConfig.addCategory,
+        url: ApiConfig.category,
         headers: {
-          token: `${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-        params: {
-          categoryName: values,
+        data: {
+          category_name: values,
         },
       });
       if (res?.data?.status === 200) {
@@ -559,22 +561,19 @@ const CreateTemplate = (props) => {
       setLoading(true);
       const res = await axios({
         method: "DELETE",
-        url: ApiConfig.deleteCategory,
+        url: `${ApiConfig.category}${categoryId}`,
         headers: {
-          token: `${localStorage.getItem("token")}`,
-        },
-        params: {
-          categoryId,
-        },
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        }
       });
-      if (res?.data?.status === 200) {
+      if (res?.status === 200) {
         setIsShow(false);
-        toast.success(res?.data?.message);
+        toast.success("Cateogry deleted successfully!");
         setIsSectionCompleted(true);
         getVdoCategories();
         setLoading(false);
-      } else if (res?.data?.status === 205) {
-        toast.error(res?.data?.message);
+      } else if (res?.status === 205) {
+        toast.error("Some error occured");
       }
     } catch (error) {
       console.log(error, "error");
@@ -1113,7 +1112,7 @@ const CreateTemplate = (props) => {
                         >
                           {data?.category_name}
 
-                          {!["Start-up", "SMB", "MM", "ENT"].includes(
+                          {!["Startup", "SMB", "MM", "ENT"].includes(
                             data?.category_name
                           ) && (
                             <IconButton

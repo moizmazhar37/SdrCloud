@@ -365,17 +365,16 @@ function AllCustomerGroup() {
       setLoading(true);
       const res = await axios({
         method: "GET",
-        url: ApiConfig.projectListing,
+        url: `${ApiConfig.prospects}/`,
         headers: {
-          token: `${localStorage.getItem("token")}`,
-        },
-        params: params,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        }
       });
-      if (res?.data?.status === 200) {
+      if (res?.status === 200) {
         setLoading(false);
-        setAllProjectData(res?.data?.data?.docs);
-        setPageSize(res?.data?.data?.totalPageCount);
-        setSheetId(res?.data?.data?.docs);
+        setAllProjectData(res?.data?.video_templates);
+        setPageSize(res?.data?.totalPageCount);
+        setSheetId(res?.data?.docs);
         setPagination(true);
       }
       if (res?.data?.status === 205) {
@@ -583,36 +582,29 @@ function AllCustomerGroup() {
                         allProjectsData.map((data, index) => (
                           <TableRow key={index}>
                             <TableCell align="center">
-                              {truncateText(data?.hvoTemplateName)}
+                              {truncateText(data?.template_name)}
                             </TableCell>
                             <TableCell align="center">
-                              {truncateText(data?.title)}
+                              {truncateText(data?.sheet_name)}
                             </TableCell>
                             <TableCell align="center">
-                              {data?.assignedUserData?.firstName
-                                ? truncateText(
-                                    data?.assignedUserData?.firstName
-                                  )
-                                : "-"}{" "}
-                              {data?.assignedUserData?.lastName
-                                ? truncateText(data?.assignedUserData?.lastName)
-                                : "-"}
+                              {truncateText(data?.user)}
                             </TableCell>
 
                             <TableCell
                               align="center"
                               className={`${
-                                data?.assignedStatus === "ASSIGNED"
+                                data?.status === "ASSIGNED"
                                   ? classes.active
-                                  : data?.assignedStatus === "UNASSIGNED"
+                                  : data?.status === "UNASSIGNED"
                                   ? classes.failed
                                   : ""
                               }`}
                             >
-                              {data?.assignedStatus
-                                ? data?.assignedStatus.charAt(0).toUpperCase() +
-                                  data?.assignedStatus.slice(1).toLowerCase()
-                                : ""}
+                              {data?.status
+                                ? data?.status.charAt(0).toUpperCase() +
+                                  data?.status.slice(1).toLowerCase()
+                                : "--"}
                             </TableCell>
 
                             <TableCell
@@ -621,13 +613,10 @@ function AllCustomerGroup() {
                             >
                               <Button
                                 onClick={() => {
-                                  console.log();
+                                  console.log(data?.template_id);
                                   history.push("/user-myprojects", {
                                     state: {
-                                      sheetId: data?._id,
-                                      hvoTemplateName: data?.hvoTemplateName,
-                                      sheetName: data?.title,
-                                      tempType: data?.sheetType,
+                                      template_id: data?.template_id
                                     },
                                   });
                                 }}
