@@ -575,18 +575,17 @@ const CreateHVOTemplate = (props) => {
       setLoading(true);
       const res = await axios({
         method: "POST",
-        url: ApiConfig.connectSheetTOTemplate,
+        url: ApiConfig.connectSheetTOTemplateVideo,
         headers: {
-          token: `${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-        params: {
-          connectionStatus: status,
-          sheetId: connetedSheet,
-          templateId: templateId,
+        data: {
+          sheet_id: connetedSheet,
+          template_id: templateId,
           type: "HVO",
         },
       });
-      if (res?.data?.status === 200 || res?.data?.status === 201) {
+      if (res?.status === 200 || res?.status === 201) {
         setLoading(false);
         getHVOTemplate(templateId);
         if (status === "CONNECT") {
@@ -670,36 +669,36 @@ const CreateHVOTemplate = (props) => {
     );
   };
   const getHVOTemplate = async (value) => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const templateId = searchParams.get("templateId");
     try {
       setLoading(true);
       const res = await axios({
         method: "GET",
-        url: ApiConfig.getHVO,
+        url: `${ApiConfig.getHVOTemplateById}/${templateId}`,
         headers: {
-          token: `${localStorage.getItem("token")}`,
-        },
-        params: { hvoTemplateId: value },
-      });
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },      });
       if (res?.status === 200) {
         setSaveName(true);
         setTemplateParams((prevState) => ({
           ...prevState,
-          ...res?.data?.data?.templateData,
+          ...res?.data?.templateData,
         }));
 
         setViewParams((prevState) => ({
           ...prevState,
-          ...res?.data?.data?.sheet,
+          ...res?.data?.sheet,
         }));
-        SetConnectedSheet(res?.data?.data?.sheet.googleSheetsId);
-        setLinkObject(res?.data?.data?.elementsList);
+        SetConnectedSheet(res?.data?.sheet?.googleSheetsId);
+        setLinkObject(res?.data?.elementsList?.headerSections);
 
-        if (res?.data?.data?.sheet !== null) {
+        if (res?.data?.sheet && res?.data?.sheet?.title !== null) {
           setEditSheet(true);
         }
 
-        const sections = res?.data?.data?.elementsList;
-        setSectionId(res?.data?.data?.templateData?.elementsList);
+        const sections = res?.data?.elementsList?.headerSections;
+        setSectionId(res?.data?.elementsList?.headerSections);
         setElements(
           sections && sections.length !== 0
             ? sections
@@ -708,8 +707,9 @@ const CreateHVOTemplate = (props) => {
                 { id: 2, name: "Section 2" },
                 { id: 3, name: "Section 3" },
                 { id: 4, name: "Section 4" },
-                // { id: 5, name: "Section 5" },
-                // { id: 6, name: "Section 6" },
+                { id: 5, name: "Section 5" },
+                { id: 6, name: "Section 6" },
+                { id: 7, name: "Section 7" },
               ]
         );
       }
@@ -739,9 +739,9 @@ const CreateHVOTemplate = (props) => {
         if (res?.status === 200 || res?.status === 201) {
           toast.success("Template Created Successfully");
           setLoading(false);
-          updateQueryParams(res?.data?.hvoId);
+          updateQueryParams(res?.data?.id);
           setSaveName(true);
-          getHVOTemplate(res?.data?.hvoId);
+          getHVOTemplate(res?.data?.id);
         } else if (res?.status === 205) {
           toast.error("Some error occured");
         }
@@ -785,23 +785,20 @@ const CreateHVOTemplate = (props) => {
     try {
       setLoading(true);
       const res = await axios({
-        method: "POST",
-        url: ApiConfig.previewHVOwithsheetdata,
+        method: "GET",
+        url: `${ApiConfig.previewHVOwithsheetdata}/${templateId}`,
         headers: {
-          token: `${localStorage.getItem("token")}`,
-        },
-        params: {
-          hvoTemplateId: templateId,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      if (res?.data?.status === 200 || res?.data?.status === 201) {
+      if (res?.status === 200 || res?.status === 201) {
         setLoading(false);
-        const elementsList = res?.data?.data?.dataList;
+        const elementsList = res?.data;
         localStorage.setItem("templateId", templateId);
         localStorage.setItem("previewData", JSON.stringify(elementsList));
         window.open("/preview-hvo", "_blank");
-      } else if (res?.data?.status === 205) {
-        toast.error(res?.data?.message);
+      } else if (res?.status === 205) {
+        toast.error("Some error occured");
       }
     } catch (error) {
       console.log(error, "error");
@@ -820,13 +817,17 @@ const CreateHVOTemplate = (props) => {
       setLoading(true);
       const res = await axios({
         method: "GET",
-        url: ApiConfig.connectedSheet,
+        url: ApiConfig.connectedSheetVideo,
         headers: {
-          token: `${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
+        params: {
+          isSheetConnected: false,
+          sheetType: "HVO"
+        }
       });
       if (res?.status === 200) {
-        setSheetData(res?.data?.data);
+        setSheetData(res?.data);
       }
     } catch (error) {
       console.log(error, "error");
@@ -837,15 +838,49 @@ const CreateHVOTemplate = (props) => {
   const sectionType = async () => {
     try {
       setLoading(true);
-      const res = await axios({
-        method: "GET",
-        url: ApiConfig.sectionType,
-        headers: {
-          token: `${localStorage.getItem("token")}`,
-        },
-      });
+      const res = {
+        "data": [
+          {
+            "sectionId": 1,
+            "sectionName": "HEADER",
+            "sectionDescription": null
+          },
+          {
+            "sectionId": 2,
+            "sectionName": "HERO",
+            "sectionDescription": null
+          },
+          {
+            "sectionId": 3,
+            "sectionName": "HIGHLIGHT_BANNER",
+            "sectionDescription": null
+          },
+          {
+            "sectionId": "4",
+            "sectionName": "RIGHT_TEXT_LEFT_IMAGE",
+            "sectionDescription": null
+          },
+          {
+            "sectionId": "5",
+            "sectionName": "HIGHLIGHT_BANNER2",
+            "sectionDescription": null
+          },
+          {
+            "sectionId": "6",
+            "sectionName": "LEFT_TEXT_RIGHT_IMAGE",
+            "sectionDescription": null
+          },
+          {
+            "sectionId": "7",
+            "sectionName": "FOOTER",
+            "sectionDescription": null
+          },
+        ],
+        "message": "Section types retrieved successfully.",
+        "status": 200
+      }
       if (res?.status === 200) {
-        setVideoRefral(res?.data?.data);
+        setVideoRefral(res?.data);
       }
     } catch (error) {
       console.log(error, "error");
@@ -929,7 +964,7 @@ const CreateHVOTemplate = (props) => {
                   <Typography style={{ color: "#858585" }}>Category</Typography>
                   <Box className="d-flex justify-space-between">
                     <Typography style={{ color: "#152F40", fontSize: "16px" }}>
-                      {templateParams?.category_name}
+                      {templateParams?.categoryName}
                     </Typography>
                     <Button
                       varinat="standard"
@@ -1218,7 +1253,7 @@ const CreateHVOTemplate = (props) => {
                           return (
                             <span style={{ color: "black" }}>
                               {
-                                sheetData.find((item) => item._id === selected)
+                                sheetData.find((item) => item.id === selected)
                                   ?.title
                               }
                             </span>
@@ -1236,7 +1271,7 @@ const CreateHVOTemplate = (props) => {
                           <MenuItem
                             key={i}
                             style={{ color: "black" }}
-                            value={data?._id}
+                            value={data?.id}
                             name={data?.title}
                           >
                             {data?.title}

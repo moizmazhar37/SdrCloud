@@ -277,18 +277,15 @@ function PreviewHVO(location) {
         try {
           setLoading(true);
           const res = await axios({
-            method: "POST",
-            url: ApiConfig.previewHVOwithsheetdata,
+            method: "GET",
+            url: `${ApiConfig.previewHVOwithsheetdata}/${storedTemplateId}`,
             headers: {
-              token: `${localStorage.getItem("token")}`,
-            },
-            params: {
-              hvoTemplateId: storedTemplateId,
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
           });
-          if (res?.data?.status === 200 || res?.data?.status === 201) {
+          if (res?.status === 200 || res?.status === 201) {
             setLoading(false);
-            const elementsList = res?.data?.data?.dataList;
+            const elementsList = res?.data;
             setPageData(elementsList);
             const filteredFooter = elementsList.filter(
               (item) => item?.sectionName === "FOOTER"
@@ -387,12 +384,12 @@ function PreviewHVO(location) {
                 <Container>
                   <Toolbar>
                     <img
-                      src={accountData?.accountDetails?.accountLogo}
+                      src={item?.values?.company_logo}
                       alt="logo"
                       height={"60px"}
                       width={"100px"}
                     />
-                    {item?.values?.headerLogo && (
+                    {item?.values?.header_logo && (
                       <>
                         <span
                           style={{
@@ -405,7 +402,7 @@ function PreviewHVO(location) {
                           +
                         </span>
                         <img
-                          src={item?.values?.headerLogo}
+                          src={item?.values?.header_logo}
                           alt="logo"
                           height={"60px"}
                           width={"60px"}
@@ -611,9 +608,9 @@ function PreviewHVO(location) {
                       <img
                         style={{ aspectRatio: "3/2", objectFit: "contain" }}
                         src={
-                          item?.values?.leftImageRightText
-                            ? item?.values?.leftImageRightText
-                            : item?.values?.staticImage
+                          item?.values?.left_image_right_text
+                            ? item?.values?.left_image_right_text
+                            : item?.values?.static_image
                         }
                         alt="img"
                         data-aos="zoom-in"
@@ -629,8 +626,8 @@ function PreviewHVO(location) {
                         variant="h1"
                         // data-aos="fade-up"
                         style={{
-                          fontSize: `${item?.values?.headline1Size}px`,
-                          color: item?.values?.headline1Color,
+                          fontSize: `${item?.values?.headline1_size}px`,
+                          color: item?.values?.headline1_color,
                         }}
                       >
                         {item?.values?.headline1}
@@ -639,8 +636,8 @@ function PreviewHVO(location) {
                         variant="h2"
                         // data-aos="fade-up"
                         style={{
-                          fontSize: `${item?.values?.headline2Size}px`,
-                          color: item?.values?.headline2Color,
+                          fontSize: `${item?.values?.headline2_size}px`,
+                          color: item?.values?.headline2_color,
                           fontWeight: 700,
                         }}
                       >
@@ -651,13 +648,13 @@ function PreviewHVO(location) {
                         // data-aos="fade-up"
                         style={{
                           wordBreak: "break-word",
-                          fontSize: `${item?.values?.bodyTextSize}px`,
-                          color: item?.values?.bodyTextColor,
+                          fontSize: `${item?.values?.body_text_size}px`,
+                          color: item?.values?.body_text_color,
                           lineHeight: "30px",
                         }}
                       >
                         {" "}
-                        {item?.values?.bodyText}
+                        {item?.values?.body_text}
                       </Typography>
 
                       {/* <Typography

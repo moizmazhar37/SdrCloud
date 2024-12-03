@@ -338,6 +338,37 @@ function HeroSection({
   const [isImageChanged, setIsImageChanged] = useState(false);
   const [photoURL, setPhotoURL] = useState(null);
 
+  const [imageURL, setImageURL] = useState("")
+
+  const handleStaticImage = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const response = await axios.post(ApiConfig.UploadFile, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      const { public_url } = response.data;
+      console.log("File uploaded successfully:", public_url);
+
+      setImageURL(public_url);
+      console.log("imageURL: ", imageURL);
+      toast.success("Image uploaded successfully.");
+    } catch (error) {
+      console.error(
+        "Error uploading file:",
+        error.response?.data || error.message
+      );
+    }
+  };
+
   const handleOpenDialog = () => {
     setOpen(true);
   };
@@ -754,9 +785,20 @@ function HeroSection({
                         ref={fileInputRef}
                         onClick={handleOpenDialog}
                       />
-                      <Button className="savebtn" onClick={handleOpenDialog}>
+                      <Button
+                        className="savebtn"
+                        onClick={() => fileInputRef.current.click()}
+                      >
                         Choose
                       </Button>
+
+                      <input
+                        type="file"
+                        accept=".jpg,.jpeg,.png"
+                        ref={fileInputRef}
+                        style={{ display: "none" }} 
+                        onChange={handleStaticImage}
+                      />
                     </InputAdornment>
                   ),
                 }}
