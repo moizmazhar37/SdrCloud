@@ -47,7 +47,7 @@ function PreviewVideo(props) {
           }}
         >
           <img
-            src={logo ? logo : "images/personaprosvglogo.svg"}
+            src={logo ? logo : "images/template/SDR.png"}
             style={{
               width: "100%",
               height: "100%",

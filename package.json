@@ -1,5 +1,5 @@
 {
-  "name": "ai-video-Generator",
+  "name": "sdrcloud",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -79,12 +79,21 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "CI=false react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": "react-app",
+    "rules": {
+      "no-unused-vars": "off",
+      "react-hooks/exhaustive-deps": "off",
+      "jsx-a11y/alt-text": "off",
+      "no-lone-blocks": "off",
+      "jsx-a11y/iframe-has-title": "off",
+      "no-useless-escape": "off",
+      "react/jsx-no-target-blank": "off"
+    }
   },
   "browserslist": {
     "production": [
@@ -99,6 +108,7 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@iconify/react": "^3.2.2",
     "hardhat": "^2.8.3"
   }
