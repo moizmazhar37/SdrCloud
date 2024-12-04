@@ -79,9 +79,9 @@ const useStyles = makeStyles((theme) => ({
   },
   active: {
     "& .MuiButton-label": {
-      color: "#0358AC !important",
+      color: "#032E61 !important",
       padding: "10px",
-      background: "#F2F7FF",
+      background: "transparent",
       fontWeight: "400",
       borderRadius: "9px",
       "& $title": {
@@ -146,7 +146,7 @@ const NavItem = ({
       {...rest}
     >
       <Button
-        // activeClassName={classes.active}
+         activeClassName={classes.active}
         className={clsx(classes.buttonLeaf, `depth-${depth}`)}
         component={RouterLink}
         exact
