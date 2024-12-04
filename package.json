@@ -1,5 +1,5 @@
 {
-  "name": "ai-video-Generator",
+  "name": "sdrcloud",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -87,9 +87,7 @@
     "extends": "react-app",
     "rules": {
       "no-unused-vars": "off",
-      "no-dupe-keys": "off",
       "react-hooks/exhaustive-deps": "off",
-      "eqeqeq": "off",
       "jsx-a11y/alt-text": "off",
       "no-lone-blocks": "off",
       "jsx-a11y/iframe-has-title": "off",
