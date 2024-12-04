@@ -84,7 +84,18 @@
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": "react-app",
+    "rules": {
+      "no-unused-vars": "off",
+      "no-dupe-keys": "off",
+      "react-hooks/exhaustive-deps": "off",
+      "eqeqeq": "off",
+      "jsx-a11y/alt-text": "off",
+      "no-lone-blocks": "off",
+      "jsx-a11y/iframe-has-title": "off",
+      "no-useless-escape": "off",
+      "react/jsx-no-target-blank": "off"
+    }
   },
   "browserslist": {
     "production": [

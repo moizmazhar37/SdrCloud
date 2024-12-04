@@ -79,7 +79,7 @@ const useStyles = makeStyles((theme) => ({
   },
   active: {
     "& .MuiButton-label": {
-      //color: "#0358AC !important",
+      color: "#0358AC !important",
       padding: "10px",
       background: "#F2F7FF",
       fontWeight: "400",
