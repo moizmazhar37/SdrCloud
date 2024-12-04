@@ -8,7 +8,7 @@ export default function Page(props) {
   return (
     <>
       <Helmet>
-        <title>Scott Harris</title>
+        <title>SDRCloud</title>
       </Helmet>
       <div>{children}</div>
     </>
