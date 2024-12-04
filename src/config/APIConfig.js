@@ -49,7 +49,9 @@ const ApiConfig = {
   footerSection: `${hvoelement}/footer-section`,
   leftTextRightImageSection: `${hvoelement}/left-text-right-image-section`,
   getHVOTemplateById: `${templates}`,
-  previewHVOwithsheetdata: `${templates}/preview-hvo-with-sheet-data`
+  previewHVOwithsheetdata: `${templates}/preview-hvo-with-sheet-data`,
+  createHVO: `${templates}/generate-hvo-from-sheet`,
+  getHVO: `${templates}/hvo`,
   // userSignup: `${user}/userSignUp`,
   // // verifyEmail: `${user}/verifyEmail`,
   // goggleLogin: `${user}/googleLogin`,

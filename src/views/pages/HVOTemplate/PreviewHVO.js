@@ -503,7 +503,7 @@ function PreviewHVO(location) {
                             }}
                             onClick={() =>
                               window.open(
-                                item?.values?.dynamicUrlDemo
+                                item?.values?.dynamic_url
                                   ? item?.values?.dynamic_url
                                   : item?.values?.static_url
                               )
@@ -558,7 +558,7 @@ function PreviewHVO(location) {
                             item?.values?.banner_text_color || "#FFF"
                           } !important`,
                           fontSize: `${
-                            item?.values?.banner_text_size || "16"
+                            item?.values?.banner_text_color || "16"
                           }px !important`,
                           paddingTop: "30px",
                           paddingBottom: "30px",
@@ -980,9 +980,9 @@ function PreviewHVO(location) {
                                   style={{
                                     color:
                                       hoveredIndex === index
-                                        ? item?.values?.footerTextHoverColor
-                                        : item?.values?.footerTextColor,
-                                    fontSize: `${item?.values?.footerTextSize}px`,
+                                        ? item?.values?.footer_text_hover_color
+                                        : item?.values?.footer_text_color,
+                                    fontSize: `${item?.values?.footer_text_size}px`,
                                     textDecoration: "none",
                                   }}
                                   onMouseEnter={() => handleMouseEnter1(index)}
