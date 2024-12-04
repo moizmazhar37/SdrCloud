@@ -240,7 +240,7 @@ const TemplateAudio = (props) => {
     setLoading(true);
     try {
       const response = await axios({
-        url: ApiConfig.getTemplateList,
+        url: `${ApiConfig.getTemplateList}/`,
         method: "GET",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
