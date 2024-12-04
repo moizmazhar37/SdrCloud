@@ -27,7 +27,7 @@ export default function PageLoading() {
   return (
     <div className={classes.root}>
       <Box width={200}>
-        <img className={classes.loader} src="images/Logo.png" alt="loader" />
+        <img className={classes.loader} src="images/template/SDR.png" alt="loader" />
       </Box>
     </div>
   );
