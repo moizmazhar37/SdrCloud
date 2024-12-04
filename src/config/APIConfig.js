@@ -1,5 +1,5 @@
-const url = "https://backend-283763506150.us-central1.run.app";
-// const url = "http://localhost:8000";
+ const url = "https://backend-283763506150.us-central1.run.app";
+//const url = "http://localhost:8000";
 
 const auth = `${url}/auth`;
 const users = `${url}/users`;
@@ -41,6 +41,10 @@ const ApiConfig = {
   getAllUsers: `${subadmin}/users`,
   category: `${categories}/`,
   prospects: `${prospects}`,
+  headerSection: `${hvoelement}/header-section`,
+  rightTextLeftImageSection: `${hvoelement}/right-text-left-image-section`,
+  getHVOTemplateById: `${templates}`,
+  previewHVOwithsheetdata: `${templates}/preview-hvo-with-sheet-data`
   // userSignup: `${user}/userSignUp`,
   // // verifyEmail: `${user}/verifyEmail`,
   // goggleLogin: `${user}/googleLogin`,

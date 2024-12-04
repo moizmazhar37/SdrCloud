@@ -349,6 +349,37 @@ function RightTextSection({
     }));
   };
 
+  const [imageURL, setImageURL] = useState("")
+
+  const handleStaticImage = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const response = await axios.post(ApiConfig.UploadFile, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      const { public_url } = response.data;
+      console.log("File uploaded successfully:", public_url);
+
+      setImageURL(public_url);
+      console.log("imageURL: ", imageURL);
+      toast.success("Image uploaded successfully.");
+    } catch (error) {
+      console.error(
+        "Error uploading file:",
+        error.response?.data || error.message
+      );
+    }
+  };
+
   const handleCancelColorH1 = () => {
     setShowColorPickerH1(false);
   };
@@ -562,17 +593,13 @@ function RightTextSection({
       try {
         const res = await Axios({
           method: "POST",
-          url: ApiConfig.addElement,
+          url: ApiConfig.rightTextLeftImageSection,
           headers: {
-            token: `${localStorage.getItem("token")}`,
-          },
-          params: {
-            hvoTemplateId: templateId,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
           data: {
-            userId: parseInt(localStorage.getItem("_id")),
-            hvoId: templateId,
-            staticImage: staticImage,
+            hvoTemplateId: templateId,
+            staticImage: imageURL,
             leftImageRightText: image,
             headline1: h1,
             headline1Size: h1Size,
@@ -580,18 +607,14 @@ function RightTextSection({
             headline2Size: h2Size,
             bodyText: body,
             bodyTextSize: bodySize,
-            ctaButtonText: buttonText,
-            sectionTypeId: videoRefral.find(
-              (data) => data.sectionName === elementType
-            )?.sectionId,
             sequence: typeIndex + 1,
             headline1Color: hexValueH1,
             headline2Color: hexValueH2,
             bodyTextColor: hexValueBody,
           },
         });
-        if (res?.data?.status === 200) {
-          toast.success(res?.data?.message);
+        if (res?.status === 200) {
+          toast.success("Section saved successfully.");
           setLoading(false);
           reload();
           setNextButton(true);
@@ -632,19 +655,13 @@ function RightTextSection({
   const getSheetType = async () => {
     try {
       setLoading(true);
-      const res = await Axios({
-        method: "GET",
-        url: ApiConfig.getsheettype,
+      const res = await axios.get(`${ApiConfig.headers}/${templateId}`, {
         headers: {
-          token: `${localStorage.getItem("token")}`,
-        },
-        params: {
-          hvoId: templateId,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      if (res.data.status === 200) {
-        console.log(res?.data?.data?.data);
-        setCompanyDetails(res?.data?.data?.data);
+      if (res?.status === 200) {
+        setCompanyDetails(res?.data);
       }
     } catch (error) {
       console.log("error");
@@ -697,9 +714,20 @@ function RightTextSection({
                         name="staticImage"
                         onClick={handleOpenDialog}
                       />
-                      <Button className="savebtn" onClick={handleOpenDialog}>
-                        Upload
+                      <Button
+                        className="savebtn"
+                        onClick={() => fileInputRef.current.click()}
+                      >
+                        Choose
                       </Button>
+
+                      <input
+                        type="file"
+                        accept=".jpg,.jpeg,.png"
+                        ref={fileInputRef}
+                        style={{ display: "none" }} 
+                        onChange={handleStaticImage}
+                      />
                     </InputAdornment>
                   ),
                 }}
@@ -728,15 +756,15 @@ function RightTextSection({
                 <MenuItem value="none" disabled>
                   Select Dynamic URL to fetch image
                 </MenuItem>
-                <MenuItem value="--">Select None</MenuItem>
+                <MenuItem disabled value="--">Select None</MenuItem>
                 {companyDetails !== undefined &&
                   companyDetails.length > 0 &&
                   companyDetails
-                    ?.filter(
-                      (item) =>
-                        item?.dataType === "Image URL" ||
-                        item?.dataType === "Screenshot from URL"
-                    )
+                    // ?.filter(
+                    //   (item) =>
+                    //     item?.dataType === "Image URL" ||
+                    //     item?.dataType === "Screenshot from URL"
+                    // )
                     ?.map((item) => (
                       <MenuItem value={item?.value}>{item?.value}</MenuItem>
                     ))}
@@ -1215,13 +1243,13 @@ function RightTextSection({
                   {companyDetails !== undefined &&
                     companyDetails.length > 0 &&
                     companyDetails
-                      ?.filter(
-                        (item) =>
-                          item?.dataType == "Text Field" ||
-                          item?.dataType == "First name" ||
-                          item?.dataType == "Last name" ||
-                          item?.dataType == "Customer organization"
-                      )
+                      // ?.filter(
+                      //   (item) =>
+                      //     item?.dataType == "Text Field" ||
+                      //     item?.dataType == "First name" ||
+                      //     item?.dataType == "Last name" ||
+                      //     item?.dataType == "Customer organization"
+                      // )
                       ?.map((sheetfield, ind) => (
                         <Tooltip title={sheetfield?.value || "Copy Text"} arrow>
                           <TextField

@@ -212,28 +212,20 @@ function HeaderSection({
         setLoading(true);
         const res = await Axios({
           method: "POST",
-          url: ApiConfig.addElement,
+          url: ApiConfig.headerSection,
           headers: {
-            token: `${localStorage.getItem("token")}`,
-          },
-          params: {
-            hvoTemplateId: templateId,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
           data: {
             headerLogo: selectedOption,
-            companyLogo: accountData?.accountDetails?.accountLogo,
-            sectionTypeId: videoRefral.find(
-              (data) => data.sectionName === elementType
-            )?.sectionId,
+            companyLogo: accountData?.logo,
             sequence: typeIndex + 1,
-            userId: parseInt(localStorage.getItem("_id")),
-            hvoId: templateId,
-            firstRowValue: matchData,
+            hvoTemplateId: templateId,
           },
         });
-        if (res?.data?.status === 200) {
+        if (res?.status === 200) {
           console.log(res);
-          toast.success(res?.data?.message);
+          toast.success("Section saved successfully");
           setLoading(false);
           reload();
           setNextButton(true);
@@ -252,19 +244,13 @@ function HeaderSection({
   const getSheetType = async () => {
     try {
       setLoading(true);
-      const res = await axios({
-        method: "GET",
-        url: ApiConfig.getsheettype,
+      const res = await axios.get(`${ApiConfig.headers}/${templateId}`, {
         headers: {
-          token: `${localStorage.getItem("token")}`,
-        },
-        params: {
-          hvoId: templateId,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      if (res.data.status === 200) {
-        console.log(res?.data?.data?.data);
-        setLogoSet(res?.data?.data?.data);
+      if (res.status === 200) {
+        setLogoSet(res?.data);
       }
     } catch (error) {
       console.log("error");
@@ -277,16 +263,16 @@ function HeaderSection({
       setLoading(true);
       const res = await axios({
         method: "GET",
-        url: ApiConfig.companyDetails,
+        url: ApiConfig.profile,
         headers: {
-          token: `${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
 
-      if (res?.data?.status === 200) {
+      if (res?.status === 200) {
         setLoading(false);
         const data = res?.data;
-        setAccountData(data?.data);
+        setAccountData(data);
         // setAccountId(res?.data?.data?.accountId);
       }
     } catch (error) {
@@ -344,7 +330,7 @@ function HeaderSection({
                   marginRight: "10px",
                 }}
               >
-                <img src={accountData?.accountDetails?.accountLogo} width={100} height={100} />
+                <img src={accountData?.logo} width={100} height={100} />
               </Box>
               {matchData && (
                 <Box
@@ -389,7 +375,7 @@ function HeaderSection({
                 </MenuItem>
                 <MenuItem value="none">Select None</MenuItem>
                 {logoSet
-                  ?.filter((item) => item?.dataType == "Logo")
+                  // ?.filter((item) => item?.dataType == "Logo")
                   ?.map((item) => (
                     <MenuItem
                       value={item?.value}

@@ -12,8 +12,8 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: "16px",
     marginBottom: "16px",
     "& .logoDiv": {
-      width: "210.5px",
-      height: "35.572px",
+       width: "68%",
+       height: "68%",
     },
   },
 }));
@@ -34,7 +34,7 @@ const Logo = () => {
         src={
           user.coverData.companyLogo
             ? user.coverData.companyLogo
-            : "images/personaprosvglogo.svg"
+            : "images/template/SDR.png"
         }
         alt=""
         className="logoDiv"

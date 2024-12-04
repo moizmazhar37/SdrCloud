@@ -217,6 +217,31 @@ const StaticDyanamicFile = ({
     }
   };
 
+  const [description, setDescription] = useState("");
+
+  const [open, setOpen] = useState(false);
+
+  const handleOpenAudioDescriptionEditor = () => {
+    setOpen(true);
+  };
+
+  const handleCloseAudioDescription = () => {
+    setOpen(false);
+  };
+
+  const handleDescriptionChange = (event) => {
+    setDescription(event.target.value);
+  };
+
+  const handleSaveDescription = () => {
+    if (description.trim()) {
+      console.log("Description saved:", description);
+      setOpen(false);
+    } else {
+      console.log("Description cannot be empty");
+    }
+  };
+
   const handleOpenDialog = () => {
     setOpenDialog(true);
   };
@@ -338,6 +363,7 @@ const StaticDyanamicFile = ({
       value: link || dymLink,
       is_dynamic: false,
       audio_embedded,
+      audio_description: description,
     };
   } else if (elementType === "DYNAMICURL") {
     let audio_embedded = false;
@@ -363,6 +389,7 @@ const StaticDyanamicFile = ({
       value: selectedUrl,
       is_dynamic,
       audio_embedded,
+      audio_description: description,
     };
   }
   const [errors, setErrors] = useState({
@@ -458,6 +485,7 @@ const StaticDyanamicFile = ({
             // });
             setIsSaved(true); // Form successfully saved
             setNextBtn(true);
+            setDescription("");
           }
         } catch (error) {
           toast.error(error?.response?.data?.message);
@@ -517,6 +545,7 @@ const StaticDyanamicFile = ({
             // });
             setIsSaved(true); // Form successfully saved
             setNextBtn(true);
+            setDescription("");
           }
         } catch (error) {
           toast.error(error?.response?.data?.message);
@@ -825,6 +854,40 @@ const StaticDyanamicFile = ({
                 >
                   Upload Audio
                 </Button>
+                <Button
+                  fullWidth
+                  variant={description ? "contained" : "outlined"}
+                  style={{ height: "44px", margin: "0 1rem" }}
+                  className={`${!description ? "savebtnDisables" : "savebtn"}`}
+                  onClick={handleOpenAudioDescriptionEditor}
+                >
+                  Add Audio Description
+                </Button>
+
+                <Dialog open={open} onClose={handleCloseAudioDescription}>
+                  <DialogTitle>Add Audio Description</DialogTitle>
+                  <DialogContent>
+                    <TextField
+                      autoFocus
+                      multiline
+                      rows={4}
+                      label="Audio Description"
+                      fullWidth
+                      value={description}
+                      onChange={handleDescriptionChange}
+                      variant="outlined"
+                      margin="normal"
+                    />
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={handleCloseAudioDescription} color="primary">
+                      Cancel
+                    </Button>
+                    <Button onClick={handleSaveDescription} color="primary">
+                      Save
+                    </Button>
+                  </DialogActions>
+                </Dialog>
               </div>
       </Box>
       {elementType === "STATICURL" ? (

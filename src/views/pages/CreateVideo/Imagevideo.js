@@ -11,6 +11,8 @@ import {
   DialogTitle,
   FormControlLabel,
   Checkbox,
+  DialogContent,
+  DialogActions,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import axios from "axios";
@@ -208,6 +210,7 @@ const ImageVideo = ({
   const [firstRowData, setFirstRowData] = useState("");
   const [firstRowDataVideo, setFirstRowDataVideo] = useState("");
   const [firstRightImg, setFirstRightImg] = useState(null);
+  const [description, setDescription] = useState("");
 
   const [matchData, setMatchData] = useState("");
 
@@ -304,8 +307,8 @@ const ImageVideo = ({
   };
 
   const handleMenuOpen = async () => {
-      const data = await fetchSheetData();
-      setSheetData(data);
+    const data = await fetchSheetData();
+    setSheetData(data);
   };
 
   useEffect(() => {
@@ -329,8 +332,8 @@ const ImageVideo = ({
   const [videoURL, setVideoURL] = useState("");
 
   const handleVideoUploadNew = async (event) => {
-    console.log("Hello")
-    const file = event.target.files[0]; 
+    console.log("Hello");
+    const file = event.target.files[0];
     if (!file) return;
 
     try {
@@ -345,8 +348,8 @@ const ImageVideo = ({
         },
       });
 
-      const { public_url } = response.data; 
-      setVideoURL(public_url); 
+      const { public_url } = response.data;
+      setVideoURL(public_url);
       toast.success("Uploaded video successfully.");
     } catch (error) {
       console.error("Error uploading video:", error);
@@ -400,6 +403,7 @@ const ImageVideo = ({
       console.log("File uploaded successfully:", public_url);
 
       setImageURL(public_url);
+      toast.success("Image uploaded successfully.");
     } catch (error) {
       console.error(
         "Error uploading file:",
@@ -445,7 +449,7 @@ const ImageVideo = ({
       url = selectedUrl;
       is_dynamic = true;
     } else {
-      url= imageURL
+      url = imageURL;
       is_dynamic = false;
     }
     apiData = {
@@ -461,6 +465,7 @@ const ImageVideo = ({
       audio_embedded,
       value: url,
       is_dynamic,
+      audio_description: description,
     };
   } else if (elementType === "VIDEOCLIPS") {
     let audio_embedded = false;
@@ -473,10 +478,10 @@ const ImageVideo = ({
       url = selectedVideoUrl;
       is_dynamic = true;
     } else {
-      url= videoURL
+      url = videoURL;
       is_dynamic = false;
     }
-    console.log(url, "url")
+    console.log(url, "url");
     apiData = {
       // firstRowValue: matchData,
       scroll: false,
@@ -490,6 +495,7 @@ const ImageVideo = ({
       audio_embedded,
       value: url,
       is_dynamic,
+      audio_description: description,
     };
   }
   // State for managing form errors
@@ -555,6 +561,7 @@ const ImageVideo = ({
               duration: duration,
             });
             setLoading(false);
+            setDescription("");
           }
         } catch (error) {
           toast.error(error?.response?.data?.message);
@@ -578,38 +585,39 @@ const ImageVideo = ({
       // if (checked === true && audioFile === null) {
       //   toast.error("Please upload audio file.");
       // }
-        try {
-          setLoading(true);
-          const res = await axios({
-            method: "POST",
-            url: ApiConfig.createVideoTemplateReferral,
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
+      try {
+        setLoading(true);
+        const res = await axios({
+          method: "POST",
+          url: ApiConfig.createVideoTemplateReferral,
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
 
-            data: apiData,
+          data: apiData,
+        });
+        if (res?.status === 200) {
+          setIsSaved(true);
+          reloadData();
+          setIsVideoUploaded(false);
+          toast.success("Section saved successfully");
+          setElementData({
+            index: typeIndex,
+            type: elementType,
+            fileName: videoName || uploadedImage?.name,
+            file: uploadedVideo || URL?.createObjectURL(uploadedImage),
+            duration: duration,
           });
-          if (res?.status === 200) {
-            setIsSaved(true);
-            reloadData();
-            setIsVideoUploaded(false);
-            toast.success("Section saved successfully");
-            setElementData({
-              index: typeIndex,
-              type: elementType,
-              fileName: videoName || uploadedImage?.name,
-              file: uploadedVideo || URL?.createObjectURL(uploadedImage),
-              duration: duration,
-            });
-            setLoading(false);
-          }
-        } catch (error) {
-          toast.error(error?.response?.data?.message);
-          console.log(error, "error isndeie the create video down");
           setLoading(false);
-        } finally {
-          setLoading(false);
+          setDescription("");
         }
+      } catch (error) {
+        toast.error(error?.response?.data?.message);
+        console.log(error, "error isndeie the create video down");
+        setLoading(false);
+      } finally {
+        setLoading(false);
+      }
     }
   };
   // Effect hook to update link data and reset state
@@ -824,6 +832,28 @@ const ImageVideo = ({
       });
     }
   }, [matchData]);
+  const [open, setOpen] = useState(false);
+
+  const handleOpenAudioDescriptionEditor = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleDescriptionChange = (event) => {
+    setDescription(event.target.value);
+  };
+
+  const handleSaveDescription = () => {
+    if (description.trim()) {
+      console.log("Description saved:", description);
+      setOpen(false);
+    } else {
+      console.log("Description cannot be empty");
+    }
+  };
   return (
     <Box className={classes.secondmaingridBox}>
       {loading === true && <FullScreenLoader />}
@@ -910,7 +940,9 @@ const ImageVideo = ({
                   onChange={handleUrlChange}
                   onOpen={handleMenuOpen}
                 >
-                  <MenuItem disabled value="none">Select Image Url</MenuItem>
+                  <MenuItem disabled value="none">
+                    Select Image Url
+                  </MenuItem>
                   {/* <MenuItem value="--">Select None</MenuItem> */}
                   {sheetData?.map((entry) => (
                     <MenuItem key={entry?.value} value={entry?.value}>
@@ -957,11 +989,9 @@ const ImageVideo = ({
                                 type="file"
                                 accept="video/*"
                                 style={{ display: "none" }}
-                                onChange={handleVideoUploadNew} // Trigger file upload on file selection
+                                onChange={handleVideoUploadNew}
                               />
                             </Button>
-                            {videoURL && <p>Uploaded Video URL: {videoURL}</p>}{" "}
-                            {/* Display uploaded video URL */}
                           </>
                         )}
                       </InputAdornment>
@@ -1076,6 +1106,40 @@ const ImageVideo = ({
                 >
                   Upload Audio
                 </Button>
+                <Button
+                  fullWidth
+                  variant={description ? "contained" : "outlined"}
+                  style={{ height: "44px", margin: "0 1rem" }}
+                  className={`${!description ? "savebtnDisables" : "savebtn"}`}
+                  onClick={handleOpenAudioDescriptionEditor}
+                >
+                  Add Audio Description
+                </Button>
+
+                <Dialog open={open} onClose={handleClose}>
+                  <DialogTitle>Add Audio Description</DialogTitle>
+                  <DialogContent>
+                    <TextField
+                      autoFocus
+                      multiline
+                      rows={4}
+                      label="Audio Description"
+                      fullWidth
+                      value={description}
+                      onChange={handleDescriptionChange}
+                      variant="outlined"
+                      margin="normal"
+                    />
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={handleClose} color="primary">
+                      Cancel
+                    </Button>
+                    <Button onClick={handleSaveDescription} color="primary">
+                      Save
+                    </Button>
+                  </DialogActions>
+                </Dialog>
               </div>
             </div>
           </>
@@ -1109,6 +1173,40 @@ const ImageVideo = ({
                 >
                   Upload Audio
                 </Button>
+                <Button
+                  fullWidth
+                  variant={description ? "contained" : "outlined"}
+                  style={{ height: "44px", margin: "0 1rem" }}
+                  className={`${!description ? "savebtnDisables" : "savebtn"}`}
+                  onClick={handleOpenAudioDescriptionEditor}
+                >
+                  Add Audio Description
+                </Button>
+
+                <Dialog open={open} onClose={handleClose}>
+                  <DialogTitle>Add Audio Description</DialogTitle>
+                  <DialogContent>
+                    <TextField
+                      autoFocus
+                      multiline
+                      rows={4}
+                      label="Audio Description"
+                      fullWidth
+                      value={description}
+                      onChange={handleDescriptionChange}
+                      variant="outlined"
+                      margin="normal"
+                    />
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={handleClose} color="primary">
+                      Cancel
+                    </Button>
+                    <Button onClick={handleSaveDescription} color="primary">
+                      Save
+                    </Button>
+                  </DialogActions>
+                </Dialog>
               </>
             )}
           </Box>

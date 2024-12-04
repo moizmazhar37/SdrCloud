@@ -858,6 +858,7 @@ const CreateTemplate = (props) => {
         },
         params: {
           isSheetConnected: false,
+          sheetType: "VIDEO"
         }
       });
       if (res?.status === 200) {
