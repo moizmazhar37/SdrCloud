@@ -426,10 +426,10 @@ function PreviewHVO(location) {
                     >
                       <Typography
                         style={{
-                          color: item?.values?.headline1Color,
+                          color: item?.values?.headline1_color,
                           fontWeight: 900,
                           wordBreak: "break-word",
-                          fontSize: `${item?.values?.headline1Size}px`,
+                          fontSize: `${item?.values?.headline1_size}px`,
                         }}
                         variant="h3"
                         // data-aos="fade-up"
@@ -446,8 +446,8 @@ function PreviewHVO(location) {
                       </Typography>
                       <Typography
                         style={{
-                          color: item?.values?.headline2Color,
-                          fontSize: `${item?.values?.headline2Size}px`,
+                          color: item?.values?.headline2_color,
+                          fontSize: `${item?.values?.headline2_size}px`,
                           fontWeight: 800,
                           wordBreak: "break-word",
                           marginTop: "8px",
@@ -460,52 +460,52 @@ function PreviewHVO(location) {
                       </Typography>
                       <Typography
                         style={{
-                          color: item?.values?.bodyTextColor,
+                          color: item?.values?.body_text_color,
                           lineHeight: "30px",
                           wordBreak: "break-word",
-                          fontSize: `${item?.values?.bodyTextSize}px`,
+                          fontSize: `${item?.values?.body_text_size}px`,
                         }}
                         variant="body1"
                         // data-aos="fade-up"
                       >
-                        {item?.values?.bodyText}
+                        {item?.values?.body_text}
                       </Typography>
                       <Box className="btn">
                         <Button
                           style={{
-                            color: item?.values?.ctaButtonTextColor,
-                            backgroundColor: item?.values?.ctaButtonColor,
+                            color: item?.values?.cta_button_text_color,
+                            backgroundColor: item?.values?.cta_button_color,
                             padding: "10px 30px",
                             textTransform: "none",
                           }}
                           onClick={() =>
                             window.open(
-                              item?.values?.dynamicUrl
-                                ? item?.values?.dynamicUrl
-                                : item?.values?.staticUrl
+                              item?.values?.dynamic_url
+                                ? item?.values?.dynamic_url
+                                : item?.values?.dynamic_url
                             )
                           }
                           variant="contained"
                           // data-aos="fade-up"
                         >
-                          {item?.values?.ctaButtonText}
+                          {item?.values?.cta_button_text}
                         </Button>
 
-                        {item?.values?.demoButtonText && (
+                        {item?.values?.demo_button_text && (
                           <Typography
                             className="demobtn"
                             style={{
                               color: hovered
-                                ? item?.values?.demoButtonColor
-                                : item?.values?.demoButtonTextColor,
+                                ? item?.values?.demo_button_color
+                                : item?.values?.demo_button_text_color,
                               textTransform: "none",
                               fontSize: "14px",
                             }}
                             onClick={() =>
                               window.open(
                                 item?.values?.dynamicUrlDemo
-                                  ? item?.values?.dynamicUrlDemo
-                                  : item?.values?.staticUrlDemo
+                                  ? item?.values?.dynamic_url
+                                  : item?.values?.static_url
                               )
                             }
                             variant="text"
@@ -513,7 +513,7 @@ function PreviewHVO(location) {
                             onMouseEnter={handleMouseEnter}
                             onMouseLeave={handleMouseLeave}
                           >
-                            {item?.values?.demoButtonText}
+                            {item?.values?.demo_button_text}
                             {/* {"  "}
                             <IoIosArrowForward /> */}
                           </Typography>
@@ -529,9 +529,9 @@ function PreviewHVO(location) {
                     >
                       <img
                         src={
-                          item?.values?.heroImg
-                            ? item?.values?.heroImg
-                            : item?.values?.staticImage
+                          item?.values?.hero_img
+                            ? item?.values?.hero_img
+                            : item?.values?.static_image
                         }
                         alt="img"
                         data-aos="zoom-in"
@@ -544,10 +544,10 @@ function PreviewHVO(location) {
             )}
             {item?.sectionName === "HIGHLIGHT_BANNER" && (
               <>
-                {item?.values?.scorll == true ? (
+                {item?.values?.scroll == true ? (
                   <Slider
                     {...settings}
-                    style={{ background: item?.values?.bannerColor }}
+                    style={{ background: item?.values?.banner_color }}
                     className={classes.LandingSlider}
                   >
                     {}
@@ -555,10 +555,10 @@ function PreviewHVO(location) {
                       <Box
                         sx={{
                           color: `${
-                            item?.values?.bannerTextColor || "#FFF"
+                            item?.values?.banner_text_color || "#FFF"
                           } !important`,
                           fontSize: `${
-                            item?.values?.bannerTextSize || "16"
+                            item?.values?.banner_text_size || "16"
                           }px !important`,
                           paddingTop: "30px",
                           paddingBottom: "30px",
@@ -566,14 +566,14 @@ function PreviewHVO(location) {
                         display="flex"
                         key={index}
                       >
-                        {item?.values?.bannerText}
+                        {item?.values?.banner_text}
                       </Box>
                     ))}
                   </Slider>
                 ) : (
                   <Slider
                     {...settings2}
-                    style={{ background: item?.values?.bannerColor }}
+                    style={{ background: item?.values?.banner_color }}
                     className={classes.LandingSlider}
                   >
                     {}
@@ -581,10 +581,10 @@ function PreviewHVO(location) {
                       <Box
                         sx={{
                           color: `${
-                            item?.values?.bannerTextColor || "#FFF"
+                            item?.values?.banner_text_color || "#FFF"
                           } !important`,
                           fontSize: `${
-                            item?.values?.bannerTextSize || "16"
+                            item?.values?.banner_text_size || "16"
                           }px !important`,
                           paddingTop: "30px",
                           paddingBottom: "30px",
@@ -592,7 +592,7 @@ function PreviewHVO(location) {
                         display="flex"
                         key={index}
                       >
-                        {item?.values?.bannerText}
+                        {item?.values?.banner_text}
                       </Box>
                     ))}
                   </Slider>
@@ -689,7 +689,7 @@ function PreviewHVO(location) {
             {item?.sectionName === "HIGHLIGHT_BANNER2" && (
               <>
                 <Box
-                  style={{ background: item?.values?.bannerColor }}
+                  style={{ background: item?.values?.banner_color }}
                   className={classes.banner2}
                 >
                   <Container
@@ -706,35 +706,35 @@ function PreviewHVO(location) {
                       variant="h3"
                       style={{
                         fontWeight: 700,
-                        color: item?.values?.bannerTextColor,
-                        fontSize: `${item?.values?.banner2TextSize || "30"}px`,
+                        color: item?.values?.banner_text_color,
+                        fontSize: `${item?.values?.banner2_text_size || "30"}px`,
                       }}
                       display="flex"
                       key={index}
                     >
-                      {item?.values?.bannerText}
+                      {item?.values?.banner_text}
                     </Typography>
                     <a
                       href={
-                        item?.values?.staticUrl
-                          ? item?.values?.staticUrl
-                          : item?.values?.dynamicUrl
+                        item?.values?.static_url
+                          ? item?.values?.static_url
+                          : item?.values?.static_url
                       }
                       target="_blank"
                       rel="noopener noreferrer"
                     >
                       <Button
                         style={{
-                          backgroundColor: item?.values?.ctaButtonColor,
+                          backgroundColor: item?.values?.cta_button_color,
                           fontSize: "12px",
                           fontWeight: 200,
                           padding: "10px 20px",
                           display: "flex",
                           whiteSpace: "nowrap",
-                          color: item?.values?.bannerButtonTextColor,
+                          color: item?.values?.banner_button_text_color,
                         }}
                       >
-                        {item?.values?.ctaButtonText}
+                        {item?.values?.cta_button_text}
                       </Button>
                     </a>
                   </Container>
@@ -756,8 +756,8 @@ function PreviewHVO(location) {
                         variant="h3"
                         // data-aos="fade-up"
                         style={{
-                          fontSize: `${item?.values?.headline1Size}px`,
-                          color: item?.values?.headline1Color,
+                          fontSize: `${item?.values?.headline1_size}px`,
+                          color: item?.values?.headline1_color,
                           fontWeight: 900,
                           lineHeight: "30px",
                         }}
@@ -768,8 +768,8 @@ function PreviewHVO(location) {
                         variant="h1"
                         // data-aos="fade-up"
                         style={{
-                          fontSize: `${item?.values?.headline2Size}px`,
-                          color: item?.values?.headline2Color,
+                          fontSize: `${item?.values?.headline2_size}px`,
+                          color: item?.values?.headline2_color,
                           fontWeight: 700,
                           paddingTop: "10px",
                         }}
@@ -781,12 +781,12 @@ function PreviewHVO(location) {
                         // data-aos="fade-up"
                         style={{
                           wordBreak: "break-word",
-                          fontSize: `${item?.values?.bodyTextSize}px`,
-                          color: item?.values?.bodyTextColor,
+                          fontSize: `${item?.values?.body_text_size}px`,
+                          color: item?.values?.body_text_color,
                           lineHeight: "30px",
                         }}
                       >
-                        {item?.values?.bodyText}
+                        {item?.values?.body_text}
                       </Typography>
 
                       {/* <Button
@@ -810,9 +810,9 @@ function PreviewHVO(location) {
                     <Grid item sm={6} xs={12} align="center">
                       <img
                         src={
-                          item?.values?.leftTextRightImageUrl
-                            ? item?.values?.leftTextRightImageUrl
-                            : item?.values?.staticImage
+                          item?.values?.left_text_right_image_url
+                            ? item?.values?.left_text_right_image_url
+                            : item?.values?.static_image
                         }
                         alt="img"
                         data-aos="zoom-in"
@@ -826,7 +826,7 @@ function PreviewHVO(location) {
               <>
                 <Box
                   style={{
-                    backgroundColor: item?.values?.footerBackgroundColor,
+                    backgroundColor: item?.values?.footer_background_color,
                     padding: "10px 0px",
                   }}
                 >
@@ -844,8 +844,8 @@ function PreviewHVO(location) {
                         <Typography
                           variant="h2"
                           style={{
-                            fontSize: `${item?.values?.footerHeadingSize}px`,
-                            color: item?.values?.footerTextHeadingColor,
+                            fontSize: `${item?.values?.footer_heading_size}px`,
+                            color: item?.values?.footer_text_heading_color,
                             marginBottom: "30px",
                           }}
                         >
@@ -855,10 +855,10 @@ function PreviewHVO(location) {
                           variant="body1"
                           style={{
                             color: hoveredContact
-                              ? item?.values?.footerTextHoverColor
-                              : item?.values?.footerTextColor,
+                              ? item?.values?.footer_text_hover_color
+                              : item?.values?.footer_text_color,
                             marginTop: "32px",
-                            fontSize: `${item?.values?.footerTextSize}px`,
+                            fontSize: `${item?.values?.footer_text_size}px`,
                             cursor: "default",
                           }}
                           onMouseEnter={handleMouseEnterContact}
@@ -902,15 +902,15 @@ function PreviewHVO(location) {
                             target="_blank"
                             rel="noopener noreferrer"
                             href={
-                              item?.values?.footerLinks?.facebooklink || "#"
+                              item?.values?.facebook_link || "#"
                             }
                             aria-label="Instagram"
                           >
                             <FaFacebookF
                               style={{
                                 backgroundColor:
-                                  item?.values?.socialIconBackgroundColor,
-                                color: item?.values?.socialIconColor,
+                                  item?.values?.social_icon_background_color,
+                                color: item?.values?.social_icon_color,
                               }}
                               className="icons"
                             />
@@ -919,15 +919,15 @@ function PreviewHVO(location) {
                             target="_blank"
                             rel="noopener noreferrer"
                             href={
-                              item?.values?.footerLinks?.linkedinlink || "#"
+                              item?.values?.linkedin_link || "#"
                             }
                             aria-label="Instagram"
                           >
                             <FaLinkedinIn
                               style={{
                                 backgroundColor:
-                                  item?.values?.socialIconBackgroundColor,
-                                color: item?.values?.socialIconColor,
+                                  item?.values?.social_icon_background_color,
+                                color: item?.values?.social_icon_color,
                               }}
                               className="icons"
                             />
@@ -936,15 +936,15 @@ function PreviewHVO(location) {
                             target="_blank"
                             rel="noopener noreferrer"
                             href={
-                              item?.values?.footerLinks?.instagramlink || "#"
+                              item?.values?.footerLinks?.instagram_link || "#"
                             }
                             aria-label="Instagram"
                           >
                             <FaInstagram
                               style={{
                                 backgroundColor:
-                                  item?.values?.socialIconBackgroundColor,
-                                color: item?.values?.socialIconColor,
+                                  item?.values?.social_icon_background_color,
+                                color: item?.values?.social_icon_color,
                               }}
                               className="icons"
                             />
@@ -955,8 +955,8 @@ function PreviewHVO(location) {
                         <Typography
                           variant="h2"
                           style={{
-                            fontSize: `${item?.values?.footerHeadingSize}px`,
-                            color: item?.values?.footerTextHeadingColor,
+                            fontSize: `${item?.values?.footer_heading_size}px`,
+                            color: item?.values?.footer_text_heading_color,
                           }}
                         >
                           LEGAL
@@ -998,8 +998,8 @@ function PreviewHVO(location) {
                         <Typography
                           variant="body1"
                           style={{
-                            color: item?.values?.benchmarkColor,
-                            fontSize: `${item?.values?.benchmarkSize}px`,
+                            color: item?.values?.benchmark_color,
+                            fontSize: `${item?.values?.benchmar_size}px`,
                             fontWeight: 400,
                           }}
                         >

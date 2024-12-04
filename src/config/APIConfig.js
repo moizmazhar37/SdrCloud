@@ -42,7 +42,12 @@ const ApiConfig = {
   category: `${categories}/`,
   prospects: `${prospects}`,
   headerSection: `${hvoelement}/header-section`,
+  heroSection: `${hvoelement}/hero-section`,
   rightTextLeftImageSection: `${hvoelement}/right-text-left-image-section`,
+  higlightBannerSection: `${hvoelement}/highlight-banner-section`,
+  highlightBanner2Section: `${hvoelement}/highlight-banner2-section`,
+  footerSection: `${hvoelement}/footer-section`,
+  leftTextRightImageSection: `${hvoelement}/left-text-right-image-section`,
   getHVOTemplateById: `${templates}`,
   previewHVOwithsheetdata: `${templates}/preview-hvo-with-sheet-data`
   // userSignup: `${user}/userSignUp`,

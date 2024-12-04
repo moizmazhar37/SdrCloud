@@ -662,40 +662,33 @@ function HeroSection({
       try {
         const res = await axios({
           method: "POST",
-          url: ApiConfig.addElement,
+          url: ApiConfig.heroSection,
           headers: {
-            token: `${localStorage.getItem("token")}`,
-          },
-          params: {
-            hvoTemplateId: templateId,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
           data: {
-            heroImg: image,
-            staticImage: staticImage,
+            hvoTemplateId: templateId,
+            sequence: typeIndex + 1,
             bodyText: body,
+            bodyTextColor: hexValueBody,
+            ctaButtonColor: hexValueBtn,
             ctaButtonText: buttonText,
+            ctaButtonTextColor: hexValueBtnText,
             dynamicUrl: selectedOption,
             headline1: h1,
             headline2: h2,
-            staticUrl: staticURL,
-            staticUrlDemo: staticURLDemo,
-            dynamicUrlDemo: selectedOptionDemo,
-            sectionTypeId: videoRefral.find(
-              (data) => data.sectionName === elementType
-            )?.sectionId,
-            sequence: typeIndex + 1,
-            userId: parseInt(localStorage.getItem("_id")),
-            hvoId: templateId,
             headline1Color: hexValueH1,
             headline2Color: hexValueH2,
-            bodyTextColor: hexValueBody,
-            ctaButtonColor: hexValueBtn,
-            ctaButtonTextColor: hexValueBtnText,
+            heroImg: `[${image}]`,
+            staticUrl: staticURL,
+            staticImage: imageURL,
             headline1Size: h1Size,
             headline2Size: h2Size,
             bodyTextSize: bodySize,
             demoButtonText: demobuttonText,
             demoButtonTextColor: hexValueDemoBtnText,
+            staticUrlDemo: staticURLDemo,
+            dynamicUrlDemo: selectedOptionDemo,
             demoButtonColor: hexValueDemoBtn,
           },
         });
@@ -720,22 +713,17 @@ function HeroSection({
   const getSheetType = async () => {
     try {
       setLoading(true);
-      const res = await axios({
-        method: "GET",
-        url: ApiConfig.getsheettype,
+      const res = await axios.get(`${ApiConfig.headers}/${templateId}`, {
         headers: {
-          token: `${localStorage.getItem("token")}`,
-        },
-        params: {
-          hvoId: templateId,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      if (res.data.status === 200) {
-        console.log(res?.data?.data?.data);
-        setCompanyDetails(res?.data?.data?.data);
+      if (res?.status === 200) {
+        setCompanyDetails(res?.data);
       }
     } catch (error) {
       console.log("error");
+      toast.error(error?.response?.data?.message, "error");
     } finally {
       setLoading(false);
     }
@@ -831,11 +819,11 @@ function HeroSection({
                 {companyDetails !== undefined &&
                   companyDetails.length > 0 &&
                   companyDetails
-                    ?.filter(
-                      (item) =>
-                        item?.dataType === "Image URL" ||
-                        item?.dataType === "Screenshot from URL"
-                    )
+                    // ?.filter(
+                    //   (item) =>
+                    //     item?.dataType === "Image URL" ||
+                    //     item?.dataType === "Screenshot from URL"
+                    // )
                     ?.map((item) => (
                       <MenuItem value={item?.value}>{item?.value}</MenuItem>
                     ))}
@@ -1315,13 +1303,13 @@ function HeroSection({
                     {companyDetails !== undefined &&
                       companyDetails.length > 0 &&
                       companyDetails
-                        ?.filter(
-                          (item) =>
-                            item?.dataType == "Text Field" ||
-                            item?.dataType == "First name" ||
-                            item?.dataType == "Last name" ||
-                            item?.dataType == "Customer organization"
-                        )
+                        // ?.filter(
+                        //   (item) =>
+                        //     item?.dataType == "Text Field" ||
+                        //     item?.dataType == "First name" ||
+                        //     item?.dataType == "Last name" ||
+                        //     item?.dataType == "Customer organization"
+                        // )
                         ?.map((sheetfield, ind) => (
                           <Tooltip
                             title={sheetfield?.value || "Copy Text"}

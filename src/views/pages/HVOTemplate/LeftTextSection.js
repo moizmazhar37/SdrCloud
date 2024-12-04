@@ -334,6 +334,37 @@ function LeftTextSection({
   const [isImageChanged, setIsImageChanged] = useState(false);
   const [photoURL, setPhotoURL] = useState(null);
 
+  const [imageURL, setImageURL] = useState("")
+
+  const handleStaticImage = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const response = await axios.post(ApiConfig.UploadFile, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      const { public_url } = response.data;
+      console.log("File uploaded successfully:", public_url);
+
+      setImageURL(public_url);
+      console.log("imageURL: ", imageURL);
+      toast.success("Image uploaded successfully.");
+    } catch (error) {
+      console.error(
+        "Error uploading file:",
+        error.response?.data || error.message
+      );
+    }
+  };
+
   const handleOpenDialog = () => {
     setOpen(true);
   };
@@ -549,35 +580,28 @@ function LeftTextSection({
       try {
         const res = await axios({
           method: "POST",
-          url: ApiConfig.addElement,
+          url: ApiConfig.leftTextRightImageSection,
           headers: {
-            token: `${localStorage.getItem("token")}`,
-          },
-          params: {
-            hvoTemplateId: templateId,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
           data: {
-            userId: parseInt(localStorage.getItem("_id")),
-            hvoId: templateId,
-            staticImage: staticImage,
-            leftTextRightImageUrl: image,
-            headline1: h1,
-            headline1Size: h1Size,
-            headline2: h2,
-            headline2Size: h2Size,
-            bodyText: body,
-            bodyTextSize: bodySize,
-            sectionTypeId: videoRefral.find(
-              (data) => data.sectionName === elementType
-            )?.sectionId,
+            hvoTemplateId: templateId,
             sequence: typeIndex + 1,
-            headline1Color: hexValueH1,
-            headline2Color: hexValueH2,
+            bodyText: body,
+            headline1: h1,
+            headline2: h2,
+            leftTextRightImageUrl: `[${image}]`,
             bodyTextColor: hexValueBody,
+            bodyTextSize: bodySize,
+            headline1Color: hexValueH1,
+            headline1Size: h1Size,
+            headline2Color: hexValueH2,
+            headline2Size: h2Size,
+            staticImage: staticImage,
           },
         });
-        if (res?.data?.status === 200) {
-          toast.success(res?.data?.message);
+        if (res?.status === 200) {
+          toast.success("Section created successfully");
           setLoading(false);
           reload();
           setNextButton(true);
@@ -624,22 +648,17 @@ function LeftTextSection({
   const getSheetType = async () => {
     try {
       setLoading(true);
-      const res = await axios({
-        method: "GET",
-        url: ApiConfig.getsheettype,
+      const res = await axios.get(`${ApiConfig.headers}/${templateId}`, {
         headers: {
-          token: `${localStorage.getItem("token")}`,
-        },
-        params: {
-          hvoId: templateId,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      if (res.data.status === 200) {
-        console.log(res?.data?.data?.data);
-        setCompanyDetails(res?.data?.data?.data);
+      if (res?.status === 200) {
+        setCompanyDetails(res?.data);
       }
     } catch (error) {
       console.log("error");
+      toast.error(error?.response?.data?.message, "error");
     } finally {
       setLoading(false);
     }
@@ -687,9 +706,20 @@ function LeftTextSection({
                         ref={fileInputRef}
                         onClick={handleOpenDialog}
                       />
-                      <Button className="savebtn" onClick={handleOpenDialog}>
-                        Upload
+                      <Button
+                        className="savebtn"
+                        onClick={() => fileInputRef.current.click()}
+                      >
+                        Choose
                       </Button>
+
+                      <input
+                        type="file"
+                        accept=".jpg,.jpeg,.png"
+                        ref={fileInputRef}
+                        style={{ display: "none" }} 
+                        onChange={handleStaticImage}
+                      />
                     </InputAdornment>
                   ),
                 }}
@@ -721,11 +751,11 @@ function LeftTextSection({
                 {companyDetails !== undefined &&
                   companyDetails.length > 0 &&
                   companyDetails
-                    ?.filter(
-                      (item) =>
-                        item?.dataType === "Image URL" ||
-                        item?.dataType === "Screenshot from URL"
-                    )
+                    // ?.filter(
+                    //   (item) =>
+                    //     item?.dataType === "Image URL" ||
+                    //     item?.dataType === "Screenshot from URL"
+                    // )
                     ?.map((item) => (
                       <MenuItem value={item?.value}>{item?.value}</MenuItem>
                     ))}
@@ -1205,13 +1235,13 @@ function LeftTextSection({
                   {companyDetails !== undefined &&
                     companyDetails.length > 0 &&
                     companyDetails
-                      ?.filter(
-                        (item) =>
-                          item?.dataType == "Text Field" ||
-                          item?.dataType == "First name" ||
-                          item?.dataType == "Last name" ||
-                          item?.dataType == "Customer organization"
-                      )
+                      // ?.filter(
+                      //   (item) =>
+                      //     item?.dataType == "Text Field" ||
+                      //     item?.dataType == "First name" ||
+                      //     item?.dataType == "Last name" ||
+                      //     item?.dataType == "Customer organization"
+                      // )
                       ?.map((sheetfield, ind) => (
                         <Tooltip title={sheetfield?.value || "Copy Text"} arrow>
                           <TextField

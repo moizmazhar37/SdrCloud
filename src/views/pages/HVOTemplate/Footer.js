@@ -533,39 +533,32 @@ function Footer({
       try {
         const res = await axios({
           method: "POST",
-          url: ApiConfig.addElement,
+          url: ApiConfig.footerSection,
           headers: {
-            token: `${localStorage.getItem("token")}`,
-          },
-          params: {
-            hvoTemplateId: templateId,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
           data: {
-            // userId: parseInt(localStorage.getItem("_id")),
-            hvoId: templateId,
-            // fileType: {
-            //   IMAGE: logo || image,
-            // },
+            sequence: 1,
+            hvoTemplateId: templateId,
             footerBackgroundColor: footerBackgroundColor,
-            socialIconColor: socialIcon.textColor,
-            socialIconBackgroundColor: socialIcon.colorpicker,
             footerTextHeadingColor: footerTextHeadingColor.colorpicker,
+            footerHeadingSize: leftfooterTextColor.headingSize,
             footerTextColor: leftfooterTextColor.colorpicker,
             footerTextHoverColor: leftfooterTextColor.hovercolor,
             footerTextSize: leftfooterTextColor.fontsize,
-            footerHeadingSize: leftfooterTextColor.headingSize,
+            socialIconBackgroundColor: socialIcon.colorpicker,
+            socialIconColor: socialIcon.textColor,
             benchmarkColor: benchmark.colorpicker,
             benchmarkSize: benchmark.fontsize,
+            instagramLink: "http://instagram.com",
+            facebookLink: "http://facebook.com",
+            linkedinLink: "http://linkedin.com",
 
-            sectionTypeId: videoRefral.find(
-              (data) => data.sectionName === elementType
-            )?.sectionId,
-            sequence: typeIndex + 1,
           },
         });
         setLoading(true);
-        if (res?.data?.status === 200) {
-          toast.success(res?.data?.message);
+        if (res?.status === 200) {
+          toast.success("Data saved successfully.");
           setLoading(false);
           reload();
           setNextButton(true);
@@ -630,24 +623,16 @@ function Footer({
   const getSheetType = async () => {
     try {
       setLoading(true);
-      const res = await axios({
-        method: "GET",
-        url: ApiConfig.getsheettype,
+      const res = await axios.get(`${ApiConfig.headers}/${templateId}`, {
         headers: {
-          token: `${localStorage.getItem("token")}`,
-        },
-        params: {
-          hvoId: templateId,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      if (res.data.status === 200) {
-        console.log(res?.data?.data?.data);
-        setCompanyDetails(res?.data?.data?.data);
+      if (res.status === 200) {
+        setCompanyDetails(res?.data);
       }
     } catch (error) {
-      const errorMessage =
-        error?.response?.data?.message || "An unexpected error occurred.";
-      toast.error(errorMessage);
+      console.log("error");
     } finally {
       setLoading(false);
     }
