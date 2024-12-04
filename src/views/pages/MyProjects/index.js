@@ -372,7 +372,11 @@ function AllCustomerGroup() {
       });
       if (res?.status === 200) {
         setLoading(false);
-        setAllProjectData(res?.data?.video_templates);
+        if(tempType === "HVO") {
+          setAllProjectData(res?.data?.hvo_templates);
+        } else if (tempType === "VIDEO") {
+          setAllProjectData(res?.data?.video_templates);
+        }
         setPageSize(res?.data?.totalPageCount);
         setSheetId(res?.data?.docs);
         setPagination(true);
