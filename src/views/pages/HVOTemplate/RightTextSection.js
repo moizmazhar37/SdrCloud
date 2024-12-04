@@ -600,7 +600,7 @@ function RightTextSection({
           data: {
             hvoTemplateId: templateId,
             staticImage: imageURL,
-            leftImageRightText: image,
+            leftImageRightText: `[${image}]`,
             headline1: h1,
             headline1Size: h1Size,
             headline2: h2,

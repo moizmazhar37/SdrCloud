@@ -141,21 +141,18 @@ function HVOSummary({ linkObject, sectionId1, reload, viewParams }) {
       setLoading(true);
       const res = await axios({
         method: "POST",
-        url: ApiConfig.createHVOsheetData,
+        url: `${ApiConfig.createHVO}/${templateId}`,
         headers: {
-          token: `${localStorage.getItem("token")}`,
-        },
-        params: {
-          hvoTemplateId: templateId,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
 
-      const status = res?.data?.status;
+      const status = res?.status;
 
       if (status === 200 || status === 201) {
         setLoading(false);
-        setPreviewData(res?.data?.data?.elementsList);
-        toast.success(res?.data?.message);
+        setPreviewData(res?.data?.data_list);
+        toast.success("HVO Created Successfully");
         console.log(res?.data);
       } else if (status === 205) {
         toast.error(res?.data?.message);

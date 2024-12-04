@@ -317,30 +317,23 @@ function BannerSection2({
       try {
         const res = await Axios({
           method: "POST",
-          url: ApiConfig.addElement,
+          url: ApiConfig.highlightBanner2Section,
           headers: {
-            token: `${localStorage.getItem("token")}`,
-          },
-          params: {
-            hvoTemplateId: templateId,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
           data: {
-            bannerText: bannerText,
-            ctaButtonText: buttonText,
-            sectionTypeId: videoRefral.find(
-              (data) => data.sectionName === elementType
-            )?.sectionId,
+            hvoTemplateId: templateId,
             sequence: typeIndex + 1,
-            userId: parseInt(localStorage.getItem("_id")),
-            hvoId: templateId,
-            bannerColor: hexValueBanner,
-            ctaButtonColor: hexValueBtn,
-            bannerButtonTextColor: hexValueBtnText,
-            bannerButtonColor: hexValueBtn,
+            ctaButtonText: buttonText,
+            bannerText: bannerText,
             staticUrl: staticURL,
-            dynamicUrl: selectedOption,
+            ctaButtonColor: hexValueBtn,
+            bannerColor: hexValueBanner,
+            bannerButtonColor: hexValueBtn,
             bannerTextColor: hexValueBannerText,
+            bannerButtonTextColor: hexValueBtnText,
             banner2TextSize: banner2TextSize,
+            dynamicUrl: selectedOption,
           },
         });
         if (res?.data?.status === 200) {
@@ -390,19 +383,13 @@ function BannerSection2({
   const getSheetType = async () => {
     try {
       setLoading(true);
-      const res = await axios({
-        method: "GET",
-        url: ApiConfig.getsheettype,
+      const res = await axios.get(`${ApiConfig.headers}/${templateId}`, {
         headers: {
-          token: `${localStorage.getItem("token")}`,
-        },
-        params: {
-          hvoId: templateId,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      if (res.data.status === 200) {
-        console.log(res?.data?.data?.data);
-        setCompanyDetails(res?.data?.data?.data);
+      if (res.status === 200) {
+        setCompanyDetails(res?.data);
       }
     } catch (error) {
       console.log("error");
@@ -872,13 +859,13 @@ function BannerSection2({
                 {companyDetails !== undefined &&
                   companyDetails.length > 0 &&
                   companyDetails
-                    ?.filter(
-                      (item) =>
-                        item?.dataType == "Text Field" ||
-                        item?.dataType == "First name" ||
-                        item?.dataType == "Last name" ||
-                        item?.dataType == "Customer organization"
-                    )
+                    // ?.filter(
+                    //   (item) =>
+                    //     item?.dataType == "Text Field" ||
+                    //     item?.dataType == "First name" ||
+                    //     item?.dataType == "Last name" ||
+                    //     item?.dataType == "Customer organization"
+                    // )
                     ?.map((sheetfield, ind) => (
                       <Tooltip title={sheetfield?.value || "Copy Text"} arrow>
                         <TextField
@@ -945,7 +932,7 @@ function BannerSection2({
               {companyDetails !== undefined &&
                 companyDetails.length > 0 &&
                 companyDetails
-                  ?.filter((item) => item?.dataType == "URL")
+                  // ?.filter((item) => item?.dataType == "URL")
                   ?.map((item) => (
                     <MenuItem value={item?.value}>{item?.value}</MenuItem>
                   ))}

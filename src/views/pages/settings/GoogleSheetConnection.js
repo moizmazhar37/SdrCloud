@@ -197,7 +197,7 @@ const GoogleSheetConnection = ({
       setLoading(true);
       console.log(values.userList)
       const response = await Axios({
-        url: ApiConfig.fetchSheet,
+        url: `${ApiConfig.fetchSheet}/`,
         method: "POST",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,

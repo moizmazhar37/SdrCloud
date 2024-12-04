@@ -241,7 +241,7 @@ const GoogleSheet = ({
     setLoading(true);
     try {
       const response = await axios({
-        url: ApiConfig.googleSheet,
+        url: `${ApiConfig.googleSheet}/`,
         method: "GET",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
