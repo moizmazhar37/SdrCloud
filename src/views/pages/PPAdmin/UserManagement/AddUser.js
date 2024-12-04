@@ -504,6 +504,8 @@ const getFieldLabel = (field) => {
       return "Admin Phone";
     case "password":
       return "Admin Password";
+    default:
+       return "";
   }
 };
 const getFieldPlaceholder = (field) => {
@@ -518,6 +520,8 @@ const getFieldPlaceholder = (field) => {
       return "+1 (___) __ __ ___";
     case "password":
       return "Enter Your Password";
+    default:
+      return "";
   }
 };
 
