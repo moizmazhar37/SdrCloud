@@ -218,7 +218,7 @@ function HVOSummary({ linkObject, reload }) {
               <Button
                 onClick={() => {
                   createHVO();
-                  getHVOTemplate();
+                  // getHVOTemplate();
                 }}
                 style={{ height: "48px" }}
                 variant="outlined"
@@ -234,7 +234,7 @@ function HVOSummary({ linkObject, reload }) {
             </Box>
           )}
         </Grid>
-      )}
+      </Grid>
 
       <Dialog
         open={deleteOpen}
