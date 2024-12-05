@@ -375,7 +375,7 @@ function HeaderSection({
                 </MenuItem>
                 <MenuItem value="none">Select None</MenuItem>
                 {logoSet
-                  // ?.filter((item) => item?.dataType == "Logo")
+                  ?.filter((item) => item?.dataType === "Logo")
                   ?.map((item) => (
                     <MenuItem
                       value={item?.value}

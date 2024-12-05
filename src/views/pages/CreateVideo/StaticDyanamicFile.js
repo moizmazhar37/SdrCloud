@@ -723,7 +723,9 @@ const StaticDyanamicFile = ({
                     Select Static URL
                   </MenuItem>
 
-                  {sheetData?.map((entry) => (
+                  {sheetData
+                  ?.filter((entry) => entry?.dataType === "Static URL")
+                  ?.map((entry) => (
                     <MenuItem key={entry?.value} value={entry?.value}>
                       {entry?.value}
                     </MenuItem>
@@ -749,7 +751,9 @@ const StaticDyanamicFile = ({
               <MenuItem value="none" disabled>
                 Select Dynamic URL
               </MenuItem>
-              {sheetData?.map((entry) => (
+              {sheetData
+              ?.filter((entry) => entry?.dataType === "Dynamic URL")
+              ?.map((entry) => (
                 <MenuItem key={entry?.value} value={entry?.value}>
                   {entry?.value}
                 </MenuItem>

@@ -944,7 +944,9 @@ const ImageVideo = ({
                     Select Image Url
                   </MenuItem>
                   {/* <MenuItem value="--">Select None</MenuItem> */}
-                  {sheetData?.map((entry) => (
+                  {sheetData
+                  ?.filter((entry) => entry?.dataType === "Image URL")
+                  ?.map((entry) => (
                     <MenuItem key={entry?.value} value={entry?.value}>
                       {entry?.value}
                     </MenuItem>
@@ -1020,7 +1022,9 @@ const ImageVideo = ({
                   <MenuItem value="none" disabled>
                     Select Dynamic URL to fetch Video
                   </MenuItem>
-                  {sheetData?.map((entry) => (
+                  {sheetData
+                  ?.filter((entry) => entry?.dataType === "Video URL")
+                  ?.map((entry) => (
                     <MenuItem key={entry?.value} value={entry?.value}>
                       {entry?.value}
                     </MenuItem>
