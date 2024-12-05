@@ -68,26 +68,79 @@ function HVOSummary({ linkObject, reload }) {
   const templateId = new URLSearchParams(window.location.search).get(
     "templateId"
   );
+  const getSectionLabel = (type, index, sectionCount) => {
+    const sectionLabels = {
+      header: `Header Section ${index + 1}`,
+      hero: `Hero Section ${index + 1}`,
+      highlightBanner: `Highlight Banner Section ${index + 1}`,
+      rightTextLeftImage: `Right Text Left Image Section ${index + 1}`,
+      leftTextRightImage: `Left Text Right Image Section ${index + 1}`,
+      footer: `Footer Section ${index + 1}`,
+    };
+
+    return (
+      sectionLabels[type] ||
+      `${type.charAt(0).toUpperCase() + type.slice(1)} Section ${index + 1}`
+    );
+  };
+
+  const getImagePreview = (section) => {
+    return (
+      section.static_image ||
+      section.company_logo ||
+      section.hero_img ||
+      "/path/to/default/image.png"
+    );
+  };
 
   useEffect(() => {
     const mergeSections = (sectionsObject) => {
       const allSections = [];
-      for (const [key, sections] of Object.entries(sectionsObject)) {
+      const sectionTypes = [
+        "headerSections",
+        "heroSections",
+        "highlightBannerSections",
+        "rightTextLeftImageSections",
+        "highlightBanner2Sections",
+        "leftTextRightImageSections",
+        "footerSections",
+      ];
+
+      sectionTypes.forEach((sectionKey) => {
+        const sections = sectionsObject[sectionKey];
         if (Array.isArray(sections)) {
-          const sectionType = key.replace(/Sections$/, "");
-          sections.forEach((item) => {
+          const sectionType = sectionKey.replace(/Sections$/, "");
+          sections.forEach((item, index) => {
             allSections.push({
               ...item,
               type: sectionType,
             });
           });
         }
-      }
+      });
+
       return allSections;
     };
 
     const mergedSections = mergeSections(linkObject);
-    setSections(mergedSections);
+
+    const sectionTypeCounts = {};
+    const labeledSections = mergedSections.map((section) => {
+      sectionTypeCounts[section.type] =
+        (sectionTypeCounts[section.type] || 0) + 1;
+      const typeIndex = sectionTypeCounts[section.type] - 1;
+
+      return {
+        ...section,
+        label: getSectionLabel(
+          section.type,
+          typeIndex,
+          sectionTypeCounts[section.type]
+        ),
+      };
+    });
+
+    setSections(labeledSections);
   }, [linkObject]);
 
   const handleDeleteSection = async () => {
@@ -168,26 +221,15 @@ function HVOSummary({ linkObject, reload }) {
             <div>
               <Box className={classes.elementBox}>
                 <Typography variant="h6" style={{ color: "#0358AC" }}>
-                  {item.type === "header"
-                    ? `Header Section ${i + 1}`
-                    : `Hero Section ${i + 1}`}
+                  {item.label}
                 </Typography>
-                {item.type === "header" && (
+                {getImagePreview(item) && (
+                  // eslint-disable-next-line jsx-a11y/img-redundant-alt
                   <img
-                    src={item.company_logo}
-                    alt="Header Logo"
+                    src={getImagePreview(item)}
+                    alt={" "}
                     className={classes.img}
                   />
-                )}
-                {item.type === "hero" && (
-                  <>
-                    <Typography>{item.headline1}</Typography>
-                    <img
-                      src={item.static_image}
-                      alt="Hero Section"
-                      className={classes.img}
-                    />
-                  </>
                 )}
                 <IconButton
                   className={classes.deleteButton}
