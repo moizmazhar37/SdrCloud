@@ -678,7 +678,8 @@ const CreateHVOTemplate = (props) => {
         url: `${ApiConfig.getHVOTemplateById}/${templateId}`,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },      });
+        },
+      });
       if (res?.status === 200) {
         setSaveName(true);
         setTemplateParams((prevState) => ({
@@ -691,7 +692,7 @@ const CreateHVOTemplate = (props) => {
           ...res?.data?.sheet,
         }));
         SetConnectedSheet(res?.data?.sheet?.googleSheetsId);
-        setLinkObject(res?.data?.elementsList?.headerSections);
+        setLinkObject(res?.data?.elementsList);
 
         if (res?.data?.sheet && res?.data?.sheet?.title !== null) {
           setEditSheet(true);
@@ -823,8 +824,8 @@ const CreateHVOTemplate = (props) => {
         },
         params: {
           isSheetConnected: false,
-          sheetType: "HVO"
-        }
+          sheetType: "HVO",
+        },
       });
       if (res?.status === 200) {
         setSheetData(res?.data);
@@ -839,46 +840,46 @@ const CreateHVOTemplate = (props) => {
     try {
       setLoading(true);
       const res = {
-        "data": [
+        data: [
           {
-            "sectionId": 1,
-            "sectionName": "HEADER",
-            "sectionDescription": null
+            sectionId: 1,
+            sectionName: "HEADER",
+            sectionDescription: null,
           },
           {
-            "sectionId": 2,
-            "sectionName": "HERO",
-            "sectionDescription": null
+            sectionId: 2,
+            sectionName: "HERO",
+            sectionDescription: null,
           },
           {
-            "sectionId": 3,
-            "sectionName": "HIGHLIGHT_BANNER",
-            "sectionDescription": null
+            sectionId: 3,
+            sectionName: "HIGHLIGHT_BANNER",
+            sectionDescription: null,
           },
           {
-            "sectionId": "4",
-            "sectionName": "RIGHT_TEXT_LEFT_IMAGE",
-            "sectionDescription": null
+            sectionId: "4",
+            sectionName: "RIGHT_TEXT_LEFT_IMAGE",
+            sectionDescription: null,
           },
           {
-            "sectionId": "5",
-            "sectionName": "HIGHLIGHT_BANNER2",
-            "sectionDescription": null
+            sectionId: "5",
+            sectionName: "HIGHLIGHT_BANNER2",
+            sectionDescription: null,
           },
           {
-            "sectionId": "6",
-            "sectionName": "LEFT_TEXT_RIGHT_IMAGE",
-            "sectionDescription": null
+            sectionId: "6",
+            sectionName: "LEFT_TEXT_RIGHT_IMAGE",
+            sectionDescription: null,
           },
           {
-            "sectionId": "7",
-            "sectionName": "FOOTER",
-            "sectionDescription": null
+            sectionId: "7",
+            sectionName: "FOOTER",
+            sectionDescription: null,
           },
         ],
-        "message": "Section types retrieved successfully.",
-        "status": 200
-      }
+        message: "Section types retrieved successfully.",
+        status: 200,
+      };
       if (res?.status === 200) {
         setVideoRefral(res?.data);
       }
@@ -1394,7 +1395,9 @@ const CreateHVOTemplate = (props) => {
                   getSummary={getSummary}
                 />
               </>
-            ) : elementType === "summary" ? (
+            ) : //======== ====================================================== THIS SECTION RENDERS CARDS ===============================================================
+            //          ===========================================================================================================================================
+            elementType === "summary" ? (
               <>
                 <HVOSummary
                   linkObject={linkObject}
