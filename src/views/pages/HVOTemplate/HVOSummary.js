@@ -166,29 +166,29 @@ function HVOSummary({ linkObject, sectionId1, reload, viewParams }) {
       setLoading(false);
     }
   };
-  const getHVOTemplate = async () => {
-    try {
-      setLoading(true);
-      const res = await axios({
-        method: "GET",
-        url: ApiConfig.getHVO,
-        headers: {
-          token: `${localStorage.getItem("token")}`,
-        },
-        params: { hvoTemplateId: templateId },
-      });
-      if (res?.status === 200) {
-        setCreationProcess(res?.data?.data?.templateData?.creationStatus);
-      }
-    } catch (error) {
-      console.log(error, "error");
-    } finally {
-      setLoading(false);
-    }
-  };
-  useEffect(() => {
-    getHVOTemplate();
-  }, []);
+  // const getHVOTemplate = async () => {
+  //   try {
+  //     setLoading(true);
+  //     const res = await axios({
+  //       method: "GET",
+  //       url: ApiConfig.getHVO,
+  //       headers: {
+  //         Authorization: `Beaerer ${localStorage.getItem("token")}`,
+  //       },
+  //       params: { hvoTemplateId: templateId },
+  //     });
+  //     if (res?.status === 200) {
+  //       setCreationProcess(res?.data?.data?.templateData?.creationStatus);
+  //     }
+  //   } catch (error) {
+  //     console.log(error, "error");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+  // useEffect(() => {
+  //   getHVOTemplate();
+  // }, []);
   return (
     <div className={classes.main}>
       {loading && <FullScreenLoader />}
@@ -309,7 +309,7 @@ function HVOSummary({ linkObject, sectionId1, reload, viewParams }) {
               <Button
                 onClick={() => {
                   createHVO();
-                  getHVOTemplate();
+                  // getHVOTemplate();
                 }}
                 style={{ height: "48px" }}
                 variant="outlined"

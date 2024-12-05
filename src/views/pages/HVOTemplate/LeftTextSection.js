@@ -1237,7 +1237,7 @@ function LeftTextSection({
                     companyDetails
                       ?.filter(
                         (item) =>
-                          item?.dataType === "Text Field" ||
+                          item?.dataType === "Text" ||
                           item?.dataType === "First name" ||
                           item?.dataType === "Last name" ||
                           item?.dataType === "Customer organization"

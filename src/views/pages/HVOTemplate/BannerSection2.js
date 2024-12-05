@@ -336,8 +336,8 @@ function BannerSection2({
             dynamicUrl: selectedOption,
           },
         });
-        if (res?.data?.status === 200) {
-          toast.success("success");
+        if (res?.status === 200) {
+          toast.success("Section created successfully");
           setNextButton(true);
           setLoading(false);
           reload();
@@ -861,7 +861,7 @@ function BannerSection2({
                   companyDetails
                     ?.filter(
                       (item) =>
-                        item?.dataType === "Text Field" ||
+                        item?.dataType === "Text" ||
                         item?.dataType === "First name" ||
                         item?.dataType === "Last name" ||
                         item?.dataType === "Customer organization"
