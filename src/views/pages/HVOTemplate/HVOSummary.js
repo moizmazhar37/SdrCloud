@@ -68,8 +68,6 @@ function HVOSummary({ linkObject, reload }) {
   const templateId = new URLSearchParams(window.location.search).get(
     "templateId"
   );
-
-  // Helper function to get section label
   const getSectionLabel = (type, index, sectionCount) => {
     const sectionLabels = {
       header: `Header Section ${index + 1}`,
@@ -86,22 +84,18 @@ function HVOSummary({ linkObject, reload }) {
     );
   };
 
-  // Helper function to get image preview
   const getImagePreview = (section) => {
-    // Priority: static_image, company_logo, hero_img
     return (
       section.static_image ||
       section.company_logo ||
       section.hero_img ||
-      "/path/to/default/image.png" // Add a default placeholder image path
+      "/path/to/default/image.png"
     );
   };
 
   useEffect(() => {
     const mergeSections = (sectionsObject) => {
       const allSections = [];
-
-      // Define the order of sections as they appear in the JSON
       const sectionTypes = [
         "headerSections",
         "heroSections",
@@ -112,7 +106,6 @@ function HVOSummary({ linkObject, reload }) {
         "footerSections",
       ];
 
-      // Iterate through section types in order
       sectionTypes.forEach((sectionKey) => {
         const sections = sectionsObject[sectionKey];
         if (Array.isArray(sections)) {
@@ -131,14 +124,10 @@ function HVOSummary({ linkObject, reload }) {
 
     const mergedSections = mergeSections(linkObject);
 
-    // Count sections by type to help with consistent labeling
     const sectionTypeCounts = {};
     const labeledSections = mergedSections.map((section) => {
-      // Initialize count for this section type if not exists
       sectionTypeCounts[section.type] =
         (sectionTypeCounts[section.type] || 0) + 1;
-
-      // Get the index for this specific type
       const typeIndex = sectionTypeCounts[section.type] - 1;
 
       return {
