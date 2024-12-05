@@ -43,6 +43,17 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "4px",
     marginBottom: "8px",
   },
+  placeholderBox: {
+    width: "90%",
+    height: "180px",
+    backgroundColor: "#f0f0f0",
+    borderRadius: "4px",
+    marginBottom: "8px",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    color: "#888",
+  },
   deleteButton: {
     position: "absolute",
     bottom: "16px",
@@ -68,6 +79,8 @@ function HVOSummary({ linkObject, reload }) {
   const templateId = new URLSearchParams(window.location.search).get(
     "templateId"
   );
+
+  // Helper function to get section label
   const getSectionLabel = (type, index, sectionCount) => {
     const sectionLabels = {
       header: `Header Section ${index + 1}`,
@@ -84,18 +97,40 @@ function HVOSummary({ linkObject, reload }) {
     );
   };
 
-  const getImagePreview = (section) => {
-    return (
-      section.static_image ||
-      section.company_logo ||
-      section.hero_img ||
-      "/path/to/default/image.png"
+  // Helper function to check if image exists
+  const hasValidImage = (section) => {
+    const imageFields = ["static_image", "company_logo", "hero_img"];
+
+    return imageFields.some(
+      (field) =>
+        section[field] &&
+        section[field].trim() !== "" &&
+        !section[field].includes("[") // Exclude placeholder strings
     );
+  };
+
+  // Helper function to get image preview
+  const getImagePreview = (section) => {
+    const imageFields = ["static_image", "company_logo", "hero_img"];
+
+    for (let field of imageFields) {
+      if (
+        section[field] &&
+        section[field].trim() !== "" &&
+        !section[field].includes("[")
+      ) {
+        return section[field];
+      }
+    }
+
+    return null;
   };
 
   useEffect(() => {
     const mergeSections = (sectionsObject) => {
       const allSections = [];
+
+      // Define the order of sections as they appear in the JSON
       const sectionTypes = [
         "headerSections",
         "heroSections",
@@ -106,6 +141,7 @@ function HVOSummary({ linkObject, reload }) {
         "footerSections",
       ];
 
+      // Iterate through section types in order
       sectionTypes.forEach((sectionKey) => {
         const sections = sectionsObject[sectionKey];
         if (Array.isArray(sections)) {
@@ -124,10 +160,14 @@ function HVOSummary({ linkObject, reload }) {
 
     const mergedSections = mergeSections(linkObject);
 
+    // Count sections by type to help with consistent labeling
     const sectionTypeCounts = {};
     const labeledSections = mergedSections.map((section) => {
+      // Initialize count for this section type if not exists
       sectionTypeCounts[section.type] =
         (sectionTypeCounts[section.type] || 0) + 1;
+
+      // Get the index for this specific type
       const typeIndex = sectionTypeCounts[section.type] - 1;
 
       return {
@@ -137,6 +177,7 @@ function HVOSummary({ linkObject, reload }) {
           typeIndex,
           sectionTypeCounts[section.type]
         ),
+        hasImage: hasValidImage(section),
       };
     });
 
@@ -178,6 +219,8 @@ function HVOSummary({ linkObject, reload }) {
       if (status === 200 || status === 201) {
         toast.success("HVO Created Successfully");
         console.log(res?.data);
+        // Refresh the HVO template status
+        getHVOTemplate();
       } else if (status === 205) {
         toast.error(res?.data?.message);
       } else if (status === 400) {
@@ -189,6 +232,32 @@ function HVOSummary({ linkObject, reload }) {
       setLoading(false);
     }
   };
+
+  const getHVOTemplate = async () => {
+    try {
+      setLoading(true);
+      const res = await axios({
+        method: "GET",
+        url: ApiConfig.getHVO,
+        headers: {
+          token: `${localStorage.getItem("token")}`,
+        },
+        params: { hvoTemplateId: templateId },
+      });
+      if (res?.status === 200) {
+        setCreationProcess(res?.data?.data?.templateData?.creationStatus);
+      }
+    } catch (error) {
+      console.log(error, "error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getHVOTemplate();
+  }, []);
+
   // const getHVOTemplate = async () => {
   //   try {
   //     setLoading(true);
@@ -212,6 +281,7 @@ function HVOSummary({ linkObject, reload }) {
   // useEffect(() => {
   //   getHVOTemplate();
   // }, []);
+
   return (
     <div className={classes.main}>
       {loading && <FullScreenLoader />}
@@ -223,14 +293,24 @@ function HVOSummary({ linkObject, reload }) {
                 <Typography variant="h6" style={{ color: "#0358AC" }}>
                   {item.label}
                 </Typography>
-                {getImagePreview(item) && (
+
+                {item.hasImage ? (
                   // eslint-disable-next-line jsx-a11y/img-redundant-alt
                   <img
                     src={getImagePreview(item)}
-                    alt={" "}
+                    alt={`${item.label} Image`}
                     className={classes.img}
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.style.display = "none";
+                    }}
                   />
+                ) : (
+                  <div className={classes.placeholderBox}>
+                    No Image Available
+                  </div>
                 )}
+
                 <IconButton
                   className={classes.deleteButton}
                   onClick={() => {
@@ -245,38 +325,26 @@ function HVOSummary({ linkObject, reload }) {
           </Grid>
         ))}
       </Grid>
-      <Grid container alignItems="center">
-        <Grid
-          style={{
-            display: "flex",
-            justifyContent: "end",
-            alignItems: "center",
-          }}
-          item
-          xs={12}
-        >
-          {linkObject.length > 0 && (
-            <Box mt={2} mb={2}>
-              <Button
-                onClick={() => {
-                  createHVO();
-                  // getHVOTemplate();
-                }}
-                style={{ height: "48px" }}
-                variant="outlined"
-              >
-                {creationProcess === "Pending"
-                  ? "Create HVO"
-                  : creationProcess === "Active"
-                  ? "Active"
-                  : creationProcess === "Published"
-                  ? "Published"
-                  : "Create HVO"}
-              </Button>
-            </Box>
-          )}
+
+      {sections.length > 0 && (
+        <Grid container justifyContent="flex-end" style={{ marginTop: "16px" }}>
+          <Button
+            onClick={() => {
+              createHVO();
+            }}
+            variant="outlined"
+            style={{ height: "48px" }}
+          >
+            {creationProcess === "Pending"
+              ? "Create HVO"
+              : creationProcess === "Active"
+              ? "Active"
+              : creationProcess === "Published"
+              ? "Published"
+              : "Create HVO"}
+          </Button>
         </Grid>
-      </Grid>
+      )}
 
       <Dialog
         open={deleteOpen}
