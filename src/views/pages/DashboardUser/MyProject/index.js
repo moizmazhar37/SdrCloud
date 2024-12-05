@@ -465,7 +465,7 @@ function UserProjectList() {
     try {
       const res = await axios({
         method: "GET",
-        url: `${ApiConfig.prospects}/video/${templateId}`,
+        url: `${ApiConfig.prospects}/${tempType.toLowerCase()}/${templateId}`,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         }
@@ -712,7 +712,7 @@ function UserProjectList() {
                         <TableCell align="center">
                           {tempType === "VIDEO" ? "Video" : "HVO"} Template Link
                         </TableCell>
-                        <TableCell align="center">Action</TableCell>
+                        {/* <TableCell align="center">Action</TableCell> */}
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -751,13 +751,13 @@ function UserProjectList() {
                                       : "Pending"}
                                   </TableCell>
                                   <TableCell align="center">
-                                    {project?.video_template_url ? (
+                                    {project?.video_template_url || project?.hvo_url ? (
                                       <a
                                         style={{
                                           color: "rgb(3, 88, 172)",
                                           textDecoration: "none",
                                         }}
-                                        href={project?.video_template_url}
+                                        href={project?.video_template_url || project?.hvo_url}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                       >
@@ -767,7 +767,7 @@ function UserProjectList() {
                                       "--"
                                     )}
                                   </TableCell>
-                                  <TableCell
+                                  {/* <TableCell
                                     className={classes.viewEditbtn}
                                     align="center"
                                   >
@@ -830,7 +830,7 @@ function UserProjectList() {
                                     >
                                       Edit
                                     </Button>
-                                  </TableCell>
+                                  </TableCell> */}
                                 </TableRow>
                               )
                             )}
