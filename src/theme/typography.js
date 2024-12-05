@@ -1,4 +1,4 @@
-export default {
+const  styles ={
   h1: {
     fontWeight: 500,
     fontSize: 30,
@@ -51,3 +51,5 @@ export default {
     fontFamily: "'Inter', sans-serif",
   },
 };
+
+export default styles;
