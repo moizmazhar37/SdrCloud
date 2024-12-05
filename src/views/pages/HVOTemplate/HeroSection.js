@@ -819,11 +819,11 @@ function HeroSection({
                 {companyDetails !== undefined &&
                   companyDetails.length > 0 &&
                   companyDetails
-                    // ?.filter(
-                    //   (item) =>
-                    //     item?.dataType === "Image URL" ||
-                    //     item?.dataType === "Screenshot from URL"
-                    // )
+                    ?.filter(
+                      (item) =>
+                        item?.dataType === "Image URL" ||
+                        item?.dataType === "Screenshot from URL"
+                    )
                     ?.map((item) => (
                       <MenuItem value={item?.value}>{item?.value}</MenuItem>
                     ))}
@@ -1303,13 +1303,13 @@ function HeroSection({
                     {companyDetails !== undefined &&
                       companyDetails.length > 0 &&
                       companyDetails
-                        // ?.filter(
-                        //   (item) =>
-                        //     item?.dataType == "Text Field" ||
-                        //     item?.dataType == "First name" ||
-                        //     item?.dataType == "Last name" ||
-                        //     item?.dataType == "Customer organization"
-                        // )
+                        ?.filter(
+                          (item) =>
+                            item?.dataType === "Text Field" ||
+                            item?.dataType === "First name" ||
+                            item?.dataType === "Last name" ||
+                            item?.dataType === "Customer organization"
+                        )
                         ?.map((sheetfield, ind) => (
                           <Tooltip
                             title={sheetfield?.value || "Copy Text"}
@@ -1577,7 +1577,7 @@ function HeroSection({
                 {companyDetails !== undefined &&
                   companyDetails.length > 0 &&
                   companyDetails
-                    ?.filter((item) => item?.dataType == "URL")
+                    ?.filter((item) => item?.dataType === "URL")
                     ?.map((item) => (
                       <MenuItem value={item?.value}>{item?.value}</MenuItem>
                     ))}
@@ -1827,7 +1827,7 @@ function HeroSection({
                 {companyDetails !== undefined &&
                   companyDetails.length > 0 &&
                   companyDetails
-                    ?.filter((item) => item?.dataType == "URL")
+                    ?.filter((item) => item?.dataType === "URL")
                     ?.map((item) => (
                       <MenuItem value={item?.value}>{item?.value}</MenuItem>
                     ))}

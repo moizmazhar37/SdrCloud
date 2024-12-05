@@ -53,6 +53,7 @@ const ApiConfig = {
   previewHVOwithsheetdata: `${templates}/preview-hvo-with-sheet-data`,
   createHVO: `${templates}/generate-hvo-from-sheet`,
   getHVO: `${templates}/hvo`,
+  setHeadersDataType: `${googlesheets}/sheet-data-types`,
   // userSignup: `${user}/userSignUp`,
   // // verifyEmail: `${user}/verifyEmail`,
   // goggleLogin: `${user}/googleLogin`,

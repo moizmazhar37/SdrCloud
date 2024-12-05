@@ -405,20 +405,18 @@ function EditGoogleSheet(props) {
     setLoading(true);
     try {
       const response = await axios({
-        url: ApiConfig.setHeadersDataType,
-        method: "PUT",
+        url: `${ApiConfig.setHeadersDataType}/${sheetid}`,
+        method: "PATCH",
         headers: {
-          token: `${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         data: {
-          sheetId: sheetid,
-          headersWithDataType: fieldValue,
+          data: fieldValue,
         },
       });
-      if (response?.data?.status === 200) {
-        console.log(response);
+      if (response?.status === 200) {
         setLoading(false);
-        toast.success(response?.data?.message);
+        toast.success("Data types saved successfully");
         setDisabledFields(true);
       } else {
         console.log(response);
