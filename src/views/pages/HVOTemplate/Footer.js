@@ -1203,7 +1203,7 @@ function Footer({
                   {companyDetails !== undefined &&
                     companyDetails.length > 0 &&
                     companyDetails
-                      ?.filter((item) => item?.dataType == "Text Field")
+                      ?.filter((item) => item?.dataType == "Text")
                       ?.map((sheetfield, ind) => (
                         <TextField
                           fullWidth

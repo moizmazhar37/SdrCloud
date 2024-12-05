@@ -1839,10 +1839,10 @@ function EditElement({
                         companyDetails
                           ?.filter(
                             (item) =>
-                              item?.dataType == "Text Field" ||
-                              item?.dataType == "First name" ||
-                              item?.dataType == "Last name" ||
-                              item?.dataType == "Customer organization"
+                              item?.dataType === "Text" ||
+                              item?.dataType === "First name" ||
+                              item?.dataType === "Last name" ||
+                              item?.dataType === "Customer organization"
                           )
                           ?.map((sheetfield, ind) => (
                             <Tooltip
@@ -2631,10 +2631,10 @@ function EditElement({
                         companyDetails
                           ?.filter(
                             (item) =>
-                              item?.dataType == "Text Field" ||
-                              item?.dataType == "First name" ||
-                              item?.dataType == "Last name" ||
-                              item?.dataType == "Customer organization"
+                              item?.dataType === "Text" ||
+                              item?.dataType === "First name" ||
+                              item?.dataType === "Last name" ||
+                              item?.dataType === "Customer organization"
                           )
                           ?.map((sheetfield, ind) => (
                             <Tooltip
@@ -3232,10 +3232,10 @@ function EditElement({
                         companyDetails
                           ?.filter(
                             (item) =>
-                              item?.dataType == "Text Field" ||
-                              item?.dataType == "First name" ||
-                              item?.dataType == "Last name" ||
-                              item?.dataType == "Customer organization"
+                              item?.dataType === "Text" ||
+                              item?.dataType === "First name" ||
+                              item?.dataType === "Last name" ||
+                              item?.dataType === "Customer organization"
                           )
                           ?.map((sheetfield, ind) => (
                             <Tooltip
@@ -3739,10 +3739,10 @@ function EditElement({
                         companyDetails
                           ?.filter(
                             (item) =>
-                              item?.dataType == "Text Field" ||
-                              item?.dataType == "First name" ||
-                              item?.dataType == "Last name" ||
-                              item?.dataType == "Customer organization"
+                              item?.dataType === "Text" ||
+                              item?.dataType === "First name" ||
+                              item?.dataType === "Last name" ||
+                              item?.dataType === "Customer organization"
                           )
                           ?.map((sheetfield, ind) => (
                             <Tooltip
@@ -4336,10 +4336,10 @@ function EditElement({
                         companyDetails
                           ?.filter(
                             (item) =>
-                              item?.dataType == "Text Field" ||
-                              item?.dataType == "First name" ||
-                              item?.dataType == "Last name" ||
-                              item?.dataType == "Customer organization"
+                              item?.dataType === "Text" ||
+                              item?.dataType === "First name" ||
+                              item?.dataType === "Last name" ||
+                              item?.dataType === "Customer organization"
                           )
                           ?.map((sheetfield, ind) => (
                             <Tooltip

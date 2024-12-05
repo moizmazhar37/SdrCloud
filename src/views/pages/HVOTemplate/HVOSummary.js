@@ -136,32 +136,29 @@ function HVOSummary({ linkObject, reload }) {
       setLoading(false);
     }
   };
-
-  const getHVOTemplate = async () => {
-    try {
-      setLoading(true);
-      const res = await axios({
-        method: "GET",
-        url: ApiConfig.getHVO,
-        headers: {
-          token: `${localStorage.getItem("token")}`,
-        },
-        params: { hvoTemplateId: templateId },
-      });
-      if (res?.status === 200) {
-        setCreationProcess(res?.data?.data?.templateData?.creationStatus);
-      }
-    } catch (error) {
-      console.log(error, "error");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    getHVOTemplate();
-  }, []);
-
+  // const getHVOTemplate = async () => {
+  //   try {
+  //     setLoading(true);
+  //     const res = await axios({
+  //       method: "GET",
+  //       url: ApiConfig.getHVO,
+  //       headers: {
+  //         Authorization: `Beaerer ${localStorage.getItem("token")}`,
+  //       },
+  //       params: { hvoTemplateId: templateId },
+  //     });
+  //     if (res?.status === 200) {
+  //       setCreationProcess(res?.data?.data?.templateData?.creationStatus);
+  //     }
+  //   } catch (error) {
+  //     console.log(error, "error");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+  // useEffect(() => {
+  //   getHVOTemplate();
+  // }, []);
   return (
     <div className={classes.main}>
       {loading && <FullScreenLoader />}
@@ -206,25 +203,36 @@ function HVOSummary({ linkObject, reload }) {
           </Grid>
         ))}
       </Grid>
-
-      {sections.length > 0 && (
-        <Grid container justifyContent="flex-end" style={{ marginTop: "16px" }}>
-          <Button
-            onClick={() => {
-              createHVO();
-              getHVOTemplate();
-            }}
-            variant="outlined"
-            style={{ height: "48px" }}
-          >
-            {creationProcess === "Pending"
-              ? "Create HVO"
-              : creationProcess === "Active"
-              ? "Active"
-              : creationProcess === "Published"
-              ? "Published"
-              : "Create HVO"}
-          </Button>
+      <Grid container alignItems="center">
+        <Grid
+          style={{
+            display: "flex",
+            justifyContent: "end",
+            alignItems: "center",
+          }}
+          item
+          xs={12}
+        >
+          {linkObject.length > 0 && (
+            <Box mt={2} mb={2}>
+              <Button
+                onClick={() => {
+                  createHVO();
+                  getHVOTemplate();
+                }}
+                style={{ height: "48px" }}
+                variant="outlined"
+              >
+                {creationProcess === "Pending"
+                  ? "Create HVO"
+                  : creationProcess === "Active"
+                  ? "Active"
+                  : creationProcess === "Published"
+                  ? "Published"
+                  : "Create HVO"}
+              </Button>
+            </Box>
+          )}
         </Grid>
       )}
 

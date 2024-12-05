@@ -692,8 +692,8 @@ function HeroSection({
             demoButtonColor: hexValueDemoBtn,
           },
         });
-        if (res?.data?.status === 200) {
-          toast.success(res?.data?.message);
+        if (res?.status === 200) {
+          toast.success("Section Saved Successfully");
           setLoading(false);
           reload();
           setNextButton(true);
@@ -1305,7 +1305,7 @@ function HeroSection({
                       companyDetails
                         ?.filter(
                           (item) =>
-                            item?.dataType === "Text Field" ||
+                            item?.dataType === "Text" ||
                             item?.dataType === "First name" ||
                             item?.dataType === "Last name" ||
                             item?.dataType === "Customer organization"
