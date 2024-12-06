@@ -403,6 +403,21 @@ function EditGoogleSheet(props) {
 
   const saveFieldDataType = async () => {
     setLoading(true);
+    const requiredDataTypes = [
+      "HVO URL (Required)",
+      "Email (Required)",
+      "Error (Required)",
+      "Status (Required)",
+    ];
+    const missingDataTypes = requiredDataTypes.filter(dataType => {
+      return !fieldValue.some(item => item.dataType === dataType);
+    });
+  
+    if (missingDataTypes.length > 0) {
+      toast.error(`Please assign the following required data types to fields: ${missingDataTypes.join(", ")}`);
+      setLoading(false);
+      return;
+    }
     try {
       const response = await axios({
         url: `${ApiConfig.setHeadersDataType}/${sheetid}`,
@@ -428,8 +443,25 @@ function EditGoogleSheet(props) {
       toast.error(error?.response?.data?.message);
     }
   };
+
+
   const saveFieldDataTypeVideo = async () => {
     setLoading(true);
+    const requiredDataTypes = [
+      "Final video URL (Required)",
+      "Email (Required)",
+      "Error (Required)",
+      "Status (Required)",
+    ];
+    const missingDataTypes = requiredDataTypes.filter(dataType => {
+      return !fieldValue.some(item => item.dataType === dataType);
+    });
+  
+    if (missingDataTypes.length > 0) {
+      toast.error(`Please assign the following required data types to fields: ${missingDataTypes.join(", ")}`);
+      setLoading(false);
+      return;
+    }
     try {
       const response = await axios({
         url: `${ApiConfig.setHeadersDataType}/${sheetid}`,

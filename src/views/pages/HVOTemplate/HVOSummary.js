@@ -238,14 +238,14 @@ function HVOSummary({ linkObject, reload }) {
       setLoading(true);
       const res = await axios({
         method: "GET",
-        url: ApiConfig.getHVO,
+        url: `${ApiConfig.hvoStatus}/${templateId}`,
         headers: {
-          token: `${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-        params: { hvoTemplateId: templateId },
       });
       if (res?.status === 200) {
-        setCreationProcess(res?.data?.data?.templateData?.creationStatus);
+        setCreationProcess(res?.data);
+        console.log("ssdjfsopufeosdfu7r9wr0+++++++++++++++++++=", creationProcess)
       }
     } catch (error) {
       console.log(error, "error");
@@ -334,14 +334,9 @@ function HVOSummary({ linkObject, reload }) {
             }}
             variant="outlined"
             style={{ height: "48px" }}
+            disabled={creationProcess}
           >
-            {creationProcess === "Pending"
-              ? "Create HVO"
-              : creationProcess === "Active"
-              ? "Active"
-              : creationProcess === "Published"
-              ? "Published"
-              : "Create HVO"}
+            {creationProcess ? "Published" : "Create HVO"}
           </Button>
         </Grid>
       )}
