@@ -13,8 +13,10 @@ import {
   Checkbox,
   DialogContent,
   DialogActions,
+  Tooltip
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { Copy } from "react-feather";
 import axios from "axios";
 import ApiConfig from "src/config/APIConfig";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
@@ -276,6 +278,22 @@ const ImageVideo = ({
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleCopy = (text) => {
+    const formattedText = `[${text}]`;
+    navigator.clipboard
+      .writeText(formattedText)
+      .then(() => {
+        toast.success("Text copied to clipboard.", {
+          autoClose: 500,
+        });
+      })
+      .catch((err) => {
+        toast.error("Unable to copy text to clipboard.", {
+          autoClose: 500,
+        });
+      });
   };
 
   const [selectedUrl, setSelectedUrl] = useState("");
@@ -947,12 +965,12 @@ const ImageVideo = ({
                   </MenuItem>
                   {/* <MenuItem value="--">Select None</MenuItem> */}
                   {sheetData
-                  ?.filter((entry) => entry?.dataType === "Image URL")
-                  ?.map((entry) => (
-                    <MenuItem key={entry?.value} value={entry?.value}>
-                      {entry?.value}
-                    </MenuItem>
-                  ))}
+                    ?.filter((entry) => entry?.dataType === "Image URL")
+                    ?.map((entry) => (
+                      <MenuItem key={entry?.value} value={entry?.value}>
+                        {entry?.value}
+                      </MenuItem>
+                    ))}
                 </Select>
                 <Typography className="error">{errors.image}</Typography>
               </Grid>
@@ -1025,12 +1043,12 @@ const ImageVideo = ({
                     Select Dynamic URL to fetch Video
                   </MenuItem>
                   {sheetData
-                  ?.filter((entry) => entry?.dataType === "Video URL")
-                  ?.map((entry) => (
-                    <MenuItem key={entry?.value} value={entry?.value}>
-                      {entry?.value}
-                    </MenuItem>
-                  ))}
+                    ?.filter((entry) => entry?.dataType === "Video URL")
+                    ?.map((entry) => (
+                      <MenuItem key={entry?.value} value={entry?.value}>
+                        {entry?.value}
+                      </MenuItem>
+                    ))}
                 </Select>
                 <Typography className="error">{errors.dynamicVideo}</Typography>
               </Grid>
@@ -1122,23 +1140,99 @@ const ImageVideo = ({
                   Add Audio Description
                 </Button>
 
-                <Dialog open={open} onClose={handleClose}>
+                <Dialog
+                  open={open}
+                  onClose={handleClose}
+                  fullWidth
+                  maxWidth="md"
+                >
                   <DialogTitle>Add Audio Description</DialogTitle>
                   <DialogContent>
-                    <TextField
-                      autoFocus
-                      multiline
-                      rows={4}
-                      label="Audio Description"
-                      fullWidth
-                      value={description}
-                      onChange={handleDescriptionChange}
-                      variant="outlined"
-                      margin="normal"
-                    />
+                    <Grid container spacing={2}>
+                      <Grid item xs={12} sm={8}>
+                        <TextField
+                          autoFocus
+                          multiline
+                          rows={16}
+                          label="Audio Description"
+                          fullWidth
+                          value={description}
+                          onChange={handleDescriptionChange}
+                          variant="outlined"
+                          margin="normal"
+                        />
+                      </Grid>
+
+                      <Grid item xs={12} sm={4}>
+                        <Box
+                          className="dynamicFieldsBox d-flex column alignstart justify-start"
+                          p={2}
+                        >
+                          <Typography className="label">
+                            Copy to Add Dynamic Fields
+                          </Typography>
+                          <div style={{ height: "630px", overflowY: "auto" }}>
+                            {companyDetails !== undefined &&
+                              companyDetails.length > 0 &&
+                              companyDetails
+                                .filter(
+                                  (item) =>
+                                    item?.dataType === "Text" ||
+                                    item?.dataType === "First name" ||
+                                    item?.dataType === "Last name" ||
+                                    item?.dataType === "Customer organization"
+                                )
+                                .map((sheetfield, ind) => (
+                                  <Tooltip
+                                    title={sheetfield?.value || "Copy Text"}
+                                    arrow
+                                    key={ind}
+                                  >
+                                    <TextField
+                                      fullWidth
+                                      value={
+                                        sheetfield?.value.length > 20
+                                          ? `${sheetfield.value.substring(
+                                              0,
+                                              20
+                                            )}...`
+                                          : sheetfield?.value
+                                      }
+                                      variant="outlined"
+                                      placeholder={sheetfield}
+                                      InputProps={{
+                                        readOnly: true,
+                                        endAdornment: (
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() =>
+                                                handleCopy(sheetfield?.value)
+                                              }
+                                            >
+                                              <Copy
+                                                style={{ color: "#858585" }}
+                                              />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        ),
+                                      }}
+                                      inputProps={{
+                                        maxLength: 60,
+                                        minLength: 2,
+                                      }}
+                                    />
+                                  </Tooltip>
+                                ))}
+                          </div>
+                        </Box>
+                      </Grid>
+                    </Grid>
                   </DialogContent>
                   <DialogActions>
-                    <Button onClick={handleClose} color="primary">
+                    <Button
+                      onClick={handleClose}
+                      color="primary"
+                    >
                       Cancel
                     </Button>
                     <Button onClick={handleSaveDescription} color="primary">

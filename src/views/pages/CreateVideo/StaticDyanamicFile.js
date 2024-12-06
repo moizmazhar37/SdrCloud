@@ -888,7 +888,7 @@ const StaticDyanamicFile = ({
             open={open}
             onClose={handleCloseAudioDescription}
             fullWidth
-            maxWidth="md" // Adjust to your desired size (e.g., 'lg' or 'sm')
+            maxWidth="md"
           >
             <DialogTitle>Add Audio Description</DialogTitle>
             <DialogContent>
@@ -898,7 +898,7 @@ const StaticDyanamicFile = ({
                   <TextField
                     autoFocus
                     multiline
-                    rows={6}
+                    rows={16}
                     label="Audio Description"
                     fullWidth
                     value={description}

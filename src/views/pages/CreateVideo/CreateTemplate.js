@@ -1553,13 +1553,13 @@ const CreateTemplate = (props) => {
             ))}
             <Box className="addelementbox">
               <Button
-                disabled={
-                  new URLSearchParams(window.location.search).get(
-                    "templateId"
-                  ) === null ||
-                  !isSectionCompleted ||
-                  elements.some((e) => e.isDisabled)
-                }
+                // disabled={
+                //   new URLSearchParams(window.location.search).get(
+                //     "templateId"
+                //   ) === null ||
+                //   !isSectionCompleted ||
+                //   elements.some((e) => e.isDisabled)
+                // }
                 style={{ color: "black", fontSize: "16px" }}
                 onClick={handleAddElement}
               >
