@@ -230,6 +230,7 @@ function HeaderSection({
           reload();
           setNextButton(true);
         }
+        handleNext();
       } catch (error) {
         toast.error(error?.response?.data?.message, "error");
         setLoading(false);

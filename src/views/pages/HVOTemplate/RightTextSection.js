@@ -619,6 +619,7 @@ function RightTextSection({
           reload();
           setNextButton(true);
         }
+        handleNext();
       } catch (error) {
         console.log(error, "error");
         setLoading(false);

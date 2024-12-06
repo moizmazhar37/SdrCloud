@@ -563,6 +563,7 @@ function Footer({
           reload();
           setNextButton(true);
         }
+        handleNext();
       } catch (error) {
         console.log(error, "error");
 
