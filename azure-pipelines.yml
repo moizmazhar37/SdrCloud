@@ -1,0 +1,15 @@
+trigger:
+  - main  # Trigger on changes to the 'main' branch
+
+variables:
+  - group: GCP-Secrets  # Reference to the variable group
+
+
+jobs:
+- job: CallWebhook
+  steps:
+  - script: |
+      curl -X POST "https://cloudbuild.googleapis.com/v1/projects/sdr-cloud-441006/triggers/Frontend-ADR-To-Firebase-Hosting:webhook?key=$(KEY)&secret=$(SECRET)" \
+      -H "Content-Type: application/json" \
+      -d '{}'
+    displayName: 'Call Webhook'
