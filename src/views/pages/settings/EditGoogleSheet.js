@@ -403,6 +403,21 @@ function EditGoogleSheet(props) {
 
   const saveFieldDataType = async () => {
     setLoading(true);
+    const requiredDataTypes = [
+      "HVO URL (Required)",
+      "Email (Required)",
+      "Error (Required)",
+      "Status (Required)",
+    ];
+    const missingDataTypes = requiredDataTypes.filter(dataType => {
+      return !fieldValue.some(item => item.dataType === dataType);
+    });
+  
+    if (missingDataTypes.length > 0) {
+      toast.error(`Please assign the following required data types to fields: ${missingDataTypes.join(", ")}`);
+      setLoading(false);
+      return;
+    }
     try {
       const response = await axios({
         url: `${ApiConfig.setHeadersDataType}/${sheetid}`,
@@ -428,24 +443,40 @@ function EditGoogleSheet(props) {
       toast.error(error?.response?.data?.message);
     }
   };
+
+
   const saveFieldDataTypeVideo = async () => {
     setLoading(true);
+    const requiredDataTypes = [
+      "Final video URL (Required)",
+      "Email (Required)",
+      "Error (Required)",
+      "Status (Required)",
+    ];
+    const missingDataTypes = requiredDataTypes.filter(dataType => {
+      return !fieldValue.some(item => item.dataType === dataType);
+    });
+  
+    if (missingDataTypes.length > 0) {
+      toast.error(`Please assign the following required data types to fields: ${missingDataTypes.join(", ")}`);
+      setLoading(false);
+      return;
+    }
     try {
       const response = await axios({
-        url: ApiConfig.setHeadersDataTypeVideo,
-        method: "PUT",
+        url: `${ApiConfig.setHeadersDataType}/${sheetid}`,
+        method: "PATCH",
         headers: {
-          token: `${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         data: {
-          sheetId: sheetid,
-          headersWithDataType: fieldValue,
+          data: fieldValue,
         },
       });
-      if (response?.data?.status === 200) {
+      if (response?.status === 200) {
         console.log(response);
         setLoading(false);
-        toast.success(response?.data?.message);
+        toast.success("Datatypes saved successfully");
         setDisabledFields(true);
       } else {
         console.log(response);
