@@ -245,7 +245,7 @@ const GoogleSheet = ({
         method: "GET",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
-        }
+        },
       });
       if (response?.status === 200) {
         setData(response?.data);
@@ -259,7 +259,7 @@ const GoogleSheet = ({
   // Function to fetch all users
   const getAllUsers = async () => {
     try {
-      console.log("Hello")
+      console.log("Hello");
       const response = await axios({
         url: ApiConfig.getAllUserByAccountId,
         method: "POST",
@@ -737,9 +737,9 @@ const GoogleSheet = ({
         <DialogContent>
           <Typography variant="h4">
             Please be aware that this action is irreversible. By clicking the
-            'Delete' button below, you will permanently delete this Sheet from
-            the system. This means you will not be able to retrieve or restore
-            it in the future.
+            'Delete' button below, you will permanently delete this Sheet and
+            all the tempelates linked to it from the system. This means you will
+            not be able to retrieve or restore it in the future.
           </Typography>
         </DialogContent>
         <DialogActions>
