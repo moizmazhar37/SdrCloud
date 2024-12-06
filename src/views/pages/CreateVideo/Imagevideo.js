@@ -562,6 +562,7 @@ const ImageVideo = ({
             });
             setLoading(false);
             setDescription("");
+            handleNext();
           }
         } catch (error) {
           toast.error(error?.response?.data?.message);
@@ -610,6 +611,7 @@ const ImageVideo = ({
           });
           setLoading(false);
           setDescription("");
+          handleNext();
         }
       } catch (error) {
         toast.error(error?.response?.data?.message);

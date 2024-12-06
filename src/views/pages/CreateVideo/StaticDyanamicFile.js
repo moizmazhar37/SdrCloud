@@ -14,7 +14,9 @@ import {
   Radio,
   RadioGroup,
   FormControlLabel,
+  Tooltip
 } from "@material-ui/core";
+import { Copy } from "react-feather";
 import { makeStyles } from "@material-ui/core/styles";
 import axios from "axios";
 import ApiConfig from "src/config/APIConfig";
@@ -193,6 +195,22 @@ const StaticDyanamicFile = ({
     setAudioFiles(event.target.files[0]);
   };
 
+  const handleCopy = (text) => {
+    const formattedText = `[${text}]`;
+    navigator.clipboard
+      .writeText(formattedText)
+      .then(() => {
+        toast.success("Text copied to clipboard.", {
+          autoClose: 500,
+        });
+      })
+      .catch((err) => {
+        toast.error("Unable to copy text to clipboard.", {
+          autoClose: 500,
+        });
+      });
+  };
+
   const handleAudioUpload = async () => {
     if (!audioFiles)
       return toast.error("Please select an audio file to upload.");
@@ -266,21 +284,17 @@ const StaticDyanamicFile = ({
   const getSheetType = async () => {
     try {
       setLoading(true);
-      const res = await axios({
-        method: "GET",
-        url: ApiConfig.getsheettype,
+      const res = await axios.get(`${ApiConfig.headers}/${templateId}`, {
         headers: {
-          token: `${localStorage.getItem("token")}`,
-        },
-        params: {
-          hvoId: templateId,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      if (res.data.status === 200) {
-        setCompanyDetails(res?.data?.data?.data);
+      if (res?.status === 200) {
+        setCompanyDetails(res?.data);
       }
     } catch (error) {
       console.log("error");
+      toast.error(error?.response?.data?.message, "error");
     } finally {
       setLoading(false);
     }
@@ -371,7 +385,7 @@ const StaticDyanamicFile = ({
       audio_embedded = true;
     }
     let is_dynamic = false;
-    if(selectedUrl) {
+    if (selectedUrl) {
       is_dynamic = true;
     }
     apiData = {
@@ -486,6 +500,7 @@ const StaticDyanamicFile = ({
             setIsSaved(true); // Form successfully saved
             setNextBtn(true);
             setDescription("");
+            handleNext();
           }
         } catch (error) {
           toast.error(error?.response?.data?.message);
@@ -521,39 +536,40 @@ const StaticDyanamicFile = ({
       //   selectedOptionsecond !== "none"
       //   // audioFile !== null
       // ) {
-        try {
-          setLoading(true);
-          const res = await axios({
-            method: "POST",
-            url: ApiConfig.createVideoTemplateReferral,
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
+      try {
+        setLoading(true);
+        const res = await axios({
+          method: "POST",
+          url: ApiConfig.createVideoTemplateReferral,
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
 
-            data: apiData,
-          });
-          if (res?.status === 200) {
-            toast.success("Section saved successfully");
-            // setElementData({
-            //   firstRowValue: firstRowValue,
-            //   index: typeIndex,
-            //   type: elementType,
-            //   link: link,
-            //   dynamicURL: selectedOption,
-            //   duration: duration,
-            //   scroll: selectedOptionsecond,
-            // });
-            setIsSaved(true); // Form successfully saved
-            setNextBtn(true);
-            setDescription("");
-          }
-        } catch (error) {
-          toast.error(error?.response?.data?.message);
-          console.log(error, "error isndeie the create video down");
-          setLoading(false);
-        } finally {
-          setLoading(false);
+          data: apiData,
+        });
+        if (res?.status === 200) {
+          toast.success("Section saved successfully");
+          // setElementData({
+          //   firstRowValue: firstRowValue,
+          //   index: typeIndex,
+          //   type: elementType,
+          //   link: link,
+          //   dynamicURL: selectedOption,
+          //   duration: duration,
+          //   scroll: selectedOptionsecond,
+          // });
+          setIsSaved(true); // Form successfully saved
+          setNextBtn(true);
+          setDescription("");
+          handleNext();
         }
+      } catch (error) {
+        toast.error(error?.response?.data?.message);
+        console.log(error, "error isndeie the create video down");
+        setLoading(false);
+      } finally {
+        setLoading(false);
+      }
       // }
       // setErrors(newError);
     }
@@ -724,12 +740,12 @@ const StaticDyanamicFile = ({
                   </MenuItem>
 
                   {sheetData
-                  ?.filter((entry) => entry?.dataType === "Static URL")
-                  ?.map((entry) => (
-                    <MenuItem key={entry?.value} value={entry?.value}>
-                      {entry?.value}
-                    </MenuItem>
-                  ))}
+                    ?.filter((entry) => entry?.dataType === "Static URL")
+                    ?.map((entry) => (
+                      <MenuItem key={entry?.value} value={entry?.value}>
+                        {entry?.value}
+                      </MenuItem>
+                    ))}
                 </Select>
               </Grid>
             </Grid>
@@ -752,12 +768,12 @@ const StaticDyanamicFile = ({
                 Select Dynamic URL
               </MenuItem>
               {sheetData
-              ?.filter((entry) => entry?.dataType === "Dynamic URL")
-              ?.map((entry) => (
-                <MenuItem key={entry?.value} value={entry?.value}>
-                  {entry?.value}
-                </MenuItem>
-              ))}
+                ?.filter((entry) => entry?.dataType === "Dynamic URL")
+                ?.map((entry) => (
+                  <MenuItem key={entry?.value} value={entry?.value}>
+                    {entry?.value}
+                  </MenuItem>
+                ))}
             </Select>
             <Typography className="error">{errors.dynamic}</Typography>
           </>
@@ -843,56 +859,122 @@ const StaticDyanamicFile = ({
         </div>
 
         <div>
-                <input
-                  type="file"
-                  accept="audio/*"
-                  onChange={handleAudioChange}
-                  style={{ marginBottom: "1rem" }}
-                />
-                <Button
-                  fullWidth
-                  variant={duration ? "contained" : "outlined"}
-                  style={{ height: "44px" }}
-                  className={`${!duration ? "savebtnDisables" : "savebtn"}`}
-                  onClick={handleAudioUpload}
-                >
-                  Upload Audio
-                </Button>
-                <Button
-                  fullWidth
-                  variant={description ? "contained" : "outlined"}
-                  style={{ height: "44px", margin: "0 1rem" }}
-                  className={`${!description ? "savebtnDisables" : "savebtn"}`}
-                  onClick={handleOpenAudioDescriptionEditor}
-                >
-                  Add Audio Description
-                </Button>
+          <input
+            type="file"
+            accept="audio/*"
+            onChange={handleAudioChange}
+            style={{ marginBottom: "1rem" }}
+          />
+          <Button
+            fullWidth
+            variant={duration ? "contained" : "outlined"}
+            style={{ height: "44px" }}
+            className={`${!duration ? "savebtnDisables" : "savebtn"}`}
+            onClick={handleAudioUpload}
+          >
+            Upload Audio
+          </Button>
+          <Button
+            fullWidth
+            variant={description ? "contained" : "outlined"}
+            style={{ height: "44px", margin: "0 1rem" }}
+            className={`${!description ? "savebtnDisables" : "savebtn"}`}
+            onClick={handleOpenAudioDescriptionEditor}
+          >
+            Add Audio Description
+          </Button>
 
-                <Dialog open={open} onClose={handleCloseAudioDescription}>
-                  <DialogTitle>Add Audio Description</DialogTitle>
-                  <DialogContent>
-                    <TextField
-                      autoFocus
-                      multiline
-                      rows={4}
-                      label="Audio Description"
-                      fullWidth
-                      value={description}
-                      onChange={handleDescriptionChange}
-                      variant="outlined"
-                      margin="normal"
-                    />
-                  </DialogContent>
-                  <DialogActions>
-                    <Button onClick={handleCloseAudioDescription} color="primary">
-                      Cancel
-                    </Button>
-                    <Button onClick={handleSaveDescription} color="primary">
-                      Save
-                    </Button>
-                  </DialogActions>
-                </Dialog>
-              </div>
+          <Dialog
+            open={open}
+            onClose={handleCloseAudioDescription}
+            fullWidth
+            maxWidth="md" // Adjust to your desired size (e.g., 'lg' or 'sm')
+          >
+            <DialogTitle>Add Audio Description</DialogTitle>
+            <DialogContent>
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={8}>
+                  {" "}
+                  <TextField
+                    autoFocus
+                    multiline
+                    rows={6}
+                    label="Audio Description"
+                    fullWidth
+                    value={description}
+                    onChange={handleDescriptionChange}
+                    variant="outlined"
+                    margin="normal"
+                  />
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                  {" "}
+                  <Box
+                    className="dynamicFieldsBox d-flex column alignstart justify-start"
+                    p={2}
+                  >
+                    <Typography className="label">
+                      Copy to Add Dynamic Fields
+                    </Typography>
+                    <div style={{ height: "630px", overflowY: "auto" }}>
+                      {companyDetails !== undefined &&
+                        companyDetails.length > 0 &&
+                        companyDetails
+                          ?.filter(
+                            (item) =>
+                              item?.dataType === "Text" ||
+                              item?.dataType === "First name" ||
+                              item?.dataType === "Last name" ||
+                              item?.dataType === "Customer organization"
+                          )
+                          ?.map((sheetfield, ind) => (
+                            <Tooltip
+                              title={sheetfield?.value || "Copy Text"}
+                              arrow
+                              key={ind}
+                            >
+                              <TextField
+                                fullWidth
+                                value={
+                                  sheetfield?.value.length > 20
+                                    ? `${sheetfield.value.substring(0, 20)}...`
+                                    : sheetfield?.value
+                                }
+                                variant="outlined"
+                                placeholder={sheetfield}
+                                InputProps={{
+                                  readOnly: true,
+                                  endAdornment: (
+                                    <InputAdornment position="end">
+                                      <IconButton
+                                        onClick={() =>
+                                          handleCopy(sheetfield?.value)
+                                        }
+                                      >
+                                        <Copy style={{ color: "#858585" }} />
+                                      </IconButton>
+                                    </InputAdornment>
+                                  ),
+                                }}
+                                inputProps={{ maxLength: 60, minLength: 2 }}
+                              />
+                            </Tooltip>
+                          ))}
+                    </div>
+                  </Box>
+                </Grid>
+              </Grid>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleCloseAudioDescription} color="primary">
+                Cancel
+              </Button>
+              <Button onClick={handleSaveDescription} color="primary">
+                Save
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </div>
       </Box>
       {elementType === "STATICURL" ? (
         <>
