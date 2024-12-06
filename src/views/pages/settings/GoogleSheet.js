@@ -211,14 +211,16 @@ const GoogleSheet = ({
   settingRoute,
   setSettingRoute,
 }) => {
+  console.log("nextRoute: ", nextRoute);
   const classes = useStyles();
   const [nextRoute1, setnextRoutes1] = useState("Google Sheet");
-
+  console.log("nextRoute1: ", nextRoute1);
   const [data, setData] = useState([]);
-
+  console.log("data: ", data);
   const [loading, setLoading] = useState(false);
   const [pagesize, setPageSize] = useState(10);
   const [page, setPage] = useState(1);
+  console.log("page: ", page);
   const [assignOpen, setAssignOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState("");
@@ -250,12 +252,14 @@ const GoogleSheet = ({
         setLoading(false);
       }
     } catch (error) {
+      console.log(error);
       setLoading(false);
     }
   };
   // Function to fetch all users
   const getAllUsers = async () => {
     try {
+      console.log("Hello");
       const response = await axios({
         url: ApiConfig.getAllUserByAccountId,
         method: "POST",
@@ -267,6 +271,7 @@ const GoogleSheet = ({
         setUserList(response?.data?.data);
       }
     } catch (error) {
+      console.log(error);
       setLoading(false);
     }
   };
@@ -303,6 +308,7 @@ const GoogleSheet = ({
         handleAssignClose();
       }
     } catch (error) {
+      console.log(error);
       toast.error(error.response?.data?.message);
       setLoading(false);
       setSelectedUser("none");
@@ -335,6 +341,7 @@ const GoogleSheet = ({
         setUnassignOpen(false);
       }
     } catch (error) {
+      console.log(error);
       toast.error(error.response?.data?.message);
       setLoading(false);
       setUnassignOpen(false);
@@ -739,6 +746,10 @@ const GoogleSheet = ({
           <Button variant="contained" onClick={() => handleDeleteClose()}>
             {" "}
             Cancel
+          </Button>
+          <Button variant="containedPrimary" onClick={() => deleteSheet()}>
+            {" "}
+            Delete
           </Button>
         </DialogActions>
       </Dialog>
