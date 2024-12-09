@@ -13,7 +13,7 @@ import {
   Dialog,
   DialogContent,
   DialogActions,
-  Slide
+  Slide,
 } from "@material-ui/core";
 import clsx from "clsx";
 import { IoLogOutOutline } from "react-icons/io5";
@@ -31,20 +31,20 @@ const getNavSections = (userType) => {
           {
             title: "Accounts",
             icon: "images/template/profile-tick.png",
-            href: "/PP-createaccount"
+            href: "/PP-createaccount",
           },
           {
             title: "User Management",
             icon: "images/template/document.svg",
-            href: "/PP-user-management"
+            href: "/PP-user-management",
           },
           {
             title: "Settings",
             icon: "images/template/setting.svg",
-            href: "/pp-settings"
-          }
-        ]
-      }
+            href: "/pp-settings",
+          },
+        ],
+      },
     ],
     SUBADMIN: [
       {
@@ -52,30 +52,35 @@ const getNavSections = (userType) => {
           {
             title: "Dashboard",
             icon: "images/template/dashboard.svg",
-            href: "/dashboard"
+            href: "/dashboard",
           },
           {
             title: "Users",
             icon: "images/usersnew.png",
-            href: "/companyUsers-List"
+            href: "/companyUsers-List",
+          },
+          {
+            title: "Leads",
+            icon: "images/template/setting.svg",
+            href: "/leads-search-dashboard",
           },
           {
             title: "Create",
             icon: "images/template/play.svg",
-            href: "/CreateTemplate"
+            href: "/CreateTemplate",
           },
           {
             title: "Prospects",
             icon: "images/template/clipboard-text.svg",
-            href: "/Myprojects"
+            href: "/Myprojects",
           },
           {
             title: "Settings",
             icon: "images/template/setting.svg",
-            href: "/settings"
-          }
-        ]
-      }
+            href: "/settings",
+          },
+        ],
+      },
     ],
     USER: [
       {
@@ -83,21 +88,21 @@ const getNavSections = (userType) => {
           {
             title: "My Dashboard",
             icon: "images/template/dashboard.svg",
-            href: "/user-dashboard"
+            href: "/user-dashboard",
           },
           {
             title: "My Prospects",
             icon: "images/template/clipboard-text.svg",
-            href: "/myprojects-list"
+            href: "/myprojects-list",
           },
           {
             title: "Settings",
             icon: "images/template/setting.svg",
-            href: "/user-settings"
-          }
-        ]
-      }
-    ]
+            href: "/user-settings",
+          },
+        ],
+      },
+    ],
   };
   return sections[userType] || [];
 };
@@ -105,7 +110,7 @@ const getNavSections = (userType) => {
 const useStyles = makeStyles((theme) => ({
   mobileDrawer: {
     width: 290,
-    background: theme.palette.background.taf
+    background: theme.palette.background.taf,
   },
   desktopDrawer: {
     width: "100%",
@@ -113,13 +118,13 @@ const useStyles = makeStyles((theme) => ({
     top: 0,
     height: "100%",
     "&.MuiDrawer-paperAnchorDockedLeft": {
-      borderRight: "none !Important"
-    }
+      borderRight: "none !Important",
+    },
   },
   drawer: {
     width: DRAWER_WIDTH,
     flexShrink: 0,
-    whiteSpace: "nowrap"
+    whiteSpace: "nowrap",
   },
   drawerOpen: {
     boxShadow: "0px 8px 24px 0px rgba(0, 0, 0, 0.04)",
@@ -127,30 +132,28 @@ const useStyles = makeStyles((theme) => ({
     borderRight: "1px solid #EFEFEF",
     transition: theme.transitions.create("width", {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen
-    })
+      duration: theme.transitions.duration.enteringScreen,
+    }),
   },
   drawerClose: {
     boxShadow: "0px 8px 24px 0px rgba(0, 0, 0, 0.04)",
     transition: theme.transitions.create("width", {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen
+      duration: theme.transitions.duration.leavingScreen,
     }),
     overflowX: "hidden",
     width: theme.spacing(7) + 1,
     [theme.breakpoints.up("sm")]: {
-      width: theme.spacing(7) + 1
-    }
+      width: theme.spacing(7) + 1,
+    },
   },
   logoutContainer: {
     marginTop: "auto",
-    marginBottom:30,
+    marginBottom: 30,
     padding: theme.spacing(2),
     display: "flex",
     justifyContent: "center",
-    backgroundColor: theme.palette.background.paper
-   
-
+    backgroundColor: theme.palette.background.paper,
   },
   logoutButton: {
     display: "flex",
@@ -158,37 +161,34 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
     color: "#858585",
     "&:hover": {
-       
-        color: "#fff",
-        background: "#032E61",
-        // padding: 10,
-         paddingLeft:60,
-         paddingBottom:20,
-         paddingTop:20,
-         paddingRight:65,
-        borderRadius: "9px"
-      
-    }
+      color: "#fff",
+      background: "#032E61",
+      paddingLeft: 60,
+      paddingBottom: 20,
+      paddingTop: 20,
+      paddingRight: 65,
+      borderRadius: "9px",
+    },
   },
   navbarContainer: {
     height: "100%",
     display: "flex",
-    flexDirection: "column"
+    flexDirection: "column",
   },
   logoContainer: {
     padding: theme.spacing(4, 2),
     display: "flex",
-    justifyContent: "center"
+    justifyContent: "center",
   },
   logo: {
     width: "100%",
     maxHeight: 60,
-    objectFit: "contain"
+    objectFit: "contain",
   },
   content: {
     flex: 1,
-    overflowY: "auto"
-  }
+    overflowY: "auto",
+  },
 }));
 
 const NavBar = ({ onMobileClose, openMobile, drawerOpen }) => {
@@ -196,7 +196,7 @@ const NavBar = ({ onMobileClose, openMobile, drawerOpen }) => {
   const history = useHistory();
   const location = useLocation();
   const auth = useContext(AuthContext);
-  
+
   const [isLoading, setIsLoading] = useState(false);
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
   const [sections, setSections] = useState([]);
@@ -243,7 +243,7 @@ const NavBar = ({ onMobileClose, openMobile, drawerOpen }) => {
               {renderNavItems({
                 depth: depth + 1,
                 pathname,
-                items: item.items
+                items: item.items,
               })}
             </NavItem>
           );
@@ -258,9 +258,8 @@ const NavBar = ({ onMobileClose, openMobile, drawerOpen }) => {
             info={item.info}
             title={item.title}
             style={{
-              backgroundColor: isActive ? "#00A1E036" : "transparent" ,
-              color: isActive ? "#032E61" : "#0358AC" 
-
+              backgroundColor: isActive ? "#00A1E036" : "transparent",
+              color: isActive ? "#032E61" : "#0358AC",
             }}
           />
         );
@@ -287,15 +286,14 @@ const NavBar = ({ onMobileClose, openMobile, drawerOpen }) => {
             >
               {renderNavItems({
                 items: section.items,
-                pathname: location?.pathname
+                pathname: location?.pathname,
               })}
             </List>
           ))}
         </div>
-      
       </div>
-      <div className={classes.logoutContainer} style={{marginTop:-10}}>
-        <Button 
+      <div className={classes.logoutContainer} style={{ marginTop: -10 }}>
+        <Button
           className={classes.logoutButton}
           onClick={() => setShowLogoutDialog(true)}
         >
@@ -303,8 +301,6 @@ const NavBar = ({ onMobileClose, openMobile, drawerOpen }) => {
           {drawerOpen && <div style={{ marginLeft: 8 }}>Logout</div>}
         </Button>
       </div>
-
-      
 
       <Dialog
         open={showLogoutDialog}
@@ -359,7 +355,7 @@ const NavBar = ({ onMobileClose, openMobile, drawerOpen }) => {
             paper: clsx(
               classes.desktopDrawer,
               drawerOpen ? classes.drawerOpen : classes.drawerClose
-            )
+            ),
           }}
           open
           variant="persistent"
@@ -374,7 +370,7 @@ const NavBar = ({ onMobileClose, openMobile, drawerOpen }) => {
 NavBar.propTypes = {
   onMobileClose: PropTypes.func,
   openMobile: PropTypes.bool,
-  drawerOpen: PropTypes.bool
+  drawerOpen: PropTypes.bool,
 };
 
 export default NavBar;
