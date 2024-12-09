@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import "./Leads.css";
+import LinksToTrack from "./LinksToTrack/LinksToTrack";
 
-const Installation= () => {
+const Installation = () => {
   const [activeTab, setActiveTab] = useState("Installation");
 
   return (
@@ -32,7 +33,7 @@ const Installation= () => {
         )}
         {activeTab === "Cookie Consent" && (
           <div>
-            <p>Cookie consent functionality will be here.</p>
+            <LinksToTrack />{" "}
           </div>
         )}
       </div>
