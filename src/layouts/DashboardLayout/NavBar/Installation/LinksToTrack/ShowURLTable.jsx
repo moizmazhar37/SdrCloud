@@ -19,39 +19,41 @@ const ShowURLTable = ({ urls, onDelete }) => {
   };
 
   return (
-    <div className="show-url-table">
+    <div>
       <h3>Tracked URLs</h3>
-      <table className="url-table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>URL</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {urls.length === 0 ? (
+      <div className="show-url-table">
+        <table className="url-table">
+          <thead>
             <tr>
-              <td colSpan="3">No URLs to display</td>
+              <th>ID</th>
+              <th>URL</th>
+              <th>Actions</th>
             </tr>
-          ) : (
-            urls.map((urlObj) => (
-              <tr key={urlObj.id} className="url-row">
-                <td>{urlObj.id}</td>
-                <td>{urlObj.url}</td>
-                <td>
-                  <button
-                    className="delete-btn"
-                    onClick={() => handleDelete(urlObj.id)}
-                  >
-                    <FaTrash />
-                  </button>
-                </td>
+          </thead>
+          <tbody>
+            {urls.length === 0 ? (
+              <tr>
+                <td colSpan="3">No URLs to display</td>
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+            ) : (
+              urls.map((urlObj) => (
+                <tr key={urlObj.id} className="url-row">
+                  <td>{urlObj.id}</td>
+                  <td>{urlObj.url}</td>
+                  <td>
+                    <button
+                      className="delete-btn"
+                      onClick={() => handleDelete(urlObj.id)}
+                    >
+                      <FaTrash />
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
