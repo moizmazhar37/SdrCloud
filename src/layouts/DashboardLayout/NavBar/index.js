@@ -254,7 +254,7 @@ const NavBar = ({ onMobileClose, openMobile, drawerOpen, onToggleDrawer }) => {
         }`}
       >
         <Button
-          className="logout-button"
+          className="logout-button-nav"
           fullWidth
           onClick={() => setShowLogoutDialog(true)}
         >
