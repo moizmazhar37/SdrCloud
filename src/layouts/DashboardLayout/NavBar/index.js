@@ -21,7 +21,7 @@ import NavItem from "./NavItem";
 import { AuthContext } from "src/context/Auth";
 import ButtonCircularProgress from "src/component/ButtonCircularProgress";
 
-const DRAWER_WIDTH = 260;
+const DRAWER_WIDTH = 270;
 
 const getNavSections = (userType) => {
   const sections = {
@@ -63,6 +63,20 @@ const getNavSections = (userType) => {
             title: "Leads",
             icon: "images/Leads.svg",
             href: "/leads",
+            items: [
+              {
+                title: "Dashboard",
+                href: "/leads",
+              },
+              {
+                title: "Search Leads",
+                href: "/leads-search",
+              },
+              {
+                title: "Installations",
+                href: "/leads",
+              },
+            ],
           },
           {
             title: "Create",
@@ -189,6 +203,62 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
     overflowY: "auto",
   },
+
+  navItem: {
+    display: "flex",
+    alignItems: "center",
+    padding: theme.spacing(1, 2),
+    color: "#0358AC",
+    fontSize: "14px",
+    fontFamily: "Inter, sans-serif",
+    "& .MuiListItemIcon-root": {
+      minWidth: 36,
+      marginRight: theme.spacing(1),
+    },
+    "& .MuiTypography-root": {
+      flex: 1,
+    },
+    "& .MuiSvgIcon-root": {
+      marginLeft: theme.spacing(0.5),
+      fontSize: 20,
+    },
+  },
+
+  subNavList: {
+    padding: 0,
+    backgroundColor: "transparent",
+    marginLeft: theme.spacing(5.5), // Align with other items
+  },
+
+  subNavItem: {
+    display: "flex",
+    alignItems: "center",
+    padding: theme.spacing(1, 5),
+    color: "#0358AC",
+    fontSize: "14px",
+    fontFamily: "Inter, sans-serif",
+    cursor: "pointer",
+    "&:hover": {
+      backgroundColor: "#00A1E036",
+      color: "#032E61",
+    },
+  },
+
+  listItemText: {
+    "& .MuiTypography-root": {
+      fontSize: "14px",
+      fontFamily: "Inter, sans-serif",
+    },
+  },
+
+  chevron: {
+    marginLeft: theme.spacing(0.5),
+    transition: "transform 0.2s",
+  },
+
+  chevronOpen: {
+    transform: "rotate(180deg)",
+  },
 }));
 
 const NavBar = ({ onMobileClose, openMobile, drawerOpen }) => {
@@ -200,6 +270,7 @@ const NavBar = ({ onMobileClose, openMobile, drawerOpen }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
   const [sections, setSections] = useState([]);
+  const [activeLeadsSection, setActiveLeadsSection] = useState(null);
 
   const userType = localStorage.getItem("userType");
 
@@ -229,8 +300,8 @@ const NavBar = ({ onMobileClose, openMobile, drawerOpen }) => {
         const key = item.title + depth;
         const isActive = matchPath(pathname, { path: item.href, exact: true });
 
-        if (item.items) {
-          const open = Boolean(isActive);
+        if (item.items && item.title === "Leads") {
+          const open = Boolean(isActive || activeLeadsSection === item.title);
           return (
             <NavItem
               key={key}
@@ -239,12 +310,22 @@ const NavBar = ({ onMobileClose, openMobile, drawerOpen }) => {
               info={item.info}
               open={open}
               title={item.title}
+              onClick={() => setActiveLeadsSection(open ? null : item.title)}
             >
-              {renderNavItems({
-                depth: depth + 1,
-                pathname,
-                items: item.items,
-              })}
+              <List className={classes.subNavList}>
+                {item.items.map((subItem) => (
+                  <div
+                    key={subItem.title}
+                    className={classes.subNavItem}
+                    onClick={() => {
+                      history.push(subItem.href);
+                      onMobileClose?.();
+                    }}
+                  >
+                    {subItem.title}
+                  </div>
+                ))}
+              </List>
             </NavItem>
           );
         }
@@ -261,6 +342,10 @@ const NavBar = ({ onMobileClose, openMobile, drawerOpen }) => {
               backgroundColor: isActive ? "#00A1E036" : "transparent",
               color: isActive ? "#032E61" : "#0358AC",
             }}
+            onClick={() => {
+              history.push(item.href);
+              onMobileClose?.();
+            }}
           />
         );
       })}
@@ -269,30 +354,32 @@ const NavBar = ({ onMobileClose, openMobile, drawerOpen }) => {
 
   const drawerContent = (
     <div className={classes.navbarContainer}>
-      <div className={classes.content}>
-        <div style={{ marginLeft: 10, marginTop: 40 }}>
-          <div style={{ width: "90%", marginLeft: "10px" }}>
-            <img src="images/template/SDR.png" alt="" />
-          </div>
-          {sections.map((section, index) => (
-            <List
-              key={`menu${index}`}
-              className="scroll"
-              subheader={
-                <ListSubheader disableGutters disableSticky>
-                  {section.subheader}
-                </ListSubheader>
-              }
-            >
-              {renderNavItems({
-                items: section.items,
-                pathname: location?.pathname,
-              })}
-            </List>
-          ))}
-        </div>
+      <div className={classes.logoContainer}>
+        <img
+          src="images/template/SDR.png"
+          alt="SDR Logo"
+          className={classes.logo}
+        />
       </div>
-      <div className={classes.logoutContainer} style={{ marginTop: -10 }}>
+      <div className={classes.content}>
+        {sections.map((section, index) => (
+          <List
+            key={`menu${index}`}
+            className="scroll"
+            subheader={
+              <ListSubheader disableGutters disableSticky>
+                {section.subheader}
+              </ListSubheader>
+            }
+          >
+            {renderNavItems({
+              items: section.items,
+              pathname: location?.pathname,
+            })}
+          </List>
+        ))}
+      </div>
+      <div className={classes.logoutContainer}>
         <Button
           className={classes.logoutButton}
           onClick={() => setShowLogoutDialog(true)}

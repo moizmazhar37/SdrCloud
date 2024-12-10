@@ -71,7 +71,7 @@ export const routes = [
   },
   {
     exact: true,
-    path: "/leads-search-dashboard",
+    path: "/leads-search",
     guard: true,
     layout: DashboardLayout,
     component: lazy(() =>
