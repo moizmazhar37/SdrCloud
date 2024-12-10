@@ -9,7 +9,6 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  makeStyles,
   Typography,
   Button,
   ListSubheader,
@@ -24,6 +23,7 @@ import { FaCircle } from "react-icons/fa";
 import NavItem from "./NavItem";
 import { AuthContext } from "src/context/Auth";
 import ButtonCircularProgress from "src/component/ButtonCircularProgress";
+import "./Navbar.css";
 
 const DRAWER_WIDTH = 270;
 
@@ -125,145 +125,7 @@ const getNavSections = (userType) => {
   return sections[userType] || [];
 };
 
-const useStyles = makeStyles((theme) => ({
-  mobileDrawer: {
-    width: 290,
-    background: theme.palette.background.taf,
-  },
-  desktopDrawer: {
-    width: "100%",
-    maxWidth: 270,
-    top: 0,
-    height: "100%",
-    "&.MuiDrawer-paperAnchorDockedLeft": {
-      borderRight: "none !Important",
-    },
-  },
-  drawer: {
-    width: DRAWER_WIDTH,
-    flexShrink: 0,
-    whiteSpace: "nowrap",
-  },
-  drawerOpen: {
-    boxShadow: "0px 8px 24px 0px rgba(0, 0, 0, 0.04)",
-    width: DRAWER_WIDTH,
-    borderRight: "1px solid #EFEFEF",
-    transition: theme.transitions.create("width", {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  },
-  drawerClose: {
-    boxShadow: "0px 8px 24px 0px rgba(0, 0, 0, 0.04)",
-    transition: theme.transitions.create("width", {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    overflowX: "hidden",
-    width: theme.spacing(7) + 1,
-    [theme.breakpoints.up("sm")]: {
-      width: theme.spacing(7) + 1,
-    },
-  },
-  logoutContainer: {
-    marginTop: "auto",
-    marginBottom: 30,
-    padding: theme.spacing(2),
-    display: "flex",
-    justifyContent: "center",
-    backgroundColor: theme.palette.background.paper,
-  },
-  logoutButton: {
-    display: "flex",
-    alignItems: "center",
-    padding: theme.spacing(2),
-    color: "#858585",
-    "&:hover": {
-      color: "#fff",
-      background: "#032E61",
-      paddingLeft: 60,
-      paddingBottom: 20,
-      paddingTop: 20,
-      paddingRight: 65,
-      borderRadius: "9px",
-    },
-  },
-  navbarContainer: {
-    height: "100%",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  logoContainer: {
-    padding: theme.spacing(4, 2),
-    display: "flex",
-    justifyContent: "center",
-  },
-  logo: {
-    width: "100%",
-    maxHeight: 60,
-    objectFit: "contain",
-  },
-  content: {
-    flex: 1,
-    overflowY: "auto",
-  },
-  navItem: {
-    display: "flex",
-    alignItems: "center",
-    color: "#0358AC",
-    fontSize: "14px",
-    fontFamily: "Inter, sans-serif",
-
-    "& .MuiListItemIcon-root": {
-      minWidth: 36,
-    },
-    "& .MuiTypography-root": {
-      flex: 1,
-    },
-    "& .MuiSvgIcon-root": {
-      fontSize: 20,
-    },
-  },
-  subNavList: {
-    padding: 0,
-    backgroundColor: "transparent",
-    marginLeft: theme.spacing(7),
-  },
-  subNavItem: {
-    display: "flex",
-    alignItems: "center",
-    padding: theme.spacing(1, 2),
-    color: "#0358AC",
-    fontSize: "14px",
-    fontFamily: "Inter, sans-serif",
-    cursor: "pointer",
-    "&:hover": {
-      backgroundColor: "#00A1E036",
-      color: "#032E61",
-    },
-    "& .MuiListItemIcon-root": {
-      minWidth: 24,
-      marginRight: theme.spacing(1),
-    },
-  },
-  listItemText: {
-    "& .MuiTypography-root": {
-      fontSize: "14px",
-      fontFamily: "Inter, sans-serif",
-    },
-  },
-  chevron: {
-    transition: "transform 0.2s",
-  },
-  chevronOpen: {
-    transform: "rotate(180deg)",
-  },
-}));
-
 const NavBar = ({ onMobileClose, openMobile, drawerOpen }) => {
-  const classes = useStyles();
   const history = useHistory();
   const location = useLocation();
   const auth = useContext(AuthContext);
@@ -313,11 +175,11 @@ const NavBar = ({ onMobileClose, openMobile, drawerOpen }) => {
               title={item.title}
               onClick={() => setActiveLeadsSection(open ? null : item.title)}
             >
-              <List className={classes.subNavList}>
+              <List className="sub-nav-list">
                 {item.items.map((subItem) => (
                   <ListItem
                     key={subItem.title}
-                    className={classes.subNavItem}
+                    className="sub-nav-item"
                     onClick={() => {
                       history.push(subItem.href);
                       onMobileClose?.();
@@ -333,7 +195,6 @@ const NavBar = ({ onMobileClose, openMobile, drawerOpen }) => {
                         }
                       />
                     </ListItemIcon>
-
                     <ListItemText>{subItem.title}</ListItemText>
                   </ListItem>
                 ))}
@@ -365,15 +226,11 @@ const NavBar = ({ onMobileClose, openMobile, drawerOpen }) => {
   );
 
   const drawerContent = (
-    <div className={classes.navbarContainer}>
-      <div className={classes.logoContainer}>
-        <img
-          src="images/template/SDR.png"
-          alt="SDR Logo"
-          className={classes.logo}
-        />
+    <div className="navbar-container">
+      <div className="logo-container">
+        <img src="images/template/SDR.png" alt="SDR Logo" className="logo" />
       </div>
-      <div className={classes.content}>
+      <div className="content">
         {sections.map((section, index) => (
           <List
             key={`menu${index}`}
@@ -390,9 +247,9 @@ const NavBar = ({ onMobileClose, openMobile, drawerOpen }) => {
           </List>
         ))}
       </div>
-      <div className={classes.logoutContainer}>
+      <div className="logout-container">
         <Button
-          className={classes.logoutButton}
+          className="logout-button"
           onClick={() => setShowLogoutDialog(true)}
         >
           <IoLogOutOutline />
@@ -438,7 +295,7 @@ const NavBar = ({ onMobileClose, openMobile, drawerOpen }) => {
       <Hidden lgUp>
         <Drawer
           anchor="left"
-          classes={{ paper: classes.mobileDrawer }}
+          className="mobile-drawer"
           onClose={onMobileClose}
           open={openMobile}
           variant="temporary"
@@ -449,12 +306,10 @@ const NavBar = ({ onMobileClose, openMobile, drawerOpen }) => {
       <Hidden mdDown>
         <Drawer
           anchor="left"
-          classes={{
-            paper: clsx(
-              classes.desktopDrawer,
-              drawerOpen ? classes.drawerOpen : classes.drawerClose
-            ),
-          }}
+          className={clsx(
+            "desktop-drawer",
+            drawerOpen ? "drawer-open" : "drawer-close"
+          )}
           open
           variant="persistent"
         >

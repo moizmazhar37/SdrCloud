@@ -1,0 +1,155 @@
+:root {
+    --drawer-width: 270px;
+  }
+  
+  .mobile-drawer {
+    width: 290px;
+    background: var(--background-taf);
+  }
+  
+  .desktop-drawer {
+    width: 100%;
+    max-width: 270px;
+    top: 0;
+    height: 100%;
+  }
+  
+  .desktop-drawer.MuiDrawer-paperAnchorDockedLeft {
+    border-right: none !important;
+  }
+  
+  .drawer {
+    width: var(--drawer-width);
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  
+  .drawer-open {
+    box-shadow: 0px 8px 24px 0px rgba(0, 0, 0, 0.04);
+    width: var(--drawer-width);
+    border-right: 1px solid #EFEFEF;
+    transition: width 0.2s ease-in;
+  }
+  
+  .drawer-close {
+    box-shadow: 0px 8px 24px 0px rgba(0, 0, 0, 0.04);
+    transition: width 0.2s ease-out;
+    overflow-x: hidden;
+    width: 57px;
+  }
+  
+  @media (min-width: 600px) {
+    .drawer-close {
+      width: 57px;
+    }
+  }
+  
+  .logout-container {
+    margin-top: auto;
+    margin-bottom: 30px;
+    padding: 16px;
+    display: flex;
+    justify-content: center;
+    background-color: #fff;
+  }
+  
+  .logout-button {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    color: #858585;
+  }
+  
+  .logout-button:hover {
+    color: #fff;
+    background: #032E61;
+    padding-left: 60px;
+    padding-bottom: 20px;
+    padding-top: 20px;
+    padding-right: 65px;
+    border-radius: 9px;
+  }
+  
+  .navbar-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .logo-container {
+    padding: 32px 16px;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .logo {
+    width: 100%;
+    max-height: 60px;
+    object-fit: contain;
+  }
+  
+  .content {
+    flex: 1;
+    overflow-y: auto;
+  }
+  
+  .nav-item {
+    display: flex;
+    align-items: center;
+    color: #0358AC;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+  }
+  
+  .nav-item .MuiListItemIcon-root {
+    min-width: 36px;
+  }
+  
+  .nav-item .MuiTypography-root {
+    flex: 1;
+  }
+  
+  .nav-item .MuiSvgIcon-root {
+    font-size: 20px;
+  }
+  
+  .sub-nav-list {
+    padding: 0;
+    background-color: transparent;
+    margin-left: 56px;
+  }
+  
+  .sub-nav-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    color: #0358AC;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+  }
+  
+  .sub-nav-item:hover {
+    background-color: #00A1E036;
+    color: #032E61;
+  }
+  
+  .sub-nav-item .MuiListItemIcon-root {
+    min-width: 24px;
+    margin-right: 8px;
+  }
+  
+  .list-item-text .MuiTypography-root {
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+  }
+  
+  .chevron {
+    transition: transform 0.2s;
+  }
+  
+  .chevron-open {
+    transform: rotate(180deg);
+  }
