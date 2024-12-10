@@ -125,7 +125,7 @@ const getNavSections = (userType) => {
   return sections[userType] || [];
 };
 
-const NavBar = ({ onMobileClose, openMobile, drawerOpen }) => {
+const NavBar = ({ onMobileClose, openMobile, drawerOpen, onToggleDrawer }) => {
   const history = useHistory();
   const location = useLocation();
   const auth = useContext(AuthContext);
@@ -174,7 +174,7 @@ const NavBar = ({ onMobileClose, openMobile, drawerOpen }) => {
               open={open}
               title={item.title}
               onClick={() => setActiveLeadsSection(open ? null : item.title)}
-              style={{ marginLeft: 17, marginTop: 10 }}
+              style={{ marginLeft: 18, marginTop: 12 }}
             >
               <List className="sub-nav-list">
                 {item.items.map((subItem) => (
@@ -298,6 +298,7 @@ const NavBar = ({ onMobileClose, openMobile, drawerOpen }) => {
 
   return (
     <>
+      {/* Mobile Drawer */}
       <Hidden lgUp>
         <Drawer
           anchor="left"
@@ -309,6 +310,8 @@ const NavBar = ({ onMobileClose, openMobile, drawerOpen }) => {
           {drawerContent}
         </Drawer>
       </Hidden>
+
+      {/* Desktop Drawer */}
       <Hidden mdDown>
         <Drawer
           anchor="left"
@@ -316,8 +319,14 @@ const NavBar = ({ onMobileClose, openMobile, drawerOpen }) => {
             "desktop-drawer",
             drawerOpen ? "drawer-open" : "drawer-close"
           )}
-          open
+          open={drawerOpen}
           variant="persistent"
+          PaperProps={{
+            style: {
+              width: drawerOpen ? DRAWER_WIDTH : 0,
+              transition: "width 225ms cubic-bezier(0, 0, 0.2, 1) 0ms",
+            },
+          }}
         >
           {drawerContent}
         </Drawer>
@@ -330,6 +339,7 @@ NavBar.propTypes = {
   onMobileClose: PropTypes.func,
   openMobile: PropTypes.bool,
   drawerOpen: PropTypes.bool,
+  onToggleDrawer: PropTypes.func,
 };
 
 export default NavBar;
