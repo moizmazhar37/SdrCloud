@@ -67,18 +67,17 @@ const LinksToTrack = () => {
     }
   };
 
+  const handleDelete = (id) => {
+    setTrackedUrls(trackedUrls.filter((url) => url.id !== id));
+  };
+
   return (
     <div className="links-to-track">
       <div className="table-section">
         {loading ? (
           <p>Loading...</p>
         ) : (
-          <ShowURLTable
-            urls={trackedUrls}
-            onDelete={(id) =>
-              setTrackedUrls(trackedUrls.filter((url) => url.id !== id))
-            }
-          />
+          <ShowURLTable urls={trackedUrls} onDelete={handleDelete} />
         )}
         <div className="add-url-section">
           <input
