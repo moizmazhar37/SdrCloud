@@ -62,6 +62,25 @@ export const routes = [
   },
   {
     exact: true,
+    path: "/leads",
+    guard: true,
+    layout: DashboardLayout,
+    component: lazy(() =>
+      import("src/layouts/DashboardLayout/NavBar/Installation/Installation")
+    ),
+  },
+  {
+    exact: true,
+    path: "/leads-search",
+    guard: true,
+    layout: DashboardLayout,
+    component: lazy(() =>
+      import("src/layouts/DashboardLayout/NavBar/SearchLeads/SearchLeads.jsx")
+    ),
+  },
+
+  {
+    exact: true,
     path: "/Edit-Myprojects",
     guard: true,
     layout: DashboardLayout,

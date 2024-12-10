@@ -27,8 +27,8 @@ const useStyles = makeStyles((theme) => ({
     letterSpacing: 0,
     width: "100%",
     "&:hover": {
-      background: "#3E97FF",
-      color: "#FFFFFF",
+      background: "transparent",
+      color: "#032E61",
     },
   },
   buttonLeaf: {
@@ -146,7 +146,7 @@ const NavItem = ({
       {...rest}
     >
       <Button
-         activeClassName={classes.active}
+        activeClassName={classes.active}
         className={clsx(classes.buttonLeaf, `depth-${depth}`)}
         component={RouterLink}
         exact
