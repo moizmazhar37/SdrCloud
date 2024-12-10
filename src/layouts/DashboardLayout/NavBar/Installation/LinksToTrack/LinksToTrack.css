@@ -3,7 +3,7 @@
 .table-section {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 50px;
 }
 
 .url-table {
@@ -84,17 +84,16 @@
 
 .url-input:focus {
   outline: none;
-  border-bottom-color: #ecb940;
+  border-bottom-color: #032E61;
 }
 
 .add-btn:hover,
 .save-btn:hover {
-  background-color: #ecb940;
+  background-color: #4d75a7;
 }
 
-/* New styles for scrollable table */
 .show-url-table {
-  max-height: 400px; /* Adjust height limit as necessary */
+  max-height: 400px; 
   overflow-y: auto;
   margin-top: 20px;
   border: 1px solid #ddd;
