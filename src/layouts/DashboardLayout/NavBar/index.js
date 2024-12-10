@@ -61,7 +61,7 @@ const getNavSections = (userType) => {
           },
           {
             title: "Leads",
-            icon: "images/template/setting.svg",
+            icon: "images/Leads.svg",
             href: "/leads",
           },
           {

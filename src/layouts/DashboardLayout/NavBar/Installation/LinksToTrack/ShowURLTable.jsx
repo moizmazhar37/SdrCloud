@@ -1,5 +1,6 @@
 import React from "react";
 import "./LinksToTrack.css";
+import ApiConfig from "../../../../../../src/config/APIConfig";
 
 const ShowURLTable = ({ urls }) => {
   return (
@@ -8,7 +9,7 @@ const ShowURLTable = ({ urls }) => {
       <table className="url-table">
         <thead>
           <tr>
-            <th>URL_ID</th>
+            <th>ID</th>
             <th>URL</th>
           </tr>
         </thead>
@@ -18,10 +19,10 @@ const ShowURLTable = ({ urls }) => {
               <td colSpan="2">No URLs to display</td>
             </tr>
           ) : (
-            urls.map((url, index) => (
-              <tr key={index} className="url-row">
-                <td>{index + 1}</td>
-                <td>{url}</td>
+            urls.map((urlObj) => (
+              <tr key={urlObj.id} className="url-row">
+                <td>{urlObj.id}</td>
+                <td>{urlObj.url}</td>
               </tr>
             ))
           )}

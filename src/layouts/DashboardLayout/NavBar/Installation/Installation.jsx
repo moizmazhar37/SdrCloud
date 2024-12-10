@@ -15,10 +15,10 @@ const Installation = () => {
           Installation
         </button>
         <button
-          className={`tab ${activeTab === "Cookie Consent" ? "active" : ""}`}
-          onClick={() => setActiveTab("Cookie Consent")}
+          className={`tab ${activeTab === "Links To Track" ? "active" : ""}`}
+          onClick={() => setActiveTab("Links To Track")}
         >
-          Cookie Consent
+          Links To Track
         </button>
       </div>
       <div className="content">
@@ -31,9 +31,9 @@ const Installation = () => {
             <textarea className="installation-textarea" />
           </div>
         )}
-        {activeTab === "Cookie Consent" && (
+        {activeTab === "Links To Track" && (
           <div>
-            <LinksToTrack />{" "}
+            <LinksToTrack />
           </div>
         )}
       </div>

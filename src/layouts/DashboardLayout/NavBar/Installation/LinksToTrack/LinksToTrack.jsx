@@ -1,49 +1,68 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import ShowURLTable from "./ShowURLTable";
 import "./LinksToTrack.css";
+import ApiConfig from "../../../../../../src/config/APIConfig";
 
 const LinksToTrack = () => {
-  const [trackedUrls, setTrackedUrls] = useState([
-    "https://example.com",
-    "https://anotherexample.com",
-    "https://example.com",
-    "https://anotherexample.com",
-  ]);
-  const [newUrls, setNewUrls] = useState([]);
+  const [trackedUrls, setTrackedUrls] = useState([]);
+  const [newUrl, setNewUrl] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [statusMessage, setStatusMessage] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
 
-  const handleAddField = () => {
-    setNewUrls([...newUrls, ""]);
-  };
-
-  const handleInputChange = (index, value) => {
-    const updatedUrls = [...newUrls];
-    updatedUrls[index] = value;
-    setNewUrls(updatedUrls);
-  };
-
-  const handleSave = async () => {
-    const validUrls = newUrls.filter((url) => url.trim() !== "");
-
-    if (validUrls.length > 0) {
+  useEffect(() => {
+    const fetchTrackedUrls = async () => {
       try {
-        const response = await fetch("/api/add-urls", {
-          method: "POST",
+        setLoading(true);
+        const response = await axios.get(ApiConfig.getUrls, {
           headers: {
-            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-          body: JSON.stringify({ urls: validUrls }),
         });
 
-        if (response.ok) {
-          const result = await response.json();
-          console.log("Saved successfully:", result);
-          setTrackedUrls([...trackedUrls, ...validUrls]);
-          setNewUrls([]);
-        } else {
-          console.error("Failed to save URLs");
+        if (response?.status === 200) {
+          setTrackedUrls(response.data);
         }
       } catch (error) {
-        console.error("Error saving URLs:", error);
+        console.error("Error fetching tracked URLs:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTrackedUrls();
+  }, []);
+
+  const handleSave = async () => {
+    if (newUrl.trim() !== "") {
+      try {
+        const response = await axios.post(
+          ApiConfig.addUrl,
+          { url: newUrl },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (response?.status === 200) {
+          setIsSuccess(true);
+          setStatusMessage("Saved successfully!");
+          setTrackedUrls([...trackedUrls, response.data]);
+          setNewUrl("");
+        } else {
+          setIsSuccess(false);
+          setStatusMessage("Error saving URL.");
+        }
+      } catch (error) {
+        console.error("Error saving URL:", error);
+        setIsSuccess(false);
+        setStatusMessage("Error saving URL.");
+      } finally {
+        setTimeout(() => setStatusMessage(""), 3000);
       }
     }
   };
@@ -51,27 +70,40 @@ const LinksToTrack = () => {
   return (
     <div className="links-to-track">
       <div className="table-section">
-        <ShowURLTable urls={trackedUrls} />
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          <ShowURLTable
+            urls={trackedUrls}
+            onDelete={(id) =>
+              setTrackedUrls(trackedUrls.filter((url) => url.id !== id))
+            }
+          />
+        )}
         <div className="add-url-section">
-          {newUrls.map((url, index) => (
-            <input
-              key={index}
-              type="text"
-              className="url-input"
-              placeholder="Enter URL"
-              value={url}
-              onChange={(e) => handleInputChange(index, e.target.value)}
-            />
-          ))}
-        </div>
-        <div className="button-container">
-          <button className="add-btn" onClick={handleAddField}>
-            Add Field
-          </button>
-          <button className="save-btn" onClick={handleSave}>
-            Save
+          <input
+            type="text"
+            className="url-input"
+            placeholder="Enter URL"
+            value={newUrl}
+            onChange={(e) => setNewUrl(e.target.value)}
+          />
+          <button className="add-btn" onClick={handleSave}>
+            +
           </button>
         </div>
+        {/* Display status message */}
+        {statusMessage && (
+          <p
+            style={{
+              marginTop: "10px",
+              fontSize: "14px",
+              color: isSuccess ? "green" : "red",
+            }}
+          >
+            {statusMessage}
+          </p>
+        )}
       </div>
     </div>
   );
