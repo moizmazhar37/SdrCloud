@@ -174,6 +174,7 @@ const NavBar = ({ onMobileClose, openMobile, drawerOpen }) => {
               open={open}
               title={item.title}
               onClick={() => setActiveLeadsSection(open ? null : item.title)}
+              style={{ marginLeft: 17, marginTop: 10 }}
             >
               <List className="sub-nav-list">
                 {item.items.map((subItem) => (
@@ -230,7 +231,7 @@ const NavBar = ({ onMobileClose, openMobile, drawerOpen }) => {
       <div className="logo-container">
         <img src="images/template/SDR.png" alt="SDR Logo" className="logo" />
       </div>
-      <div className="content">
+      <div className="content-nav">
         {sections.map((section, index) => (
           <List
             key={`menu${index}`}
@@ -247,13 +248,18 @@ const NavBar = ({ onMobileClose, openMobile, drawerOpen }) => {
           </List>
         ))}
       </div>
-      <div className="logout-container">
+      <div
+        className={`logout-container ${
+          drawerOpen ? "drawer-open" : "drawer-closed"
+        }`}
+      >
         <Button
           className="logout-button"
+          fullWidth
           onClick={() => setShowLogoutDialog(true)}
         >
-          <IoLogOutOutline />
-          {drawerOpen && <div style={{ marginLeft: 8 }}>Logout</div>}
+          <IoLogOutOutline size={24} />
+          {drawerOpen && <span className="logout-text">Logout</span>}
         </Button>
       </div>
 
