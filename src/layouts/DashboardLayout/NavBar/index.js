@@ -6,6 +6,9 @@ import {
   Drawer,
   Hidden,
   List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
   makeStyles,
   Typography,
   Button,
@@ -17,6 +20,7 @@ import {
 } from "@material-ui/core";
 import clsx from "clsx";
 import { IoLogOutOutline } from "react-icons/io5";
+import { FaCircle } from "react-icons/fa";
 import NavItem from "./NavItem";
 import { AuthContext } from "src/context/Auth";
 import ButtonCircularProgress from "src/component/ButtonCircularProgress";
@@ -188,6 +192,8 @@ const useStyles = makeStyles((theme) => ({
     height: "100%",
     display: "flex",
     flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
   },
   logoContainer: {
     padding: theme.spacing(4, 2),
@@ -203,37 +209,32 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
     overflowY: "auto",
   },
-
   navItem: {
     display: "flex",
     alignItems: "center",
-    padding: theme.spacing(1, 2),
     color: "#0358AC",
     fontSize: "14px",
     fontFamily: "Inter, sans-serif",
+
     "& .MuiListItemIcon-root": {
       minWidth: 36,
-      marginRight: theme.spacing(1),
     },
     "& .MuiTypography-root": {
       flex: 1,
     },
     "& .MuiSvgIcon-root": {
-      marginLeft: theme.spacing(0.5),
       fontSize: 20,
     },
   },
-
   subNavList: {
     padding: 0,
     backgroundColor: "transparent",
-    marginLeft: theme.spacing(5.5), // Align with other items
+    marginLeft: theme.spacing(7),
   },
-
   subNavItem: {
     display: "flex",
     alignItems: "center",
-    padding: theme.spacing(1, 5),
+    padding: theme.spacing(1, 2),
     color: "#0358AC",
     fontSize: "14px",
     fontFamily: "Inter, sans-serif",
@@ -242,20 +243,20 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: "#00A1E036",
       color: "#032E61",
     },
+    "& .MuiListItemIcon-root": {
+      minWidth: 24,
+      marginRight: theme.spacing(1),
+    },
   },
-
   listItemText: {
     "& .MuiTypography-root": {
       fontSize: "14px",
       fontFamily: "Inter, sans-serif",
     },
   },
-
   chevron: {
-    marginLeft: theme.spacing(0.5),
     transition: "transform 0.2s",
   },
-
   chevronOpen: {
     transform: "rotate(180deg)",
   },
@@ -314,7 +315,7 @@ const NavBar = ({ onMobileClose, openMobile, drawerOpen }) => {
             >
               <List className={classes.subNavList}>
                 {item.items.map((subItem) => (
-                  <div
+                  <ListItem
                     key={subItem.title}
                     className={classes.subNavItem}
                     onClick={() => {
@@ -322,8 +323,19 @@ const NavBar = ({ onMobileClose, openMobile, drawerOpen }) => {
                       onMobileClose?.();
                     }}
                   >
-                    {subItem.title}
-                  </div>
+                    <ListItemIcon>
+                      <FaCircle
+                        size={8}
+                        color={
+                          activeLeadsSection === item.title
+                            ? "#032E61"
+                            : "#0358AC"
+                        }
+                      />
+                    </ListItemIcon>
+
+                    <ListItemText>{subItem.title}</ListItemText>
+                  </ListItem>
                 ))}
               </List>
             </NavItem>
@@ -365,7 +377,6 @@ const NavBar = ({ onMobileClose, openMobile, drawerOpen }) => {
         {sections.map((section, index) => (
           <List
             key={`menu${index}`}
-            className="scroll"
             subheader={
               <ListSubheader disableGutters disableSticky>
                 {section.subheader}
