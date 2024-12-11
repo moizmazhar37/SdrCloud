@@ -1,125 +1,89 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import ApiConfig from "../../../../config/APIConfig";
+
 import "./SearchLeads.css";
 import LeadsTable from "./LeadsTable";
 
 export default function SearchLeads() {
-  const columns = [
-    "Name",
-    "Date",
-    "Visited",
-    "Location",
-    "Site",
-    "Source",
-    "Keywords",
-  ];
-
-  const data = [
-    {
-      Name: "Roy Ericson",
-      Visited: "11/12/2024 7:44:04 PM",
-      Location: "Las Vegas, NV",
-      Site: "bloxbunny.com",
-      Source: "www.google.com",
-      Keywords: "",
-    },
-    {
-      Name: "Peggy Gan",
-      Visited: "11/12/2024 1:40:08 PM",
-      Location: "Alamo, CA",
-      Site: "sdrcloud.ai",
-      Source: "Direct",
-      Keywords: "",
-    },
-    {
-      Name: "Kim Cochran",
-      Visited: "11/12/2024 5:27:52 AM",
-      Location: "Scottsdale, AZ",
-      Site: "bloxbunny.com",
-      Source: "Direct",
-      Keywords: "",
-    },
-    {
-      Name: "Melvin Mathis",
-      Visited: "11/12/2024 2:16:35 AM",
-      Location: "Baltimore, MD",
-      Site: "bloxbunny.com",
-      Source: "www.google.com",
-      Keywords: "",
-    },
-    {
-      Name: "Fernando Walker",
-      Visited: "11/11/2024 8:59:56 PM",
-      Location: "Milwaukee, WI",
-      Site: "bloxbunny.com",
-      Source: "www.google.com",
-      Keywords: "",
-    },
-    {
-      Name: "Roy Ericson",
-      Visited: "11/12/2024 7:44:04 PM",
-      Location: "Las Vegas, NV",
-      Site: "bloxbunny.com",
-      Source: "www.google.com",
-      Keywords: "",
-    },
-    {
-      Name: "Peggy Gan",
-      Visited: "11/12/2024 1:40:08 PM",
-      Location: "Alamo, CA",
-      Site: "sdrcloud.ai",
-      Source: "Direct",
-      Keywords: "",
-    },
-    {
-      Name: "Kim Cochran",
-      Visited: "11/12/2024 5:27:52 AM",
-      Location: "Scottsdale, AZ",
-      Site: "bloxbunny.com",
-      Source: "Direct",
-      Keywords: "",
-    },
-    {
-      Name: "Melvin Mathis",
-      Visited: "11/12/2024 2:16:35 AM",
-      Location: "Baltimore, MD",
-      Site: "bloxbunny.com",
-      Source: "www.google.com",
-      Keywords: "",
-    },
-    {
-      Name: "Fernando Walker",
-      Visited: "11/11/2024 8:59:56 PM",
-      Location: "Milwaukee, WI",
-      Site: "bloxbunny.com",
-      Source: "www.google.com",
-      Keywords: "",
-    },
-  ];
-
+  const [leads, setLeads] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [statusMessage, setStatusMessage] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
+
+  useEffect(() => {
+    const fetchLeads = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(`${ApiConfig.getUrls}/leads`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+
+        if (response?.status === 200) {
+          setLeads(response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching leads:", error);
+        setStatusMessage("Failed to load leads.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLeads();
+  }, []);
+
+  const columns = [
+    { Header: "First Name", accessor: "first_name" },
+    { Header: "Last Name", accessor: "last_name" },
+    { Header: "Personal Email", accessor: "personal_email" },
+    { Header: "Address", accessor: "contact_address" },
+    { Header: "Metro City", accessor: "contact_metro_city" },
+    { Header: "State", accessor: "contact_state" },
+    { Header: "Zip", accessor: "contact_zip" },
+    { Header: "Zip-4", accessor: "contact_zip4" },
+    { Header: "Gender", accessor: "gender" },
+    { Header: "Age Range", accessor: "age_range" },
+    { Header: "Income Range", accessor: "income_range" },
+    { Header: "Net Worth", accessor: "net_worth" },
+  ];
+
+  const data = leads.map((lead) => ({
+    first_name: lead.first_name,
+    last_name: lead.last_name,
+    personal_email: lead.personal_email,
+    contact_address: lead.contact_address,
+    contact_address_2: lead.contact_address_2,
+    contact_metro_city: lead.contact_metro_city,
+    contact_state: lead.contact_state,
+    contact_zip: lead.contact_zip,
+    contact_zip4: lead.contact_zip4,
+    gender: lead.gender,
+    age_range: lead.age_range,
+    income_range: lead.income_range,
+    net_worth: lead.net_worth,
+  }));
 
   return (
     <div className="searchleads-container">
       <div className="sub-container">
         <div className="header-box">
           <h1>Search Your Visitors</h1>
-          <div className="export-section">
-            <button className="export-btn">
-              Export {selectedRows.length > 0 ? `(${selectedRows.length})` : ""}
-            </button>
-            <select className="dropdown">
-              <option>10</option>
-              <option>20</option>
-              <option>50</option>
-            </select>
-          </div>
         </div>
-        <LeadsTable
-          data={data}
-          columns={columns}
-          selectedRows={selectedRows}
-          setSelectedRows={setSelectedRows}
-        />
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          <LeadsTable
+            data={data}
+            columns={columns}
+            selectedRows={selectedRows}
+            setSelectedRows={setSelectedRows}
+          />
+        )}
+        {statusMessage && <p>{statusMessage}</p>}
       </div>
     </div>
   );
