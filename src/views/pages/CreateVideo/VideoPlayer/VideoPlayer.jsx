@@ -57,6 +57,12 @@ const VideoPlayer = () => {
         <img src={logo} alt="Logo" className="logo" />
       </div>
 
+      {videoData.name ? (
+        <div className="customer-name">Welcome {videoData.name}!</div>
+      ) : (
+        <div className="customer-name">Welcome User!</div>
+      )}
+
       {videoData?.video_url && (
         <video className="responsive-video" controls>
           <source src={videoData.video_url} type="video/mp4" />

@@ -18,14 +18,22 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding-bottom: 60px;
+    padding-bottom: 25px;
   }
   
   .logo {
     width: 300px; 
     width: 50%; 
     height: 400px; 
-    
+  }
+  
+  .customer-name {
+    font-size: 25px;
+    font-weight: bold;
+    color: #666666;
+    margin: 20px 0;
+    text-align: center;
+    padding-bottom: 30px;
   }
   
   .responsive-video {
@@ -42,10 +50,14 @@
     .responsive-video {
       max-width: 90%;
     }
-    
+  
     .logo {
       max-width: 250px;
       width: 60%;
+    }
+  
+    .customer-name {
+      font-size: 18px;
     }
   }
   
@@ -59,10 +71,14 @@
       max-width: 100%;
       aspect-ratio: 16 / 9;
     }
-    
+  
     .logo {
       max-width: 200px;
       width: 70%;
+    }
+  
+    .customer-name {
+      font-size: 18px;
     }
   }
   
@@ -75,9 +91,14 @@
     .responsive-video {
       aspect-ratio: 4 / 3;
     }
-    
+  
     .logo {
       max-width: 150px;
       width: 80%;
     }
+  
+    .customer-name {
+      font-size: 16px;
+    }
   }
+  
