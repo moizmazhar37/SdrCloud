@@ -1174,7 +1174,7 @@ const ImageVideo = ({
                                 .filter(
                                   (item) =>
                                     item?.dataType === "Text" ||
-                                    item?.dataType === "First name" ||
+                                    item?.dataType === "First name (Required)" ||
                                     item?.dataType === "Last name" ||
                                     item?.dataType === "Customer organization"
                                 )
@@ -1314,7 +1314,7 @@ const ImageVideo = ({
                                 .filter(
                                   (item) =>
                                     item?.dataType === "Text" ||
-                                    item?.dataType === "First name" ||
+                                    item?.dataType === "First name (Required)" ||
                                     item?.dataType === "Last name" ||
                                     item?.dataType === "Customer organization"
                                 )
