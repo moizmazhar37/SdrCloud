@@ -221,6 +221,14 @@ export const routes = [
     ),
   },
 
+  {
+    exact: true,
+    path: "/play-video/:customerId",
+    component: lazy(() =>
+      import("src/views/pages/CreateVideo/VideoPlayer/VideoPlayer")
+    ),
+  },
+
   // Setting Pages
 
   {
