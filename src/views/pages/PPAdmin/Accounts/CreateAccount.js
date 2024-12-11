@@ -845,10 +845,10 @@ const CreateAccount = () => {
         secondaryHex: hexValuesecondary,
         customerType: selectedcustomerType,
         ppAdminId: selectedUser,
-        map: {
-          IMAGE: photoURL ? photoURL : accountLogo,
-          PDF: accountContract.base64,
-        },
+        //====update payload to new keys
+        logo: logo_public_url,
+        contractpdf: contract_public_url,
+        // ===update keys=======
         roleStatus: "SUBADMIN",
         userName: values.accountName,
       };
@@ -947,29 +947,75 @@ const CreateAccount = () => {
       setAccountLogoUpload("");
     }
   };
-
+  const [fileToSend, setFileToSend] = useState(null);
   const handleFileUpload = (event, setFieldValue) => {
     const file = event.target.files[0];
     setLogoFile(file?.name);
     setAccountLogoName(logoFile);
+    setFileToSend(file);
 
     if (file) {
       const reader = new FileReader();
       reader.onload = (event) => {
         setAccountlogo(event.target.result);
         // Update the Formik field value
-        setFieldValue("accountLogo", file); // Pass the file itself for validation
+        setFieldValue("accountLogo", file);
       };
       reader.readAsDataURL(file);
     }
   };
+  const [logo_public_url, setLogo_public_url] = useState(null);
+  const [contract_public_url, setContract_public_url] = useState(null);
 
-  const handleSaveAccontLogo = (event) => {
-    setAccountLogoUpload(accountLogo);
-    setAccountLogoName(logoFile);
-    toast.success("Image uploaded successfully.");
-    setOpen(false);
-    setClearImage(true);
+  //================================================================================API TO UPLOAD IMAGE __LOGO__====================================================
+
+  const handleSaveAccontLogo = async (event) => {
+    try {
+      if (!fileToSend) {
+        toast.error("No file selected");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("file", fileToSend);
+
+      console.log("Upload URL:", ApiConfig.uploadFile);
+      console.log("File to send:", fileToSend);
+
+      const token = localStorage.getItem("token");
+      if (!token) {
+        toast.error("No authentication token found");
+        return;
+      }
+
+      const res = await axios({
+        method: "POST",
+        url: ApiConfig.UploadFile,
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+        data: formData,
+      });
+
+      if (res?.status === 200) {
+        console.log(res.data.public_url, "Image uploaded successfully");
+        setLogo_public_url(res.data.public_url);
+        toast.success("Image uploaded successfully.");
+
+        setAccountLogoUpload(accountLogo);
+        setAccountLogoName(logoFile);
+      }
+    } catch (error) {
+      console.error("Full error object:", error);
+
+      toast.error(
+        `Upload failed: ${error.response.data?.message || "Unknown error"}`
+      );
+    } finally {
+      setOpen(false);
+      setClearImage(true);
+    }
   };
 
   const handleEditAccontLogo = () => {
@@ -979,7 +1025,9 @@ const CreateAccount = () => {
     handleOpenDialog();
   };
 
-  const handleContractUpload = (event, setFieldValue) => {
+  //=========================================== uploading contract API=====================================================================
+  const [uploadedContract, setUploadedContract] = useState(null);
+  const handleContractUpload = async (event, setFieldValue) => {
     const file = event.target.files[0];
     if (file) {
       const fileType = file.type;
@@ -1000,10 +1048,43 @@ const CreateAccount = () => {
           base64: event.target.result,
           url: url,
         });
-        setFieldValue("contractFile", file); // Update Formik's value
+        setFieldValue("contractFile", file);
+        setUploadedContract(file);
       };
       reader.readAsDataURL(file);
-      toast.success("Contract Uploaded Successfully.");
+
+      //=======hit endppoint here=======
+      try {
+        const formData = new FormData();
+        formData.append("file", uploadedContract);
+
+        const token = localStorage.getItem("token");
+        if (!token) {
+          toast.error("No authentication token found");
+          return;
+        }
+
+        const res = await axios({
+          method: "POST",
+          url: ApiConfig.UploadFile,
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+          data: formData,
+        });
+
+        if (res?.status === 200) {
+          toast.success("Contract uploaded successfully.");
+          setContract_public_url(res.data.public_url);
+        }
+      } catch (error) {
+        console.log(error);
+        toast.error(
+          `Upload failed: ${error.response.data?.message || "Unknown error"}`
+        );
+      }
+      //=================================//
     } else {
       setFieldValue("contractFile", null); // Set to null if no file is uploaded
     }
