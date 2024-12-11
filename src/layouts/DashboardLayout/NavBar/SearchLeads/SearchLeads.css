@@ -1,94 +1,102 @@
 .searchleads-container {
- 
-  
-    font-family: Arial, sans-serif;
-    border: 1px solid #ddd;
-    border-radius: 15px;
-    width: 95%;
-    margin: 20px auto;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding-top: 20px;
-    height: 783px;
-    display: flex;
-    justify-content: center;
+  font-family: Arial, sans-serif;
+  border: 1px solid #ddd;
+  border-radius: 15px;
+  width: 95%;
+  margin: 20px auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding-top: 20px;
+  height: 783px;
+  display: flex;
+  justify-content: center;
 }
-.sub-container{
-    padding-top: 5px;
-    width: 95%;
+
+.sub-container {
+  padding-top: 5px;
+  width: 95%;
 }
-  
-  .header-box {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #032E61;
-    color: #fff;
-    padding: 15px 20px;
-    border-radius: 10px;
-    margin-bottom: 15px;
-  }
-  
-  .header-box h1 {
-    font-size: 18px;
-    margin: 0;
-  }
-  
-  .export-section {
-    display: flex;
-    align-items: center;
-  }
-  
-  .export-btn {
-    color: #ffffff;
-    border: 1px solid #fff;
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-    margin-right: 10px;
-    background-color: transparent;
-  }
-  
-  .export-btn:hover {
-    color: #d9d9d9;
-  }
-  
-  .dropdown {
-    padding: 5px 10px;
-    font-size: 14px;
-    border-radius: 5px;
-    border: 1px solid #ddd;
-  }
-  
-  .table-box {
-    background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    overflow: hidden;
-  }
-  
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 14px;
-  }
-  
-  th,
-  td {
-    padding: 20px;
-    text-align: left;
-  }
-  
-  th {
-    background-color: #f2f2f2;
-    color: #333;
-  }
-  
-  tr:hover {
-    background-color: #e6f7ff;
-  }
-  
-  input[type="checkbox"] {
-    cursor: pointer;
-  }
-  
+
+.header-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #032E61;
+  color: #fff;
+  padding: 15px 20px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+
+.header-box h1 {
+  font-size: 18px;
+  margin: 0;
+}
+
+.export-section {
+  display: flex;
+  align-items: center;
+}
+
+.export-btn {
+  color: #ffffff;
+  border: 1px solid #fff;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-right: 10px;
+  background-color: transparent;
+}
+
+.export-btn:hover {
+  color: #d9d9d9;
+}
+
+.dropdown {
+  padding: 5px 10px;
+  font-size: 14px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+.table-box {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.table-container {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  min-width: 800px; /* Ensures table is scrollable when columns exceed this width */
+}
+
+th,
+td {
+  padding: 20px;
+  text-align: left;
+  white-space: nowrap; /* Prevents text from wrapping */
+}
+
+th {
+  background-color: #f2f2f2;
+  color: #333;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+tr:hover {
+  background-color: #e6f7ff;
+}
+
+input[type="checkbox"] {
+  cursor: pointer;
+}
