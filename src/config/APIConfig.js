@@ -1,9 +1,10 @@
-
-//  const url = "https://backend-283763506150.us-central1.run.app";
-const url = "http://localhost:8000";
+const url = "https://backend-283763506150.us-central1.run.app";
+// const url = "http://localhost:8000";
 
 const auth = `${url}/auth`;
 const users = `${url}/users`;
+const urls = `${url}/url`;
+
 const admin = `${url}/admin`;
 const subadmin = `${url}/subadmin`;
 const categories = `${url}/categories`;
@@ -15,6 +16,9 @@ const upload = `${url}/upload`;
 const prospects = `${url}/prospect`;
 
 const ApiConfig = {
+  getUrls: `${url}/url`,
+  addUrl: `${url}/url`,
+
   login: `${auth}/signin`,
   createNewAccount: `${admin}/subadmin`,
   getAllCategories: `${categories}/`,
@@ -90,8 +94,6 @@ const ApiConfig = {
 
   // // AUTH FLOW
 
-  
-
   // forgotPassword: `${javaurl}user/forget-password-new`,
   // verifyEmail: `${javaurl}user/validate-token`,
   // resendOtp: `${javaurl}user/resend-otp`,
@@ -106,7 +108,7 @@ const ApiConfig = {
   // getAllUsers: `${javaurl}user/admin/user-management/search-and-filter-user-list`,
   // getUserById: `${javaurl}/userManagement/getUserById`,
   // updateUser: `${javaurl}/userManagement/updateUser`,
-  // 
+  //
   // deleteUser: `${javaurl}user/sub-admin/delete-user`,
   // projectListing: `${javaurl}sheet/user-projects/project-listing`,
   // addProjectManually: `${javaurl}sheet/add-project-manually`,
@@ -121,11 +123,11 @@ const ApiConfig = {
   // createVideoTemplateReferral: `${javaurl}video/video-templates/createVideoTemplateReferral`,
   // updateTemplateVideo: `${javaurl}video/video-templates/updateTemplate`,
   // duplicateTemplateVideo: `${javaurl}video/video-templates/duplicate-template-data`,
-  // 
+  //
   // getAllTags: `${javaurl}account/api/elements/getAllTags`,
   // deleteElement: `${javaurl}video/video-templates/delete-video-referral`,
 
-  // 
+  //
   // getRowData: `${javaurl}sheet/row-data`,
 
   // // getTemplatebyID: `${url}account/videotemplatess/getTemplateById`,
@@ -145,7 +147,7 @@ const ApiConfig = {
   // customVdoTemplate: `${javaurl}video/video-templates/create-custom-template`,
   // //google Sheet
   // connectedSheet: `${javaurl}hvo/hvoTemplate/connected-all-google-sheets`,
-  // 
+  //
   // updateFetchDays: `${javaurl}sheet/update-fetch-days`,
 
   // getSheetById: `${javaurl}account/google/api/get-google-sheet-connection-by-id`,
@@ -198,11 +200,11 @@ const ApiConfig = {
   // // PP admin
 
   // // Account
-  
-  // 
+
+  //
   // viewAccount: `${javaurl}user/get-account-details-by-id`,
   // blockUnblockAccount: `${javaurl}user/admin/user-management/change-account-status`,
-  // 
+  //
   // assignUnassign: `${javaurl}user/assign-or-unassign-sheet-to-user`,
   // companyDetails: `${javaurl}user/sub-admin/get-account-company-details`,
   // EditcompanyDetails: `${javaurl}user/sub-admin/edit-company-information`,
@@ -225,7 +227,7 @@ const ApiConfig = {
 
   // // User
   // ppadminUserList: `${javaurl}user/admin/user-management/pp-admin-list`,
-  // 
+  //
   // createPPAdmin: `${javaurl}user/admin/user-management/add-new-ppadmin`,
   // deletePPAdmin: `${javaurl}user/admin/user-management/suspend-pp-admin`,
   // getAccountCompanyDetails: `${javaurl}account/admin/user-management/get-account-company-details`,
@@ -234,7 +236,7 @@ const ApiConfig = {
   // userProjectListing: `${javaurl}sheet/user-projects/project-listing-of-user`,
   // subAdminList: `${javaurl}account/sub-admin/view-project-details-by-sheet-id`,
   // PostProjectDetails: `${javaurl}account/user-projects/add-missing-data-in-create-video-in-sheet`,
-  // 
+  //
   // AddProjectManually: `${javaurl}account/user-projects/add-project-manually`,
   // ErrorDataListing: `${javaurl}sheet/user-projects/project-listing-of-user`,
   // UserProjectList: `${javaurl}sheet/My-Project-list`,

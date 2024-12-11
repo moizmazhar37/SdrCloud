@@ -513,6 +513,9 @@ const CreateAccount = () => {
 
   const accountPhoneAdmin =
     "A valid account phone number is required, including the country code.";
+  // Ensure these states are declared and managed
+  const [uploading, setUploading] = useState(false); // Tracks uploading status
+  const [uploadedFileName, setUploadedFileName] = useState(""); // Stores the uploaded file name
 
   const validationSchema = Yup.object().shape({
     accountName: Yup.string()
@@ -842,10 +845,10 @@ const CreateAccount = () => {
         secondaryHex: hexValuesecondary,
         customerType: selectedcustomerType,
         ppAdminId: selectedUser,
-        map: {
-          IMAGE: photoURL ? photoURL : accountLogo,
-          PDF: accountContract.base64,
-        },
+        //====update payload to new keys
+        logo: logo_public_url,
+        contractpdf: contract_public_url,
+        // ===update keys=======
         roleStatus: "SUBADMIN",
         userName: values.accountName,
       };
@@ -865,7 +868,7 @@ const CreateAccount = () => {
           setNewAccount(res?.data?.data);
           toast.success(res?.data?.message);
           history.push("/PP-createaccount");
-        } 
+        }
       } catch (error) {
         toast.error(error?.response?.data?.detail);
         setLoading(false);
@@ -885,8 +888,8 @@ const CreateAccount = () => {
         },
       });
       // if (res?.data?.status === 200) {
-        setLoading(false);
-        setppUserList(res?.data);
+      setLoading(false);
+      setppUserList(res?.data);
       // } else if (res?.data?.status === 205) {
       //   toast.error("No User Found");
       //   setLoading(false);
@@ -944,29 +947,75 @@ const CreateAccount = () => {
       setAccountLogoUpload("");
     }
   };
-
+  const [fileToSend, setFileToSend] = useState(null);
   const handleFileUpload = (event, setFieldValue) => {
     const file = event.target.files[0];
     setLogoFile(file?.name);
     setAccountLogoName(logoFile);
+    setFileToSend(file);
 
     if (file) {
       const reader = new FileReader();
       reader.onload = (event) => {
         setAccountlogo(event.target.result);
         // Update the Formik field value
-        setFieldValue("accountLogo", file); // Pass the file itself for validation
+        setFieldValue("accountLogo", file);
       };
       reader.readAsDataURL(file);
     }
   };
+  const [logo_public_url, setLogo_public_url] = useState(null);
+  const [contract_public_url, setContract_public_url] = useState(null);
 
-  const handleSaveAccontLogo = (event) => {
-    setAccountLogoUpload(accountLogo);
-    setAccountLogoName(logoFile);
-    toast.success("Image uploaded successfully.");
-    setOpen(false);
-    setClearImage(true);
+  //================================================================================API TO UPLOAD IMAGE __LOGO__====================================================
+
+  const handleSaveAccontLogo = async (event) => {
+    try {
+      if (!fileToSend) {
+        toast.error("No file selected");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("file", fileToSend);
+
+      console.log("Upload URL:", ApiConfig.uploadFile);
+      console.log("File to send:", fileToSend);
+
+      const token = localStorage.getItem("token");
+      if (!token) {
+        toast.error("No authentication token found");
+        return;
+      }
+
+      const res = await axios({
+        method: "POST",
+        url: ApiConfig.UploadFile,
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+        data: formData,
+      });
+
+      if (res?.status === 200) {
+        console.log(res.data.public_url, "Image uploaded successfully");
+        setLogo_public_url(res.data.public_url);
+        toast.success("Image uploaded successfully.");
+
+        setAccountLogoUpload(accountLogo);
+        setAccountLogoName(logoFile);
+      }
+    } catch (error) {
+      console.error("Full error object:", error);
+
+      toast.error(
+        `Upload failed: ${error.response.data?.message || "Unknown error"}`
+      );
+    } finally {
+      setOpen(false);
+      setClearImage(true);
+    }
   };
 
   const handleEditAccontLogo = () => {
@@ -976,7 +1025,9 @@ const CreateAccount = () => {
     handleOpenDialog();
   };
 
-  const handleContractUpload = (event, setFieldValue) => {
+  //=========================================== uploading contract API=====================================================================
+  const [uploadedContract, setUploadedContract] = useState(null);
+  const handleContractUpload = async (event, setFieldValue) => {
     const file = event.target.files[0];
     if (file) {
       const fileType = file.type;
@@ -997,10 +1048,43 @@ const CreateAccount = () => {
           base64: event.target.result,
           url: url,
         });
-        setFieldValue("contractFile", file); // Update Formik's value
+        setFieldValue("contractFile", file);
+        setUploadedContract(file);
       };
       reader.readAsDataURL(file);
-      toast.success("Contract Uploaded Successfully.");
+
+      //=======hit endppoint here=======
+      try {
+        const formData = new FormData();
+        formData.append("file", uploadedContract);
+
+        const token = localStorage.getItem("token");
+        if (!token) {
+          toast.error("No authentication token found");
+          return;
+        }
+
+        const res = await axios({
+          method: "POST",
+          url: ApiConfig.UploadFile,
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+          data: formData,
+        });
+
+        if (res?.status === 200) {
+          toast.success("Contract uploaded successfully.");
+          setContract_public_url(res.data.public_url);
+        }
+      } catch (error) {
+        console.log(error);
+        toast.error(
+          `Upload failed: ${error.response.data?.message || "Unknown error"}`
+        );
+      }
+      //=================================//
     } else {
       setFieldValue("contractFile", null); // Set to null if no file is uploaded
     }
@@ -1318,9 +1402,7 @@ const CreateAccount = () => {
                             value={user.id}
                             style={{
                               color:
-                                selectedUser === user.id
-                                  ? "black"
-                                  : "inherit",
+                                selectedUser === user.id ? "black" : "inherit",
                             }}
                           >
                             {user.first_name}
@@ -1615,26 +1697,25 @@ const CreateAccount = () => {
                     lg={12}
                     // style={{ paddingTop: "40px" }}
                   >
+                    {/*-------------------------------------------------------------- //Uploading logo starts here ----------------------------------------------*/}
                     <Box className={classes.headingBox}>
                       <Typography variant="h5">Account Logo</Typography>
                     </Box>
-                    <Box style={{ border: " 1px solid #E7E7E7" }}>
+                    <Box style={{ border: "1px solid #E7E7E7" }}>
                       <Box
                         className={classes.innerbox}
                         style={{ border: "none" }}
                       >
                         <Typography
                           variant="body1"
-                          sytyle={{ marginBottom: "5px" }}
+                          style={{ marginBottom: "5px" }}
                         >
-                          Upload Logo{" "}
+                          Upload Logo
                         </Typography>
-                        {/* <Field name="accountLogo">
-                          {({ field, form }) => ( */}
                         <TextField
                           variant="outlined"
                           name="accountLogo"
-                          value={accountLogo}
+                          value={uploadedFileName || ""}
                           disabled={true}
                           placeholder="Upload Account Logo"
                           InputProps={{
@@ -1643,8 +1724,11 @@ const CreateAccount = () => {
                                 <Button
                                   className="editbuttonimage"
                                   onClick={handleOpenDialog}
+                                  disabled={uploading || !!accountLogo}
                                 >
-                                  {accountLogo
+                                  {uploading
+                                    ? "Saved"
+                                    : accountLogo
                                     ? "Uploaded Logo"
                                     : "Upload Logo"}
                                 </Button>
@@ -1661,7 +1745,6 @@ const CreateAccount = () => {
                             <IconButton onClick={handleCloseDialog}>
                               {/* <CloseIcon className="closeicon" /> */}
                             </IconButton>
-
                             <Typography
                               variant="body1"
                               className={classes.dialogHeading}
@@ -1718,9 +1801,12 @@ const CreateAccount = () => {
                                 <input
                                   type="file"
                                   accept="image/jpeg, image/png,image/jpg"
-                                  // onChange={handleFileUpload}
                                   onChange={(e) => {
                                     handleFileUpload(e, setFieldValue);
+                                    setUploadedFileName(
+                                      e.target.files[0]?.name || ""
+                                    ); // Store the uploaded file name
+                                    setUploading(true); // Set uploading state
                                     setOpenCrop(true);
                                   }}
                                   style={{ display: "none" }}
@@ -1730,70 +1816,48 @@ const CreateAccount = () => {
                                   <Button
                                     component="span"
                                     className="btnUpload"
+                                    disabled={uploading || !!accountLogo}
                                   >
                                     Upload
                                   </Button>
                                 </label>
                               </Box>
                             )}
-                            {accountlogoUpload ? (
-                              <Box className={classes.btnConatainer}>
-                                <Button
-                                  onClick={handleCloseDialog}
-                                  className="btnCancel"
-                                >
-                                  Cancel
-                                </Button>
-                                <Button
-                                  className={`${
-                                    !accountLogo ? "savebtnDisables" : "savebtn"
-                                  }`}
-                                  onClick={handleEditAccontLogo}
-                                  disabled={!accountLogo}
-                                >
-                                  {loading === false ? (
+                            <Box className={classes.btnConatainer}>
+                              <Button
+                                onClick={handleCloseDialog}
+                                className="btnCancel"
+                              >
+                                Cancel
+                              </Button>
+                              <Button
+                                onClick={
+                                  accountlogoUpload
+                                    ? handleEditAccontLogo
+                                    : handleSaveAccontLogo
+                                }
+                                disabled={!accountLogo}
+                                className={`${
+                                  !accountLogo ? "savebtnDisables" : "savebtn"
+                                }`}
+                              >
+                                {loading === false ? (
+                                  accountlogoUpload ? (
                                     "Edit"
                                   ) : (
-                                    <ButtonCircularProgress />
-                                  )}
-                                </Button>
-                              </Box>
-                            ) : (
-                              <Box className={classes.btnConatainer}>
-                                <Button
-                                  onClick={handleCloseDialog}
-                                  className="btnCancel"
-                                >
-                                  Cancel
-                                </Button>
-                                <Button
-                                  onClick={handleSaveAccontLogo}
-                                  disabled={!accountLogo}
-                                  className={`${
-                                    !accountLogo ? "savebtnDisables" : "savebtn"
-                                  }`}
-                                >
-                                  {loading === false ? (
                                     "Save"
-                                  ) : (
-                                    <ButtonCircularProgress />
-                                  )}
-                                </Button>
-                              </Box>
-                            )}
+                                  )
+                                ) : (
+                                  <ButtonCircularProgress />
+                                )}
+                              </Button>
+                            </Box>
                           </Dialog>
                         )}
                       </Box>
                     </Box>
-                  </Grid>
-                  <Grid
-                    item
-                    md={12}
-                    sm={12}
-                    xs={12}
-                    lg={12}
-                    style={{ paddingTop: "40px" }}
-                  >
+
+                    {/* //--------------------------------upload logo ends here-----------------------------------------//               */}
                     <Box className={classes.headingBox}>
                       <Typography variant="h5">Account Details</Typography>
                     </Box>

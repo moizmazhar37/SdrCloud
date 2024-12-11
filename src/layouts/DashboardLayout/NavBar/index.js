@@ -6,22 +6,26 @@ import {
   Drawer,
   Hidden,
   List,
-  makeStyles,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
   Typography,
   Button,
   ListSubheader,
   Dialog,
   DialogContent,
   DialogActions,
-  Slide
+  Slide,
 } from "@material-ui/core";
 import clsx from "clsx";
 import { IoLogOutOutline } from "react-icons/io5";
+import { FaCircle } from "react-icons/fa";
 import NavItem from "./NavItem";
 import { AuthContext } from "src/context/Auth";
 import ButtonCircularProgress from "src/component/ButtonCircularProgress";
+import "./Navbar.css";
 
-const DRAWER_WIDTH = 260;
+const DRAWER_WIDTH = 270;
 
 const getNavSections = (userType) => {
   const sections = {
@@ -31,20 +35,20 @@ const getNavSections = (userType) => {
           {
             title: "Accounts",
             icon: "images/template/profile-tick.png",
-            href: "/PP-createaccount"
+            href: "/PP-createaccount",
           },
           {
             title: "User Management",
             icon: "images/template/document.svg",
-            href: "/PP-user-management"
+            href: "/PP-user-management",
           },
           {
             title: "Settings",
             icon: "images/template/setting.svg",
-            href: "/pp-settings"
-          }
-        ]
-      }
+            href: "/pp-settings",
+          },
+        ],
+      },
     ],
     SUBADMIN: [
       {
@@ -52,30 +56,49 @@ const getNavSections = (userType) => {
           {
             title: "Dashboard",
             icon: "images/template/dashboard.svg",
-            href: "/dashboard"
+            href: "/dashboard",
           },
           {
             title: "Users",
             icon: "images/usersnew.png",
-            href: "/companyUsers-List"
+            href: "/companyUsers-List",
+          },
+          {
+            title: "Leads",
+            icon: "images/Leads.svg",
+            href: "/leads",
+            items: [
+              {
+                title: "Dashboard",
+                href: "/leads-search",
+              },
+              {
+                title: "Search Leads",
+                href: "/leads-search",
+              },
+              {
+                title: "Installations",
+                href: "/leads",
+              },
+            ],
           },
           {
             title: "Create",
             icon: "images/template/play.svg",
-            href: "/CreateTemplate"
+            href: "/CreateTemplate",
           },
           {
             title: "Prospects",
             icon: "images/template/clipboard-text.svg",
-            href: "/Myprojects"
+            href: "/Myprojects",
           },
           {
             title: "Settings",
             icon: "images/template/setting.svg",
-            href: "/settings"
-          }
-        ]
-      }
+            href: "/settings",
+          },
+        ],
+      },
     ],
     USER: [
       {
@@ -83,123 +106,34 @@ const getNavSections = (userType) => {
           {
             title: "My Dashboard",
             icon: "images/template/dashboard.svg",
-            href: "/user-dashboard"
+            href: "/user-dashboard",
           },
           {
             title: "My Prospects",
             icon: "images/template/clipboard-text.svg",
-            href: "/myprojects-list"
+            href: "/myprojects-list",
           },
           {
             title: "Settings",
             icon: "images/template/setting.svg",
-            href: "/user-settings"
-          }
-        ]
-      }
-    ]
+            href: "/user-settings",
+          },
+        ],
+      },
+    ],
   };
   return sections[userType] || [];
 };
 
-const useStyles = makeStyles((theme) => ({
-  mobileDrawer: {
-    width: 290,
-    background: theme.palette.background.taf
-  },
-  desktopDrawer: {
-    width: "100%",
-    maxWidth: 270,
-    top: 0,
-    height: "100%",
-    "&.MuiDrawer-paperAnchorDockedLeft": {
-      borderRight: "none !Important"
-    }
-  },
-  drawer: {
-    width: DRAWER_WIDTH,
-    flexShrink: 0,
-    whiteSpace: "nowrap"
-  },
-  drawerOpen: {
-    boxShadow: "0px 8px 24px 0px rgba(0, 0, 0, 0.04)",
-    width: DRAWER_WIDTH,
-    borderRight: "1px solid #EFEFEF",
-    transition: theme.transitions.create("width", {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen
-    })
-  },
-  drawerClose: {
-    boxShadow: "0px 8px 24px 0px rgba(0, 0, 0, 0.04)",
-    transition: theme.transitions.create("width", {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen
-    }),
-    overflowX: "hidden",
-    width: theme.spacing(7) + 1,
-    [theme.breakpoints.up("sm")]: {
-      width: theme.spacing(7) + 1
-    }
-  },
-  logoutContainer: {
-    marginTop: "auto",
-    marginBottom:30,
-    padding: theme.spacing(2),
-    display: "flex",
-    justifyContent: "center",
-    backgroundColor: theme.palette.background.paper
-   
-
-  },
-  logoutButton: {
-    display: "flex",
-    alignItems: "center",
-    padding: theme.spacing(2),
-    color: "#858585",
-    "&:hover": {
-       
-        color: "#fff",
-        background: "#032E61",
-        // padding: 10,
-         paddingLeft:60,
-         paddingBottom:20,
-         paddingTop:20,
-         paddingRight:65,
-        borderRadius: "9px"
-      
-    }
-  },
-  navbarContainer: {
-    height: "100%",
-    display: "flex",
-    flexDirection: "column"
-  },
-  logoContainer: {
-    padding: theme.spacing(4, 2),
-    display: "flex",
-    justifyContent: "center"
-  },
-  logo: {
-    width: "100%",
-    maxHeight: 60,
-    objectFit: "contain"
-  },
-  content: {
-    flex: 1,
-    overflowY: "auto"
-  }
-}));
-
-const NavBar = ({ onMobileClose, openMobile, drawerOpen }) => {
-  const classes = useStyles();
+const NavBar = ({ onMobileClose, openMobile, drawerOpen, onToggleDrawer }) => {
   const history = useHistory();
   const location = useLocation();
   const auth = useContext(AuthContext);
-  
+
   const [isLoading, setIsLoading] = useState(false);
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
   const [sections, setSections] = useState([]);
+  const [activeLeadsSection, setActiveLeadsSection] = useState(null);
 
   const userType = localStorage.getItem("userType");
 
@@ -229,8 +163,8 @@ const NavBar = ({ onMobileClose, openMobile, drawerOpen }) => {
         const key = item.title + depth;
         const isActive = matchPath(pathname, { path: item.href, exact: true });
 
-        if (item.items) {
-          const open = Boolean(isActive);
+        if (item.items && item.title === "Leads") {
+          const open = Boolean(isActive || activeLeadsSection === item.title);
           return (
             <NavItem
               key={key}
@@ -239,12 +173,33 @@ const NavBar = ({ onMobileClose, openMobile, drawerOpen }) => {
               info={item.info}
               open={open}
               title={item.title}
+              onClick={() => setActiveLeadsSection(open ? null : item.title)}
+              style={{ marginLeft: 18, marginTop: 12 }}
             >
-              {renderNavItems({
-                depth: depth + 1,
-                pathname,
-                items: item.items
-              })}
+              <List className="sub-nav-list">
+                {item.items.map((subItem) => (
+                  <ListItem
+                    key={subItem.title}
+                    className="sub-nav-item"
+                    onClick={() => {
+                      history.push(subItem.href);
+                      onMobileClose?.();
+                    }}
+                  >
+                    <ListItemIcon>
+                      <FaCircle
+                        size={8}
+                        color={
+                          activeLeadsSection === item.title
+                            ? "#032E61"
+                            : "#0358AC"
+                        }
+                      />
+                    </ListItemIcon>
+                    <ListItemText>{subItem.title}</ListItemText>
+                  </ListItem>
+                ))}
+              </List>
             </NavItem>
           );
         }
@@ -258,9 +213,12 @@ const NavBar = ({ onMobileClose, openMobile, drawerOpen }) => {
             info={item.info}
             title={item.title}
             style={{
-              backgroundColor: isActive ? "#00A1E036" : "transparent" ,
-              color: isActive ? "#032E61" : "#0358AC" 
-
+              backgroundColor: isActive ? "#00A1E036" : "transparent",
+              color: isActive ? "#032E61" : "#0358AC",
+            }}
+            onClick={() => {
+              history.push(item.href);
+              onMobileClose?.();
             }}
           />
         );
@@ -269,42 +227,41 @@ const NavBar = ({ onMobileClose, openMobile, drawerOpen }) => {
   );
 
   const drawerContent = (
-    <div className={classes.navbarContainer}>
-      <div className={classes.content}>
-        <div style={{ marginLeft: 10, marginTop: 40 }}>
-          <div style={{ width: "90%", marginLeft: "10px" }}>
-            <img src="images/template/SDR.png" alt="" />
-          </div>
-          {sections.map((section, index) => (
-            <List
-              key={`menu${index}`}
-              className="scroll"
-              subheader={
-                <ListSubheader disableGutters disableSticky>
-                  {section.subheader}
-                </ListSubheader>
-              }
-            >
-              {renderNavItems({
-                items: section.items,
-                pathname: location?.pathname
-              })}
-            </List>
-          ))}
-        </div>
-      
+    <div className="navbar-container">
+      <div className="logo-container">
+        <img src="images/template/SDR.png" alt="SDR Logo" className="logo" />
       </div>
-      <div className={classes.logoutContainer} style={{marginTop:-10}}>
-        <Button 
-          className={classes.logoutButton}
+      <div className="content-nav">
+        {sections.map((section, index) => (
+          <List
+            key={`menu${index}`}
+            subheader={
+              <ListSubheader disableGutters disableSticky>
+                {section.subheader}
+              </ListSubheader>
+            }
+          >
+            {renderNavItems({
+              items: section.items,
+              pathname: location?.pathname,
+            })}
+          </List>
+        ))}
+      </div>
+      <div
+        className={`logout-container ${
+          drawerOpen ? "drawer-open" : "drawer-closed"
+        }`}
+      >
+        <Button
+          className="logout-button-nav"
+          fullWidth
           onClick={() => setShowLogoutDialog(true)}
         >
-          <IoLogOutOutline />
-          {drawerOpen && <div style={{ marginLeft: 8 }}>Logout</div>}
+          <IoLogOutOutline size={24} />
+          {drawerOpen && <span className="logout-text">Logout</span>}
         </Button>
       </div>
-
-      
 
       <Dialog
         open={showLogoutDialog}
@@ -341,10 +298,11 @@ const NavBar = ({ onMobileClose, openMobile, drawerOpen }) => {
 
   return (
     <>
+      {/* Mobile Drawer */}
       <Hidden lgUp>
         <Drawer
           anchor="left"
-          classes={{ paper: classes.mobileDrawer }}
+          className="mobile-drawer"
           onClose={onMobileClose}
           open={openMobile}
           variant="temporary"
@@ -352,17 +310,23 @@ const NavBar = ({ onMobileClose, openMobile, drawerOpen }) => {
           {drawerContent}
         </Drawer>
       </Hidden>
+
+      {/* Desktop Drawer */}
       <Hidden mdDown>
         <Drawer
           anchor="left"
-          classes={{
-            paper: clsx(
-              classes.desktopDrawer,
-              drawerOpen ? classes.drawerOpen : classes.drawerClose
-            )
-          }}
-          open
+          className={clsx(
+            "desktop-drawer",
+            drawerOpen ? "drawer-open" : "drawer-close"
+          )}
+          open={drawerOpen}
           variant="persistent"
+          PaperProps={{
+            style: {
+              width: drawerOpen ? DRAWER_WIDTH : 0,
+              transition: "width 225ms cubic-bezier(0, 0, 0.2, 1) 0ms",
+            },
+          }}
         >
           {drawerContent}
         </Drawer>
@@ -374,7 +338,8 @@ const NavBar = ({ onMobileClose, openMobile, drawerOpen }) => {
 NavBar.propTypes = {
   onMobileClose: PropTypes.func,
   openMobile: PropTypes.bool,
-  drawerOpen: PropTypes.bool
+  drawerOpen: PropTypes.bool,
+  onToggleDrawer: PropTypes.func,
 };
 
 export default NavBar;
