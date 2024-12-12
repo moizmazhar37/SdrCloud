@@ -174,6 +174,10 @@ const ImageVideo = ({
   linkObject,
   viewParams,
 }) => {
+  const [uploadedImageURL, setUploadedImageURL] = useState("");
+
+  const [uploadedImageName, setUploadedImageName] = useState("");
+  const [uploadedVideoName, setUploadedVideoName] = useState("");
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedOptionsecond, setSelectedOptionSecond] = useState("");
@@ -885,7 +889,11 @@ const ImageVideo = ({
             <Typography>Upload Video Clip | Element {typeIndex + 1}</Typography>
           )}
         </Box>
+
         {elementType === "UPLOADIMAGE" ? (
+          //-------------------------------------Image is uploadead here------------------------------------------// */}
+
+          // --------
           <>
             <Grid container spacing={3}>
               <Grid item xs={12} sm={6} marginTop="12px">
@@ -893,7 +901,7 @@ const ImageVideo = ({
 
                 <TextField
                   variant="outlined"
-                  placeholder="Upload Image"
+                  placeholder={uploadedImageName || "Upload Image"} // Update placeholder dynamically
                   disabled
                   value={apiImage ? photoURL : ""}
                   onBlur={() => {
@@ -929,7 +937,15 @@ const ImageVideo = ({
                               accept=".jpg,.jpeg,.png" // Only allow image files
                               ref={fileInputRef}
                               style={{ display: "none" }} // Hide the input element
-                              onChange={handleDynamicImage} // Trigger the upload when a file is selected
+                              onChange={(e) => {
+                                handleDynamicImage(e); // Handle image upload
+                                if (e.target.files?.[0]) {
+                                  setUploadedImageName(e.target.files[0].name); // Set the image name
+                                  setUploadedImageURL(
+                                    URL.createObjectURL(e.target.files[0])
+                                  ); // Generate preview URL
+                                }
+                              }}
                             />
                           </>
                         )}
@@ -937,6 +953,22 @@ const ImageVideo = ({
                     ),
                   }}
                 />
+
+                {/* Display image preview */}
+                {uploadedImageURL && (
+                  <div style={{ marginTop: "10px" }}>
+                    <img
+                      src={uploadedImageURL}
+                      alt="Uploaded Preview"
+                      style={{
+                        width: "100%",
+                        maxHeight: "200px",
+                        objectFit: "contain",
+                      }}
+                    />
+                  </div>
+                )}
+
                 <Typography className="error">{errors.image}</Typography>
               </Grid>
               <Grid item xs={12} sm={6} marginTop="12px">
@@ -950,8 +982,6 @@ const ImageVideo = ({
                   fullWidth
                   MenuProps={menuProps}
                   IconComponent={ExpandMoreIcon}
-                  // error={!!errors.image}
-                  // helperText={errors.image}
                   value={selectedUrl}
                   onChange={handleUrlChange}
                   onOpen={handleMenuOpen}
@@ -959,7 +989,6 @@ const ImageVideo = ({
                   <MenuItem disabled value="none">
                     Select Image Url
                   </MenuItem>
-                  {/* <MenuItem value="--">Select None</MenuItem> */}
                   {sheetData
                     ?.filter((entry) => entry?.dataType === "Image URL")
                     ?.map((entry) => (
@@ -973,6 +1002,9 @@ const ImageVideo = ({
             </Grid>
           </>
         ) : (
+          //-------------------------------------Image is uploadead ends here------------------------------------------// */}
+
+          //----------------------------------------VIDEO UPLOAD FUNTIONALITY STARTS HERE-------------------------------//
           <>
             <Grid container spacing={3}>
               <Grid item xs={12} sm={6} marginTop="12px">
@@ -980,11 +1012,11 @@ const ImageVideo = ({
 
                 <TextField
                   variant="outlined"
-                  placeholder="Upload Video"
+                  placeholder={uploadedVideoName || "Upload Video"} // Update placeholder dynamically
                   value={videoName}
                   onBlur={() => {
                     if (videoName?.name !== "cropped.mp4") {
-                      setErrors({ image: "Video is required." });
+                      setErrors({ video: "Video is required." });
                     } else {
                       setErrors({ video: "" });
                     }
@@ -1001,13 +1033,20 @@ const ImageVideo = ({
                           </Button>
                         ) : (
                           <>
-                            <Button className="savebtn" component="label">
+                            <Button component="label">
                               Choose Video
                               <input
                                 type="file"
                                 accept="video/*"
                                 style={{ display: "none" }}
-                                onChange={handleVideoUploadNew}
+                                onChange={(e) => {
+                                  handleVideoUploadNew(e); // Handle video upload
+                                  if (e.target.files?.[0]) {
+                                    setUploadedVideoName(
+                                      e.target.files[0].name
+                                    ); // Set the video name
+                                  }
+                                }}
                               />
                             </Button>
                           </>
@@ -1050,6 +1089,8 @@ const ImageVideo = ({
               </Grid>
             </Grid>
           </>
+
+          //----------------------------------------VIDEO UPLOAD FUNTIONALITY ENDS HERE-------------------------------//
         )}
       </Box>
 
@@ -1174,7 +1215,8 @@ const ImageVideo = ({
                                 .filter(
                                   (item) =>
                                     item?.dataType === "Text" ||
-                                    item?.dataType === "First name (Required)" ||
+                                    item?.dataType ===
+                                      "First name (Required)" ||
                                     item?.dataType === "Last name" ||
                                     item?.dataType === "Customer organization"
                                 )
@@ -1314,7 +1356,8 @@ const ImageVideo = ({
                                 .filter(
                                   (item) =>
                                     item?.dataType === "Text" ||
-                                    item?.dataType === "First name (Required)" ||
+                                    item?.dataType ===
+                                      "First name (Required)" ||
                                     item?.dataType === "Last name" ||
                                     item?.dataType === "Customer organization"
                                 )
