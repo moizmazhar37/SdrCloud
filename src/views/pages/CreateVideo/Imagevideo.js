@@ -176,6 +176,8 @@ const ImageVideo = ({
 }) => {
   const [uploadedImageURL, setUploadedImageURL] = useState("");
 
+  const [uploadedVideoURL, setUploadedVideoURL] = useState("");
+
   const [uploadedImageName, setUploadedImageName] = useState("");
   const [uploadedVideoName, setUploadedVideoName] = useState("");
   const classes = useStyles();
@@ -1045,6 +1047,9 @@ const ImageVideo = ({
                                     setUploadedVideoName(
                                       e.target.files[0].name
                                     ); // Set the video name
+                                    setUploadedVideoURL(
+                                      URL.createObjectURL(e.target.files[0])
+                                    ); // Generate preview URL
                                   }
                                 }}
                               />
@@ -1055,8 +1060,27 @@ const ImageVideo = ({
                     ),
                   }}
                 />
+
+                {/* Display video preview */}
+                {uploadedVideoURL && (
+                  <div style={{ marginTop: "10px" }}>
+                    <video
+                      controls
+                      src={uploadedVideoURL}
+                      style={{
+                        width: "100%",
+                        maxHeight: "200px",
+                        objectFit: "contain",
+                      }}
+                    >
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                )}
+
                 <Typography className="error">{errors.video}</Typography>
               </Grid>
+
               <Grid item xs={12} sm={6} marginTop="12px">
                 <Typography className="heading">Select Video URL</Typography>
                 <Select
