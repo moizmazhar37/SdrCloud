@@ -174,6 +174,7 @@ const ImageVideo = ({
   linkObject,
   viewParams,
 }) => {
+  const [uploadedVideoDuration, setUploadedVideoDuration] = useState(null);
   const [uploadedImageURL, setUploadedImageURL] = useState("");
 
   const [uploadedVideoURL, setUploadedVideoURL] = useState("");
@@ -204,7 +205,6 @@ const ImageVideo = ({
   const [audioScriptInput, setAudioScriptInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [audioFile, setAudioFile] = useState(null);
-  console.log("audioFile: ", audioFile);
   const [img64, setImg64] = useState(null);
   const [checked, setChecked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
@@ -504,6 +504,7 @@ const ImageVideo = ({
     console.log(url, "url");
     apiData = {
       // firstRowValue: matchData,
+      duration: uploadedVideoDuration,
       scroll: false,
       elementId: elementID,
       sequence: typeIndex + 1,
@@ -1007,112 +1008,112 @@ const ImageVideo = ({
           //-------------------------------------Image is uploadead ends here------------------------------------------// */}
 
           //----------------------------------------VIDEO UPLOAD FUNTIONALITY STARTS HERE-------------------------------//
-          <>
-            <Grid container spacing={3}>
-              <Grid item xs={12} sm={6} marginTop="12px">
-                <Typography className="heading">Upload Video</Typography>
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={6} marginTop="12px">
+              <Typography className="heading">Upload Video</Typography>
 
-                <TextField
-                  variant="outlined"
-                  placeholder={uploadedVideoName || "Upload Video"} // Update placeholder dynamically
-                  value={videoName}
-                  onBlur={() => {
-                    if (videoName?.name !== "cropped.mp4") {
-                      setErrors({ video: "Video is required." });
-                    } else {
-                      setErrors({ video: "" });
-                    }
-                  }}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        {videoName ? (
-                          <Button
-                            className="savebtn"
-                            onClick={() => handleEditVideo()}
-                          >
-                            Edit
+              <TextField
+                variant="outlined"
+                placeholder={uploadedVideoName || "Upload Video"} // Update placeholder dynamically
+                value={videoName}
+                onBlur={() => {
+                  if (videoName?.name !== "cropped.mp4") {
+                    setErrors({ video: "Video is required." });
+                  } else {
+                    setErrors({ video: "" });
+                  }
+                }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      {videoName ? (
+                        <Button
+                          className="savebtn"
+                          onClick={() => handleEditVideo()}
+                        >
+                          Edit
+                        </Button>
+                      ) : (
+                        <>
+                          <Button component="label">
+                            Choose Video
+                            <input
+                              type="file"
+                              accept="video/*"
+                              style={{ display: "none" }}
+                              onChange={(e) => {
+                                handleVideoUploadNew(e); // Handle video upload
+                                if (e.target.files?.[0]) {
+                                  setUploadedVideoName(e.target.files[0].name); // Set the video name
+                                  setUploadedVideoURL(
+                                    URL.createObjectURL(e.target.files[0])
+                                  ); // Generate preview URL
+                                }
+                              }}
+                            />
                           </Button>
-                        ) : (
-                          <>
-                            <Button component="label">
-                              Choose Video
-                              <input
-                                type="file"
-                                accept="video/*"
-                                style={{ display: "none" }}
-                                onChange={(e) => {
-                                  handleVideoUploadNew(e); // Handle video upload
-                                  if (e.target.files?.[0]) {
-                                    setUploadedVideoName(
-                                      e.target.files[0].name
-                                    ); // Set the video name
-                                    setUploadedVideoURL(
-                                      URL.createObjectURL(e.target.files[0])
-                                    ); // Generate preview URL
-                                  }
-                                }}
-                              />
-                            </Button>
-                          </>
-                        )}
-                      </InputAdornment>
-                    ),
-                  }}
-                />
+                        </>
+                      )}
+                    </InputAdornment>
+                  ),
+                }}
+              />
 
-                {/* Display video preview */}
-                {uploadedVideoURL && (
-                  <div style={{ marginTop: "10px" }}>
-                    <video
-                      controls
-                      src={uploadedVideoURL}
-                      style={{
-                        width: "100%",
-                        maxHeight: "200px",
-                        objectFit: "contain",
-                      }}
-                    >
-                      Your browser does not support the video tag.
-                    </video>
-                  </div>
-                )}
+              {/* Display video preview */}
+              {uploadedVideoURL && (
+                <div style={{ marginTop: "10px" }}>
+                  <video
+                    controls
+                    src={uploadedVideoURL}
+                    style={{
+                      width: "100%",
+                      maxHeight: "200px",
+                      objectFit: "contain",
+                    }}
+                    onLoadedMetadata={(e) => {
+                      // Round the duration to the ceiling
+                      setUploadedVideoDuration(Math.ceil(e.target.duration));
+                    }}
+                  >
+                    Your browser does not support the video tag.
+                  </video>
+                </div>
+              )}
 
-                <Typography className="error">{errors.video}</Typography>
-              </Grid>
-
-              <Grid item xs={12} sm={6} marginTop="12px">
-                <Typography className="heading">Select Video URL</Typography>
-                <Select
-                  style={{ marginTop: "5px" }}
-                  variant="outlined"
-                  placeholder="Select dynamic Upload Video"
-                  className="selectitem"
-                  id="choose-template"
-                  fullWidth
-                  MenuProps={menuProps}
-                  error={!!errors.dynamicVideo}
-                  helperText={errors.dynamicVideo}
-                  onChange={handleVideoUrlChange}
-                  IconComponent={ExpandMoreIcon}
-                  onOpen={handleMenuOpen}
-                  value={selectedVideoUrl}
-                >
-                  <MenuItem value="none" disabled>
-                    Select Dynamic URL to fetch Video
-                  </MenuItem>
-                  {sheetData
-                    ?.filter((entry) => entry?.dataType === "Video URL")
-                    ?.map((entry) => (
-                      <MenuItem key={entry?.value} value={entry?.value}>
-                        {entry?.value}
-                      </MenuItem>
-                    ))}
-                </Select>
-                <Typography className="error">{errors.dynamicVideo}</Typography>
-              </Grid>
+              <Typography className="error">{errors.video}</Typography>
             </Grid>
-          </>
+
+            <Grid item xs={12} sm={6} marginTop="12px">
+              <Typography className="heading">Select Video URL</Typography>
+              <Select
+                style={{ marginTop: "5px" }}
+                variant="outlined"
+                placeholder="Select dynamic Upload Video"
+                className="selectitem"
+                id="choose-template"
+                fullWidth
+                MenuProps={menuProps}
+                error={!!errors.dynamicVideo}
+                helperText={errors.dynamicVideo}
+                onChange={handleVideoUrlChange}
+                IconComponent={ExpandMoreIcon}
+                onOpen={handleMenuOpen}
+                value={selectedVideoUrl}
+              >
+                <MenuItem value="none" disabled>
+                  Select Dynamic URL to fetch Video
+                </MenuItem>
+                {sheetData
+                  ?.filter((entry) => entry?.dataType === "Video URL")
+                  ?.map((entry) => (
+                    <MenuItem key={entry?.value} value={entry?.value}>
+                      {entry?.value}
+                    </MenuItem>
+                  ))}
+              </Select>
+              <Typography className="error">{errors.dynamicVideo}</Typography>
+            </Grid>
+          </Grid>
 
           //----------------------------------------VIDEO UPLOAD FUNTIONALITY ENDS HERE-------------------------------//
         )}
@@ -1540,6 +1541,7 @@ const ImageVideo = ({
             </Button>{" "}
           </>
         ) : (
+          //====================================================That is save button for saving uploaded video==========================================================
           <>
             {" "}
             <Button
@@ -1563,6 +1565,7 @@ const ImageVideo = ({
               Next
             </Button>{" "}
           </>
+          //==================================================== save button for saving uploaded video Ends here==========================================================
         )}
       </Box>
 
