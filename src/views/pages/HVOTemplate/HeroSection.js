@@ -294,6 +294,8 @@ function HeroSection({
   reload,
 }) {
   const classes = useStyles();
+
+  const [staticImagePreview, setStaticImagePreview] = useState("");
   const [imgName, setImgName] = useState();
   const [image, setImage] = useState("none");
   const [staticImage, setStaticImage] = useState("");
@@ -338,7 +340,7 @@ function HeroSection({
   const [isImageChanged, setIsImageChanged] = useState(false);
   const [photoURL, setPhotoURL] = useState(null);
 
-  const [imageURL, setImageURL] = useState("")
+  const [imageURL, setImageURL] = useState("");
 
   const handleStaticImage = async (e) => {
     const file = e.target.files[0];
@@ -755,82 +757,106 @@ function HeroSection({
           </Box>
 
           <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <Typography className="heading" style={{ color: "#152F40" }}>
-                Upload Static Image
-              </Typography>
-              <TextField
-                variant="outlined"
-                placeholder="Upload Image"
-                value={imgName?.name || ""}
-                InputProps={{
-                  readOnly: true,
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <input
-                        type="file"
-                        accept="image/jpeg, image/png,image/jpg"
-                        style={{ display: "none" }}
-                        ref={fileInputRef}
-                        onClick={handleOpenDialog}
-                      />
-                      <Button
-                        className="savebtn"
-                        onClick={() => fileInputRef.current.click()}
-                      >
-                        Choose
-                      </Button>
+            {/* ----------------------------------------------// STATIC IMAGE UPLOAD STARTS HERE---------------------------------------------- */}
 
-                      <input
-                        type="file"
-                        accept=".jpg,.jpeg,.png"
-                        ref={fileInputRef}
-                        style={{ display: "none" }} 
-                        onChange={handleStaticImage}
+            <>
+              <Grid container spacing={3}>
+                <Grid item xs={12}>
+                  <Typography className="heading" style={{ color: "#152F40" }}>
+                    Upload Static Image
+                  </Typography>
+                  <TextField
+                    variant="outlined"
+                    placeholder={imgName?.name || "Upload Image"} // Update placeholder dynamically
+                    value={imgName?.name || ""}
+                    InputProps={{
+                      readOnly: true,
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <Button
+                            className="savebtn"
+                            onClick={() => fileInputRef.current.click()} // Trigger file input
+                          >
+                            Choose
+                          </Button>
+                          <input
+                            type="file"
+                            accept="image/jpeg, image/png,image/jpg"
+                            ref={fileInputRef}
+                            style={{ display: "none" }}
+                            onChange={(e) => {
+                              handleStaticImage(e); // Handle image upload
+                              if (e.target.files?.[0]) {
+                                setImgName(e.target.files[0]); // Set image name
+                                setStaticImagePreview(
+                                  URL.createObjectURL(e.target.files[0])
+                                ); // Generate preview URL
+                              }
+                            }}
+                          />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                  <Typography className="error">{errors.image}</Typography>
+
+                  {/* Display static image preview */}
+                  {staticImagePreview && (
+                    <div style={{ marginTop: "10px" }}>
+                      <img
+                        src={staticImagePreview}
+                        alt="Static Image Preview"
+                        style={{
+                          width: "100%",
+                          maxHeight: "200px",
+                          objectFit: "contain",
+                        }}
                       />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-              <Typography className="error">{errors.image}</Typography>
-              <Typography
-                className="heading"
-                style={{ color: "#152F40", marginTop: "20px" }}
-              >
-                Select Dynamic Image
-              </Typography>
-              <Select
-                style={{ marginTop: "5px" }}
-                variant="outlined"
-                className="selectitem"
-                id="choose-template"
-                fullWidth
-                MenuProps={menuProps}
-                value={image}
-                onChange={handleDynamicimage}
-                IconComponent={ExpandMoreIcon}
-                error={!!errors.image}
-                helperText={errors.image}
-                placeholder="Select Dynamic URL to fetch image"
-              >
-                <MenuItem value="none" disabled>
-                  Select Dynamic URL to fetch image
-                </MenuItem>
-                <MenuItem value="--">Select None</MenuItem>
-                {companyDetails !== undefined &&
-                  companyDetails.length > 0 &&
-                  companyDetails
-                    ?.filter(
-                      (item) =>
-                        item?.dataType === "Image URL" ||
-                        item?.dataType === "Screenshot from URL"
-                    )
-                    ?.map((item) => (
-                      <MenuItem value={item?.value}>{item?.value}</MenuItem>
-                    ))}
-              </Select>
-              <Typography className="error">{errors.image}</Typography>
-            </Grid>
+                    </div>
+                  )}
+
+                  <Typography
+                    className="heading"
+                    style={{ color: "#152F40", marginTop: "20px" }}
+                  >
+                    Select Dynamic Image
+                  </Typography>
+                  <Select
+                    style={{ marginTop: "5px" }}
+                    variant="outlined"
+                    className="selectitem"
+                    id="choose-template"
+                    fullWidth
+                    MenuProps={menuProps}
+                    value={image}
+                    onChange={handleDynamicimage}
+                    IconComponent={ExpandMoreIcon}
+                    error={!!errors.image}
+                    helperText={errors.image}
+                    placeholder="Select Dynamic URL to fetch image"
+                  >
+                    <MenuItem value="none" disabled>
+                      Select Dynamic URL to fetch image
+                    </MenuItem>
+                    <MenuItem value="--">Select None</MenuItem>
+                    {companyDetails !== undefined &&
+                      companyDetails.length > 0 &&
+                      companyDetails
+                        ?.filter(
+                          (item) =>
+                            item?.dataType === "Image URL" ||
+                            item?.dataType === "Screenshot from URL"
+                        )
+                        ?.map((item) => (
+                          <MenuItem value={item?.value}>{item?.value}</MenuItem>
+                        ))}
+                  </Select>
+                  <Typography className="error">{errors.image}</Typography>
+                </Grid>
+              </Grid>
+            </>
+
+            {/* ----------------------------------------------// STATIC IMAGE UPLOAD ENDS HERE---------------------------------------------- */}
 
             <Grid item xs={12} sm={8}>
               <Grid container style={{ gap: "15px" }}>
@@ -1348,7 +1374,6 @@ function HeroSection({
                 </div>
               </Box>
             </Grid>
-
             <Grid item xs={12} sm={4}>
               <Typography className="label">CTA Button</Typography>
               <Box mt={2}>
@@ -1537,7 +1562,6 @@ function HeroSection({
                 </Modal>
               </>
             </Grid>
-
             <Grid item xs={12} sm={6}>
               <Typography className="label">
                 If Static Enter Static URL Here
@@ -1585,7 +1609,6 @@ function HeroSection({
               </Select>
               <Typography className="error">{errors.dynamic}</Typography>
             </Grid>
-
             <Grid item xs={12} sm={4}>
               <Typography className="label" style={{ marginBottom: "20px" }}>
                 Demo Text
@@ -1791,7 +1814,6 @@ function HeroSection({
                 </Modal>
               </>
             </Grid>
-
             <Grid item xs={12} sm={6}>
               <Typography className="label">
                 If Static Enter Static URL Here
