@@ -342,6 +342,9 @@ function NoProjects() {
   const [adminCounting, setAdminCounting] = useState("");
   const [totalUsersCount, setTotalUsersCount] = useState("");
   const [adminsCount, setAdminsCount] = useState("");
+  const [activeMedaLimit, setActiveMedaLimit] = useState("");
+  const [mediaCredits, setMediaCredits] = useState("");
+  const [PackageName, SetPackageName] = useState("");
   const totalUser = async () => {
     const token = window?.localStorage?.getItem("token");
 
@@ -430,6 +433,29 @@ function NoProjects() {
     }
   };
 
+  const UserMediaCredits = async () => {
+    setLoading(true);
+    try {
+      const res = await axios({
+        method: "GET",
+        url: `${ApiConfig.mainDashboard}/user-credits`,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      setLoading(false);
+      setActiveMedaLimit(res.data.active_media_limits);
+      setMediaCredits(res.data.media_credits);
+      SetPackageName(res.data.package_name);
+
+      return res.data;
+    } catch (error) {
+      setLoading(false);
+      console.error("Error fetching sheet counts:", error);
+      throw error;
+    }
+  };
+
   const BestMonthView = async () => {
     setLoading(true);
     try {
@@ -459,6 +485,7 @@ function NoProjects() {
     SheetCounts();
     BestMonthView();
     topPerformingTempate();
+    UserMediaCredits();
   }, []);
 
   const adminCount = async () => {
@@ -521,16 +548,16 @@ function NoProjects() {
           xs={12}
           className={classes.secondBox}
         >
+          {/* //================================Here to integrate credits api====================================== */}
           <Grid container xs={12} className="subSecondBox">
             <Grid item xs={12} md={6}>
               <Box className="CommanBox" style={{ height: "100px" }}>
                 <Typography variant="h5">Your package</Typography>
                 <Typography variant="h3" className="EnterpriseTxt">
-                  {packageName}
+                  {PackageName}
                 </Typography>
                 <Typography variant="body1" style={{ fontWeight: "500" }}>
-                  {adminCounting?.mediaDetails?.totalMediaCredits} Credits
-                  Monthly
+                  {mediaCredits} Media Credits
                 </Typography>
               </Box>
             </Grid>
@@ -593,14 +620,9 @@ function NoProjects() {
                   <Typography variant="body1">Active Media Limit</Typography>
                 </Box>
                 <Typography variant="h2" style={{ fontSize: "16px" }}>
-                  {adminCounting?.package?.activeMediaLimits?.usedActiveMedia}{" "}
+                  {mediaCredits}{" "}
                   <span style={{ fontSize: "14px", color: "#858585" }}>
-                    of{" "}
-                    {
-                      adminCounting?.package?.activeMediaLimits
-                        ?.TotalActiveMediaLimits
-                    }{" "}
-                    used
+                    of {activeMedaLimit} used
                   </span>
                 </Typography>
                 <BorderLinearProgress1
