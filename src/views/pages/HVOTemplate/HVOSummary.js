@@ -352,10 +352,10 @@ function HVOSummary({ linkObject, reload, price, balance }) {
             {creationProcess ? "Published" : "Create HVO"}
           </Button>
           <Dialog open={openPopup} onClose={handleClosePopup}>
-                <DialogTitle>Confirm Video Creation</DialogTitle>
+                <DialogTitle>Confirm HVO Creation</DialogTitle>
                 <DialogContent>
                   <p>Your balance: ${balance.toFixed(2)}</p>
-                  <p>Total price for generating videos: ${price.toFixed(4)}</p>
+                  <p>Total price for generating HVOs: ${price.toFixed(4)}</p>
                   <p>Please confirm if you want to proceed</p>
                   <p>
                     {balance >= price
