@@ -696,25 +696,13 @@ const CreateHVOTemplate = (props) => {
         SetConnectedSheet(res?.data?.sheet?.googleSheetsId);
         setLinkObject(res?.data?.elementsList);
 
-        const elementsList = res?.data?.elementsList || [];
-        const pricePerSecond = res?.data?.price || 0;
+        const price = res?.data?.price || 0;
         const recent = res?.data?.sheet?.recent || 0;
 
-        const totalDuration = elementsList.reduce((sum, element) => {
-          return sum + (element.duration || 0);
-        }, 0);
+        const totalPrice = recent * price;
 
-        const totalVideoDuration = totalDuration * recent;
-
-        const totalPric = totalVideoDuration * pricePerSecond;
-
-        console.log(totalPric)
-
-
-        setTotalPrice(totalPric)
-        setBalance(res?.data?.balance)
-
-
+        setTotalPrice(totalPrice);
+        setBalance(res?.data?.balance);
 
         if (res?.data?.sheet && res?.data?.sheet?.title !== null) {
           setEditSheet(true);
@@ -1463,7 +1451,12 @@ const CreateHVOTemplate = (props) => {
             ) : linkObject?.length === 0 ? (
               <></>
             ) : (
-              <HVOSummary price={totalPrice} balance={balance} linkObject={linkObject} viewParams={viewParams} />
+              <HVOSummary
+                price={totalPrice}
+                balance={balance}
+                linkObject={linkObject}
+                viewParams={viewParams}
+              />
             )}
           </Grid>
         </Grid>
