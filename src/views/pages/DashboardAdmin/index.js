@@ -594,7 +594,6 @@ function NoProjects() {
                   />
                   <Typography variant="body1">Monthly Media Credits</Typography>
                 </Box>
-                ---------------------------------------------------------------------
                 <Typography variant="h2" style={{ fontSize: "16px" }}>
                   {adminCounting?.mediaDetails?.used}{" "}
                   <span style={{ fontSize: "14px", color: "#858585" }}>
