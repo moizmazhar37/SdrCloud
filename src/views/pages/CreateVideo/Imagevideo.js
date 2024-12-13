@@ -1071,8 +1071,7 @@ const ImageVideo = ({
                       objectFit: "contain",
                     }}
                     onLoadedMetadata={(e) => {
-                      // Round the duration to the ceiling
-                      setUploadedVideoDuration(Math.ceil(e.target.duration));
+                      setUploadedVideoDuration(e.target.duration);
                     }}
                   >
                     Your browser does not support the video tag.
