@@ -114,6 +114,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Summary({
+  balance,
+  price,
   linkObject,
   templateParams,
   reloadData,
@@ -142,9 +144,24 @@ function Summary({
       toast.error("Please connect google sheet.");
     }
   };
-  console.log("JKLDFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF")
-  console.log(linkObject)
-  console.log(linkObject.length)
+  console.log("JKLDFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
+  console.log(linkObject);
+  console.log(linkObject.length);
+
+  const [openPopup, setOpenPopup] = useState(false);
+
+  const handleOpenPopup = () => {
+    setOpenPopup(true);
+  };
+
+  const handleClosePopup = () => {
+    setOpenPopup(false);
+  };
+
+  const handleProceed = () => {
+    handleCreateVideo();
+    handleClosePopup();
+  };
 
   const searchParams = new URLSearchParams(window.location.search);
   const templateId = searchParams.get("templateId");
@@ -191,7 +208,7 @@ function Summary({
         url: `${ApiConfig.deleteElement}/${deleteId}`,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
-        }
+        },
       });
       if (res?.status === 200) {
         setIsSectionCompleted(true);
@@ -245,7 +262,7 @@ function Summary({
 
       if (res?.status === 200) {
         console.log(res?.data, "creationstatus");
-        toast.success("Video Creation Started")
+        toast.success("Video Creation Started");
 
         setCreationProcess(res?.data?.getVideo?.creationStatus);
       }
@@ -444,26 +461,38 @@ function Summary({
                 }}
                 variant="contained"
                 className={`${
-                  templateParams?.sheetId === null
-                    ? "sheetbtnDisables"
-                    : "sheetbtn"
+                  balance >= price ? "sheetbtn" : "sheetbtnDisables"
                 }`}
-                onClick={() => {
-                  // handleSheetData();
-                  // getTemplate();
-                  handleCreateVideo();
-                }}
+                onClick={handleOpenPopup}
               >
-                {/* {creationProcess === "Pending"
-                  ? "Create Video"
-                  : creationProcess === "Active"
-                  ? "Active"
-                  : creationProcess === "Published"
-                  ? "Published" */}
-                  {/* : " */}
-                  Create Video
-                  {/* "} */}
+                Create Video
               </Button>
+
+              <Dialog open={openPopup} onClose={handleClosePopup}>
+                <DialogTitle>Confirm Video Creation</DialogTitle>
+                <DialogContent>
+                  <p>Your balance: ${balance.toFixed(2)}</p>
+                  <p>Total price for generating videos: ${price.toFixed(4)}</p>
+                  <p>Please confirm if you want to proceed</p>
+                  <p>
+                    {balance >= price
+                      ? "You have sufficient balance to create the videos."
+                      : "Your balance is insufficient to create the videos."}
+                  </p>
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={handleClosePopup} color="primary">
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={handleProceed}
+                    color="primary"
+                    disabled={balance < price}
+                  >
+                    Proceed
+                  </Button>
+                </DialogActions>
+              </Dialog>
             </div>
           </Box>
 

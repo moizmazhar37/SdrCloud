@@ -384,6 +384,8 @@ const useStyles = makeStyles((theme) => ({
 const CreateHVOTemplate = (props) => {
   const classes = useStyles();
   const history = useHistory();
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [balance, setBalance] = useState(0);
   const user = useContext(UserContext);
   const [selectedOption, setSelectedOption] = useState("none");
   const [selectedCategoryName, setSelectedCategoryName] = useState("none");
@@ -693,6 +695,26 @@ const CreateHVOTemplate = (props) => {
         }));
         SetConnectedSheet(res?.data?.sheet?.googleSheetsId);
         setLinkObject(res?.data?.elementsList);
+
+        const elementsList = res?.data?.elementsList || [];
+        const pricePerSecond = res?.data?.price || 0;
+        const recent = res?.data?.sheet?.recent || 0;
+
+        const totalDuration = elementsList.reduce((sum, element) => {
+          return sum + (element.duration || 0);
+        }, 0);
+
+        const totalVideoDuration = totalDuration * recent;
+
+        const totalPric = totalVideoDuration * pricePerSecond;
+
+        console.log(totalPric)
+
+
+        setTotalPrice(totalPric)
+        setBalance(res?.data?.balance)
+
+
 
         if (res?.data?.sheet && res?.data?.sheet?.title !== null) {
           setEditSheet(true);
@@ -1400,6 +1422,8 @@ const CreateHVOTemplate = (props) => {
             elementType === "summary" ? (
               <>
                 <HVOSummary
+                  price={totalPrice}
+                  balance={balance}
                   linkObject={linkObject}
                   reload={reload}
                   viewParams={viewParams}
@@ -1439,7 +1463,7 @@ const CreateHVOTemplate = (props) => {
             ) : linkObject?.length === 0 ? (
               <></>
             ) : (
-              <HVOSummary linkObject={linkObject} viewParams={viewParams} />
+              <HVOSummary price={totalPrice} balance={balance} linkObject={linkObject} viewParams={viewParams} />
             )}
           </Grid>
         </Grid>

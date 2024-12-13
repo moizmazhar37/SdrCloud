@@ -461,6 +461,9 @@ const CreateTemplate = (props) => {
   const [elementID, setElementID] = useState("");
   const [viewData, setViewData] = useState({});
 
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [balance, setBalance] = useState(0);
+
   const [sheetData, setSheetData] = useState([]);
   const [connectedSheet, setConnectedSheet] = useState("none");
   const handleSheet = (event) => {
@@ -508,7 +511,7 @@ const CreateTemplate = (props) => {
 
     setIsDialogOpen(false);
     setNewCategory("");
-    getVdoCategories()
+    getVdoCategories();
   };
   const getVdoCategories = async () => {
     try {
@@ -521,8 +524,8 @@ const CreateTemplate = (props) => {
         },
       });
       // if (res?.status === 200) {
-        setCategory([])
-        setCategory(res?.data);
+      setCategory([]);
+      setCategory(res?.data);
       // }
     } catch (error) {
       console.log(error, "error");
@@ -564,7 +567,7 @@ const CreateTemplate = (props) => {
         url: `${ApiConfig.category}${categoryId}`,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
-        }
+        },
       });
       if (res?.status === 200) {
         setIsShow(false);
@@ -725,31 +728,31 @@ const CreateTemplate = (props) => {
     try {
       setLoading(true);
       const res = {
-        "data": [
+        data: [
           {
-            "element_Id": "67437bd06a9f5c51387ed447",
-            "element_Name": "STATICURL",
-            "element_Description": null
+            element_Id: "67437bd06a9f5c51387ed447",
+            element_Name: "STATICURL",
+            element_Description: null,
           },
           {
-            "element_Id": "67437bd06a9f5c51387ed448",
-            "element_Name": "DYNAMICURL",
-            "element_Description": null
+            element_Id: "67437bd06a9f5c51387ed448",
+            element_Name: "DYNAMICURL",
+            element_Description: null,
           },
           {
-            "element_Id": "67437bd06a9f5c51387ed449",
-            "element_Name": "UPLOADIMAGE",
-            "element_Description": null
+            element_Id: "67437bd06a9f5c51387ed449",
+            element_Name: "UPLOADIMAGE",
+            element_Description: null,
           },
           {
-            "element_Id": "67437bd06a9f5c51387ed44a",
-            "element_Name": "VIDEOCLIPS",
-            "element_Description": null
-          }
+            element_Id: "67437bd06a9f5c51387ed44a",
+            element_Name: "VIDEOCLIPS",
+            element_Description: null,
+          },
         ],
-        "message": "Section types retrieved successfully.",
-        "status": 200
-      }
+        message: "Section types retrieved successfully.",
+        status: 200,
+      };
       if (res?.status === 200) {
         setVideoRefral(res?.data);
       }
@@ -783,6 +786,21 @@ const CreateTemplate = (props) => {
         setSaveName(true);
         setSelectedOption(res?.data?.categoryId);
         setLinkObject(res?.data?.elementsList);
+        const elementsList = res?.data?.elementsList || [];
+        const pricePerSecond = res?.data?.price || 0;
+        const recent = res?.data?.sheet?.recent || 0;
+
+        const totalDuration = elementsList.reduce((sum, element) => {
+          return sum + (element.duration || 0);
+        }, 0);
+
+        const totalVideoDuration = totalDuration * recent;
+
+        const totalPrice = totalVideoDuration * pricePerSecond;
+
+        setTotalPrice(totalPrice)
+        setBalance(res?.data?.balance)
+
         if (res?.data?.sheet && res?.data?.sheet?.title !== null) {
           setEditSheet(true);
         }
@@ -798,32 +816,32 @@ const CreateTemplate = (props) => {
         // if (videoTemplateReferrals && videoTemplateReferrals.length !== 0) {
         //   setElements(newElements);
         // } else {
-          setElements([
-            {
-              id: 1,
-              name: "Section 1",
-              isCompleted: false,
-              isDisabled: false,
-            },
-            {
-              id: 2,
-              name: "Section 2",
-              isCompleted: false,
-              isDisabled: true,
-            },
-            {
-              id: 3,
-              name: "Section 3",
-              isCompleted: false,
-              isDisabled: true,
-            },
-            {
-              id: 4,
-              name: "Section 4",
-              isCompleted: false,
-              isDisabled: true,
-            },
-          ]);
+        setElements([
+          {
+            id: 1,
+            name: "Section 1",
+            isCompleted: false,
+            isDisabled: false,
+          },
+          {
+            id: 2,
+            name: "Section 2",
+            isCompleted: false,
+            isDisabled: true,
+          },
+          {
+            id: 3,
+            name: "Section 3",
+            isCompleted: false,
+            isDisabled: true,
+          },
+          {
+            id: 4,
+            name: "Section 4",
+            isCompleted: false,
+            isDisabled: true,
+          },
+        ]);
         // }
         // setElements(
         //   videoTemplateReferrals && videoTemplateReferrals.length !== 0
@@ -831,13 +849,13 @@ const CreateTemplate = (props) => {
         //     :
         // );
 
-        console.log("Hello")
+        console.log("Hello");
         setTemplateName(res?.data?.getVideo.hvoTemplateName);
         setViewParams((prevState) => ({
           ...prevState,
           ...res?.data?.sheet,
         }));
-        console.log(viewParams, "setViewParams")
+        console.log(viewParams, "setViewParams");
         setConnectedSheet(res?.data?.sheet.googleSheetsId);
       }
     } catch (error) {
@@ -858,8 +876,8 @@ const CreateTemplate = (props) => {
         },
         params: {
           isSheetConnected: false,
-          sheetType: "VIDEO"
-        }
+          sheetType: "VIDEO",
+        },
       });
       if (res?.status === 200) {
         setSheetData(res?.data);
@@ -1384,6 +1402,8 @@ const CreateTemplate = (props) => {
               <Summary
                 linkObject={linkObject}
                 sheetData={sheetData}
+                price={totalPrice}
+                balance={balance}
                 reloadData={reloadData}
                 sheetId={templateParams?.sheetId}
                 templateParams={templateParams}
@@ -1402,6 +1422,8 @@ const CreateTemplate = (props) => {
               <></>
             ) : (
               <Summary
+                price={totalPrice}
+                balance={balance}
                 linkObject={linkObject}
                 sheetData={sheetData}
                 reloadData={reloadData}

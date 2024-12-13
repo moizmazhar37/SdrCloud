@@ -69,7 +69,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function HVOSummary({ linkObject, reload }) {
+function HVOSummary({ linkObject, reload, price, balance }) {
   const classes = useStyles();
   const [sections, setSections] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -79,6 +79,21 @@ function HVOSummary({ linkObject, reload }) {
   const templateId = new URLSearchParams(window.location.search).get(
     "templateId"
   );
+
+  const [openPopup, setOpenPopup] = useState(false);
+
+  const handleOpenPopup = () => {
+    setOpenPopup(true);
+  };
+
+  const handleClosePopup = () => {
+    setOpenPopup(false);
+  };
+
+  const handleProceed = () => {
+    createHVO();
+    handleClosePopup();
+  };
 
   // Helper function to get section label
   const getSectionLabel = (type, index, sectionCount) => {
@@ -329,15 +344,38 @@ function HVOSummary({ linkObject, reload }) {
       {sections.length > 0 && (
         <Grid container justifyContent="flex-end" style={{ marginTop: "16px" }}>
           <Button
-            onClick={() => {
-              createHVO();
-            }}
+            onClick={handleOpenPopup}
             variant="outlined"
             style={{ height: "48px" }}
             disabled={creationProcess}
           >
             {creationProcess ? "Published" : "Create HVO"}
           </Button>
+          <Dialog open={openPopup} onClose={handleClosePopup}>
+                <DialogTitle>Confirm Video Creation</DialogTitle>
+                <DialogContent>
+                  <p>Your balance: ${balance.toFixed(2)}</p>
+                  <p>Total price for generating videos: ${price.toFixed(4)}</p>
+                  <p>Please confirm if you want to proceed</p>
+                  <p>
+                    {balance >= price
+                      ? "You have sufficient balance to create the videos."
+                      : "Your balance is insufficient to create the videos."}
+                  </p>
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={handleClosePopup} color="primary">
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={handleProceed}
+                    color="primary"
+                    disabled={balance < price}
+                  >
+                    Proceed
+                  </Button>
+                </DialogActions>
+              </Dialog>
         </Grid>
       )}
 
