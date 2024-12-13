@@ -21,6 +21,7 @@ import SingleColumnChartBar from "./SingleColumnChart";
 import GroupBarGraph from "./GroupBarGraph";
 import axios from "axios";
 import ApiConfig from "src/config/APIConfig";
+import mainDashboard from "src/config/APIConfig";
 
 const useStyles = makeStyles((theme) => ({
   displayFlexColumn: {
@@ -331,34 +332,38 @@ function NoProjects() {
   const classes = useStyles();
 
   const [userCount, setUserCount] = useState([]);
+  const [endUsersCount, setEndUsersCount] = useState("");
   const [packageName, setPackageName] = useState("");
   const [topTemplate, setTopTemplate] = useState([]);
-  console.log("🚀 ~ NoProjects ~ topTemplate:", topTemplate);
   const [loading, setLoading] = useState(false);
   const [sheetCount, setSheetCount] = useState("");
   const [bestMonth, setBestMonth] = useState("");
-  console.log(bestMonth, "bestMonth");
-  const [adminCounting, setAdminCounting] = useState("");
 
+  const [adminCounting, setAdminCounting] = useState("");
+  const [totalUsersCount, setTotalUsersCount] = useState("");
+  const [adminsCount, setAdminsCount] = useState("");
   const totalUser = async () => {
     const token = window?.localStorage?.getItem("token");
 
     try {
       const res = await axios({
-        url: ApiConfig.totalUserCount,
+        url: `${ApiConfig.mainDashboard}/user-role-counts`,
         method: "GET",
         headers: {
-          token: `${token}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
 
-      if (res?.data?.status === 200) {
-        setUserCount(res?.data?.data?.totalUserCount);
+      if (res.status === 200) {
+        setTotalUsersCount(res?.data.TotalUsers);
+        setAdminsCount(res?.data.ADMIN);
+        setEndUsersCount(res?.data.USER);
       }
     } catch (error) {
       console.log("error", error);
     }
   };
+
   const GetAdminDetails = async () => {
     setLoading(true);
     try {
@@ -403,28 +408,28 @@ function NoProjects() {
       console.log(error);
     }
   };
+  //------------------------------------------api for total sheets-----------------------------------------------------------------
+
   const SheetCounts = async () => {
     setLoading(true);
     try {
-      setLoading(true);
       const res = await axios({
         method: "GET",
-        url: ApiConfig.sheetcount,
+        url: `${ApiConfig.mainDashboard}/user-sheet-count`,
         headers: {
-          token: `${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      if (res?.data?.status === 200) {
-        setSheetCount(res?.data?.data[0]);
-        setLoading(false);
-      }
-    } catch (error) {
-      // toast.error("Something went wrong")
-      toast.error(error?.data?.message);
       setLoading(false);
-      console.log(error);
+      setSheetCount(res.data.TotalSheets);
+      return res.data;
+    } catch (error) {
+      setLoading(false);
+      console.error("Error fetching sheet counts:", error);
+      throw error;
     }
   };
+
   const BestMonthView = async () => {
     setLoading(true);
     try {
@@ -544,11 +549,9 @@ function NoProjects() {
                   <Typography variant="body1">Total Sheets</Typography>
                 </Box>
 
-                {sheetCount && (
+                {sheetCount + 1 && (
                   <Typography variant="h3" style={{ fontSize: "18px" }}>
-                    {formatNumber(sheetCount ? sheetCount?.used : "--")} used |{" "}
-                    {formatNumber(sheetCount ? sheetCount?.available : "--")}{" "}
-                    available
+                    {sheetCount}
                   </Typography>
                 )}
               </Box>
@@ -564,7 +567,7 @@ function NoProjects() {
                   />
                   <Typography variant="body1">Monthly Media Credits</Typography>
                 </Box>
-
+                ---------------------------------------------------------------------
                 <Typography variant="h2" style={{ fontSize: "16px" }}>
                   {adminCounting?.mediaDetails?.used}{" "}
                   <span style={{ fontSize: "14px", color: "#858585" }}>
@@ -649,9 +652,8 @@ function NoProjects() {
                 <img src="images/users.png" alt="" />
                 Total Users
               </Typography>
-              <Typography variant="h2">
-                {formatNumber(userCount + 1)}
-              </Typography>
+              <Typography variant="h2">{totalUsersCount}</Typography>
+              {/* //----------------------------------------total users --call api here------------------------------------------------------------------------- */}
             </Grid>
 
             <Grid
@@ -675,7 +677,7 @@ function NoProjects() {
                   <img src="images/users.png" alt="" />
                   Admins
                 </Typography>
-                <Typography variant="h2">1</Typography>
+                <Typography variant="h2">{adminsCount}</Typography>
               </Grid>
               <Grid
                 item
@@ -691,7 +693,7 @@ function NoProjects() {
                   Users
                 </Typography>
                 <Typography variant="h2">
-                  {formatNumber(userCount || 0)}
+                  {formatNumber(endUsersCount || 0)}
                 </Typography>
               </Grid>
             </Grid>

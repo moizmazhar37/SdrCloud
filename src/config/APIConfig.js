@@ -1,5 +1,5 @@
-const url = "https://backend-283763506150.us-central1.run.app";
-// const url = "http://localhost:8000";
+// const url = "https://backend-283763506150.us-central1.run.app";
+const url = "http://localhost:8000";
 
 const auth = `${url}/auth`;
 const users = `${url}/users`;
@@ -14,11 +14,12 @@ export const videoelement = `${url}/videoelement`;
 const googlesheets = `${url}/googlesheets`;
 const upload = `${url}/upload`;
 const prospects = `${url}/prospect`;
+// export const mainDashboard = `${url}/dashboard`;
 
 const ApiConfig = {
   getUrls: `${url}/url`,
   addUrl: `${url}/url`,
-
+  mainDashboard: `${url}/dashboard`,
   login: `${auth}/signin`,
   createNewAccount: `${admin}/subadmin`,
   getAllCategories: `${categories}/`,
