@@ -1,5 +1,5 @@
 const url = "https://backend-283763506150.us-central1.run.app";
-//const url = "http://localhost:8000";
+// const url = "http://localhost:8000";
 
 const auth = `${url}/auth`;
 const users = `${url}/users`;
@@ -10,10 +10,12 @@ const subadmin = `${url}/subadmin`;
 const categories = `${url}/categories`;
 const templates = `${url}/templates`;
 const hvoelement = `${url}/hvoelement`;
-export const videoelement = `${url}/videoelement`;
+const videoelement = `${url}/videoelement`;
 const googlesheets = `${url}/googlesheets`;
 const upload = `${url}/upload`;
 const prospects = `${url}/prospect`;
+const hvo = `${url}/hvo`;
+const video = `${url}/video`;
 // export const mainDashboard = `${url}/dashboard`;
 
 const ApiConfig = {
@@ -31,12 +33,12 @@ const ApiConfig = {
   connectedSheetVideo: `${googlesheets}/all-connected-sheets`,
   connectSheetTOTemplateVideo: `${templates}/connect-sheet-with-template`,
   createVideoTemplateReferral: `${videoelement}/video-section`,
-  getTemplatebyID: `${videoelement}`,
-  previewVideo: `${videoelement}/preview-video-with-sheet-data`,
+  getTemplatebyID: `${video}`,
+  previewVideo: `${video}/preview-video-with-sheet-data`,
   getFirstRowData: `${googlesheets}/first-row-data`,
   UploadFile: `${upload}/upload-file`,
   headers: `${googlesheets}/sheet-data-types`,
-  createVideo: `${videoelement}/create-video`,
+  createVideo: `${video}/create-video`,
   getAllPPUsers: `${admin}/subadmin`,
   googleSheet: `${googlesheets}`,
   googleSheetDataTypes: `${googlesheets}/get-headers`,
@@ -54,12 +56,13 @@ const ApiConfig = {
   highlightBanner2Section: `${hvoelement}/highlight-banner2-section`,
   footerSection: `${hvoelement}/footer-section`,
   leftTextRightImageSection: `${hvoelement}/left-text-right-image-section`,
-  getHVOTemplateById: `${templates}`,
-  previewHVOwithsheetdata: `${templates}/preview-hvo-with-sheet-data`,
-  createHVO: `${templates}/generate-hvo-from-sheet`,
-  getHVO: `${templates}/hvo`,
+  getHVOTemplateById: `${hvo}`,
+  previewHVOwithsheetdata: `${hvo}/preview-hvo-with-sheet-data`,
+  createHVO: `${hvo}/generate-hvo-from-sheet`,
+  getHVO: `${hvo}/`,
   setHeadersDataType: `${googlesheets}/sheet-data-types`,
-  hvoStatus: `${templates}/hvo-status`,
+  hvoStatus: `${hvo}/hvo-status`,
+  video: `${video}`,
   // userSignup: `${user}/userSignUp`,
   // // verifyEmail: `${user}/verifyEmail`,
   // goggleLogin: `${user}/googleLogin`,
