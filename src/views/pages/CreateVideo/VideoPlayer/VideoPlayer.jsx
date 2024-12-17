@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import logo from "./logo.png";
 import "./VideoPlayer.css";
-import { videoelement } from "./../../../../config/APIConfig";
+import ApiConfig, { videoelement } from "./../../../../config/APIConfig";
 
 const VideoPlayer = () => {
   const [videoData, setVideoData] = useState(null);
@@ -15,7 +15,7 @@ const VideoPlayer = () => {
     const fetchVideoUrl = async () => {
       try {
         setIsLoading(true);
-        const response = await axios.get(`${videoelement}/video/${video_id}`);
+        const response = await axios.get(`${ApiConfig.video}/${video_id}`);
         setVideoData(response.data);
         setError(null);
       } catch (err) {
