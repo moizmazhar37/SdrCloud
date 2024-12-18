@@ -260,7 +260,10 @@ function HVOSummary({ linkObject, reload, price, balance }) {
       });
       if (res?.status === 200) {
         setCreationProcess(res?.data);
-        console.log("ssdjfsopufeosdfu7r9wr0+++++++++++++++++++=", creationProcess)
+        console.log(
+          "ssdjfsopufeosdfu7r9wr0+++++++++++++++++++=",
+          creationProcess
+        );
       }
     } catch (error) {
       console.log(error, "error");
@@ -352,30 +355,46 @@ function HVOSummary({ linkObject, reload, price, balance }) {
             {creationProcess ? "Published" : "Create HVO"}
           </Button>
           <Dialog open={openPopup} onClose={handleClosePopup}>
-                <DialogTitle>Confirm HVO Creation</DialogTitle>
-                <DialogContent>
-                  <p>Your balance: ${balance.toFixed(2)}</p>
-                  <p>Total price for generating HVOs: ${price.toFixed(4)}</p>
-                  <p>Please confirm if you want to proceed</p>
-                  <p>
-                    {balance >= price
-                      ? "You have sufficient balance to create the videos."
-                      : "Your balance is insufficient to create the videos."}
-                  </p>
-                </DialogContent>
-                <DialogActions>
-                  <Button onClick={handleClosePopup} color="primary">
-                    Cancel
-                  </Button>
-                  <Button
-                    onClick={handleProceed}
-                    color="primary"
-                    disabled={balance < price}
-                  >
-                    Proceed
-                  </Button>
-                </DialogActions>
-              </Dialog>
+            <DialogTitle>Confirm HVO Creation</DialogTitle>
+            <DialogContent>
+              <p>Your balance: ${balance.toFixed(2)}</p>
+              <p>Total price for generating HVOs: ${price.toFixed(4)}</p>
+              <p>Please confirm if you want to proceed</p>
+              <p>
+                {balance >= price
+                  ? "You have sufficient balance to create the videos."
+                  : "Your balance is insufficient to create the videos."}
+              </p>
+            </DialogContent>
+            <DialogActions>
+              <Button
+                onClick={handleClosePopup}
+                style={{
+                  backgroundColor: "#044D80",
+                  color: "white",
+                  padding: "10px 20px",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleProceed}
+                style={{
+                  backgroundColor: "#044D80",
+                  color: "white",
+                  padding: "10px 20px",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                  marginRight: "15px",
+                }}
+                disabled={balance < price}
+              >
+                Proceed
+              </Button>
+            </DialogActions>
+          </Dialog>
         </Grid>
       )}
 
