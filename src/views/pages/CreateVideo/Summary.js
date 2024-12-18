@@ -481,12 +481,28 @@ function Summary({
                   </p>
                 </DialogContent>
                 <DialogActions>
-                  <Button onClick={handleClosePopup} color="primary">
+                  <Button
+                    onClick={handleClosePopup}
+                    style={{
+                      backgroundColor: "#044D80",
+                      color: "white",
+                      padding: "10px 20px",
+                      borderRadius: "5px",
+                      cursor: "pointer",
+                    }}
+                  >
                     Cancel
                   </Button>
                   <Button
                     onClick={handleProceed}
-                    color="primary"
+                    style={{
+                      backgroundColor: "#044D80",
+                      color: "white",
+                      padding: "10px 20px",
+                      borderRadius: "5px",
+                      cursor: "pointer",
+                      marginRight: "15px",
+                    }}
                     disabled={balance < price}
                   >
                     Proceed
