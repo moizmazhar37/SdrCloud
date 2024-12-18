@@ -14,7 +14,7 @@ import {
   Radio,
   RadioGroup,
   FormControlLabel,
-  Tooltip
+  Tooltip,
 } from "@material-ui/core";
 import { Copy } from "react-feather";
 import { makeStyles } from "@material-ui/core/styles";
@@ -966,10 +966,29 @@ const StaticDyanamicFile = ({
               </Grid>
             </DialogContent>
             <DialogActions>
-              <Button onClick={handleCloseAudioDescription} color="primary">
+              <Button
+                onClick={handleCloseAudioDescription}
+                style={{
+                  backgroundColor: "#044D80",
+                  color: "white",
+                  padding: "10px 20px",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                }}
+              >
                 Cancel
               </Button>
-              <Button onClick={handleSaveDescription} color="primary">
+              <Button
+                onClick={handleSaveDescription}
+                style={{
+                  backgroundColor: "#044D80",
+                  color: "white",
+                  padding: "10px 20px",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                  marginRight: "10px",
+                }}
+              >
                 Save
               </Button>
             </DialogActions>

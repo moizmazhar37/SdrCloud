@@ -928,7 +928,13 @@ const ImageVideo = ({
                           <>
                             {/* Button to trigger file input */}
                             <Button
-                              className="savebtn"
+                              style={{
+                                backgroundColor: "#044D80",
+                                color: "white",
+                                padding: "10px 20px",
+                                borderRadius: "5px",
+                                cursor: "pointer",
+                              }}
                               onClick={() => fileInputRef.current.click()} // Open the file dialog on button click
                             >
                               Choose
@@ -1035,7 +1041,16 @@ const ImageVideo = ({
                         </Button>
                       ) : (
                         <>
-                          <Button component="label">
+                          <Button
+                            component="label"
+                            style={{
+                              backgroundColor: "#044D80",
+                              color: "white",
+                              padding: "10px 20px",
+                              borderRadius: "5px",
+                              cursor: "pointer",
+                            }}
+                          >
                             Choose Video
                             <input
                               type="file"
@@ -1185,7 +1200,13 @@ const ImageVideo = ({
                 <Button
                   fullWidth
                   variant={duration ? "contained" : "outlined"}
-                  style={{ height: "44px" }}
+                  style={{
+                    backgroundColor: "#044D80",
+                    color: "white",
+                    padding: "10px 20px",
+                    borderRadius: "5px",
+                    cursor: "pointer",
+                  }}
                   className={`${!duration ? "savebtnDisables" : "savebtn"}`}
                   onClick={handleAudioUpload}
                 >
@@ -1194,7 +1215,14 @@ const ImageVideo = ({
                 <Button
                   fullWidth
                   variant={description ? "contained" : "outlined"}
-                  style={{ height: "44px", margin: "0 1rem" }}
+                  style={{
+                    backgroundColor: "#044D80",
+                    color: "white",
+                    padding: "10px 20px",
+                    borderRadius: "5px",
+                    cursor: "pointer",
+                    marginLeft: "5px",
+                  }}
                   className={`${!description ? "savebtnDisables" : "savebtn"}`}
                   onClick={handleOpenAudioDescriptionEditor}
                 >
@@ -1291,10 +1319,29 @@ const ImageVideo = ({
                     </Grid>
                   </DialogContent>
                   <DialogActions>
-                    <Button onClick={handleClose} color="primary">
+                    <Button
+                      onClick={handleClose}
+                      style={{
+                        backgroundColor: "#044D80",
+                        color: "white",
+                        padding: "10px 20px",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                      }}
+                    >
                       Cancel
                     </Button>
-                    <Button onClick={handleSaveDescription} color="primary">
+                    <Button
+                      onClick={handleSaveDescription}
+                      style={{
+                        backgroundColor: "#044D80",
+                        color: "white",
+                        padding: "10px 20px",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                        marginRight: "10px",
+                      }}
+                    >
                       Save
                     </Button>
                   </DialogActions>
@@ -1432,10 +1479,29 @@ const ImageVideo = ({
                     </Grid>
                   </DialogContent>
                   <DialogActions>
-                    <Button onClick={handleClose} color="primary">
+                    <Button
+                      onClick={handleClose}
+                      style={{
+                        backgroundColor: "#044D80",
+                        color: "white",
+                        padding: "10px 20px",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                      }}
+                    >
                       Cancel
                     </Button>
-                    <Button onClick={handleSaveDescription} color="primary">
+                    <Button
+                      onClick={handleSaveDescription}
+                      style={{
+                        backgroundColor: "#044D80",
+                        color: "white",
+                        padding: "10px 20px",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                        marginRight: "15px",
+                      }}
+                    >
                       Save
                     </Button>
                   </DialogActions>
