@@ -1479,10 +1479,29 @@ const ImageVideo = ({
                     </Grid>
                   </DialogContent>
                   <DialogActions>
-                    <Button onClick={handleClose} color="primary">
+                    <Button
+                      onClick={handleClose}
+                      style={{
+                        backgroundColor: "#044D80",
+                        color: "white",
+                        padding: "10px 20px",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                      }}
+                    >
                       Cancel
                     </Button>
-                    <Button onClick={handleSaveDescription} color="primary">
+                    <Button
+                      onClick={handleSaveDescription}
+                      style={{
+                        backgroundColor: "#044D80",
+                        color: "white",
+                        padding: "10px 20px",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                        marginRight: "15px",
+                      }}
+                    >
                       Save
                     </Button>
                   </DialogActions>
