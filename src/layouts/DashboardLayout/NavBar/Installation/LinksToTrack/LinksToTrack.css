@@ -1,14 +1,15 @@
-
 .table-section {
   display: flex;
   flex-direction: column;
   gap: 50px;
+  padding: 0 16px; /* Ensure consistent padding within the parent */
 }
 
 .url-table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
+  overflow-x: auto; /* Add horizontal scroll for smaller screens */
 }
 
 .url-table th,
@@ -31,19 +32,23 @@
 }
 
 .links-to-track {
-  flex-direction: column;
   display: flex;
+  flex-direction: column;
   gap: 15px;
+}
+
+.add-url-section {
+  margin-top: -4px;
 }
 
 .add-url,
 .show-url-table {
   flex: 1;
   margin-left: 10px;
-  width: 95%;
+  width: calc(100% - 20px); /* Ensure consistent width without overlapping */
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 20px 20px 20px 20px;
+  padding: 20px;
 }
 
 .button-container {
@@ -52,29 +57,19 @@
 
 .url-field {
   margin-bottom: 10px;
-}
-
-.add-btn,
-.save-btn {
-  margin-right: 10px;
-  padding: 10px 15px;
-  cursor: pointer;
-  background-color: #ecb9401a;
-  border: none;
-  border-radius: 5px;
-  color: #333;
+  display: flex;
+  align-items: center; /* Align the input field and button in the same line */
 }
 
 .url-input {
   width: 90%;
+  flex: 1;
   padding: 10px;
-  padding-bottom: 10px;
   border: none;
   border-bottom: 1px solid #ccc;
-  margin-bottom: 15px;
   font-size: 16px;
   color: #333;
-  margin-right: 3px;
+  margin-right: 10px; /* Add spacing between input and button */
 }
 
 .url-input::placeholder {
@@ -86,13 +81,26 @@
   border-bottom-color: #032E61;
 }
 
+.add-btn,
+.save-btn {
+  padding: 10px 15px;
+  cursor: pointer;
+  background-color: #ecb9401a;
+  border: none;
+  border-radius: 5px;
+  color: #333;
+  white-space: nowrap; /* Prevent button text wrapping */
+}
+
 .add-btn:hover,
 .save-btn:hover {
   background-color: #4d75a7;
+  color: #fff; /* Change text color on hover for better contrast */
 }
 
 .show-url-table {
-  max-height: 400px; 
+  max-height: 286px;
+  width: 95%;
   overflow-y: auto;
   margin-top: 20px;
   border: 1px solid #ddd;
@@ -103,5 +111,22 @@
 @media (max-width: 768px) {
   .links-to-track {
     flex-direction: column;
+  }
+
+  .url-table {
+    display: block;
+    overflow-x: auto; /* Horizontal scroll for reduced screen sizes */
+  }
+
+  .url-field {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .add-url,
+  .show-url-table {
+    width: 100%;
+    margin-left: 0;
+    padding: 16px;
   }
 }
