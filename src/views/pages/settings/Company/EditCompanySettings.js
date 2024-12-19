@@ -22,7 +22,7 @@ import PhoneInput from "react-phone-input-2";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
-import ApiConfig from "../../../config/APIConfig";
+import ApiConfig from "../../../../config/APIConfig";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import { useHistory, useLocation, Link as RouterLink } from "react-router-dom";
 import FullScreenLoader from "src/component/FullScreenLoader";
@@ -31,7 +31,7 @@ import { parsePhoneNumberFromString } from "libphonenumber-js";
 import { SketchPicker } from "react-color";
 import CloseIcon from "@material-ui/icons/Close";
 import ButtonCircularProgress from "src/component/ButtonCircularProgress";
-import CropEasyCompanyLogo from "../CreateVideo/Crop/CropEasyCompanyLogo";
+import CropEasyCompanyLogo from "../../CreateVideo/Crop/CropEasyCompanyLogo";
 // Styles for the component
 const useStyles = makeStyles((theme) => ({
   uploadButton: {

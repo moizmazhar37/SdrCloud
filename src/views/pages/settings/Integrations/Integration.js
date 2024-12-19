@@ -9,9 +9,12 @@ import {
 } from "@material-ui/core";
 import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
 import CloseIcon from "@material-ui/icons/Close";
-import GoogleSheet from "./GoogleSheet";
+import GoogleSheet from "./GoogleSheets/GoogleSheet";
+import DataNotFoundIMG from "src/component/DataNotFoundIMG";
 import Link from "@material-ui/core/Link";
-import { useLocation } from "react-router-dom/cjs/react-router-dom.min";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import { useHistory, useLocation, Link as RouterLink } from "react-router-dom";
+
 // Custom styles for the Integration component
 const useStyles = makeStyles((theme) => ({
   IntegrationContainer: {
@@ -20,6 +23,9 @@ const useStyles = makeStyles((theme) => ({
       margin: "0px 5px",
     },
     "& .breads": {
+      display: "flex",
+      alignItems: "center",
+      gap: "10px",
       "& nav li": {
         margin: "0px",
       },
@@ -51,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
         },
       },
       "& .mainsubBox": {
-        padding: "16px 24px 16px 24px",
+        // padding: "16px 24px 16px 24px",
         "& .subBox": {
           justifyContent: "space-between",
 
@@ -88,20 +94,40 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }));
-// Integration component handles displaying integration settings and navigation to specific integration configurations
-const Integration = ({ settingRoute, handleClick, setSettingRoute }) => {
+
+const CommonBoxStyle = {
+  margin: "10px",
+  padding: "10px",
+  height: "40px",
+  borderRadius: "5px",
+  border: "1px solid #ddd",
+  cursor: "pointer",
+  transition: "background-color 0.3s ease",
+};
+
+// Integration component manages the display of different integration settings and navigation
+const Integration = ({ settingRoute, setSettingRoute }) => {
   const classes = useStyles();
   const [nextRoute, setnextRoutes] = useState("Integrations");
-
+  console.log("nextRoute: ", nextRoute);
+  const history = useHistory();
+  const [hoverState, setHoverState] = useState({});
   const location = useLocation();
   useEffect(() => {
     console.log("tester is herer");
     if (location?.state?.type == "Google sheet") setnextRoutes("Google Sheet");
   }, []);
+  const handleMouseEnter = (key) => {
+    setHoverState((prevState) => ({ ...prevState, [key]: true }));
+  };
 
+  const handleMouseLeave = (key) => {
+    setHoverState((prevState) => ({ ...prevState, [key]: false }));
+  };
   return (
     <>
       <Box className={classes.IntegrationContainer}>
+        <Typography></Typography>
         {nextRoute === "Google Sheet" ? (
           <>
             <GoogleSheet
@@ -109,7 +135,7 @@ const Integration = ({ settingRoute, handleClick, setSettingRoute }) => {
               setnextRoutes={setnextRoutes}
               settingRoute={settingRoute}
               setSettingRoute={setSettingRoute}
-              handleClick={handleClick}
+              // handleClick={handleClick}
             />
           </>
         ) : (
@@ -117,19 +143,26 @@ const Integration = ({ settingRoute, handleClick, setSettingRoute }) => {
             <Box className="breads">
               <Breadcrumbs aria-label="breadcrumb" className="breadcrumb">
                 <Typography variant="body1">
-                  <Link color="inherit" href="/setting" onClick={handleClick}>
+                  <Link
+                    color="inherit"
+                    to="/settings"
+                    component={RouterLink}
+                    // onClick={handleClick}
+                  >
                     Settings
                   </Link>
                 </Typography>
-                <Typography className="headText">{settingRoute}</Typography>
+                <Typography className="headText">
+                  {settingRoute}
+                  {!settingRoute && <Typography>Integrations</Typography>}
+                </Typography>
               </Breadcrumbs>
             </Box>
             <Grid container className="gridContainer">
-              <Grid item xs={12} sm={4} lg={5} className="gridItem">
+              <Grid item xs={12} sm={6} lg={5} className="gridItem">
                 <Box className="commonBorder">
                   <Box className="commonHeadingBox d-flex justify-space-between">
                     <Typography variant="body1">Ingestion Settings</Typography>
-                    {/* <CloseIcon className="crossIcon" /> */}
                   </Box>
                 </Box>
                 <Box className="commomInnerBox">
@@ -137,40 +170,93 @@ const Integration = ({ settingRoute, handleClick, setSettingRoute }) => {
                     <Typography variant="body1"> Source Type</Typography>
                   </Box>
                   <Box className="mainsubBox">
-                    <Box className="subBox d-flex">
-                      <Box className="d-flex">
-                        <Typography variant="body1"> Google Sheets</Typography>
+                    <Box
+                      className="subBox d-flex"
+                      onClick={() => setnextRoutes("Google Sheet")}
+                      style={{
+                        ...CommonBoxStyle,
+                        backgroundColor: hoverState["google"]
+                          ? "#f0f0f0"
+                          : "transparent",
+                      }}
+                      onMouseEnter={() => handleMouseEnter("google")}
+                      onMouseLeave={() => handleMouseLeave("google")}
+                    >
+                      <Box className="d-flex" style={{ margin: "10px" }}>
+                        <Typography variant="body1">Google Sheets</Typography>
                         <Button variant="outlined" className="enablebtn">
                           Enabled
                         </Button>
                       </Box>
-                      <ArrowForwardIosIcon
-                        className="ArrowIcon"
-                        onClick={() => {
-                          setnextRoutes("Google Sheet");
-                        }}
-                      />
+                      <ArrowForwardIosIcon className="ArrowIcon" />
                     </Box>
-                    <Box mt={2} className="subBox d-flex">
-                      <Box className="d-flex">
+
+                    <Box
+                      mt={2}
+                      className="subBox d-flex"
+                      style={{
+                        ...CommonBoxStyle,
+                        backgroundColor: hoverState["sftp"]
+                          ? "#f0f0f0"
+                          : "transparent",
+                      }}
+                      onMouseEnter={() => handleMouseEnter("sftp")}
+                      onMouseLeave={() => handleMouseLeave("sftp")}
+                    >
+                      <Box className="d-flex" style={{ margin: "10px" }}>
                         <Typography variant="body1">SFTP</Typography>
                         <Button variant="outlined" className="disablebtn">
                           Disabled
                         </Button>
                       </Box>
-
                       <ArrowForwardIosIcon className="ArrowIcon" />
                     </Box>
-                    <Box mt={2} className="subBox d-flex">
+
+                    <Box
+                      mt={2}
+                      className="subBox d-flex"
+                      style={{
+                        ...CommonBoxStyle,
+                        backgroundColor: hoverState["api"]
+                          ? "#f0f0f0"
+                          : "transparent",
+                      }}
+                      onMouseEnter={() => handleMouseEnter("api")}
+                      onMouseLeave={() => handleMouseLeave("api")}
+                    >
                       <Typography variant="body1">API</Typography>
                       <ArrowForwardIosIcon className="ArrowIcon" />
                     </Box>
-                    <Box mt={2} className="subBox d-flex">
+
+                    <Box
+                      mt={2}
+                      className="subBox d-flex"
+                      style={{
+                        ...CommonBoxStyle,
+                        backgroundColor: hoverState["hubspot"]
+                          ? "#f0f0f0"
+                          : "transparent",
+                      }}
+                      onMouseEnter={() => handleMouseEnter("hubspot")}
+                      onMouseLeave={() => handleMouseLeave("hubspot")}
+                    >
                       <Typography variant="body1">Hubspot</Typography>
                       <ArrowForwardIosIcon className="ArrowIcon" />
                     </Box>
-                    <Box mt={2} className="subBox d-flex">
-                      <Typography variant="body1"> Salesforce</Typography>
+
+                    <Box
+                      mt={2}
+                      className="subBox d-flex"
+                      style={{
+                        ...CommonBoxStyle,
+                        backgroundColor: hoverState["salesforce"]
+                          ? "#f0f0f0"
+                          : "transparent",
+                      }}
+                      onMouseEnter={() => handleMouseEnter("salesforce")}
+                      onMouseLeave={() => handleMouseLeave("salesforce")}
+                    >
+                      <Typography variant="body1">Salesforce</Typography>
                       <ArrowForwardIosIcon className="ArrowIcon" />
                     </Box>
                   </Box>

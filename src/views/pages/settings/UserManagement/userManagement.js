@@ -15,7 +15,7 @@ import {
 } from "@material-ui/core";
 import { Pagination } from "@material-ui/lab";
 import AddIcon from "@material-ui/icons/Add";
-import AddUserDrawer from "./AddUserDrawer";
+import AddUserDrawer from "../others/AddUserDrawer";
 import axios from "axios";
 import ApiConfig from "src/config/APIConfig";
 import moment from "moment";
