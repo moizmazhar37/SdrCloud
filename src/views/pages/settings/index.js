@@ -13,14 +13,14 @@ import { Formik, Form } from "formik";
 import { UserContext } from "src/context/User";
 import Breadcrumbs from "@material-ui/core/Breadcrumbs";
 import Link from "@material-ui/core/Link";
-import EditCompanySettings from "./EditCompanySettings";
+import EditCompanySettings from "./others/EditCompanySettings";
 // import Integration from "./Integration";
 import * as Yup from "yup";
 import ApiConfig from "src/config/APIConfig";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
-import Integration from "../CompanuInformation/Integration";
+import Integration from "./Integrations/Integration";
 
 // Custom styles for the component
 const useStyles = makeStyles((theme) => ({

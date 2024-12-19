@@ -145,7 +145,7 @@ export const routes = [
     path: "/ui-settings",
     guard: true,
     layout: DashboardLayout,
-    component: lazy(() => import("src/views/pages/settings/UISettings")),
+    component: lazy(() => import("src/views/pages/settings/UISettings/UISettings")),
   },
 
   // New URL for Routes
@@ -245,7 +245,7 @@ export const routes = [
     guard: true,
     layout: DashboardLayout,
     component: lazy(() =>
-      import("src/views/pages/CompanuInformation/EditCompanySettings")
+      import("src/views/pages/settings/Company/EditCompanySettings")
     ),
   },
 
@@ -254,7 +254,7 @@ export const routes = [
     path: "/intent",
     guard: true,
     layout: DashboardLayout,
-    component: lazy(() => import("src/views/pages/CompanuInformation/Intent")),
+    component: lazy(() => import("src/views/pages/settings/IntentTracking/Intent")),
   },
 
   {
@@ -263,7 +263,7 @@ export const routes = [
     guard: true,
     layout: DashboardLayout,
     component: lazy(() =>
-      import("src/views/pages/CompanuInformation/MyProfile")
+      import("src/views/pages/settings/MyProfile/MyProfile")
     ),
   },
 
@@ -273,7 +273,7 @@ export const routes = [
     guard: true,
     layout: DashboardLayout,
     component: lazy(() =>
-      import("src/views/pages/CompanuInformation/Integration")
+      import("src/views/pages/settings/Integrations/Integration")
     ),
   },
   // {
@@ -296,21 +296,21 @@ export const routes = [
     path: "/ui-settings",
     guard: true,
     layout: DashboardLayout,
-    component: lazy(() => import("src/views/pages/settings/UISettings")),
+    component: lazy(() => import("src/views/pages/settings/UISettings/UISettings")),
   },
   {
     exact: true,
     path: "/change-password",
     guard: true,
     layout: AuthLayout,
-    component: lazy(() => import("src/views/pages/settings/changePassword")),
+    component: lazy(() => import("src/views/pages/settings/MyProfile/ChangePassword/changePassword")),
   },
   {
     exact: true,
     path: "/user-management",
     guard: true,
     layout: DashboardLayout,
-    component: lazy(() => import("src/views/pages/settings/changePassword")),
+    component: lazy(() => import("src/views/pages/settings/MyProfile/ChangePassword/changePassword")),
   },
 
   // Google Sheet
@@ -319,7 +319,7 @@ export const routes = [
     path: "/viewSheets",
     guard: true,
     layout: DashboardLayout,
-    component: lazy(() => import("src/views/pages/settings/ViewGoogleSheet")),
+    component: lazy(() => import("src/views/pages/settings/Integrations/GoogleSheets/ViewGoogleSheet/ViewGoogleSheet")),
   },
 
   {
@@ -327,7 +327,7 @@ export const routes = [
     path: "/editSheets",
     guard: true,
     layout: DashboardLayout,
-    component: lazy(() => import("src/views/pages/settings/EditGoogleSheet")),
+    component: lazy(() => import("src/views/pages/settings/Integrations/GoogleSheets/EditGoogleSheet/EditGoogleSheet")),
   },
 
   {
