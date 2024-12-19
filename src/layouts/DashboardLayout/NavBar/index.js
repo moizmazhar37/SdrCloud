@@ -1,5 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useHistory, matchPath, useLocation } from "react-router-dom";
+import { FaChevronRight } from "react-icons/fa";
+
 import PropTypes from "prop-types";
 import { toast } from "react-toastify";
 import {
@@ -187,14 +189,7 @@ const NavBar = ({ onMobileClose, openMobile, drawerOpen, onToggleDrawer }) => {
                     }}
                   >
                     <ListItemIcon>
-                      <FaCircle
-                        size={8}
-                        color={
-                          activeLeadsSection === item.title
-                            ? "#032E61"
-                            : "#0358AC"
-                        }
-                      />
+                      <FaChevronRight size={12} color="#0358AC" />
                     </ListItemIcon>
                     <ListItemText>{subItem.title}</ListItemText>
                   </ListItem>
