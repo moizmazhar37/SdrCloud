@@ -1,0 +1,28 @@
+.container {
+  display: flex;
+  justify-content: space-between;
+  > button {
+    background-color: #0358ac;
+    color: white;
+    font-size: 14px;
+    border: #0358ac;
+    border-radius: 5px;
+    padding: 14px;
+  }
+}
+
+.backNavigators {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  .navigationText {
+    display: flex;
+    gap: 4px;
+    align-items: baseline;
+  }
+}
+
+.backNavigators p {
+  font-size: 13px;
+  color: gray;
+}
