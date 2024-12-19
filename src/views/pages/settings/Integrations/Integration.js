@@ -106,7 +106,7 @@ const CommonBoxStyle = {
 };
 
 // Integration component manages the display of different integration settings and navigation
-const Integration = ({ settingRoute, handleClick, setSettingRoute }) => {
+const Integration = ({ settingRoute, setSettingRoute }) => {
   const classes = useStyles();
   const [nextRoute, setnextRoutes] = useState("Integrations");
   console.log("nextRoute: ", nextRoute);
@@ -127,9 +127,7 @@ const Integration = ({ settingRoute, handleClick, setSettingRoute }) => {
   return (
     <>
       <Box className={classes.IntegrationContainer}>
-        <Typography>
-
-        </Typography>
+        <Typography></Typography>
         {nextRoute === "Google Sheet" ? (
           <>
             <GoogleSheet
@@ -137,20 +135,19 @@ const Integration = ({ settingRoute, handleClick, setSettingRoute }) => {
               setnextRoutes={setnextRoutes}
               settingRoute={settingRoute}
               setSettingRoute={setSettingRoute}
-              handleClick={handleClick}
+              // handleClick={handleClick}
             />
           </>
         ) : (
           <>
             <Box className="breads">
-
               <Breadcrumbs aria-label="breadcrumb" className="breadcrumb">
                 <Typography variant="body1">
                   <Link
                     color="inherit"
                     to="/settings"
                     component={RouterLink}
-                    onClick={handleClick}
+                    // onClick={handleClick}
                   >
                     Settings
                   </Link>

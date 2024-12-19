@@ -206,7 +206,7 @@ const CustomExpandMoreIcon = styled(ExpandMoreIcon)(({ theme }) => ({
 // Function component for managing Google Sheets
 const GoogleSheet = ({
   nextRoute,
-  handleClick,
+  // handleClick,
   setnextRoutes,
   settingRoute,
   setSettingRoute,
@@ -427,7 +427,7 @@ const GoogleSheet = ({
             setnextRoutes={setnextRoutes}
             nextRoute1={nextRoute1}
             setnextRoutes1={setnextRoutes1}
-            handleClick={handleClick}
+            // handleClick={handleClick}
           />
         ) : (
           <>
@@ -449,7 +449,7 @@ const GoogleSheet = ({
                     <Link
                       color="inherit"
                       href="/settings"
-                      onClick={handleClick}
+                      // onClick={handleClick}
                     >
                       Settings
                     </Link>{" "}
@@ -461,7 +461,7 @@ const GoogleSheet = ({
                     <Link
                       color="inherit"
                       href="/integrations"
-                      onClick={handleClick}
+                      // onClick={handleClick}
                     >
                       Integrations
                     </Link>
