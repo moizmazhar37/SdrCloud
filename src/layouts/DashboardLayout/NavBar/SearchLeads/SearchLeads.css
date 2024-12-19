@@ -3,10 +3,10 @@
   border: 1px solid #ddd;
   border-radius: 15px;
   width: 95%;
-  margin: 20px auto;
+  margin: 12px auto;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding-top: 20px;
-  height: 783px;
+  height: 553px;
   display: flex;
   justify-content: center;
 }
@@ -71,7 +71,7 @@
   max-width: 100%;
   overflow-x: auto;
   overflow-y: auto;
-  max-height: 650px; 
+  max-height: 450px; 
 }
 
 table {

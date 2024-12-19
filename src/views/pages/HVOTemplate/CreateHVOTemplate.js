@@ -384,6 +384,7 @@ const useStyles = makeStyles((theme) => ({
 const CreateHVOTemplate = (props) => {
   const classes = useStyles();
   const history = useHistory();
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [totalPrice, setTotalPrice] = useState(0);
   const [balance, setBalance] = useState(0);
   const user = useContext(UserContext);
@@ -1003,24 +1004,23 @@ const CreateHVOTemplate = (props) => {
                       className="selectitem"
                       id="choose-template"
                       placeholder="Select Category"
-                      value={selectedOption}
+                      value={selectedCategory || "Select Category"}
                       MenuProps={menuProps}
                       onChange={(e) => {
                         handleChangetitle(e);
                         setIsShow(false);
-                        setSelectedOption(e.target.value);
+                        setSelectedCategory(e.target.value);
+                        setSelectedCategoryName(e.target.name);
                       }}
                       IconComponent={ExpandMoreIcon}
+                      // Use renderValue to display the selected category without the delete icon
                       renderValue={(selected) => {
-                        const selectedCategory = Category.find(
-                          (category) => category._id === selected
+                        const selectedData = Category.find(
+                          (item) => item.id === selected
                         );
-                        return (
-                          <div style={{ color: "black" }}>
-                            {selectedCategory?.category_Name ||
-                              "Select Category"}
-                          </div>
-                        );
+                        return selectedData
+                          ? selectedData.category_name
+                          : "Select Category";
                       }}
                     >
                       <MenuItem
@@ -1030,15 +1030,9 @@ const CreateHVOTemplate = (props) => {
                         + Add New Category
                       </MenuItem>
                       {/* <MenuItem value="none" disabled>
-                        Select Category
-                      </MenuItem> */}
-
-                      {Category.filter(
-                        (data) =>
-                          !["Startup", "SMB", "MM", "ENT"].includes(
-                            data.category_name
-                          )
-                      ).map((data, i) => (
+                                            Select Category
+                                          </MenuItem> */}
+                      {Category?.map((data, i) => (
                         <MenuItem
                           divider
                           key={i}
@@ -1053,43 +1047,21 @@ const CreateHVOTemplate = (props) => {
                           name={data?.category_name}
                         >
                           {data?.category_name}
-                          <IconButton
-                            edge="end"
-                            onClick={() => deleteCategory(data?.id)}
-                            disabled={loading}
-                            style={{ marginRight: "20px" }}
-                          >
-                            <DeleteIcon fontSize="small" />
-                          </IconButton>
+
+                          {!["Startup", "SMB", "MM", "ENT"].includes(
+                            data?.category_name
+                          ) && (
+                            <IconButton
+                              edge="end"
+                              onClick={() => deleteCategory(data?.id)}
+                              disabled={loading}
+                              style={{ marginRight: "20px" }}
+                            >
+                              <DeleteIcon fontSize="small" />
+                            </IconButton>
+                          )}
                         </MenuItem>
                       ))}
-
-                      {["Startup", "SMB", "MM", "ENT"].map(
-                        (category_name, i) => {
-                          const category = Category.find(
-                            (cat) => cat.category_name === category_name
-                          );
-                          return (
-                            category && (
-                              <MenuItem
-                                divider
-                                key={`predefined-${i}`}
-                                style={{
-                                  color: "#858585",
-                                  display: "flex",
-                                  justifyContent: "space-between",
-                                  alignItems: "center",
-                                  width: "100%",
-                                }}
-                                value={category.id}
-                                name={category.category_name}
-                              >
-                                {category.category_name}
-                              </MenuItem>
-                            )
-                          );
-                        }
-                      )}
                     </Select>
                   </FormControl>
                 </Box>

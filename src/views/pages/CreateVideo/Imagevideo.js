@@ -403,6 +403,7 @@ const ImageVideo = ({
       console.error("Error uploading file:", error);
     }
   };
+  const [IsUploadedDone, setIsUploadedDone] = useState(false);
 
   const handleDynamicImage = async (e) => {
     const file = e.target.files[0];
@@ -424,6 +425,7 @@ const ImageVideo = ({
 
       setImageURL(public_url);
       toast.success("Image uploaded successfully.");
+      setIsUploadedDone(true);
     } catch (error) {
       console.error(
         "Error uploading file:",
@@ -963,8 +965,7 @@ const ImageVideo = ({
                   }}
                 />
 
-                {/* Display image preview */}
-                {uploadedImageURL && (
+                {uploadedImageURL && IsUploadedDone && (
                   <div style={{ marginTop: "10px" }}>
                     <img
                       src={uploadedImageURL}

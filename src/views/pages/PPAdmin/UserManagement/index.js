@@ -359,7 +359,9 @@ function PPuserlist() {
               <TableContainer>
                 <Table
                   aria-label="simple table"
-                  style={{ border: "1px solid var(--light-stroke, #ECECEC)" }}
+                  style={{
+                    border: "1px solid var(--light-stroke, #ECECEC !important)",
+                  }}
                 >
                   <TableHead>
                     <TableRow style={{ paddingLeft: "15px" }}>
