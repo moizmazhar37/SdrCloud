@@ -22,7 +22,7 @@ import {
   FormControl,
   styled,
 } from "@material-ui/core";
-import GoogleSheetConnection from "./GoogleSheetConnection";
+import GoogleSheetConnection from "./EditGoogleSheet/GoogleSheetConnection";
 import Link from "@material-ui/core/Link";
 import axios from "axios";
 import ApiConfig from "src/config/APIConfig";
