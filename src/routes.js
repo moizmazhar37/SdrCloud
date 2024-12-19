@@ -251,6 +251,14 @@ export const routes = [
 
   {
     exact: true,
+    path: "/new-settings",
+    guard: true,
+    layout: DashboardLayout,
+    component: lazy(() => import("src/views/pages/NewSettings/Settings")),
+  },
+
+  {
+    exact: true,
     path: "/intent",
     guard: true,
     layout: DashboardLayout,
