@@ -19,20 +19,20 @@ function GoogleSheets() {
 
   const handleCancel = () => {
     setIsModalOpen(false);
-    setSelectedRow(null); 
+    setSelectedRow(null);
   };
 
   const handleDeleteRow = async () => {
     if (selectedRow) {
-      await deleteGoogleSheet(selectedRow.id); 
+      await deleteGoogleSheet(selectedRow.id);
       setIsModalOpen(false);
       setSelectedRow(null);
     }
   };
 
   const handleDelete = (row) => {
-    setSelectedRow(row); 
-    setIsModalOpen(true); 
+    setSelectedRow(row);
+    setIsModalOpen(true);
   };
 
   if (loading || isLoading) {
@@ -112,8 +112,24 @@ function GoogleSheets() {
         <div className={styles.backNavigators}>
           <FontAwesomeIcon icon={faArrowLeft} color="#0358AC" />
           <div className={styles.navigationText}>
-            <p>Settings</p> / <p>Integration</p> /{" "}
-            <p style={{ color: "#0358AC" }}>Google Sheet</p>
+            <p
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                history.push("/settings");
+              }}
+            >
+              Settings
+            </p>{" "}
+            /{" "}
+            <p
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                history.push("/integrations");
+              }}
+            >
+              Integration
+            </p>{" "}
+            / <p style={{ color: "#0358AC" }}>Google Sheet</p>
           </div>
         </div>
         <button>Create New Google Sheet Connection</button>
