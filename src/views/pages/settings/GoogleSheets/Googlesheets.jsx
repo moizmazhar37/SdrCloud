@@ -7,46 +7,26 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Dropdown from "../../../../Common/Dropdown/Dropdown";
 import { faArrowLeft, faCircle } from "@fortawesome/free-solid-svg-icons";
 import styles from "./googlesheets.module.scss";
-import { useGoogleSheetsData } from "./hooks";
+import { useGoogleSheetsData, useDeleteGoogleSheet } from "./hooks";
 import WarningModal from "../../../../Common/Modal/Modal";
-import axios from "axios";
-import ApiConfig from "../../../../config/APIConfig";
 
 function GoogleSheets() {
   const history = useHistory();
-  const [isLoading, setIsLoading] = useState(false);
-  const { data, loading, error } = useGoogleSheetsData();
+  const { data, loading, error, fetchData } = useGoogleSheetsData();
+  const { deleteGoogleSheet, isLoading } = useDeleteGoogleSheet(fetchData);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedRow, setSelectedRow] = useState(null); // Track selected row for deletion
+  const [selectedRow, setSelectedRow] = useState(null);
 
   const handleCancel = () => {
     setIsModalOpen(false);
-    setSelectedRow(null); // Reset the selected row
+    setSelectedRow(null); 
   };
 
   const handleDeleteRow = async () => {
-    if (!selectedRow) return; // Ensure a row is selected
-    setIsLoading(true);
-    try {
-      const response = await axios({
-        url: `${ApiConfig.googleSheet}/${selectedRow.id}`,
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      if (response?.status === 200) {
-        toast.success("Sheet Deleted Successfully.");
-        // Optionally refresh the data or remove the row from state
-      } else {
-        toast.error("Failed to delete the sheet. Please try again.");
-      }
-    } catch (error) {
-      toast.error("An error occurred while deleting the sheet.");
-    } finally {
-      setIsLoading(false);
+    if (selectedRow) {
+      await deleteGoogleSheet(selectedRow.id); 
       setIsModalOpen(false);
-      setSelectedRow(null); 
+      setSelectedRow(null);
     }
   };
 
@@ -55,7 +35,7 @@ function GoogleSheets() {
     setIsModalOpen(true); 
   };
 
-  if (loading) {
+  if (loading || isLoading) {
     return <FullScreenLoader />;
   }
 
@@ -146,7 +126,7 @@ function GoogleSheets() {
       <WarningModal
         isOpen={isModalOpen}
         onCancel={handleCancel}
-        onDelete={handleDeleteRow} 
+        onDelete={handleDeleteRow}
       />
     </>
   );
