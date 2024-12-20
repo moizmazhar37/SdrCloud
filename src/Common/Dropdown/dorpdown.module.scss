@@ -1,6 +1,8 @@
 .container {
+  position: relative; /* Establish relative positioning for dropdown positioning */
   display: flex;
   flex-direction: column;
+  cursor:pointer;
 }
 
 .trigger {
@@ -11,6 +13,8 @@
   max-width: 7rem;
   padding: 0.5rem 1rem;
   font-size: 0.875rem;
+  cursor:pointer;
+
 
   color: #374151;
   background-color: white;
@@ -21,6 +25,8 @@
 
   &:hover {
     background-color: #f9fafb;
+    cursor:pointer;
+
   }
 }
 
@@ -41,11 +47,15 @@
 }
 
 .menu {
+  position: absolute;
+  top: 100%; 
+  left: 0;
+  z-index: 9999; 
   width: 7rem;
-  margin-top: -1px;
+  margin-top: 0.5rem;
   background-color: white;
   border-radius: 0.375rem;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.06);
 
   .option {
     display: flex;
@@ -55,15 +65,14 @@
     color: #374151;
     background-color: white;
     border: 1px solid #e5e7eb;
+    border-bottom: 0.2px solid rgba(221, 221, 221, 0.1);
     width: 100%;
-    font-size: 12px;
     text-align: left;
     cursor: pointer;
     transition: all 0.2s ease;
 
     &:hover {
       background-color: #f9fafb;
-      width: 100%;
     }
 
     &:first-child {
