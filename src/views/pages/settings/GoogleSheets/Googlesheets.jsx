@@ -1,4 +1,5 @@
 import React from "react";
+import { useHistory } from "react-router-dom";  
 import Table from "./Table/Table";
 import FullScreenLoader from "../../../../component/FullScreenLoader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -8,6 +9,7 @@ import styles from "./googlesheets.module.scss";
 import useGoogleSheetsData from "./hooks";
 
 function GoogleSheets() {
+  const history = useHistory();  
   const { data, loading, error } = useGoogleSheetsData();
 
   if (loading) {
@@ -16,9 +18,14 @@ function GoogleSheets() {
 
   if (error) return <div>Error Fetching Data. Try reloading!</div>;
 
-  const handleView = (row) => console.log("View clicked", row);
-  const handleEdit = (row) => console.log("Edit clicked", row);
-  const handleDelete = (row) => console.log("Delete clicked", row);
+  const handleEdit = (row) => {
+    console.log("Edit clicked", row.id);
+    history.push(`/editSheets/${row.id}`);  
+  };
+
+  const handleDelete = (row) => {
+    console.log("Delete clicked", row);
+  };
 
   const transformedData = data?.map((row) => ({
     ...row,
@@ -53,7 +60,7 @@ function GoogleSheets() {
     actions: (
       <Dropdown
         options={[
-          { label: "View", onClick: () => handleView(row) },
+          { label: "View", onClick: () => handleEdit(row) },
           { label: "Edit", onClick: () => handleEdit(row) },
           { label: "Delete", onClick: () => handleDelete(row) },
         ]}
@@ -70,11 +77,10 @@ function GoogleSheets() {
     { key: "status", label: "Assigned" },
     { key: "total_records", label: "Total Records" },
     { key: "recent", label: "Recent" },
-    { key: "actions", label: "Actions" }, // Added Actions column
+    { key: "actions", label: "Actions" },
   ];
 
-  const handleColumnClick = (row, columnKey) => {
-    console.log(`Clicked on ${columnKey} of row:`, row);
+  const handleColumnClick = (row, columnKey) => {    history.push(`/editSheets/${row.id}`);  
   };
 
   return (
