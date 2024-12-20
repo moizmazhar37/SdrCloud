@@ -370,36 +370,7 @@ const GoogleSheet = ({
       handleDeleteClose();
     }
   };
-  const disconnectSheet = async () => {
-    setLoading(true);
-    try {
-      const response = await axios({
-        url: ApiConfig.disconnectSheet,
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          userId: localStorage.getItem("_id"),
-        },
-        params: {
-          sheetId: disconnectSheetId,
-        },
-      });
-      if (response?.data.status === 200) {
-        setLoading(false);
-        toast.success("Sheet Successfully Disconnected.");
-      } else {
-        setLoading(false);
-      }
-    } catch (error) {
-      setLoading(false);
-      toast.error(error.response.message);
-    }
-  };
-  // Function to handle closing of dialog
-  const handleClose = () => {
-    setAnchorEl(null);
-    setSelectedUserId(null);
-  };
+
   // Function to handle closing of delete dialog
   const handleAssignClose = () => {
     setAssignOpen(false);

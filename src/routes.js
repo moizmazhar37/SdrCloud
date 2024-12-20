@@ -280,6 +280,17 @@ export const routes = [
       import("src/views/pages/settings/Integrations/Integration")
     ),
   },
+
+  {
+    exact: true,
+    path: "/googlesheets",
+    guard: true,
+    layout: DashboardLayout,
+    component: lazy(() =>
+      import("src/views/pages/settings/GoogleSheets/Googlesheets")
+    ),
+  },
+
   // {
   //   exact: true,
   //   path: "/integrations/google-sheet",
