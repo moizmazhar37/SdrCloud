@@ -1,9 +1,8 @@
-// hooks.js
 import { useState, useEffect } from "react";
 import axios from "axios";
 import ApiConfig from "../../../../config/APIConfig";
 
-const useGoogleSheetsData = () => {
+export const useGoogleSheetsData = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -36,4 +35,3 @@ const useGoogleSheetsData = () => {
   return { data, loading, error };
 };
 
-export default useGoogleSheetsData;

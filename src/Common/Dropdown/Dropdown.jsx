@@ -1,4 +1,3 @@
-// Dropdown.jsx
 import React, { useState, useRef, useEffect } from "react";
 import styles from "./dorpdown.module.scss";
 
