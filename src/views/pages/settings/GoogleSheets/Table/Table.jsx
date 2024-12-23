@@ -36,6 +36,7 @@ const Table = ({ data = [], columns = [], onColumnClick }) => {
   }
 
   return (
+    <>
     <div className={styles.tableContainer}>
       <div className={styles.tableWrapper}>
         <table className={styles.table}>
@@ -68,6 +69,7 @@ const Table = ({ data = [], columns = [], onColumnClick }) => {
         </table>
       </div>
     </div>
+    </>
   );
 };
 

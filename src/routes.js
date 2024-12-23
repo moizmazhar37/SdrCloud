@@ -362,7 +362,7 @@ export const routes = [
 
   {
     exact: true,
-    path: "/editSheets",
+    path: "/editSheets/:sheetid",
     guard: true,
     layout: DashboardLayout,
     component: lazy(() =>
