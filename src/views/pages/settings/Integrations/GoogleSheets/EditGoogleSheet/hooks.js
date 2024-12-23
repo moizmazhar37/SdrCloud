@@ -3,41 +3,9 @@ import axios from "axios";
 import ApiConfig from "src/config/APIConfig";
 import { toast } from "react-toastify";
 
-export const useGoogleSheetViewData = (sheetId) => {
-    const [data, setData] = useState(null);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-
-    const fetchData = async () => {
-        setLoading(true);
-        setError(null);
-        try {
-            const response = await axios({
-                url: `${ApiConfig.googleSheet}/${sheetId}`,
-                method: "GET",
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
-            });
-            setData(response.data);
-        } catch (err) {
-            toast.error(err?.response?.data?.message || "Something went wrong");
-            setError(err);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-            fetchData();
-    }, []);
-
-    return { data, loading, error, fetchData };
-};
-
 // Hook for fetching sheet types
 export const useGoogleSheetTypes = (sheetId) => {
-    const [sheetData, setSheetData] = useState(null);
+    const [data, setData] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
@@ -52,7 +20,7 @@ export const useGoogleSheetTypes = (sheetId) => {
                     Authorization: `Bearer ${localStorage.getItem("token")}`,
                 },
             });
-            setSheetData(res.data);
+            setData(res.data);
         } catch (error) {
             toast.error(error?.response?.data?.message || "Something went wrong");
             setError(error);
@@ -65,7 +33,7 @@ export const useGoogleSheetTypes = (sheetId) => {
             getAllSheet();
     }, []);
 
-    return { sheetData, loading, error, getAllSheet };
+    return { data, loading, error, getAllSheet };
 };
 
 

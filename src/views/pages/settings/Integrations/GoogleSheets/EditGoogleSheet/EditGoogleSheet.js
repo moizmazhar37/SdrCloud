@@ -48,7 +48,9 @@ function EditGoogleSheet(props) {
   ];
 
 
-  const { sheetData, loading, error } = useGoogleSheetTypes(sheetid);
+  const { data, loading, error } = useGoogleSheetTypes(sheetid);
+  const sheetData = data?.headers_with_data_types
+  const viewData = data?.google_sheet_response;
 
 
   return (
@@ -71,7 +73,7 @@ function EditGoogleSheet(props) {
         <Form>
           <div className={styles.container}>
             <div className={styles.leftColumn}>
-              <SheetDetails sheetid={sheetid} />
+              <SheetDetails viewData = {viewData} />
             </div>
 
             <div className={styles.rightColumn}>

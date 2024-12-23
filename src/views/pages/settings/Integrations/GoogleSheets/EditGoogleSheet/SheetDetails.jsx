@@ -1,4 +1,3 @@
-import {useGoogleSheetViewData} from './hooks';
 import styles from './sheet-details.module.scss'
 
 const SheetDetails = (props) => {
@@ -30,11 +29,10 @@ const SheetDetails = (props) => {
         }
         return value; 
     };
+    
+    const viewData = props.viewData || {};
 
-    const data = useGoogleSheetViewData(props.sheetid);
-    const data_new = data?.data || {};
-
-    const filteredData = Object.entries(data_new).filter(([key]) => displayNames[key]);
+    const filteredData = Object.entries(viewData).filter(([key]) => displayNames[key]);
 
     return (
         <div>
@@ -79,7 +77,7 @@ const SheetDetails = (props) => {
                         <td className={styles.column}>
                             <p className={styles.title}>Select Sheet Type</p>
                             <select className={styles.dropdown} disabled>
-                                <option value={data_new.sheet_type}>{data_new.sheet_type || "N/A"}</option>
+                                <option value={viewData.sheet_type}>{viewData.sheet_type || "N/A"}</option>
                             </select>
                         </td>
                     </tr>
