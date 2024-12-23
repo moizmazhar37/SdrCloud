@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { useGetAllUsers, useFetchSheet } from "./hooks";
-import DynamicNavigator from "../../../../../Common/DynamicNavigator/DynamicNavigator";
+import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
 import styles from "./newSheet.module.scss";
 import { toast } from "react-toastify";
+import FullScreenLoader from "src/component/FullScreenLoader";
 
 const NewSheet = () => {
   const { data: users, loading: usersLoading, error: usersError } = useGetAllUsers();
@@ -45,8 +46,8 @@ const NewSheet = () => {
     <>
     <DynamicNavigator items={routes}/>
     <div className={styles.container}>
-      {(usersLoading || sheetLoading) && <div>Loading...</div>}
-      {usersError && <div>Error loading users: {usersError.message}</div>}
+      {(usersLoading || sheetLoading) && <FullScreenLoader/>}
+      
 
       <div className={styles.field}>
         <div className={styles.label}>Select User</div>
@@ -76,6 +77,8 @@ const NewSheet = () => {
             onChange={(e) => setSheetType(e.target.value)}
           >
             <option value="VIDEO">VIDEO</option>
+            <option value="HVO">HVO</option>
+
           </select>
         </div>
       </div>

@@ -5,6 +5,7 @@ import SheetDetails from "./SheetDetails";
 import styles from "./sheet-details.module.scss";
 import { useGoogleSheetTypes, useSaveGoogleSheetTypes } from "./hooks";
 import FullScreenLoader from "src/component/FullScreenLoader";
+import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
 import { hvoTypes, videoTypes } from "./types";
 
 function EditGoogleSheet() {
@@ -14,7 +15,11 @@ function EditGoogleSheet() {
   const [updatedData, setUpdatedData] = useState([]);
 
   const { data, loading, error } = useGoogleSheetTypes(sheetid);
-  const { saveSheetTypes, loading: saving, error: saveError } = useSaveGoogleSheetTypes();
+  const {
+    saveSheetTypes,
+    loading: saving,
+    error: saveError,
+  } = useSaveGoogleSheetTypes();
 
   const sheetData = data?.headers_with_data_types;
   const viewData = data?.google_sheet_response;
@@ -48,18 +53,20 @@ function EditGoogleSheet() {
   };
 
   const handleEditToggle = async () => {
-    isEditing && await saveSheetTypes(sheetid, updatedData);
+    isEditing && (await saveSheetTypes(sheetid, updatedData));
     setIsEditing((prevState) => !prevState);
   };
+
+  const navs = [
+    { text: "Settings", route: "/settings" },
+    { text: "Integration", route: "/integrations" },
+  ];
 
   return (
     <>
       {loading && <FullScreenLoader />}
       <div className={styles.breadcrumbNav}>
-        <span className={styles.headText}>Settings /</span>
-        <span className={styles.headText}>Integrations /</span>
-        <span className={styles.headText}>Google Sheets /</span>
-        <span className={styles.fallbackText}>Sheet Details</span>
+        <DynamicNavigator items={navs} />{" "}
       </div>
       <Formik
         initialValues={{

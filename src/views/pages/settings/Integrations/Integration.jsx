@@ -1,5 +1,6 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
+import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import styles from "./integration.module.scss";
@@ -15,11 +16,14 @@ const Integration = () => {
     { name: "Salesforce", status: "Disabled", path: "#" },
   ];
 
+  const navs = [{text:"Settings" , route:"/settings"},
+    {text:"Integration" , route:"/integrations"}
+  ];
+
   return (
     <div className={styles.container}>
       <div className={styles.breadcrumbNav}>
-        <span className={styles.headText}>Settings /</span>
-        <span className={styles.fallbackText}>Integrations</span>
+        <DynamicNavigator items={navs}/>
       </div>
       <table className={styles.table}>
         <thead>
