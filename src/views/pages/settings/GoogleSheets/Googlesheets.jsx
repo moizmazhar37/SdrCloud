@@ -5,10 +5,11 @@ import Table from "./Table/Table";
 import FullScreenLoader from "../../../../component/FullScreenLoader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Dropdown from "../../../../Common/Dropdown/Dropdown";
-import { faArrowLeft, faCircle } from "@fortawesome/free-solid-svg-icons";
+import { faCircle } from "@fortawesome/free-solid-svg-icons";
 import styles from "./googlesheets.module.scss";
 import { useGoogleSheetsData, useDeleteGoogleSheet } from "./hooks";
 import WarningModal from "../../../../Common/Modal/Modal";
+import DynamicNavigator from "../../../../Common/DynamicNavigator/DynamicNavigator"; // Adjust the import path as needed
 
 function GoogleSheets() {
   const history = useHistory();
@@ -16,6 +17,12 @@ function GoogleSheets() {
   const { deleteGoogleSheet, isLoading } = useDeleteGoogleSheet(fetchData);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
+
+  const navigationItems = [
+    { text: "Settings", route: "/settings" },
+    { text: "Integration", route: "/integrations" },
+    { text: "Google Sheet", route: "/integrations/google-sheet" }
+  ];
 
   const handleCancel = () => {
     setIsModalOpen(false);
@@ -35,9 +42,9 @@ function GoogleSheets() {
     setIsModalOpen(true);
   };
 
-  const handleNewSheet=()=>{
-    history.push("/addsheet")
-  }
+  const handleNewSheet = () => {
+    history.push("/addsheet");
+  };
 
   if (loading || isLoading) {
     return <FullScreenLoader />;
@@ -113,29 +120,7 @@ function GoogleSheets() {
   return (
     <>
       <div className={styles.container}>
-        <div className={styles.backNavigators}>
-          <FontAwesomeIcon icon={faArrowLeft} color="#0358AC" />
-          <div className={styles.navigationText}>
-            <p
-              style={{ cursor: "pointer" }}
-              onClick={() => {
-                history.push("/settings");
-              }}
-            >
-              Settings
-            </p>{" "}
-            /{" "}
-            <p
-              style={{ cursor: "pointer" }}
-              onClick={() => {
-                history.push("/integrations");
-              }}
-            >
-              Integration
-            </p>{" "}
-            / <p style={{ color: "#0358AC" }}>Google Sheet</p>
-          </div>
-        </div>
+        <DynamicNavigator items={navigationItems} />
         <button onClick={handleNewSheet}>Create New Google Sheet Connection</button>
       </div>
       <Table

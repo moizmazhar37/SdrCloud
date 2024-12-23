@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useGetAllUsers, useFetchSheet } from "./hooks";
+import DynamicNavigator from "../../../../../Common/DynamicNavigator/DynamicNavigator";
 import styles from "./newSheet.module.scss";
 import { toast } from "react-toastify";
 
@@ -33,8 +34,16 @@ const NewSheet = () => {
       toast.error(error?.response?.data?.detail || "Error fetching sheet.");
     }
   };
+  const routes = [
+    { text: 'Settings', route: '/settings' },
+    { text: 'Integration', route: '/integrations' },
+    { text: 'Google Sheet', route: '/googlesheets' },
+    { text: 'Create New', route: '/create-new' },
+  ];
 
   return (
+    <>
+    <DynamicNavigator items={routes}/>
     <div className={styles.container}>
       {(usersLoading || sheetLoading) && <div>Loading...</div>}
       {usersError && <div>Error loading users: {usersError.message}</div>}
@@ -101,6 +110,7 @@ const NewSheet = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 
