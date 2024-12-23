@@ -35,6 +35,10 @@ function GoogleSheets() {
     setIsModalOpen(true);
   };
 
+  const handleNewSheet=()=>{
+    history.push("/addsheet")
+  }
+
   if (loading || isLoading) {
     return <FullScreenLoader />;
   }
@@ -132,7 +136,7 @@ function GoogleSheets() {
             / <p style={{ color: "#0358AC" }}>Google Sheet</p>
           </div>
         </div>
-        <button>Create New Google Sheet Connection</button>
+        <button onClick={handleNewSheet}>Create New Google Sheet Connection</button>
       </div>
       <Table
         data={transformedData}

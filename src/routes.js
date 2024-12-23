@@ -290,6 +290,17 @@ export const routes = [
       import("src/views/pages/settings/GoogleSheets/Googlesheets")
     ),
   },
+  
+  {
+    exact: true,
+    path: "/addsheet",
+    guard: true,
+    layout: DashboardLayout,
+    component: lazy(() =>
+      import("src/views/pages/settings/Integrations/AddNewSheet/NewSheet")
+    ),
+  },
+
 
   // {
   //   exact: true,
