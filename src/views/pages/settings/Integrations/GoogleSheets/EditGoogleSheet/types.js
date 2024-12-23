@@ -1,0 +1,30 @@
+export const hvoTypes = [
+    "Image URL",
+    "Logo",
+    "Customer organization",
+    "First name",
+    "Last name",
+    "Screenshot from URL",
+    "Text",
+    "URL",
+    "Email (Required)",
+    "Error (Required)",
+    "HVO URL (Required)",
+    "Status (Required)",
+];
+
+export const videoTypes = [
+    "Customer id (Required)",
+    "Customer organization (Required)",
+    "Dynamic URL",
+    "First name (Required)",
+    "Last name",
+    "Image URL",
+    "Static URL",
+    "Text",
+    "Video URL",
+    "Email (Required)",
+    "Error (Required)",
+    "Final video URL (Required)",
+    "Status (Required)",
+];
