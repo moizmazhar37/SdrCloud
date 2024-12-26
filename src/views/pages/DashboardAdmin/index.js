@@ -488,6 +488,55 @@ function NoProjects() {
     UserMediaCredits();
   }, []);
 
+  
+  const getCSVData = async () => {
+    setLoading(true);
+    try {
+      const res = await axios({
+        method: "GET",
+        url: `${ApiConfig.mainDashboard}/user-transactions`,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+  
+      setLoading(false);
+  
+      // Prepare CSV data
+      const transactions = res.data.transactions;
+      if (transactions && transactions.length > 0) {
+        const headers = Object.keys(transactions[0]); // Use keys from the first object as headers
+        const csvRows = [
+          headers.join(","), 
+          ...transactions.map((transaction) =>
+            headers.map((header) => JSON.stringify(transaction[header] || "")).join(",") 
+          ),
+        ];
+  
+        const csvString = csvRows.join("\n");
+
+        const blob = new Blob([csvString], { type: "text/csv" });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "transactions.csv";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      } else {
+        console.warn("No transactions available for CSV export.");
+      }
+    } catch (error) {
+      setLoading(false);
+      console.error("Error fetching sheet counts:", error);
+      throw error;
+    }
+  };
+  
+  
+
+
   const adminCount = async () => {
     const token = window?.localStorage?.getItem("token");
     const accountId = window?.localStorage?.getItem("accountId");
@@ -537,173 +586,166 @@ function NoProjects() {
   }, []);
 
   return (
-    <Box style={{ marginLeft: "8px" }} mt={1}>
-      <Grid container xs={12} justifyContent="space-between">
-        <Grid
-          container
-          spacing={2}
-          lg={5}
-          md={6}
-          sm={12}
-          xs={12}
-          className={classes.secondBox}
+    <>
+      <div
+        style={{
+          padding: "20px",
+          display: "flex",
+          gap: "18px",
+          justifyContent: "flex-end",
+        }}
+      >
+        <p style={{ color: "#272D37", fontSize: "13px" }}>
+          {" "}
+          Transaction Report History
+        </p>
+        <button
+          style={{
+            backgroundColor: "#0358AC",
+            cursor: "pointer",
+            width: "10%",
+            padding: "16px",
+            minWidth: "120px",
+            color: "white",
+            justifyContent: "center",
+            border: "none",
+            display: "flex",
+            borderRadius: "6px",
+          }}
+          onClick={getCSVData}
         >
-          {/* //================================Here to integrate credits api====================================== */}
-          <Grid container xs={12} className="subSecondBox">
-            <Grid item xs={12} md={6}>
-              <Box className="CommanBox" style={{ height: "100px" }}>
-                <Typography variant="h5">Your package</Typography>
-                <Typography variant="h3" className="EnterpriseTxt">
-                  {PackageName}
-                </Typography>
-                <Typography variant="body1" style={{ fontWeight: "500" }}>
-                  {mediaCredits} Media Credits
-                </Typography>
-              </Box>
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <Box
-                className="CommanBox"
-                style={{ height: "100px", justifyContent: "start" }}
-              >
-                <Box className="MediaCreditBox">
-                  <img
-                    src="/images/Totalseat.png"
-                    alt="Active"
-                    className="Totalseat"
-                  />
-                  <Typography variant="body1">Total Sheets</Typography>
-                </Box>
-
-                {sheetCount + 1 && (
-                  <Typography variant="h3" style={{ fontSize: "18px" }}>
-                    {sheetCount}
+          Download
+        </button>
+      </div>
+      <Box style={{ marginLeft: "8px" }} mt={1}>
+        <Grid container xs={12} justifyContent="space-between">
+          <Grid
+            container
+            spacing={2}
+            lg={5}
+            md={6}
+            sm={12}
+            xs={12}
+            className={classes.secondBox}
+          >
+            {/* //================================Here to integrate credits api====================================== */}
+            <Grid container xs={12} className="subSecondBox">
+              <Grid item xs={12} md={6}>
+                <Box className="CommanBox" style={{ height: "100px" }}>
+                  <Typography variant="h5">Your package</Typography>
+                  <Typography variant="h3" className="EnterpriseTxt">
+                    {PackageName}
                   </Typography>
-                )}
-              </Box>
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <Box className="CommanBox" style={{ height: "100px" }}>
-                <Box className="MediaCreditBox">
-                  <img
-                    src="/images/MediaCredit.png"
-                    alt="MediaCredit"
-                    className="MediaCreditimg"
-                  />
-                  <Typography variant="body1">Monthly Media Credits</Typography>
+                  <Typography variant="body1" style={{ fontWeight: "500" }}>
+                    {mediaCredits} Media Credits
+                  </Typography>
                 </Box>
-                <Typography variant="h2" style={{ fontSize: "16px" }}>
-                  {adminCounting?.mediaDetails?.used}{" "}
-                  <span style={{ fontSize: "14px", color: "#858585" }}>
-                    of {adminCounting?.mediaDetails?.totalMediaCredits} used
-                  </span>
-                </Typography>
-                <BorderLinearProgress
-                  variant="determinate"
-                  value={40}
-                  color={"#3A75AF"}
-                />
-              </Box>
-            </Grid>
+              </Grid>
 
-            <Grid item xs={12} md={6}>
-              <Box className="CommanBox" style={{ height: "100px" }}>
-                <Box className="MediaCreditBox">
-                  <img
-                    src="/images/Active.png"
-                    alt="Active"
-                    className="MediaCreditimg"
-                  />
-                  <Typography variant="body1">Active Media Limit</Typography>
+              <Grid item xs={12} md={6}>
+                <Box
+                  className="CommanBox"
+                  style={{ height: "100px", justifyContent: "start" }}
+                >
+                  <Box className="MediaCreditBox">
+                    <img
+                      src="/images/Totalseat.png"
+                      alt="Active"
+                      className="Totalseat"
+                    />
+                    <Typography variant="body1">Total Sheets</Typography>
+                  </Box>
+
+                  {sheetCount + 1 && (
+                    <Typography variant="h3" style={{ fontSize: "18px" }}>
+                      {sheetCount}
+                    </Typography>
+                  )}
                 </Box>
-                <Typography variant="h2" style={{ fontSize: "16px" }}>
-                  {mediaCredits}{" "}
-                  <span style={{ fontSize: "14px", color: "#858585" }}>
-                    of {activeMedaLimit} used
-                  </span>
-                </Typography>
-                <BorderLinearProgress1
-                  variant="determinate"
-                  value={50}
-                  color={"#FFC047"}
-                />
-              </Box>
-            </Grid>
+              </Grid>
 
-            <Grid item xs={12}>
-              <Box
-                className="CommanBox"
-                style={{ height: "100%", maxHeight: "21px", padding: "12px" }}
-              >
-                <Typography variant="body1" style={{ fontWeight: "500" }}>
-                  You have{" "}
-                  <span style={{ color: "var(--blue, #0358AC)" }}>
-                    {adminCounting?.mediaDetails?.unusedMediaCredits}{" "}
-                  </span>
-                  <span style={{ color: "red" }}> Unused Sheets</span> Media
-                  Credits
-                </Typography>
-              </Box>
+              <Grid item xs={12} md={6}>
+                <Box className="CommanBox" style={{ height: "100px" }}>
+                  <Box className="MediaCreditBox">
+                    <img
+                      src="/images/MediaCredit.png"
+                      alt="MediaCredit"
+                      className="MediaCreditimg"
+                    />
+                    <Typography variant="body1">
+                      Monthly Media Credits
+                    </Typography>
+                  </Box>
+                  <Typography variant="h2" style={{ fontSize: "16px" }}>
+                    {adminCounting?.mediaDetails?.used}{" "}
+                    <span style={{ fontSize: "14px", color: "#858585" }}>
+                      of {adminCounting?.mediaDetails?.totalMediaCredits} used
+                    </span>
+                  </Typography>
+                  <BorderLinearProgress
+                    variant="determinate"
+                    value={40}
+                    color={"#3A75AF"}
+                  />
+                </Box>
+              </Grid>
+
+              <Grid item xs={12} md={6}>
+                <Box className="CommanBox" style={{ height: "100px" }}>
+                  <Box className="MediaCreditBox">
+                    <img
+                      src="/images/Active.png"
+                      alt="Active"
+                      className="MediaCreditimg"
+                    />
+                    <Typography variant="body1">Active Media Limit</Typography>
+                  </Box>
+                  <Typography variant="h2" style={{ fontSize: "16px" }}>
+                    {mediaCredits}{" "}
+                    <span style={{ fontSize: "14px", color: "#858585" }}>
+                      of {activeMedaLimit} used
+                    </span>
+                  </Typography>
+                  <BorderLinearProgress1
+                    variant="determinate"
+                    value={50}
+                    color={"#FFC047"}
+                  />
+                </Box>
+              </Grid>
+
+              <Grid item xs={12}>
+                <Box
+                  className="CommanBox"
+                  style={{ height: "100%", maxHeight: "21px", padding: "12px" }}
+                >
+                  <Typography variant="body1" style={{ fontWeight: "500" }}>
+                    You have{" "}
+                    <span style={{ color: "var(--blue, #0358AC)" }}>
+                      {adminCounting?.mediaDetails?.unusedMediaCredits}{" "}
+                    </span>
+                    <span style={{ color: "red" }}> Unused Sheets</span> Media
+                    Credits
+                  </Typography>
+                </Box>
+              </Grid>
             </Grid>
           </Grid>
-        </Grid>
 
-        <Grid
-          container
-          spacing={2}
-          lg={4}
-          md={6}
-          sm={12}
-          xs={12}
-          className={classes.displayFlexColumn}
-        >
-          <Grid container xs={12} className={classes.border}>
-            <Grid
-              item
-              xs={7}
-              className="TotalUserBox d-flex justify-space-between border"
-            >
-              <Typography
-                variant="body1"
-                className="d-flex justify-start"
-                style={{ gap: "12px" }}
-              >
-                <img src="images/users.png" alt="" />
-                Total Users
-              </Typography>
-              <Typography variant="h2">{totalUsersCount}</Typography>
-              {/* //----------------------------------------total users --call api here------------------------------------------------------------------------- */}
-            </Grid>
-
-            <Grid
-              item
-              xs={5}
-              className="d-flex column justify-space-between alignstart"
-              style={{
-                gap: "8px",
-                padding: "0 0 0 8px",
-                width: "122px",
-                marginTop: "5px",
-                marginBottom: "5px",
-              }}
-            >
+          <Grid
+            container
+            spacing={2}
+            lg={4}
+            md={6}
+            sm={12}
+            xs={12}
+            className={classes.displayFlexColumn}
+          >
+            <Grid container xs={12} className={classes.border}>
               <Grid
                 item
-                xs={12}
-                className="d-flex column justify-space-between alignstart border"
-              >
-                <Typography variant="body1" className="d-flex justify-start">
-                  <img src="images/users.png" alt="" />
-                  Admins
-                </Typography>
-                <Typography variant="h2">{adminsCount}</Typography>
-              </Grid>
-              <Grid
-                item
-                xs={12}
-                className="d-flex column justify-space-between alignstart border"
+                xs={7}
+                className="TotalUserBox d-flex justify-space-between border"
               >
                 <Typography
                   variant="body1"
@@ -711,237 +753,281 @@ function NoProjects() {
                   style={{ gap: "12px" }}
                 >
                   <img src="images/users.png" alt="" />
-                  Users
+                  Total Users
                 </Typography>
-                <Typography variant="h2">
-                  {formatNumber(endUsersCount || 0)}
-                </Typography>
+                <Typography variant="h2">{totalUsersCount}</Typography>
+                {/* //----------------------------------------total users --call api here------------------------------------------------------------------------- */}
+              </Grid>
+
+              <Grid
+                item
+                xs={5}
+                className="d-flex column justify-space-between alignstart"
+                style={{
+                  gap: "8px",
+                  padding: "0 0 0 8px",
+                  width: "122px",
+                  marginTop: "5px",
+                  marginBottom: "5px",
+                }}
+              >
+                <Grid
+                  item
+                  xs={12}
+                  className="d-flex column justify-space-between alignstart border"
+                >
+                  <Typography variant="body1" className="d-flex justify-start">
+                    <img src="images/users.png" alt="" />
+                    Admins
+                  </Typography>
+                  <Typography variant="h2">{adminsCount}</Typography>
+                </Grid>
+                <Grid
+                  item
+                  xs={12}
+                  className="d-flex column justify-space-between alignstart border"
+                >
+                  <Typography
+                    variant="body1"
+                    className="d-flex justify-start"
+                    style={{ gap: "12px" }}
+                  >
+                    <img src="images/users.png" alt="" />
+                    Users
+                  </Typography>
+                  <Typography variant="h2">
+                    {formatNumber(endUsersCount || 0)}
+                  </Typography>
+                </Grid>
               </Grid>
             </Grid>
           </Grid>
-        </Grid>
 
-        <Grid
-          container
-          lg={3}
-          md={6}
-          sm={12}
-          xs={12}
-          className={classes.thirdBox}
-        >
-          <Grid container xs={12} className="subThirdBox">
-            <Grid
-              item
-              xs={12}
-              className="d-flex column border subUpperBox subBoxes"
-            >
-              <Typography variant="h6">Your Top Performing</Typography>
-              <Typography variant="h3">Templates</Typography>
-            </Grid>
-            {topTemplate?.slice(0, 3).map((item, index) => (
+          <Grid
+            container
+            lg={3}
+            md={6}
+            sm={12}
+            xs={12}
+            className={classes.thirdBox}
+          >
+            <Grid container xs={12} className="subThirdBox">
               <Grid
                 item
                 xs={12}
-                className="d-flex column border alignstart subBoxes"
-                key={item?._id}
+                className="d-flex column border subUpperBox subBoxes"
               >
-                <Typography variant="body1">
-                  Template Name : {item?.templateName}
-                </Typography>
-                <Box className="d-flex justify-space-between fullwidth">
-                  <Typography variant="h6" style={{ fontSize: "13px" }}>
-                    Template Type : {item?.templateType} &nbsp; {item?.count}{" "}
-                    views
+                <Typography variant="h6">Your Top Performing</Typography>
+                <Typography variant="h3">Templates</Typography>
+              </Grid>
+              {topTemplate?.slice(0, 3).map((item, index) => (
+                <Grid
+                  item
+                  xs={12}
+                  className="d-flex column border alignstart subBoxes"
+                  key={item?._id}
+                >
+                  <Typography variant="body1">
+                    Template Name : {item?.templateName}
+                  </Typography>
+                  <Box className="d-flex justify-space-between fullwidth">
+                    <Typography variant="h6" style={{ fontSize: "13px" }}>
+                      Template Type : {item?.templateType} &nbsp; {item?.count}{" "}
+                      views
+                    </Typography>
+                  </Box>
+                </Grid>
+              ))}
+            </Grid>
+          </Grid>
+
+          <Grid
+            container
+            lg={4}
+            md={6}
+            sm={12}
+            xs={12}
+            className={classes.firstChartBox}
+          >
+            <Box className="singleColBarBox">
+              <Box className="d-flex column border subGraph1">
+                <Box
+                  className={clsx(classes.border, "d-flex column")}
+                  style={{ gap: "4px", margin: "4px" }}
+                >
+                  <Typography variant="h5">Your Best Month</Typography>
+                  {bestMonth ? (
+                    <Tooltip
+                      title={`${bestMonth.month} ${bestMonth.year}`}
+                      arrow
+                    >
+                      <Typography variant="h2">
+                        {formatNumber(bestMonth.totalViews)} Views
+                      </Typography>
+                    </Tooltip>
+                  ) : (
+                    <Typography variant="h2">-- Views</Typography>
+                  )}
+                </Box>
+
+                <Box
+                  className={clsx(classes.border, "d-flex column")}
+                  style={{ margin: "4px", height: "100%", padding: "10px" }}
+                >
+                  <Box className="d-flex" style={{ gap: "12px" }}>
+                    <img src="images/tranding.png" alt="" />
+                    <Typography variant="body1">
+                      Total Views {/* within Total Active Media <br /> */}
+                      (Last 4 Months)
+                    </Typography>
+                  </Box>
+                  <SingleColumnChartBar />
+                </Box>
+              </Box>
+            </Box>
+          </Grid>
+
+          <Grid
+            container
+            lg={8}
+            md={12}
+            sm={12}
+            xs={12}
+            className={clsx(classes.secondChartBox)}
+          >
+            <Grid container xs={12} className={classes.border}>
+              <Grid
+                item
+                lg={4}
+                md={4}
+                sm={4}
+                xs={12}
+                className="TotalContactBox d-flex column justify-space-between"
+              >
+                <Box
+                  className={clsx(
+                    classes.border,
+                    "d-flex",
+                    "column",
+                    "subSecondChartBox"
+                  )}
+                  pd={2}
+                >
+                  <Typography variant="h5">Total Contacts</Typography>
+                  <Typography variant="h2">2,364</Typography>
+                  <Typography
+                    variant="body1"
+                    style={{ fontWeight: 500, textAlign: "center" }}
+                  >
+                    1240 in Active Campaigns
+                  </Typography>
+                </Box>
+                <Box className={clsx(classes.border, "d-flex")}>
+                  <Typography variant="body1" style={{ textAlign: "center" }}>
+                    Active media for up to{" "}
+                    <span style={{ color: "#7DC371" }}> 1,260</span> <br />{" "}
+                    <span style={{ display: "block", textAlign: "center" }}>
+                      more contacts
+                    </span>
                   </Typography>
                 </Box>
               </Grid>
-            ))}
-          </Grid>
-        </Grid>
-
-        <Grid
-          container
-          lg={4}
-          md={6}
-          sm={12}
-          xs={12}
-          className={classes.firstChartBox}
-        >
-          <Box className="singleColBarBox">
-            <Box className="d-flex column border subGraph1">
-              <Box
-                className={clsx(classes.border, "d-flex column")}
-                style={{ gap: "4px", margin: "4px" }}
-              >
-                <Typography variant="h5">Your Best Month</Typography>
-                {bestMonth ? (
-                  <Tooltip title={`${bestMonth.month} ${bestMonth.year}`} arrow>
-                    <Typography variant="h2">
-                      {formatNumber(bestMonth.totalViews)} Views
-                    </Typography>
-                  </Tooltip>
-                ) : (
-                  <Typography variant="h2">-- Views</Typography>
-                )}
-              </Box>
-
-              <Box
-                className={clsx(classes.border, "d-flex column")}
-                style={{ margin: "4px", height: "100%", padding: "10px" }}
-              >
-                <Box className="d-flex" style={{ gap: "12px" }}>
-                  <img src="images/tranding.png" alt="" />
-                  <Typography variant="body1">
-                    Total Views {/* within Total Active Media <br /> */}
-                    (Last 4 Months)
-                  </Typography>
-                </Box>
-                <SingleColumnChartBar />
-              </Box>
-            </Box>
-          </Box>
-        </Grid>
-
-        <Grid
-          container
-          lg={8}
-          md={12}
-          sm={12}
-          xs={12}
-          className={clsx(classes.secondChartBox)}
-        >
-          <Grid container xs={12} className={classes.border}>
-            <Grid
-              item
-              lg={4}
-              md={4}
-              sm={4}
-              xs={12}
-              className="TotalContactBox d-flex column justify-space-between"
-            >
-              <Box
-                className={clsx(
-                  classes.border,
-                  "d-flex",
-                  "column",
-                  "subSecondChartBox"
-                )}
-                pd={2}
-              >
-                <Typography variant="h5">Total Contacts</Typography>
-                <Typography variant="h2">2,364</Typography>
-                <Typography
-                  variant="body1"
-                  style={{ fontWeight: 500, textAlign: "center" }}
+              <Grid item lg={8} md={8} sm={8} xs={12}>
+                <Box
+                  className={classes.border}
+                  ml={"10px"}
+                  pb={"20px"}
+                  style={{ marginTop: "4px" }}
                 >
-                  1240 in Active Campaigns
-                </Typography>
-              </Box>
-              <Box className={clsx(classes.border, "d-flex")}>
-                <Typography variant="body1" style={{ textAlign: "center" }}>
-                  Active media for up to{" "}
-                  <span style={{ color: "#7DC371" }}> 1,260</span> <br />{" "}
-                  <span style={{ display: "block", textAlign: "center" }}>
-                    more contacts
-                  </span>
-                </Typography>
-              </Box>
+                  <SingleBarChart />
+                </Box>
+              </Grid>
             </Grid>
-            <Grid item lg={8} md={8} sm={8} xs={12}>
-              <Box
-                className={classes.border}
-                ml={"10px"}
-                pb={"20px"}
-                style={{ marginTop: "4px" }}
-              >
-                <SingleBarChart />
-              </Box>
-            </Grid>
-          </Grid>
 
-          <Grid container xs={12} className={classes.border}>
-            <Grid
-              item
-              lg={4}
-              md={4}
-              sm={4}
-              xs={12}
-              className="TotalContactBox d-flex column justify-space-between"
-              style={{ gap: "5px" }}
-            >
-              <Box
-                className={clsx(
-                  classes.border,
-                  "d-flex",
-                  "column",
-                  "subSecondChartBox"
-                )}
-                pd={2}
+            <Grid container xs={12} className={classes.border}>
+              <Grid
+                item
+                lg={4}
+                md={4}
+                sm={4}
+                xs={12}
+                className="TotalContactBox d-flex column justify-space-between"
+                style={{ gap: "5px" }}
               >
-                <Typography variant="h6" style={{ fontWeight: "500" }}>
-                  Average CTR
-                </Typography>
-                <Typography variant="h2">+37%</Typography>
-                <Typography variant="body1">CTR (%)</Typography>
-              </Box>
-              <Box className={clsx(classes.border, "d-flex")}>
-                <Typography variant="body1">
-                  <span style={{ color: "#7DC371" }}>618 </span>HVOs |{" "}
-                  <span style={{ color: "#7DC371" }}> 622 </span>Videos Active
-                </Typography>
-              </Box>
-              <Box
-                className="d-flex justify-start alignstart fullwidth"
-                style={{ gap: "12px" }}
-              >
-                <Box className="d-flex column">
-                  <Typography variant="body2" style={{ fontWeight: "400" }}>
-                    Average
+                <Box
+                  className={clsx(
+                    classes.border,
+                    "d-flex",
+                    "column",
+                    "subSecondChartBox"
+                  )}
+                  pd={2}
+                >
+                  <Typography variant="h6" style={{ fontWeight: "500" }}>
+                    Average CTR
                   </Typography>
-                  <Box
-                    style={{
-                      height: "19px",
-                      width: "47px",
-                      borderRadius: "4px",
-                      background: "var(--blue, #0358AC)",
-                    }}
-                  ></Box>
+                  <Typography variant="h2">+37%</Typography>
+                  <Typography variant="body1">CTR (%)</Typography>
                 </Box>
-                <Box className="d-flex column">
-                  <Typography variant="body2" style={{ fontWeight: "400" }}>
-                    Best
+                <Box className={clsx(classes.border, "d-flex")}>
+                  <Typography variant="body1">
+                    <span style={{ color: "#7DC371" }}>618 </span>HVOs |{" "}
+                    <span style={{ color: "#7DC371" }}> 622 </span>Videos Active
                   </Typography>
-                  <Box
-                    style={{
-                      height: "19px",
-                      width: "47px",
-                      borderRadius: "4px",
-                      background: "var(--green, #7DC371)",
-                    }}
-                  ></Box>
                 </Box>
-              </Box>
-            </Grid>
-            <Grid
-              item
-              lg={8}
-              md={8}
-              sm={8}
-              xs={12}
-              style={{ marginTop: "5px" }}
-            >
-              <Box
-                className={classes.border}
-                ml={"10px"}
-                pb={"26px !important"}
+                <Box
+                  className="d-flex justify-start alignstart fullwidth"
+                  style={{ gap: "12px" }}
+                >
+                  <Box className="d-flex column">
+                    <Typography variant="body2" style={{ fontWeight: "400" }}>
+                      Average
+                    </Typography>
+                    <Box
+                      style={{
+                        height: "19px",
+                        width: "47px",
+                        borderRadius: "4px",
+                        background: "var(--blue, #0358AC)",
+                      }}
+                    ></Box>
+                  </Box>
+                  <Box className="d-flex column">
+                    <Typography variant="body2" style={{ fontWeight: "400" }}>
+                      Best
+                    </Typography>
+                    <Box
+                      style={{
+                        height: "19px",
+                        width: "47px",
+                        borderRadius: "4px",
+                        background: "var(--green, #7DC371)",
+                      }}
+                    ></Box>
+                  </Box>
+                </Box>
+              </Grid>
+              <Grid
+                item
+                lg={8}
+                md={8}
+                sm={8}
+                xs={12}
+                style={{ marginTop: "5px" }}
               >
-                <GroupBarGraph />
-              </Box>
+                <Box
+                  className={classes.border}
+                  ml={"10px"}
+                  pb={"26px !important"}
+                >
+                  <GroupBarGraph />
+                </Box>
+              </Grid>
             </Grid>
           </Grid>
         </Grid>
-      </Grid>
-    </Box>
+      </Box>
+    </>
   );
 }
 
