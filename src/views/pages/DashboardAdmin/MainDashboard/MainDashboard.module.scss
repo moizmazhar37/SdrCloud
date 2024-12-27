@@ -1,0 +1,39 @@
+.topContainer {
+    padding: 20px;
+    display: flex;
+    gap: 2%;
+    justify-content: flex-end;
+  
+    >p {
+      color: #272D37;
+      font-size: 14px;
+    }
+  
+>button {
+      background-color: #0358AC;
+      cursor: pointer;
+      width: 10%;
+      padding: 16px;
+      min-width: 120px;
+      color: white;
+      justify-content: center;
+      border: none;
+      display: flex;
+      border-radius: 6px;
+  
+      &:hover {
+        opacity: 0.9;
+      }
+    }
+  }
+
+  .cardsContainer{
+
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    border-radius: 6px;
+    gap: 8px;
+  padding: 20px;
+  border: 1px solid #ECECEC;
+  }
