@@ -488,55 +488,6 @@ function NoProjects() {
     UserMediaCredits();
   }, []);
 
-  
-  const getCSVData = async () => {
-    setLoading(true);
-    try {
-      const res = await axios({
-        method: "GET",
-        url: `${ApiConfig.mainDashboard}/user-transactions`,
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-  
-      setLoading(false);
-  
-      // Prepare CSV data
-      const transactions = res.data.transactions;
-      if (transactions && transactions.length > 0) {
-        const headers = Object.keys(transactions[0]); // Use keys from the first object as headers
-        const csvRows = [
-          headers.join(","), 
-          ...transactions.map((transaction) =>
-            headers.map((header) => JSON.stringify(transaction[header] || "")).join(",") 
-          ),
-        ];
-  
-        const csvString = csvRows.join("\n");
-
-        const blob = new Blob([csvString], { type: "text/csv" });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "transactions.csv";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
-      } else {
-        console.warn("No transactions available for CSV export.");
-      }
-    } catch (error) {
-      setLoading(false);
-      console.error("Error fetching sheet counts:", error);
-      throw error;
-    }
-  };
-  
-  
-
-
   const adminCount = async () => {
     const token = window?.localStorage?.getItem("token");
     const accountId = window?.localStorage?.getItem("accountId");
@@ -587,36 +538,6 @@ function NoProjects() {
 
   return (
     <>
-      <div
-        style={{
-          padding: "20px",
-          display: "flex",
-          gap: "18px",
-          justifyContent: "flex-end",
-        }}
-      >
-        <p style={{ color: "#272D37", fontSize: "13px" }}>
-          {" "}
-          Transaction Report History
-        </p>
-        <button
-          style={{
-            backgroundColor: "#0358AC",
-            cursor: "pointer",
-            width: "10%",
-            padding: "16px",
-            minWidth: "120px",
-            color: "white",
-            justifyContent: "center",
-            border: "none",
-            display: "flex",
-            borderRadius: "6px",
-          }}
-          onClick={getCSVData}
-        >
-          Download
-        </button>
-      </div>
       <Box style={{ marginLeft: "8px" }} mt={1}>
         <Grid container xs={12} justifyContent="space-between">
           <Grid
