@@ -60,6 +60,14 @@ export const routes = [
     layout: DashboardLayout,
     component: lazy(() => import("src/views/pages/DashboardAdmin/index")),
   },
+
+  {
+    exact: true,
+    path: "/newdashboard",
+    guard: true,
+    layout: DashboardLayout,
+    component: lazy(() => import("src/views/pages/DashboardAdmin/MainDashboard/MainDashboard")),
+  },
   {
     exact: true,
     path: "/leads",
