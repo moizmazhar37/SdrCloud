@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import ApiConfig from "src/config/APIConfig";
 import Card from "./CardBlock/Card";
+import TopUsers from "./TableCardBlock/TabularCard"
 
 import styles from "./MainDashboard.module.scss";
 
@@ -86,6 +87,12 @@ const MainDashboard = () => {
           label={"New"}
           amount={"390$"}
         />
+      </div>
+      <div className={styles.TableSection}>
+      <div className={styles.TopUserContainer}>
+        <TopUsers />
+        <TopUsers />
+      </div>
       </div>
     </>
   );
