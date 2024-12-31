@@ -1,25 +1,26 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import styles from "./FiltersDropdown.module.scss";
 import Dropdown from "src/Common/Dropdown/Dropdown";
 
-const FiltersDropdown = () => {
+const FiltersDropdown = ({ options = [] }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [response, setResponse] = useState('not-clicked');
+  const [selectedTimeframe, setSelectedTimeframe] = useState('Monthly');
 
-  const dropdownOptions = [
-    { label: "Monthly", onClick: () => console.log("Monthly selected") },
-    { label: "Weekly", onClick: () => console.log("Weekly selected") },
-    { label: "Daily", onClick: () => console.log("Daily selected") },
-  ];
+  // options array in the format expected by Dropdown component
+  const timeframeOptions = options.map(option => ({
+    label: option.label,
+    onClick: () => {
+      option.onClick();
+      setSelectedTimeframe(option.label);
+    }
+  }));
 
-  // Modified toggle function with console.log for debugging
   const toggleDropdown = () => {
-    console.log('Current isOpen:', isOpen);
     setIsOpen(prevState => !prevState);
-    console.log('Toggled to:', !isOpen);
   };
 
-  // Add click handler directly to button
   const handleButtonClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -40,11 +41,10 @@ const FiltersDropdown = () => {
       {isOpen && (
         <div className={styles.dropdown} onClick={e => e.stopPropagation()}>
           <div className={styles.section}>
-            <h2 className={styles.sectionTitle}>Timeframe</h2>
             <div className={styles.dropdownWrapper}>
               <Dropdown 
-                options={dropdownOptions}
-                buttonText="Monthly"
+                options={timeframeOptions}
+                buttonText={selectedTimeframe}
               />
             </div>
           </div>
@@ -82,6 +82,19 @@ const FiltersDropdown = () => {
       )}
     </div>
   );
+};
+
+FiltersDropdown.propTypes = {
+  options: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string.isRequired,
+      onClick: PropTypes.func.isRequired,
+    })
+  )
+};
+
+FiltersDropdown.defaultProps = {
+  options: []
 };
 
 export default FiltersDropdown;

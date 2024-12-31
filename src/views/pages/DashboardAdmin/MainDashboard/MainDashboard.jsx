@@ -7,17 +7,21 @@ import useGraphData from "./Hooks/useTemplateCounts";
 import useTopUsers from "./Hooks/useTopUsers";
 import useTopTemplates from "./Hooks/useTopTemplates";
 import useDownloadCSV from "./Hooks/useDownloadCSV";
-import FiltersDropdown from "src/Common/FiltersDropdown/FiltersDropdown";
+import useHvoVideoSent from "./Hooks/useHvoVideoSent";
 import styles from "./MainDashboard.module.scss";
 
 const MainDashboard = () => {
   const [selectedTimeStamp, setSelectedTimeStamp] = useState("Monthly");
   const [selectedGraphTimeStamp, setSelectedGraphTimeStamp] = useState("Monthly");
   const [selectedTimeStampForTemplate, setSelectedTimeStampForTemplate] = useState("Monthly");
+  const [selectedSentHvoVideoTimestamp, setSelectedSentHvoVideoTimestamp] = useState("Monthly");
+  const [isHvoVideoClicked, setIsHvoVideoClicked] = useState(false);
+  const [hvoVideoTimeframe, setHvoVideoTimeframe] = useState("month");
   
   const [userTimePeriod, setUserTimePeriod] = useState("month");
   const [templateTimePeriod, setTemplateTimePeriod] = useState("month");
   const [graphTimePeriod, setGraphTimePeriod] = useState("month");
+  const { hvoVideoData, loading: hvoLoading } = useHvoVideoSent(hvoVideoTimeframe, isHvoVideoClicked);
 
   const { isStatsloading, statsError, statsData } = useUserCounts();
   const { GraphData } = useGraphData(graphTimePeriod);
@@ -54,6 +58,30 @@ const MainDashboard = () => {
       onClick: () => {
         setSelectedGraphTimeStamp("Weekly");
         setGraphTimePeriod("week");
+      },
+    },
+  ];
+
+  const dropdownOptionsHvoVideoGraph = [
+    {
+      label: "Monthly",
+      onClick: () => {
+        setSelectedSentHvoVideoTimestamp("Monthly");
+        setHvoVideoTimeframe("month");
+      },
+    },
+    {
+      label: "Yearly",
+      onClick: () => {
+        setSelectedSentHvoVideoTimestamp("Yearly");
+        setHvoVideoTimeframe("year");
+      },
+    },
+    {
+      label: "Weekly",
+      onClick: () => {
+        setSelectedSentHvoVideoTimestamp("Weekly");
+        setHvoVideoTimeframe("week");
       },
     },
   ];
@@ -116,6 +144,10 @@ const MainDashboard = () => {
     { key: "template_name", label: "Name" },
     { key: "viewed_count", label: "Times Used" },
   ];
+
+  const handleHvoVideoFilterChange = (response) => {
+    setIsHvoVideoClicked(response === 'clicked');
+  };
 
   return (
     <>
@@ -180,12 +212,16 @@ const MainDashboard = () => {
             data={GraphData}
             dropdownOptions={dropdownOptionsForGraph}
             selectedOption={selectedGraphTimeStamp}
+            type="dropdown"
           />
           <Graph
-            title="Amount of Templates Created"
-            data={GraphData}
-            dropdownOptions={dropdownOptionsForGraph}
-            selectedOption={selectedGraphTimeStamp}
+            title="Amount of HVOs/Videos Sent"
+            data={hvoVideoData}
+            dropdownOptions={dropdownOptionsHvoVideoGraph}
+            selectedOption={selectedSentHvoVideoTimestamp}
+            type="filters"
+            onFilterChange={handleHvoVideoFilterChange}
+            loading={hvoLoading}
           />
         </div>
       </div>

@@ -1,23 +1,33 @@
 import React from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
-import Dropdown from "src/Common/Dropdown/Dropdown"
+import Dropdown from "src/Common/Dropdown/Dropdown";
+import FiltersDropdown from 'src/Common/FiltersDropdown/FiltersDropdown';
 import styles from './Graph.module.scss';
 
 const Graph = ({ 
   data, 
-  title,
-  dropdownOptions,
-  selectedOption 
+  title, 
+  dropdownOptions, 
+  selectedOption, 
+  type 
 }) => {
   return (
     <div className={styles.graphContainer}>
       <div className={styles.header}>
         <h2 className={styles.title}>{title}</h2>
-        <Dropdown 
-          options={dropdownOptions}
-          buttonText={selectedOption}
-          className={styles.dropdown}
-        />
+        {/* Conditionally render the Dropdown or FiltersDropdown */}
+        {type === 'filters' ? (
+          <FiltersDropdown 
+            options={dropdownOptions}
+            className={styles.dropdown}
+          />
+        ) : (
+          <Dropdown 
+            options={dropdownOptions}
+            buttonText={selectedOption || "Monthly"} 
+            className={styles.dropdown}
+          />
+        )}
       </div>
       <div className={styles.legend}>
         <div className={styles.legendItem}>
