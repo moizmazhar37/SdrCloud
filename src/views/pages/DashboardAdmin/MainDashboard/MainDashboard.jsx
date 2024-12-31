@@ -1,98 +1,114 @@
-import React, { useState } from "react";
-import axios from "axios";
-import ApiConfig from "src/config/APIConfig";
+import React from "react";
 import Card from "./CardBlock/Card";
-import TopUsers from "./TableCardBlock/TabularCard"
+import TopUsers from "./TableCardBlock/TabularCard";
+import Graph from "./Graph/Graph";
+import useUserCounts from "./Hooks/useUserStats";
+import useGraphData from "./Hooks/useTemplateCounts";
+import useTopUsers from "./Hooks/useTopUsers";
+import useTopTemplates from "./Hooks/useTopTemplates";
+import useDownloadCSV from "./Hooks/useDownloadCSV";
 
 import styles from "./MainDashboard.module.scss";
 
 const MainDashboard = () => {
-  const [loading, setLoading] = useState(false);
+  const { isStatsloading, statsError, statsData } = useUserCounts();
+  const { GraphData } = useGraphData("month");
+  const { topUsersData } = useTopUsers("month");
+  const { toptemplatesData } = useTopTemplates("month");
+  const { downloadCSV, loading } = useDownloadCSV();
 
-  const getCSVData = async () => {
-    setLoading(true);
-    try {
-      const res = await axios({
-        method: "GET",
-        url: `${ApiConfig.mainDashboard}/user-transactions`,
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-
-      setLoading(false);
-
-      // Prepare CSV data
-      const transactions = res.data.transactions;
-      if (transactions && transactions.length > 0) {
-        const headers = Object.keys(transactions[0]); // Use keys from the first object as headers
-        const csvRows = [
-          headers.join(","),
-          ...transactions.map((transaction) =>
-            headers
-              .map((header) => JSON.stringify(transaction[header] || ""))
-              .join(",")
-          ),
-        ];
-
-        const csvString = csvRows.join("\n");
-
-        const blob = new Blob([csvString], { type: "text/csv" });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "transactions.csv";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
-      } else {
-        console.warn("No transactions available for CSV export.");
-      }
-    } catch (error) {
-      setLoading(false);
-      console.error("Error fetching sheet counts:", error);
-      throw error;
-    }
+  // Utility function to truncate numbers
+  const truncateNumber = (num, decimals = 5) => {
+    if (num === undefined || num === null) return "0"; // Return "0" or an appropriate fallback for invalid values
+    const str = num.toString();
+    const dotIndex = str.indexOf(".");
+    if (dotIndex === -1) return str; // No decimal point
+    const truncated = str.slice(0, dotIndex + decimals + 1);
+    return truncated.length < str.length ? `${truncated}...` : truncated;
   };
+
+  const dropdownOptions = [
+    {
+      label: "Monthly",
+      onClick: () => {},
+    },
+  ];
+
+  const tableHeaders = [
+    { key: "name", label: "Name" },
+    { key: "credits", label: "Credits used" },
+    { key: "score", label: "Score" },
+  ];
+  const tableHeaders2 = [
+    { key: "template_name", label: "Name" },
+    { key: "viewed_count", label: "Times Used" },
+  ];
 
   return (
     <>
       <div className={styles.topContainer}>
         <p>Transaction Report History</p>
-        <button onClick={getCSVData}>Download</button>
+        <button onClick={downloadCSV} disabled={loading}>
+          {loading ? "Downloading..." : "Download"}
+        </button>
       </div>
       <div className={styles.cardsContainer}>
         <Card
           heading={"Tokens spent"}
           growthText={"Monthly growth"}
           label={"New"}
-          amount={"390$"}
+          amount={truncateNumber(statsData.tokens_spent)}
         />
         <Card
-          heading={"Tokens spent"}
+          heading={"Remaining Tokens"}
           growthText={"Monthly growth"}
           label={"New"}
-          amount={"390$"}
+          amount={truncateNumber(statsData.remaining_tokens)}
         />
         <Card
-          heading={"Tokens spent"}
+          heading={"Total sheets connected"}
           growthText={"Monthly growth"}
-          label={"New"}
-          amount={"390$"}
+          label={"global"}
+          amount={statsData.total_sheets}
         />
         <Card
-          heading={"Tokens spent"}
+          heading={"Templates Generated"}
           growthText={"Monthly growth"}
-          label={"New"}
-          amount={"390$"}
+          label={"intuitive"}
+          amount={statsData.total_templates}
         />
       </div>
       <div className={styles.TableSection}>
-      <div className={styles.TopUserContainer}>
-        <TopUsers />
-        <TopUsers />
+        <div className={styles.TopUserContainer}>
+          <TopUsers
+            title={"Top Performing Users"}
+            dropdownOptions={dropdownOptions}
+            usersData={topUsersData}
+            tableHeaders={tableHeaders}
+          />
+          <TopUsers
+            title={"Top Performing Templates"}
+            dropdownOptions={dropdownOptions}
+            usersData={toptemplatesData}
+            tableHeaders={tableHeaders2}
+          />
+        </div>
       </div>
+      <div>
+        <div className={styles.GraphContainer}>
+          <Graph
+            title="Amount of Templates Created"
+            data={GraphData}
+            dropdownOptions={dropdownOptions}
+            selectedOption={null}
+          />
+          <Graph
+            title="Amount of Templates Created"
+            data={GraphData}
+            dropdownOptions={dropdownOptions}
+            selectedOption={null}
+          />
+        </div>
       </div>
     </>
   );

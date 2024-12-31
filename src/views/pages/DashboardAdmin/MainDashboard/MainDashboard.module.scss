@@ -58,3 +58,27 @@
     }
 
   }
+  .GraphContainer {
+    width: 100%;
+    background-color: transparent;
+    display: flex;
+    justify-content: start;
+    border-radius: 6px;
+    gap: 20px;
+    padding: 20px;
+  }
+  
+  @media screen and (max-width: 780px) {
+    .TableSection {
+      flex-direction: column;
+      align-items: center; /* Optional: center the cards if desired */
+    }
+  }
+  @media screen and (max-width: 780px) {
+    .TopUserContainer {
+      padding-top: 10px;
+      flex-direction: column;
+      align-items: center; /* Optional: center the cards if desired */
+    }
+  }
+  
