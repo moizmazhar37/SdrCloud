@@ -1,99 +1,138 @@
 import React from 'react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import Dropdown from "src/Common/Dropdown/Dropdown";
 import FiltersDropdown from 'src/Common/FiltersDropdown/FiltersDropdown';
 import styles from './Graph.module.scss';
 
-const Graph = ({ 
-  data, 
-  title, 
-  dropdownOptions, 
-  selectedOption, 
-  type, 
-  setIsViewed 
-}) => {
+const Graph = ({ data, title, dropdownOptions, selectedOption, type, setIsViewed }) => {
+  const renderDropdown = () => {
+    if (type === 'filters') {
+      return (
+        <FiltersDropdown
+          options={dropdownOptions}
+          className={styles.dropdown}
+          setIsViewed={setIsViewed}
+        />
+      );
+    }
+    
+    return (
+      <Dropdown
+        options={dropdownOptions}
+        buttonText={selectedOption || "Monthly"}
+        className={styles.dropdown}
+      />
+    );
+  };
+
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className={styles.customTooltip}>
+          <p className={styles.tooltipLabel}>{label}</p>
+          {payload.map((item, index) => (
+            <p 
+              key={index} 
+              className={styles.tooltipItem}
+              style={{ color: item.color }}
+            >
+              {item.name}: {item.value.toLocaleString()}
+            </p>
+          ))}
+        </div>
+      );
+    }
+    return null;
+  };
+
+  const renderLegend = (props) => {
+    const { payload } = props;
+    
+    return (
+      <div className={styles.legendContainer}>
+        {payload.map((entry, index) => (
+          <div key={`item-${index}`} className={styles.legendItem}>
+            <div 
+              className={styles.legendDot}
+              style={{ 
+                backgroundColor: entry.color,
+              }}
+            />
+            <span className={styles.legendText}>{entry.value}</span>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
   return (
-    <div className={styles.graphContainer}>
+    <div className={styles.graphCard}>
       <div className={styles.header}>
         <h2 className={styles.title}>{title}</h2>
-        {/* Conditionally render the Dropdown or FiltersDropdown */}
-        {type === 'filters' ? (
-          <FiltersDropdown 
-            options={dropdownOptions}
-            className={styles.dropdown}
-            setIsViewed={setIsViewed}
-
-          />
-        ) : (
-          <Dropdown 
-            options={dropdownOptions}
-            buttonText={selectedOption || "Monthly"} 
-            className={styles.dropdown}
-          />
-        )}
+        {renderDropdown()}
       </div>
-      <div className={styles.legend}>
-        <div className={styles.legendItem}>
-          <span className={styles.legendDot} style={{ backgroundColor: '#FF9466' }}></span>
-          <span>HVO</span>
-        </div>
-        <div className={styles.legendItem}>
-          <span className={styles.legendDot} style={{ backgroundColor: '#4C6FFF' }}></span>
-          <span>Videos</span>
-        </div>
-      </div>
-      <div className={styles.chartWrapper}>
-        <AreaChart
-          width={800}
-          height={400}
-          data={data}
-          margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-        >
-          <defs>
-            <linearGradient id="hvoGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#FF9466" stopOpacity={0.2}/>
-              <stop offset="95%" stopColor="#FF9466" stopOpacity={0}/>
-            </linearGradient>
-            <linearGradient id="videoGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#4C6FFF" stopOpacity={0.2}/>
-              <stop offset="95%" stopColor="#4C6FFF" stopOpacity={0}/>
-            </linearGradient>
-          </defs>
-          <CartesianGrid strokeDasharray="3 3" vertical={false} />
-          <XAxis 
-            dataKey="name" 
-            axisLine={false}
-            tickLine={false}
-            tick={{ fill: '#8E8E8E' }}
-          />
-          <YAxis 
-            axisLine={false}
-            tickLine={false}
-            tick={{ fill: '#8E8E8E' }}
-          />
-          <Tooltip 
-            contentStyle={{ 
-              backgroundColor: '#fff',
-              border: 'none',
-              borderRadius: '8px',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
+      <div className={styles.graphContainer}>
+        <ResponsiveContainer width="100%" height={300}>
+          <AreaChart
+            data={data}
+            margin={{
+              top: 40,
+              right: 20,
+              left: -20,
+              bottom: 0,
             }}
-          />
-          <Area
-            type="monotone"
-            dataKey="hvo"
-            stroke="#FF9466"
-            fill="url(#hvoGradient)"
-            strokeWidth={2}
-          />
-          <Area
-            type="monotone"
-            dataKey="videos"
-            stroke="#4C6FFF"
-            fill="url(#videoGradient)"
-            strokeWidth={2}
-          />
-        </AreaChart>
+          >
+            <CartesianGrid 
+              strokeDasharray="3 3" 
+              vertical={false}
+              stroke="#E5E7EB"
+            />
+            <XAxis 
+              dataKey="name" 
+              axisLine={false}
+              tickLine={false}
+              tick={{ fill: '#6B7280', fontSize: 12 }}
+              dy={10}
+            />
+            <YAxis 
+              axisLine={false}
+              tickLine={false}
+              tick={{ fill: '#6B7280', fontSize: 12 }}
+              dx={-10}
+              tickFormatter={(value) => value.toLocaleString()}
+            />
+            <Tooltip 
+              content={<CustomTooltip />}
+              cursor={{ stroke: '#E5E7EB', strokeWidth: 1 }}
+            />
+            <Legend 
+              content={renderLegend}
+              verticalAlign="top"
+              align="left"
+              height={36}
+              wrapperStyle={{
+                paddingLeft: '24px',
+                marginTop: '-15px'
+              }}
+            />
+            <Area
+              type="monotone"
+              dataKey="hvo"
+              name="HVO"
+              stroke="#F97316"
+              fill="#FFEDD5"
+              strokeWidth={2}
+            />
+            <Area
+              type="monotone"
+              dataKey="videos"
+              name="Videos"
+              stroke="#1D4ED8"
+              fill="#DBEAFE"
+              strokeWidth={2}
+            />
+          </AreaChart>
+        </ResponsiveContainer>
       </div>
     </div>
   );

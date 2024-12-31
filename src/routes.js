@@ -53,17 +53,17 @@ export const routes = [
   },
 
   // New URL for Routes
-  {
-    exact: true,
-    path: "/dashboard",
-    guard: true,
-    layout: DashboardLayout,
-    component: lazy(() => import("src/views/pages/DashboardAdmin/index")),
-  },
+  // {
+  //   exact: true,
+  //   path: "/dashboard",
+  //   guard: true,
+  //   layout: DashboardLayout,
+  //   component: lazy(() => import("src/views/pages/DashboardAdmin/index")),
+  // },
 
   {
     exact: true,
-    path: "/newdashboard",
+    path: "/dashboard",
     guard: true,
     layout: DashboardLayout,
     component: lazy(() => import("src/views/pages/DashboardAdmin/MainDashboard/MainDashboard")),
