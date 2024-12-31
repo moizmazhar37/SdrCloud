@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Card from "./CardBlock/Card";
 import TopUsers from "./TableCardBlock/TabularCard";
 import Graph from "./Graph/Graph";
@@ -11,10 +11,18 @@ import FiltersDropdown from "src/Common/FiltersDropdown/FiltersDropdown";
 import styles from "./MainDashboard.module.scss";
 
 const MainDashboard = () => {
+  const [selectedTimeStamp, setSelectedTimeStamp] = useState("Monthly");
+  const [selectedGraphTimeStamp, setSelectedGraphTimeStamp] = useState("Monthly");
+  const [selectedTimeStampForTemplate, setSelectedTimeStampForTemplate] = useState("Monthly");
+  
+  const [userTimePeriod, setUserTimePeriod] = useState("month");
+  const [templateTimePeriod, setTemplateTimePeriod] = useState("month");
+  const [graphTimePeriod, setGraphTimePeriod] = useState("month");
+
   const { isStatsloading, statsError, statsData } = useUserCounts();
-  const { GraphData } = useGraphData("month");
-  const { topUsersData } = useTopUsers("month");
-  const { toptemplatesData } = useTopTemplates("month");
+  const { GraphData } = useGraphData(graphTimePeriod);
+  const { topUsersData } = useTopUsers(userTimePeriod);
+  const { toptemplatesData } = useTopTemplates(templateTimePeriod);
   const { downloadCSV, loading } = useDownloadCSV();
 
   const truncateNumber = (num, decimals = 5) => {
@@ -26,10 +34,75 @@ const MainDashboard = () => {
     return truncated.length < str.length ? `${truncated}...` : truncated;
   };
 
-  const dropdownOptions = [
+  const dropdownOptionsForGraph = [
     {
       label: "Monthly",
-      onClick: () => {},
+      onClick: () => {
+        setSelectedGraphTimeStamp("Monthly");
+        setGraphTimePeriod("month");
+      },
+    },
+    {
+      label: "Yearly",
+      onClick: () => {
+        setSelectedGraphTimeStamp("Yearly");
+        setGraphTimePeriod("year");
+      },
+    },
+    {
+      label: "Weekly",
+      onClick: () => {
+        setSelectedGraphTimeStamp("Weekly");
+        setGraphTimePeriod("week");
+      },
+    },
+  ];
+
+  const dropdownOptionsForUser = [
+    {
+      label: "Monthly",
+      onClick: () => {
+        setSelectedTimeStamp("Monthly");
+        setUserTimePeriod("month");
+      },
+    },
+    {
+      label: "Yearly",
+      onClick: () => {
+        setSelectedTimeStamp("Yearly");
+        setUserTimePeriod("year");
+      },
+    },
+    {
+      label: "Weekly",
+      onClick: () => {
+        setSelectedTimeStamp("Weekly");
+        setUserTimePeriod("week");
+      },
+    },
+  ];
+
+  const dropdownOptionsForTemplate = [
+    {
+      label: "Monthly",
+      onClick: () => {
+        setSelectedTimeStampForTemplate("Monthly");
+        setTemplateTimePeriod("month");
+      },
+    },
+    {
+      label: "Yearly",
+      onClick: () => {
+        setSelectedTimeStampForTemplate("Yearly");
+        setTemplateTimePeriod("year");
+      },
+    },
+    {
+      label: "Weekly",
+      onClick: () => {
+        setSelectedTimeStampForTemplate("Weekly");
+        setTemplateTimePeriod("week");
+      },
     },
   ];
 
@@ -38,6 +111,7 @@ const MainDashboard = () => {
     { key: "credits", label: "Credits used" },
     { key: "score", label: "Score" },
   ];
+
   const tableHeaders2 = [
     { key: "template_name", label: "Name" },
     { key: "viewed_count", label: "Times Used" },
@@ -85,15 +159,17 @@ const MainDashboard = () => {
         <div className={styles.TopUserContainer}>
           <TopUsers
             title={"Top Performing Users"}
-            dropdownOptions={dropdownOptions}
+            dropdownOptions={dropdownOptionsForUser}
             usersData={topUsersData}
             tableHeaders={tableHeaders}
+            buttonText={selectedTimeStamp}
           />
           <TopUsers
             title={"Top Performing Templates"}
-            dropdownOptions={dropdownOptions}
+            dropdownOptions={dropdownOptionsForTemplate}
             usersData={toptemplatesData}
             tableHeaders={tableHeaders2}
+            buttonText={selectedTimeStampForTemplate}
           />
         </div>
       </div>
@@ -102,14 +178,14 @@ const MainDashboard = () => {
           <Graph
             title="Amount of Templates Created"
             data={GraphData}
-            dropdownOptions={dropdownOptions}
-            selectedOption={null}
+            dropdownOptions={dropdownOptionsForGraph}
+            selectedOption={selectedGraphTimeStamp}
           />
           <Graph
             title="Amount of Templates Created"
             data={GraphData}
-            dropdownOptions={dropdownOptions}
-            selectedOption={null}
+            dropdownOptions={dropdownOptionsForGraph}
+            selectedOption={selectedGraphTimeStamp}
           />
         </div>
       </div>
