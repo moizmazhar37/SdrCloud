@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Card from "./CardBlock/Card";
 import TopUsers from "./TableCardBlock/TabularCard";
 import Graph from "./Graph/Graph";
@@ -23,16 +23,16 @@ const MainDashboard = () => {
   const [userTimePeriod, setUserTimePeriod] = useState("month");
   const [templateTimePeriod, setTemplateTimePeriod] = useState("month");
   const [graphTimePeriod, setGraphTimePeriod] = useState("month");
+
+  const { statsData, isStatsloading, statsError } = useUserCounts();
+  const { GraphData } = useGraphData(graphTimePeriod);
+  const { topUsersData } = useTopUsers(userTimePeriod);
+  const { toptemplatesData } = useTopTemplates(templateTimePeriod);
   const { hvoVideoData, loading: hvoLoading } = useHvoVideoSent(
     hvoVideoTimeframe,
     isViewed
   );
-
-  const { isStatsloading, statsError, statsData } = useUserCounts();
-  const { GraphData } = useGraphData(graphTimePeriod);
-  const { topUsersData } = useTopUsers(userTimePeriod);
-  const { toptemplatesData } = useTopTemplates(templateTimePeriod);
-  const { downloadCSV, loading } = useDownloadCSV();
+  const { downloadCSV, loading: csvLoading } = useDownloadCSV();
 
   const truncateNumber = (num, decimals = 5) => {
     if (num === undefined || num === null) return "0";
@@ -80,7 +80,6 @@ const MainDashboard = () => {
       onClick: () => {
         setSelectedSentHvoVideoTimestamp("Yearly");
         setHvoVideoTimeframe("year");
-        console.log("Is Viewed=",isViewed)
       },
     },
     {
@@ -151,13 +150,12 @@ const MainDashboard = () => {
     { key: "viewed_count", label: "Times Used" },
   ];
 
-
   return (
     <>
       <div className={styles.topContainer}>
         <p>Transaction Report History</p>
-        <button onClick={downloadCSV} disabled={loading}>
-          {loading ? "Downloading..." : "Download"}
+        <button onClick={downloadCSV} disabled={csvLoading}>
+          {csvLoading ? "Downloading..." : "Download"}
         </button>
       </div>
       <div className={styles.cardsContainer}>
