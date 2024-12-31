@@ -1,5 +1,5 @@
 import React from 'react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import Dropdown from "src/Common/Dropdown/Dropdown";
 import FiltersDropdown from 'src/Common/FiltersDropdown/FiltersDropdown';
 import styles from './Graph.module.scss';
@@ -25,6 +25,46 @@ const Graph = ({ data, title, dropdownOptions, selectedOption, type, setIsViewed
     );
   };
 
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className={styles.customTooltip}>
+          <p className={styles.tooltipLabel}>{label}</p>
+          {payload.map((item, index) => (
+            <p 
+              key={index} 
+              className={styles.tooltipItem}
+              style={{ color: item.color }}
+            >
+              {item.name}: {item.value.toLocaleString()}
+            </p>
+          ))}
+        </div>
+      );
+    }
+    return null;
+  };
+
+  const renderLegend = (props) => {
+    const { payload } = props;
+    
+    return (
+      <div className={styles.legendContainer}>
+        {payload.map((entry, index) => (
+          <div key={`item-${index}`} className={styles.legendItem}>
+            <div 
+              className={styles.legendDot}
+              style={{ 
+                backgroundColor: entry.color,
+              }}
+            />
+            <span className={styles.legendText}>{entry.value}</span>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
   return (
     <div className={styles.graphCard}>
       <div className={styles.header}>
@@ -36,7 +76,7 @@ const Graph = ({ data, title, dropdownOptions, selectedOption, type, setIsViewed
           <AreaChart
             data={data}
             margin={{
-              top: 10,
+              top: 40,
               right: 20,
               left: -20,
               bottom: 0,
@@ -62,17 +102,23 @@ const Graph = ({ data, title, dropdownOptions, selectedOption, type, setIsViewed
               tickFormatter={(value) => value.toLocaleString()}
             />
             <Tooltip 
-              contentStyle={{
-                backgroundColor: 'white',
-                border: 'none',
-                borderRadius: '8px',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
+              content={<CustomTooltip />}
+              cursor={{ stroke: '#E5E7EB', strokeWidth: 1 }}
+            />
+            <Legend 
+              content={renderLegend}
+              verticalAlign="top"
+              align="left"
+              height={36}
+              wrapperStyle={{
+                paddingLeft: '24px',
+                marginTop: '-15px'
               }}
-              itemStyle={{ color: '#1F2937' }}
             />
             <Area
               type="monotone"
               dataKey="hvo"
+              name="HVO"
               stroke="#F97316"
               fill="#FFEDD5"
               strokeWidth={2}
@@ -80,6 +126,7 @@ const Graph = ({ data, title, dropdownOptions, selectedOption, type, setIsViewed
             <Area
               type="monotone"
               dataKey="videos"
+              name="Videos"
               stroke="#1D4ED8"
               fill="#DBEAFE"
               strokeWidth={2}
