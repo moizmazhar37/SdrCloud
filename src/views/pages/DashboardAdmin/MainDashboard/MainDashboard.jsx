@@ -7,7 +7,7 @@ import useGraphData from "./Hooks/useTemplateCounts";
 import useTopUsers from "./Hooks/useTopUsers";
 import useTopTemplates from "./Hooks/useTopTemplates";
 import useDownloadCSV from "./Hooks/useDownloadCSV";
-
+import FiltersDropdown from "src/Common/FiltersDropdown/FiltersDropdown";
 import styles from "./MainDashboard.module.scss";
 
 const MainDashboard = () => {
@@ -17,12 +17,11 @@ const MainDashboard = () => {
   const { toptemplatesData } = useTopTemplates("month");
   const { downloadCSV, loading } = useDownloadCSV();
 
-  // Utility function to truncate numbers
   const truncateNumber = (num, decimals = 5) => {
-    if (num === undefined || num === null) return "0"; // Return "0" or an appropriate fallback for invalid values
+    if (num === undefined || num === null) return "0";
     const str = num.toString();
     const dotIndex = str.indexOf(".");
-    if (dotIndex === -1) return str; // No decimal point
+    if (dotIndex === -1) return str;
     const truncated = str.slice(0, dotIndex + decimals + 1);
     return truncated.length < str.length ? `${truncated}...` : truncated;
   };
@@ -59,7 +58,6 @@ const MainDashboard = () => {
           label={"New"}
           amount={truncateNumber(statsData.tokens_spent)}
           labelType="new"
-
         />
         <Card
           heading={"Remaining Tokens"}
@@ -67,7 +65,6 @@ const MainDashboard = () => {
           label={"global"}
           amount={truncateNumber(statsData.remaining_tokens)}
           labelType="global"
-
         />
         <Card
           heading={"Total sheets connected"}
@@ -75,14 +72,12 @@ const MainDashboard = () => {
           label={"intuitive"}
           amount={statsData.total_sheets}
           labelType="intuitive"
-
         />
         <Card
           heading={"Templates Generated"}
           growthText={"Monthly growth"}
           label={"intuitive"}
           labelType="intuitive"
-
           amount={statsData.total_templates}
         />
       </div>
