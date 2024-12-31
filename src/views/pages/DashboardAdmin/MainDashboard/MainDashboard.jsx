@@ -58,23 +58,31 @@ const MainDashboard = () => {
           growthText={"Monthly growth"}
           label={"New"}
           amount={truncateNumber(statsData.tokens_spent)}
+          labelType="new"
+
         />
         <Card
           heading={"Remaining Tokens"}
           growthText={"Monthly growth"}
-          label={"New"}
+          label={"global"}
           amount={truncateNumber(statsData.remaining_tokens)}
+          labelType="global"
+
         />
         <Card
           heading={"Total sheets connected"}
           growthText={"Monthly growth"}
-          label={"global"}
+          label={"intuitive"}
           amount={statsData.total_sheets}
+          labelType="intuitive"
+
         />
         <Card
           heading={"Templates Generated"}
           growthText={"Monthly growth"}
           label={"intuitive"}
+          labelType="intuitive"
+
           amount={statsData.total_templates}
         />
       </div>
