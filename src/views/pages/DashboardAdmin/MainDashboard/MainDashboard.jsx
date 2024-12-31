@@ -12,16 +12,21 @@ import styles from "./MainDashboard.module.scss";
 
 const MainDashboard = () => {
   const [selectedTimeStamp, setSelectedTimeStamp] = useState("Monthly");
-  const [selectedGraphTimeStamp, setSelectedGraphTimeStamp] = useState("Monthly");
-  const [selectedTimeStampForTemplate, setSelectedTimeStampForTemplate] = useState("Monthly");
-  const [selectedSentHvoVideoTimestamp, setSelectedSentHvoVideoTimestamp] = useState("Monthly");
-  const [isHvoVideoClicked, setIsHvoVideoClicked] = useState(false);
+  const [selectedGraphTimeStamp, setSelectedGraphTimeStamp] =
+    useState("Monthly");
+  const [selectedTimeStampForTemplate, setSelectedTimeStampForTemplate] =
+    useState("Monthly");
+  const [selectedSentHvoVideoTimestamp, setSelectedSentHvoVideoTimestamp] =
+    useState("Monthly");
   const [hvoVideoTimeframe, setHvoVideoTimeframe] = useState("month");
-  
+  const [isViewed, setIsViewed] = useState(false);
   const [userTimePeriod, setUserTimePeriod] = useState("month");
   const [templateTimePeriod, setTemplateTimePeriod] = useState("month");
   const [graphTimePeriod, setGraphTimePeriod] = useState("month");
-  const { hvoVideoData, loading: hvoLoading } = useHvoVideoSent(hvoVideoTimeframe, isHvoVideoClicked);
+  const { hvoVideoData, loading: hvoLoading } = useHvoVideoSent(
+    hvoVideoTimeframe,
+    isViewed
+  );
 
   const { isStatsloading, statsError, statsData } = useUserCounts();
   const { GraphData } = useGraphData(graphTimePeriod);
@@ -75,6 +80,7 @@ const MainDashboard = () => {
       onClick: () => {
         setSelectedSentHvoVideoTimestamp("Yearly");
         setHvoVideoTimeframe("year");
+        console.log("Is Viewed=",isViewed)
       },
     },
     {
@@ -145,9 +151,6 @@ const MainDashboard = () => {
     { key: "viewed_count", label: "Times Used" },
   ];
 
-  const handleHvoVideoFilterChange = (response) => {
-    setIsHvoVideoClicked(response === 'clicked');
-  };
 
   return (
     <>
@@ -220,8 +223,8 @@ const MainDashboard = () => {
             dropdownOptions={dropdownOptionsHvoVideoGraph}
             selectedOption={selectedSentHvoVideoTimestamp}
             type="filters"
-            onFilterChange={handleHvoVideoFilterChange}
             loading={hvoLoading}
+            setIsViewed={setIsViewed}
           />
         </div>
       </div>

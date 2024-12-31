@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import styles from "./FiltersDropdown.module.scss";
 import Dropdown from "src/Common/Dropdown/Dropdown";
 
-const FiltersDropdown = ({ options = [] }) => {
+const FiltersDropdown = ({ options = [], setIsViewed }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [response, setResponse] = useState('not-clicked');
   const [selectedTimeframe, setSelectedTimeframe] = useState('Monthly');
@@ -19,6 +19,13 @@ const FiltersDropdown = ({ options = [] }) => {
 
   const toggleDropdown = () => {
     setIsOpen(prevState => !prevState);
+  };
+
+  const handleResponseChange = (value) => {
+    setResponse(value);
+    if (setIsViewed) {
+      setIsViewed(value === 'clicked');
+    }
   };
 
   const handleButtonClick = (e) => {
@@ -58,7 +65,7 @@ const FiltersDropdown = ({ options = [] }) => {
                   name="response"
                   value="clicked"
                   checked={response === 'clicked'}
-                  onChange={(e) => setResponse(e.target.value)}
+                  onChange={(e) => handleResponseChange(e.target.value)}
                   className={styles.radioInput}
                 />
                 <span className={styles.customRadio}></span>
@@ -70,7 +77,7 @@ const FiltersDropdown = ({ options = [] }) => {
                   name="response"
                   value="not-clicked"
                   checked={response === 'not-clicked'}
-                  onChange={(e) => setResponse(e.target.value)}
+                  onChange={(e) => handleResponseChange(e.target.value)}
                   className={styles.radioInput}
                 />
                 <span className={styles.customRadio}></span>
@@ -90,11 +97,13 @@ FiltersDropdown.propTypes = {
       label: PropTypes.string.isRequired,
       onClick: PropTypes.func.isRequired,
     })
-  )
+  ),
+  setIsViewed: PropTypes.func, 
 };
 
 FiltersDropdown.defaultProps = {
-  options: []
+  options: [],
+  setIsViewed: null,
 };
 
 export default FiltersDropdown;

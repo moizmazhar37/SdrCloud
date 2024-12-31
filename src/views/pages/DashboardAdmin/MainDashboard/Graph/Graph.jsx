@@ -9,7 +9,8 @@ const Graph = ({
   title, 
   dropdownOptions, 
   selectedOption, 
-  type 
+  type, 
+  setIsViewed 
 }) => {
   return (
     <div className={styles.graphContainer}>
@@ -20,6 +21,8 @@ const Graph = ({
           <FiltersDropdown 
             options={dropdownOptions}
             className={styles.dropdown}
+            setIsViewed={setIsViewed}
+
           />
         ) : (
           <Dropdown 
