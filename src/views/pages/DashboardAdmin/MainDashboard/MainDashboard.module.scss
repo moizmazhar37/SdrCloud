@@ -5,12 +5,12 @@
   justify-content: flex-end;
   width: 100%;
   box-sizing: border-box;
-  
+
   > p {
     color: #272D37;
     font-size: 14px;
   }
-  
+
   > button {
     background-color: #0358AC;
     cursor: pointer;
@@ -22,7 +22,7 @@
     border: none;
     display: flex;
     border-radius: 6px;
-    
+
     &:hover {
       opacity: 0.9;
     }
@@ -32,7 +32,7 @@
     flex-direction: column;
     align-items: center;
     gap: 10px;
-    
+
     > button {
       width: 100%;
     }
@@ -50,16 +50,33 @@
   width: 100%;
   box-sizing: border-box;
 
+  @media screen and (max-width: 1040px) and (min-width: 781px) {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 12px;
+
+    > * {
+      flex: 1 1 calc(33.33% - 12px);
+      max-width: calc(53.33% - 12px);
+    }
+  }
+
   @media screen and (max-width: 780px) {
     flex-wrap: wrap;
     gap: 16px;
+
+    > * {
+      flex: 1 1 calc(50% - 16px);
+      max-width: calc(90% - 16px);
+    }
   }
 
   @media screen and (max-width: 480px) {
     flex-direction: column;
     padding: 15px;
+
     > * {
-       width: 88%;
+      width: 88%;
     }
   }
 }
@@ -111,15 +128,17 @@
 
   @media screen and (max-width: 780px) {
     flex-direction: column;
+
     > * {
       width: 97%;
       margin-bottom: 20px;
+      padding-bottom: 17%;
     }
   }
 }
 
 @media screen and (max-width: 780px) {
-.TopUserContainer{
-max-width: 95%;
-}
+  .TopUserContainer {
+    max-width: 95%;
+  }
 }
