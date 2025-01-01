@@ -105,6 +105,10 @@
       flex-direction: column;
       width: 88%;
     }
+    @media screen and (max-width: 420px) {
+      width: 85%;
+      }
+  
   }
 
   @media screen and (max-width: 480px) {
@@ -125,7 +129,12 @@
   > * {
     flex: 1;
   }
-
+  @media screen and (max-width: 520px) {
+  width: 96%;
+  }
+  @media screen and (max-width: 390px) {
+    width: 95%;
+    }
   @media screen and (max-width: 780px) {
     flex-direction: column;
 
