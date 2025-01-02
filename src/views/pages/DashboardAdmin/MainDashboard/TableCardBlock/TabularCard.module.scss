@@ -27,22 +27,14 @@
 
 .tableContainer {
   overflow-y: auto;
-  max-height: calc(100vh - 200px);
-  
-  &::-webkit-scrollbar {
-    width: 6px;
-  }
-  
-  &::-webkit-scrollbar-track {
-    background: #F9FAFB;
-    border-radius: 3px;
-  }
-  
-  &::-webkit-scrollbar-thumb {
-    background: #E5E7EB;
-    border-radius: 3px;
-  }
+  height: fit-content;
+  max-height: 250px;
 }
+
+.tableContainer::-webkit-scrollbar {
+  width: 3px; 
+}
+
 
 .table {
   width: 100%;

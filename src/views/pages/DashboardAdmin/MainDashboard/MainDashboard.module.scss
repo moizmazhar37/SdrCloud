@@ -105,6 +105,10 @@
       flex-direction: column;
       width: 88%;
     }
+    @media screen and (max-width: 420px) {
+      width: 85%;
+      }
+  
   }
 
   @media screen and (max-width: 480px) {
@@ -125,13 +129,18 @@
   > * {
     flex: 1;
   }
-
+  @media screen and (max-width: 520px) {
+  width: 96%;
+  }
+  @media screen and (max-width: 390px) {
+    width: 95%;
+    }
   @media screen and (max-width: 780px) {
     flex-direction: column;
 
     > * {
       width: 97%;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
       padding-bottom: 17%;
     }
   }
@@ -140,5 +149,24 @@
 @media screen and (max-width: 780px) {
   .TopUserContainer {
     max-width: 95%;
+  }
+}
+
+.LeadsGraphContainer{
+  width: 97.7%;
+  margin-top: -4px;
+  padding: 0px 0px 10px 10px;
+  padding-left: 16px;
+  display: flex;
+  justify-content: center;
+}
+@media screen and (max-width: 780px) {
+  .LeadsGraphContainer {
+    width: 93%;
+  }
+}
+@media screen and (max-width: 390px) {
+  .LeadsGraphContainer {
+    width: 91%;
   }
 }
