@@ -11,13 +11,13 @@ import useHvoVideoSent from "./Hooks/useHvoVideoSent";
 import styles from "./MainDashboard.module.scss";
 
 const MainDashboard = () => {
-  const [selectedTimeStamp, setSelectedTimeStamp] = useState("Monthly");
+  const [selectedTimeStamp, setSelectedTimeStamp] = useState("Current Month");
   const [selectedGraphTimeStamp, setSelectedGraphTimeStamp] =
-    useState("Monthly");
+    useState("Current Month");
   const [selectedTimeStampForTemplate, setSelectedTimeStampForTemplate] =
-    useState("Monthly");
+    useState("Current Month");
   const [selectedSentHvoVideoTimestamp, setSelectedSentHvoVideoTimestamp] =
-    useState("Monthly");
+    useState("Current Month");
   const [hvoVideoTimeframe, setHvoVideoTimeframe] = useState("month");
   const [isViewed, setIsViewed] = useState(false);
   const [userTimePeriod, setUserTimePeriod] = useState("month");
@@ -39,29 +39,29 @@ const MainDashboard = () => {
     const str = num.toString();
     const dotIndex = str.indexOf(".");
     if (dotIndex === -1) return str;
-    const truncated = str.slice(0, dotIndex + decimals + 1);
+    const truncated = '$' + str.slice(0, dotIndex + decimals + 1);
     return truncated.length < str.length ? `${truncated}...` : truncated;
   };
 
   const dropdownOptionsForGraph = [
     {
-      label: "Monthly",
+      label: "Current Month",
       onClick: () => {
-        setSelectedGraphTimeStamp("Monthly");
+        setSelectedGraphTimeStamp("Current Month");
         setGraphTimePeriod("month");
       },
     },
     {
-      label: "Yearly",
+      label: "Current Year",
       onClick: () => {
-        setSelectedGraphTimeStamp("Yearly");
+        setSelectedGraphTimeStamp("Current Year");
         setGraphTimePeriod("year");
       },
     },
     {
-      label: "Weekly",
+      label: "Current Week",
       onClick: () => {
-        setSelectedGraphTimeStamp("Weekly");
+        setSelectedGraphTimeStamp("Current Week");
         setGraphTimePeriod("week");
       },
     },
@@ -69,23 +69,23 @@ const MainDashboard = () => {
 
   const dropdownOptionsHvoVideoGraph = [
     {
-      label: "Monthly",
+      label: "Current Month",
       onClick: () => {
-        setSelectedSentHvoVideoTimestamp("Monthly");
+        setSelectedSentHvoVideoTimestamp("Current Month");
         setHvoVideoTimeframe("month");
       },
     },
     {
-      label: "Yearly",
+      label: "Current Year",
       onClick: () => {
-        setSelectedSentHvoVideoTimestamp("Yearly");
+        setSelectedSentHvoVideoTimestamp("Current Year");
         setHvoVideoTimeframe("year");
       },
     },
     {
-      label: "Weekly",
+      label: "Current Week",
       onClick: () => {
-        setSelectedSentHvoVideoTimestamp("Weekly");
+        setSelectedSentHvoVideoTimestamp("Current Week");
         setHvoVideoTimeframe("week");
       },
     },
@@ -93,23 +93,23 @@ const MainDashboard = () => {
 
   const dropdownOptionsForUser = [
     {
-      label: "Monthly",
+      label: "Current Month",
       onClick: () => {
-        setSelectedTimeStamp("Monthly");
+        setSelectedTimeStamp("Current Month");
         setUserTimePeriod("month");
       },
     },
     {
-      label: "Yearly",
+      label: "Current Year",
       onClick: () => {
-        setSelectedTimeStamp("Yearly");
+        setSelectedTimeStamp("Current Year");
         setUserTimePeriod("year");
       },
     },
     {
-      label: "Weekly",
+      label: "Current Week",
       onClick: () => {
-        setSelectedTimeStamp("Weekly");
+        setSelectedTimeStamp("Current Week");
         setUserTimePeriod("week");
       },
     },
@@ -117,21 +117,21 @@ const MainDashboard = () => {
 
   const dropdownOptionsForTemplate = [
     {
-      label: "Monthly",
+      label: "Current Month",
       onClick: () => {
-        setSelectedTimeStampForTemplate("Monthly");
+        setSelectedTimeStampForTemplate("Current Month");
         setTemplateTimePeriod("month");
       },
     },
     {
-      label: "Yearly",
+      label: "Current  Year",
       onClick: () => {
         setSelectedTimeStampForTemplate("Yearly");
         setTemplateTimePeriod("year");
       },
     },
     {
-      label: "Weekly",
+      label: "Current Week",
       onClick: () => {
         setSelectedTimeStampForTemplate("Weekly");
         setTemplateTimePeriod("week");
@@ -147,6 +147,8 @@ const MainDashboard = () => {
 
   const tableHeaders2 = [
     { key: "template_name", label: "Name" },
+    { key: "template_type", label: "Type" },
+
     { key: "viewed_count", label: "Times Used" },
   ];
 
@@ -161,30 +163,30 @@ const MainDashboard = () => {
       <div className={styles.cardsContainer}>
         <Card
           heading={"Tokens spent"}
-          growthText={"Monthly growth"}
-          label={"New"}
+        //  growthText={"Monthly growth"}
+         // label={"New"}
           amount={truncateNumber(statsData.tokens_spent)}
-          labelType="new"
+         // labelType="new"
         />
         <Card
           heading={"Remaining Tokens"}
-          growthText={"Monthly growth"}
-          label={"global"}
+        //  growthText={"Monthly growth"}
+         // label={"global"}
           amount={truncateNumber(statsData.remaining_tokens)}
-          labelType="global"
+         // labelType="global"
         />
         <Card
           heading={"Total sheets connected"}
-          growthText={"Monthly growth"}
-          label={"intuitive"}
+         // growthText={"Monthly growth"}
+         // label={"intuitive"}
           amount={statsData.total_sheets}
-          labelType="intuitive"
+        //  labelType="intuitive"
         />
         <Card
           heading={"Templates Generated"}
-          growthText={"Monthly growth"}
-          label={"intuitive"}
-          labelType="intuitive"
+        //  growthText={"Monthly growth"}
+        //  label={"intuitive"}
+        //  labelType="intuitive"
           amount={statsData.total_templates}
         />
       </div>
@@ -227,8 +229,7 @@ const MainDashboard = () => {
         </div>
       </div>
     </>
-  
-);
+  );
 };
 
 export default MainDashboard;
