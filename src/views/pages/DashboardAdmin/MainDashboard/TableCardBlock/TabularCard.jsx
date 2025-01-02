@@ -2,14 +2,18 @@ import React from "react";
 import Dropdown from "src/Common/Dropdown/Dropdown";
 import styles from "./TabularCard.module.scss";
 
-const TabularCard = ({ 
-  title, 
-  dropdownOptions, 
-  usersData, 
-  tableHeaders ,
-  buttonText
+const TabularCard = ({
+  title,
+  dropdownOptions,
+  usersData,
+  tableHeaders,
+  buttonText,
 }) => {
-  if (!tableHeaders || !Array.isArray(tableHeaders) || tableHeaders.length === 0) {
+  if (
+    !tableHeaders ||
+    !Array.isArray(tableHeaders) ||
+    tableHeaders.length === 0
+  ) {
     console.error("Invalid tableHeaders prop.");
     return <p>Error: No table headers available</p>;
   }
@@ -37,7 +41,10 @@ const TabularCard = ({
               usersData.map((user, index) => (
                 <tr key={index}>
                   {tableHeaders.map((header) => (
-                    <td key={header.key} className={styles[`${header.key}Cell`]}>
+                    <td
+                      key={header.key}
+                      className={styles[`${header.key}Cell`]}
+                    >
                       {header.key === "name" ? (
                         <div className={styles.userInfo}>
                           {user.image && (
@@ -49,8 +56,11 @@ const TabularCard = ({
                           )}
                           <span className={styles.userName}>{user.name}</span>
                         </div>
+                      ) : user[header.key] !== null &&
+                        user[header.key] !== undefined ? (
+                        user[header.key]
                       ) : (
-                        user[header.key] || "-"
+                        "-"
                       )}
                     </td>
                   ))}
