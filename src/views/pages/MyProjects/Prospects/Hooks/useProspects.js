@@ -45,6 +45,7 @@ const useProspects = (page, selectedOption, tempType, search = "") => {
 
   const transformData = (data, type) => {
     return data?.map((item) => ({
+      templateId:item.template_id,
       templateName: item.template_name,
       sheetName: item.sheet_name,
       user: item.user,

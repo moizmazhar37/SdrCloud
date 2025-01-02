@@ -194,9 +194,17 @@ export const routes = [
     path: "/prospects",
     guard: true,
     layout: DashboardLayout,
-    component: lazy(() => import("src/views/pages/Prospects/Prospects")),
+    component: lazy(() => import("src/views/pages/MyProjects/Prospects/Prospects")),
   },
-
+  {
+    exact: true,
+    path: "/prospectuser/:id",
+    guard: true,
+    layout: DashboardLayout,
+    component: lazy(() =>
+      import("src/views/pages/MyProjects/Prospects/ProspectUsers/ProspectUsers")
+    ),
+  },
   
   {
     exact: true,
