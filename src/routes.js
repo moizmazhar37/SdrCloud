@@ -53,12 +53,20 @@ export const routes = [
   },
 
   // New URL for Routes
+  // {
+  //   exact: true,
+  //   path: "/dashboard",
+  //   guard: true,
+  //   layout: DashboardLayout,
+  //   component: lazy(() => import("src/views/pages/DashboardAdmin/index")),
+  // },
+
   {
     exact: true,
     path: "/dashboard",
     guard: true,
     layout: DashboardLayout,
-    component: lazy(() => import("src/views/pages/DashboardAdmin/index")),
+    component: lazy(() => import("src/views/pages/DashboardAdmin/MainDashboard/MainDashboard")),
   },
   {
     exact: true,
@@ -181,6 +189,15 @@ export const routes = [
     layout: DashboardLayout,
     component: lazy(() => import("src/views/pages/MyProjects/index")),
   },
+  {
+    exact: true,
+    path: "/prospects",
+    guard: true,
+    layout: DashboardLayout,
+    component: lazy(() => import("src/views/pages/Prospects/Prospects")),
+  },
+
+  
   {
     exact: true,
     path: "/project-list",

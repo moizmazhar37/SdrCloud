@@ -380,6 +380,8 @@ function AllCustomerGroup() {
         setPageSize(res?.data?.totalPageCount);
         setSheetId(res?.data?.docs);
         setPagination(true);
+
+        console.log("i ma the api ---",res.data)
       }
       if (res?.data?.status === 205) {
         setLoading(false);

@@ -1,0 +1,153 @@
+.topContainer {
+  padding: 20px;
+  display: flex;
+  gap: 2%;
+  justify-content: flex-end;
+  width: 100%;
+  box-sizing: border-box;
+
+  > p {
+    color: #272D37;
+    font-size: 14px;
+  }
+
+  > button {
+    background-color: #0358AC;
+    cursor: pointer;
+    width: 10%;
+    padding: 16px;
+    min-width: 120px;
+    color: white;
+    justify-content: center;
+    border: none;
+    display: flex;
+    border-radius: 6px;
+
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+
+    > button {
+      width: 100%;
+    }
+  }
+}
+
+.cardsContainer {
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  border-radius: 6px;
+  gap: 8px;
+  padding: 20px;
+  border: 1px solid #ECECEC;
+  width: 100%;
+  box-sizing: border-box;
+
+  @media screen and (max-width: 1040px) and (min-width: 781px) {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 12px;
+
+    > * {
+      flex: 1 1 calc(33.33% - 12px);
+      max-width: calc(53.33% - 12px);
+    }
+  }
+
+  @media screen and (max-width: 780px) {
+    flex-wrap: wrap;
+    gap: 16px;
+
+    > * {
+      flex: 1 1 calc(50% - 16px);
+      max-width: calc(90% - 16px);
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    flex-direction: column;
+    padding: 15px;
+
+    > * {
+      width: 88%;
+    }
+  }
+}
+
+.TableSection {
+  margin-top: 10px;
+  background-color: transparent;
+  border-radius: 6px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 20px;
+  border: 1px solid #ECECEC;
+  overflow: hidden;
+
+  .TopUserContainer {
+    width: 100%;
+    justify-content: center;
+    gap: 25px;
+    display: flex;
+
+    > * {
+      flex: 1;
+    }
+
+    @media screen and (max-width: 780px) {
+      flex-direction: column;
+      width: 88%;
+    }
+    @media screen and (max-width: 420px) {
+      width: 85%;
+      }
+  
+  }
+
+  @media screen and (max-width: 480px) {
+    padding: 15px;
+  }
+}
+
+.GraphContainer {
+  width: 100%;
+  box-sizing: border-box;
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  border-radius: 6px;
+  gap: 20px;
+  padding: 20px;
+
+  > * {
+    flex: 1;
+  }
+  @media screen and (max-width: 520px) {
+  width: 96%;
+  }
+  @media screen and (max-width: 390px) {
+    width: 95%;
+    }
+  @media screen and (max-width: 780px) {
+    flex-direction: column;
+
+    > * {
+      width: 97%;
+      margin-bottom: 20px;
+      padding-bottom: 17%;
+    }
+  }
+}
+
+@media screen and (max-width: 780px) {
+  .TopUserContainer {
+    max-width: 95%;
+  }
+}

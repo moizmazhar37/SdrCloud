@@ -1,0 +1,106 @@
+.container {
+  background: #FFFFFF;
+  border-radius: 7px;
+  border: 1px solid #ECECEC;
+
+  padding: 24px;
+  width: 100%;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 500;
+  color: #111827;
+  margin: 0;
+  line-height: 36px;
+}
+
+.tableContainer {
+  overflow-y: auto;
+  height: fit-content;
+  max-height: 250px;
+}
+
+.tableContainer::-webkit-scrollbar {
+  width: 3px; 
+}
+
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  
+  th {
+    padding: 12px 0;
+    text-align: left;
+    font-weight: 500;
+    font-size: 14px;
+    color: #6B7280;
+    border-bottom: 1px solid #E5E7EB;
+    background: #FFFFFF;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+  
+  td {
+    padding: 16px 0;
+    border-bottom: 1px solid #E5E7EB;
+  }
+  
+  tr:last-child td {
+    border-bottom: none;
+  }
+}
+
+.nameColumn {
+  width: 50%;
+}
+
+.creditsColumn {
+  width: 25%;
+}
+
+.scoreColumn {
+  width: 25%;
+}
+
+.nameCell {
+  padding-right: 24px;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar {
+  width: 40px; 
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover; 
+}
+
+.userName {
+  font-weight: 500;
+  color: #111827;
+  font-size: 14px;
+}
+
+.creditsCell, .scoreCell {
+  font-weight: 500;
+  color: #1F2937;
+  font-size: 14px;
+}
