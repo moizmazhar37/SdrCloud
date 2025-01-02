@@ -160,7 +160,7 @@ const GoogleSheetConnection = ({
   nextRoute,
   setnextRoutes,
   nextRoute1,
-  handleClick,
+  // handleClick,
   setnextRoutes1,
 }) => {
   const [nextRoutes2, setNextRoutes2] = useState("Create New");
@@ -174,7 +174,6 @@ const GoogleSheetConnection = ({
   const history = useHistory();
   const [userList, setUserList] = useState([]);
   const [selectedUser, setSelectedUser] = useState("");
-  
 
   const handleClose = () => {
     setOpenDailog(false);
@@ -195,7 +194,7 @@ const GoogleSheetConnection = ({
 
     try {
       setLoading(true);
-      console.log(values.userList)
+      console.log(values.userList);
       const response = await Axios({
         url: `${ApiConfig.fetchSheet}/`,
         method: "POST",
@@ -222,9 +221,9 @@ const GoogleSheetConnection = ({
       }
     } catch (error) {
       console.log("error: ", error);
-        setLoading(false);
-        // setOpenDailog(true);
-        toast.error(error?.response?.data?.detail);
+      setLoading(false);
+      // setOpenDailog(true);
+      toast.error(error?.response?.data?.detail);
     }
   };
   const getAllUsers = async () => {
@@ -237,7 +236,7 @@ const GoogleSheetConnection = ({
         },
       });
       // if (response?.data?.status === 200) {
-        setUserList(response?.data);
+      setUserList(response?.data);
       // }
     } catch (error) {
       console.log(error);
@@ -287,7 +286,7 @@ const GoogleSheetConnection = ({
             setnextRoutes={setnextRoutes}
             nextRoutes2={nextRoutes2}
             setNextRoutes2={setNextRoutes2}
-            handleClick={handleClick}
+            // handleClick={handleClick}
             sheetData1={sheetdata}
           />
         ) : (
@@ -302,7 +301,7 @@ const GoogleSheetConnection = ({
                   <Link
                     color="inherit"
                     href="/pp-settings"
-                    onClick={handleClick}
+                    // onClick={handleClick}
                   >
                     Settings{" "}
                   </Link>
@@ -314,7 +313,7 @@ const GoogleSheetConnection = ({
                   <Link
                     color="inherit"
                     href="/integration"
-                    onClick={handleClick}
+                    // onClick={handleClick}
                   >
                     Integration
                   </Link>

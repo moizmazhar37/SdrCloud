@@ -26,7 +26,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import "react-phone-input-2/lib/style.css";
 import PhoneInput from "react-phone-input-2";
 import FullScreenLoader from "src/component/FullScreenLoader";
-import CropEasyProfile from "../CreateVideo/Crop/CropEasyProfile";
+import CropEasyProfile from "../../CreateVideo/Crop/CropEasyProfile";
 import { parsePhoneNumberFromString } from "libphonenumber-js";
 const useStyles = makeStyles((theme) => ({
   tabContainer: {

@@ -22,7 +22,7 @@ import {
   FormControl,
   styled,
 } from "@material-ui/core";
-import GoogleSheetConnection from "./GoogleSheetConnection";
+import GoogleSheetConnection from "./EditGoogleSheet/GoogleSheetConnection";
 import Link from "@material-ui/core/Link";
 import axios from "axios";
 import ApiConfig from "src/config/APIConfig";
@@ -206,7 +206,7 @@ const CustomExpandMoreIcon = styled(ExpandMoreIcon)(({ theme }) => ({
 // Function component for managing Google Sheets
 const GoogleSheet = ({
   nextRoute,
-  handleClick,
+  // handleClick,
   setnextRoutes,
   settingRoute,
   setSettingRoute,
@@ -370,36 +370,7 @@ const GoogleSheet = ({
       handleDeleteClose();
     }
   };
-  const disconnectSheet = async () => {
-    setLoading(true);
-    try {
-      const response = await axios({
-        url: ApiConfig.disconnectSheet,
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          userId: localStorage.getItem("_id"),
-        },
-        params: {
-          sheetId: disconnectSheetId,
-        },
-      });
-      if (response?.data.status === 200) {
-        setLoading(false);
-        toast.success("Sheet Successfully Disconnected.");
-      } else {
-        setLoading(false);
-      }
-    } catch (error) {
-      setLoading(false);
-      toast.error(error.response.message);
-    }
-  };
-  // Function to handle closing of dialog
-  const handleClose = () => {
-    setAnchorEl(null);
-    setSelectedUserId(null);
-  };
+
   // Function to handle closing of delete dialog
   const handleAssignClose = () => {
     setAssignOpen(false);
@@ -427,7 +398,7 @@ const GoogleSheet = ({
             setnextRoutes={setnextRoutes}
             nextRoute1={nextRoute1}
             setnextRoutes1={setnextRoutes1}
-            handleClick={handleClick}
+            // handleClick={handleClick}
           />
         ) : (
           <>
@@ -449,7 +420,7 @@ const GoogleSheet = ({
                     <Link
                       color="inherit"
                       href="/settings"
-                      onClick={handleClick}
+                      // onClick={handleClick}
                     >
                       Settings
                     </Link>{" "}
@@ -461,7 +432,7 @@ const GoogleSheet = ({
                     <Link
                       color="inherit"
                       href="/integrations"
-                      onClick={handleClick}
+                      // onClick={handleClick}
                     >
                       Integrations
                     </Link>
