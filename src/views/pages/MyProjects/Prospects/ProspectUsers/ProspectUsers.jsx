@@ -4,38 +4,47 @@ import styles from "./Prospectusers.module.scss";
 import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
 import useProspectUserList from "../Hooks/useProspectUserList";
 
-
 const Prospectusers = ({ templateId, tempType }) => {
   const { data, loading, error } = useProspectUserList(templateId, tempType);
 
-  const headers = [
+  const videoHeaders = [
     { key: "prospect_company", label: "Company" },
     { key: "name", label: "Name" },
     { key: "status", label: "Status" },
     { key: "video_template_url", label: "Video URL" },
   ];
 
+  const hvoHeaders = [
+    { key: "prospect_company", label: "Company" },
+    { key: "name", label: "Name" },
+    { key: "status", label: "Status" },
+    { key: "hvo_url", label: "HVO URL" },
+  ];
+
   const transformedData = data?.map(row => ({
-    //transforming data to show Link text instead of full url , onlclick open url 
     ...row,
-    video_template_url: row.video_template_url ? "Link" : ""
+    [tempType === 'hvo' ? 'hvo_url' : 'video_template_url']: 
+      row[tempType === 'hvo' ? 'hvo_url' : 'video_template_url'] ? "Link" : ""
   }));
 
   const handleFieldClick = (fieldName, rowData) => {
-    if (fieldName === "video_template_url" && rowData.video_template_url) {
-      // get the original URL from the data before transformation
+    const urlField = tempType === 'hvo' ? 'hvo_url' : 'video_template_url';
+    if (fieldName === urlField && rowData[fieldName]) {
       const originalRow = data.find(row => 
         row.prospect_company === rowData.prospect_company && 
         row.name === rowData.name
       );
-      if (originalRow?.video_template_url) {
-        window.open(originalRow.video_template_url, '_blank');
+      if (originalRow?.[urlField]) {
+        window.open(originalRow[urlField], '_blank');
       }
     }
   };
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error loading data: {error.message}</div>;
+
+  const headers = tempType === 'hvo' ? hvoHeaders : videoHeaders;
+  const clickableFields = tempType === 'hvo' ? ['hvo_url'] : ['video_template_url'];
 
   return (
     <div className={styles.container}>
@@ -44,7 +53,7 @@ const Prospectusers = ({ templateId, tempType }) => {
         <Table 
           headers={headers} 
           data={transformedData}
-          clickableFields={["video_template_url"]}
+          clickableFields={clickableFields}
           onFieldClick={handleFieldClick}
         />
       ) : (
