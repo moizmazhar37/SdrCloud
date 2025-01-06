@@ -41,8 +41,8 @@ const MainDashboard = () => {
     const rounded = (Math.round(num * factor) / factor).toFixed(decimals);
     return `$${rounded}`;
   };
-  
 
+  const userType=localStorage.getItem('userType')
   const dropdownOptionsForGraph = [
     {
       label: "Monthly",
@@ -181,7 +181,7 @@ const MainDashboard = () => {
       label: "wwww.facebook.com",
       onClick: () => console.log("Facebook selected"),
     },
-    {label: "www.google.com", onClick: () => console.log("Google selected")}
+    { label: "www.google.com", onClick: () => console.log("Google selected") },
   ];
 
   //-------------------------------------------------------------------
@@ -196,30 +196,30 @@ const MainDashboard = () => {
       <div className={styles.cardsContainer}>
         <Card
           heading={"Tokens spent"}
-         // growthText={"Monthly growth"}
-          label={"New"}
+          // growthText={"Monthly growth"}
+          //  label={"New"}
           amount={roundNumber(statsData.tokens_spent)}
-          labelType="new"
+          //  labelType="new"
         />
         <Card
           heading={"Remaining Tokens"}
-        //  growthText={"Monthly growth"}
-          label={"global"}
+          //  growthText={"Monthly growth"}
+          //  label={"global"}
           amount={roundNumber(statsData.remaining_tokens)}
-          labelType="global"
+          //  labelType="global"
         />
         <Card
           heading={"Total sheets connected"}
-         // growthText={"Monthly growth"}
-          label={"intuitive"}
+          // growthText={"Monthly growth"}
+          //  label={"intuitive"}
           amount={statsData.total_sheets}
-          labelType="intuitive"
+          //  labelType="intuitive"
         />
         <Card
           heading={"Templates Generated"}
-        //  growthText={"Monthly growth"}
-          label={"intuitive"}
-          labelType="intuitive"
+          //  growthText={"Monthly growth"}
+          //  label={"intuitive"}
+          //  labelType="intuitive"
           amount={statsData.total_templates}
         />
       </div>
@@ -232,13 +232,15 @@ const MainDashboard = () => {
             tableHeaders={tableHeaders}
             buttonText={selectedTimeStamp}
           />
-          <TopUsers
-            title={"Top Performing Templates"}
-            dropdownOptions={dropdownOptionsForTemplate}
-            usersData={toptemplatesData}
-            tableHeaders={tableHeaders2}
-            buttonText={selectedTimeStampForTemplate}
-          />
+          {userType == "SUBADMIN" && (
+            <TopUsers
+              title={"Top Performing Templates"}
+              dropdownOptions={dropdownOptionsForTemplate}
+              usersData={toptemplatesData}
+              tableHeaders={tableHeaders2}
+              buttonText={selectedTimeStampForTemplate}
+            />
+          )}
         </div>
       </div>
       <div>
