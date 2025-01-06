@@ -35,17 +35,14 @@ const MainDashboard = () => {
   );
   const { downloadCSV, loading: csvLoading } = useDownloadCSV();
 
-  const userType = localStorage.getItem("userType");
-  
-  const truncateNumber = (num, decimals = 5) => {
-    if (num === undefined || num === null) return "0";
-    const str = num.toString();
-    const dotIndex = str.indexOf(".");
-    if (dotIndex === -1) return str;
-    const truncated = "$" + str.slice(0, dotIndex + decimals + 1);
-    return truncated.length < str.length ? `${truncated}...` : truncated;
+  const roundNumber = (num, decimals = 2) => {
+    if (num === undefined || num === null) return "$0.00";
+    const factor = Math.pow(10, decimals);
+    const rounded = (Math.round(num * factor) / factor).toFixed(decimals);
+    return `$${rounded}`;
   };
 
+  const userType=localStorage.getItem('userType')
   const dropdownOptionsForGraph = [
     {
       label: "Monthly",
@@ -201,20 +198,20 @@ const MainDashboard = () => {
           heading={"Tokens spent"}
           // growthText={"Monthly growth"}
           //  label={"New"}
-          amount={truncateNumber(statsData.tokens_spent)}
+          amount={roundNumber(statsData.tokens_spent)}
           //  labelType="new"
         />
         <Card
           heading={"Remaining Tokens"}
           //  growthText={"Monthly growth"}
           //  label={"global"}
-          amount={truncateNumber(statsData.remaining_tokens)}
+          amount={roundNumber(statsData.remaining_tokens)}
           //  labelType="global"
         />
         <Card
           heading={"Total sheets connected"}
           // growthText={"Monthly growth"}
-          label={"intuitive"}
+          //  label={"intuitive"}
           amount={statsData.total_sheets}
           //  labelType="intuitive"
         />
