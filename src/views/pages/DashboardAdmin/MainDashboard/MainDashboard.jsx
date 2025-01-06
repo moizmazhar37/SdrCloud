@@ -70,23 +70,23 @@ const MainDashboard = () => {
 
   const dropdownOptionsHvoVideoGraph = [
     {
-      label: "Current Month",
+      label: "Monthly",
       onClick: () => {
-        setSelectedSentHvoVideoTimestamp("Current Month");
+        setSelectedSentHvoVideoTimestamp("Monthly");
         setHvoVideoTimeframe("month");
       },
     },
     {
-      label: "Current Year",
+      label: "Yearly",
       onClick: () => {
-        setSelectedSentHvoVideoTimestamp("Current Year");
+        setSelectedSentHvoVideoTimestamp("Yearly");
         setHvoVideoTimeframe("year");
       },
     },
     {
-      label: "Current Week",
+      label: "Weekly",
       onClick: () => {
-        setSelectedSentHvoVideoTimestamp("Current Week");
+        setSelectedSentHvoVideoTimestamp("Weekly");
         setHvoVideoTimeframe("week");
       },
     },
@@ -179,9 +179,10 @@ const MainDashboard = () => {
   const websiteOptions = [
     { label: "www.google.com", onClick: () => console.log("Google selected") },
     {
-      label: "www.facebook.com",
+      label: "wwww.facebook.com",
       onClick: () => console.log("Facebook selected"),
     },
+    {label: "www.google.com", onClick: () => console.log("Google selected")}
   ];
 
   //-------------------------------------------------------------------
