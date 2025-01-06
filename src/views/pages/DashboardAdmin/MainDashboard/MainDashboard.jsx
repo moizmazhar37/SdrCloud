@@ -261,13 +261,13 @@ const MainDashboard = () => {
             setIsViewed={setIsViewed}
           />
         </div>
-        <div className={styles.LeadsGraphContainer}>
+        {/* <div className={styles.LeadsGraphContainer}>
           <LeadsGraph
             data={graphData}
             timeframeOptions={timeframeOptions}
             websiteOptions={websiteOptions}
           />{" "}
-        </div>
+        </div> */}
       </div>
     </>
   );
