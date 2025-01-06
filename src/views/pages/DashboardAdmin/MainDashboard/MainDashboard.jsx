@@ -35,12 +35,14 @@ const MainDashboard = () => {
   );
   const { downloadCSV, loading: csvLoading } = useDownloadCSV();
 
+  const userType = localStorage.getItem("userType");
+  
   const truncateNumber = (num, decimals = 5) => {
     if (num === undefined || num === null) return "0";
     const str = num.toString();
     const dotIndex = str.indexOf(".");
     if (dotIndex === -1) return str;
-    const truncated = '$' + str.slice(0, dotIndex + decimals + 1);
+    const truncated = "$" + str.slice(0, dotIndex + decimals + 1);
     return truncated.length < str.length ? `${truncated}...` : truncated;
   };
 
@@ -182,7 +184,7 @@ const MainDashboard = () => {
       label: "wwww.facebook.com",
       onClick: () => console.log("Facebook selected"),
     },
-    {label: "www.google.com", onClick: () => console.log("Google selected")}
+    { label: "www.google.com", onClick: () => console.log("Google selected") },
   ];
 
   //-------------------------------------------------------------------
@@ -197,30 +199,30 @@ const MainDashboard = () => {
       <div className={styles.cardsContainer}>
         <Card
           heading={"Tokens spent"}
-         // growthText={"Monthly growth"}
-          label={"New"}
+          // growthText={"Monthly growth"}
+          //  label={"New"}
           amount={truncateNumber(statsData.tokens_spent)}
-          labelType="new"
+          //  labelType="new"
         />
         <Card
           heading={"Remaining Tokens"}
-        //  growthText={"Monthly growth"}
-          label={"global"}
+          //  growthText={"Monthly growth"}
+          //  label={"global"}
           amount={truncateNumber(statsData.remaining_tokens)}
-          labelType="global"
+          //  labelType="global"
         />
         <Card
           heading={"Total sheets connected"}
-         // growthText={"Monthly growth"}
+          // growthText={"Monthly growth"}
           label={"intuitive"}
           amount={statsData.total_sheets}
-          labelType="intuitive"
+          //  labelType="intuitive"
         />
         <Card
           heading={"Templates Generated"}
-        //  growthText={"Monthly growth"}
-          label={"intuitive"}
-          labelType="intuitive"
+          //  growthText={"Monthly growth"}
+          //  label={"intuitive"}
+          //  labelType="intuitive"
           amount={statsData.total_templates}
         />
       </div>
@@ -233,13 +235,15 @@ const MainDashboard = () => {
             tableHeaders={tableHeaders}
             buttonText={selectedTimeStamp}
           />
-          <TopUsers
-            title={"Top Performing Templates"}
-            dropdownOptions={dropdownOptionsForTemplate}
-            usersData={toptemplatesData}
-            tableHeaders={tableHeaders2}
-            buttonText={selectedTimeStampForTemplate}
-          />
+          {userType == "SUBADMIN" && (
+            <TopUsers
+              title={"Top Performing Templates"}
+              dropdownOptions={dropdownOptionsForTemplate}
+              usersData={toptemplatesData}
+              tableHeaders={tableHeaders2}
+              buttonText={selectedTimeStampForTemplate}
+            />
+          )}
         </div>
       </div>
       <div>
