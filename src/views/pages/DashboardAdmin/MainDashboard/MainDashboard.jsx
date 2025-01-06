@@ -35,8 +35,6 @@ const MainDashboard = () => {
   );
   const { downloadCSV, loading: csvLoading } = useDownloadCSV();
 
-  const userType = localStorage.getItem("userType");
-
   const roundNumber = (num, decimals = 2) => {
     if (num === undefined || num === null) return "$0.00";
     const factor = Math.pow(10, decimals);
@@ -45,6 +43,7 @@ const MainDashboard = () => {
   };
   
 
+  const userType=localStorage.getItem('userType')
   const dropdownOptionsForGraph = [
     {
       label: "Monthly",
@@ -213,7 +212,7 @@ const MainDashboard = () => {
         <Card
           heading={"Total sheets connected"}
           // growthText={"Monthly growth"}
-          label={"intuitive"}
+          //  label={"intuitive"}
           amount={statsData.total_sheets}
           //  labelType="intuitive"
         />
