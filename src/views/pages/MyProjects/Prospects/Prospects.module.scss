@@ -10,7 +10,7 @@
   
   .toggleButtons {
     display: flex;
-    gap: 2.4%;
+    gap: 1%;
     margin-bottom: 24px;
   }
   
@@ -22,7 +22,7 @@
     cursor: pointer;
     transition: all 0.2s ease;
     border: 1px solid transparent;
-    box-shadow: 0px 1px 3px rgba(16, 24, 40, 0.1), 0px 1px 2px rgba(16, 24, 40, 0.06);
+    box-shadow: 0px 2px 5px rgba(16, 24, 40, 0.2), 0px 1px 3px rgba(16, 24, 40, 0.15);
   
     &.inactive {
       background-color: white;
@@ -30,7 +30,7 @@
       color: #262726;
   
       &:hover {
-        box-shadow: 0px 4px 8px -2px rgba(16, 24, 40, 0.1), 0px 2px 4px -2px rgba(16, 24, 40, 0.06);
+        box-shadow: 0px 4px 10px -2px rgba(16, 24, 40, 0.3), 0px 2px 6px -2px rgba(16, 24, 40, 0.2);
         transform: translateY(-1px);
       }
     }
@@ -41,13 +41,13 @@
       border-color: rgb(3, 88, 172);
   
       &:hover {
-        box-shadow: 0px 4px 8px -2px rgba(3, 88, 172, 0.2), 0px 2px 4px -2px rgba(3, 88, 172, 0.15);
+        box-shadow: 0px 4px 10px -2px rgba(3, 88, 172, 0.4), 0px 2px 6px -2px rgba(3, 88, 172, 0.3);
         transform: translateY(-1px);
       }
     }
   
     &:focus {
       outline: none;
-     
     }
   }
+  

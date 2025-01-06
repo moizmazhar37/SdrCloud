@@ -187,7 +187,7 @@ export const routes = [
     path: "/Myprojects",
     guard: true,
     layout: DashboardLayout,
-    component: lazy(() => import("src/views/pages/MyProjects/index")),
+    component: lazy(() => import("src/views/pages/MyProjects/Prospects/Prospects")),
   },
   {
     exact: true,
