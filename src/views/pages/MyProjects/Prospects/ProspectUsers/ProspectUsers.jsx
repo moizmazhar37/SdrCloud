@@ -1,5 +1,5 @@
 import React from "react";
-import Table from "src/Common/Table/Table";
+import Table from "src/views/pages/settings/GoogleSheets/Table/Table";
 import styles from "./Prospectusers.module.scss";
 import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
 import useProspectUserList from "../Hooks/useProspectUserList";
