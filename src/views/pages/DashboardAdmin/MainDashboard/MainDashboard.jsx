@@ -36,8 +36,7 @@ const MainDashboard = () => {
   const { downloadCSV, loading: csvLoading } = useDownloadCSV();
 
   const userType = localStorage.getItem("userType");
-  console.log("User Type========", userType);
-
+  
   const truncateNumber = (num, decimals = 5) => {
     if (num === undefined || num === null) return "0";
     const str = num.toString();
