@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { useHistory } from "react-router-dom";
-import Table from "./Table/Table";
+import Table from "../../../../Common/Table/Table";
 import FullScreenLoader from "../../../../component/FullScreenLoader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Dropdown from "../../../../Common/Dropdown/Dropdown";
