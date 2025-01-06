@@ -216,6 +216,7 @@ function CompanyUserList() {
       });
       if (res?.status === 200) {
         setLoading(false);
+        toast.success("aknmdkand")
         setCompanyUserList(res?.data);
       } else if (res?.status === 205) {
         toast.error("No User Found");

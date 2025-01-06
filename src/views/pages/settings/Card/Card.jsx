@@ -2,11 +2,15 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 import styles from "./card.module.scss";
 
-const Card = ({ image, text, route }) => {
+const Card = ({ image, text, route, onClick }) => {
   const history = useHistory();
 
   const handleCardClick = () => {
-    history.push(route);
+    if (onClick) {
+      onClick(); 
+    } else if (route) {
+      history.push(route);
+    }
   };
 
   return (
