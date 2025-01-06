@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import Table from "src/Common/Table/Table";
+//import Table from "src/Common/Table/Table";
+import Table from "../../settings/GoogleSheets/Table/Table";
 import useProspects from "./Hooks/useProspects";
 import styles from "./Prospects.module.scss";
 import Prospectusers from "./ProspectUsers/ProspectUsers";

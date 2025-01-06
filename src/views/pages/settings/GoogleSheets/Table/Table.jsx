@@ -1,9 +1,41 @@
 import React from 'react';
 import styles from './table.module.scss';
 
-const Table = ({ data = [], columns = [], onColumnClick }) => {
+const Table = ({ 
+  // Support both prop patterns
+  headers,
+  columns,
+  data = [],
+  clickableFields = [],
+  onFieldClick,
+  onColumnClick
+}) => {
+  // Normalize the column definitions
+  const normalizedColumns = headers 
+    ? headers.map(header => ({
+        key: header.key,
+        label: header.label,
+        clickable: clickableFields.includes(header.key)
+      }))
+    : columns || [];
+
   const safeData = data || [];
-  const safeColumns = columns || [];
+  
+  // Unified click handler
+  const handleClick = (row, fieldKey) => {
+    if (headers) {
+      // First prop pattern
+      if (clickableFields.includes(fieldKey) && onFieldClick) {
+        onFieldClick(fieldKey, row);
+      }
+    } else {
+      // Second prop pattern
+      const column = normalizedColumns.find(col => col.key === fieldKey);
+      if (column?.clickable && onColumnClick) {
+        onColumnClick(row, fieldKey);
+      }
+    }
+  };
 
   if (!safeData?.length) {
     return (
@@ -12,7 +44,7 @@ const Table = ({ data = [], columns = [], onColumnClick }) => {
           <table className={styles.table}>
             <thead className={styles.tableHead}>
               <tr>
-                {safeColumns.map((column) => (
+                {normalizedColumns.map((column) => (
                   <th key={column.key} className={styles.tableHeader}>
                     {column.label}
                   </th>
@@ -21,8 +53,8 @@ const Table = ({ data = [], columns = [], onColumnClick }) => {
             </thead>
             <tbody>
               <tr>
-                <td 
-                  colSpan={safeColumns.length} 
+                <td
+                  colSpan={normalizedColumns.length}
                   className={styles.noDataCell}
                 >
                   No data available
@@ -41,7 +73,7 @@ const Table = ({ data = [], columns = [], onColumnClick }) => {
         <table className={styles.table}>
           <thead className={styles.tableHead}>
             <tr>
-              {safeColumns.map((column) => (
+              {normalizedColumns.map((column) => (
                 <th key={column.key} className={styles.tableHeader}>
                   {column.label}
                 </th>
@@ -49,23 +81,20 @@ const Table = ({ data = [], columns = [], onColumnClick }) => {
             </tr>
           </thead>
           <tbody>
-            {safeData.map((row) => (
-              <tr key={row.id || Math.random()} className={styles.tableRow}>
-                {safeColumns.map((column) => (
-                  <td
-                    key={column.key}
-                    onClick={() =>
-                      column.clickable && onColumnClick
-                        ? onColumnClick(row, column.key)
-                        : null
-                    }
-                    className={`${styles.tableCell} ${
-                      column.clickable ? styles.clickableCell : ''
-                    }`}
-                  >
-                    {row[column.key]}
-                  </td>
-                ))}
+            {safeData.map((row, rowIndex) => (
+              <tr key={row.id || rowIndex} className={styles.tableRow}>
+                {normalizedColumns.map((column) => {
+                  const isClickable = column.clickable || clickableFields.includes(column.key);
+                  return (
+                    <td
+                      key={column.key}
+                      onClick={() => handleClick(row, column.key)}
+                      className={`${styles.tableCell} ${isClickable ? styles.clickableCell : ''}`}
+                    >
+                      {row[column.key]}
+                    </td>
+                  );
+                })}
               </tr>
             ))}
           </tbody>
