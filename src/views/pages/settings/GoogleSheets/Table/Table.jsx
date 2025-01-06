@@ -1,21 +1,21 @@
-import React from "react";
-import PropTypes from "prop-types";
-import styles from "./table.module.scss";
+import React from 'react';
+import styles from './table.module.scss';
 
 const Table = ({ data = [], columns = [], onColumnClick }) => {
-
   const safeData = data || [];
   const safeColumns = columns || [];
 
-  if (!data?.length) {
+  if (!safeData?.length) {
     return (
       <div className={styles.tableContainer}>
         <div className={styles.tableWrapper}>
           <table className={styles.table}>
-            <thead>
+            <thead className={styles.tableHead}>
               <tr>
                 {safeColumns.map((column) => (
-                  <th key={column.key}>{column.label}</th>
+                  <th key={column.key} className={styles.tableHeader}>
+                    {column.label}
+                  </th>
                 ))}
               </tr>
             </thead>
@@ -23,7 +23,7 @@ const Table = ({ data = [], columns = [], onColumnClick }) => {
               <tr>
                 <td 
                   colSpan={safeColumns.length} 
-                  style={{ textAlign: 'center' }}
+                  className={styles.noDataCell}
                 >
                   No data available
                 </td>
@@ -36,20 +36,21 @@ const Table = ({ data = [], columns = [], onColumnClick }) => {
   }
 
   return (
-    <>
     <div className={styles.tableContainer}>
       <div className={styles.tableWrapper}>
         <table className={styles.table}>
-          <thead>
+          <thead className={styles.tableHead}>
             <tr>
               {safeColumns.map((column) => (
-                <th key={column.key}>{column.label}</th>
+                <th key={column.key} className={styles.tableHeader}>
+                  {column.label}
+                </th>
               ))}
             </tr>
           </thead>
           <tbody>
             {safeData.map((row) => (
-              <tr key={row.id || Math.random()}>
+              <tr key={row.id || Math.random()} className={styles.tableRow}>
                 {safeColumns.map((column) => (
                   <td
                     key={column.key}
@@ -58,7 +59,9 @@ const Table = ({ data = [], columns = [], onColumnClick }) => {
                         ? onColumnClick(row, column.key)
                         : null
                     }
-                    className={column.clickable ? styles.clickable : ""}
+                    className={`${styles.tableCell} ${
+                      column.clickable ? styles.clickableCell : ''
+                    }`}
                   >
                     {row[column.key]}
                   </td>
@@ -69,26 +72,7 @@ const Table = ({ data = [], columns = [], onColumnClick }) => {
         </table>
       </div>
     </div>
-    </>
   );
-};
-
-Table.propTypes = {
-  data: PropTypes.arrayOf(PropTypes.object),
-  columns: PropTypes.arrayOf(
-    PropTypes.shape({
-      key: PropTypes.string.isRequired,
-      label: PropTypes.string.isRequired,
-      clickable: PropTypes.bool,
-    })
-  ),
-  onColumnClick: PropTypes.func,
-};
-
-Table.defaultProps = {
-  data: [],
-  columns: [],
-  onColumnClick: () => {},
 };
 
 export default Table;
