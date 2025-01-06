@@ -433,7 +433,9 @@ export const routes = [
     path: "/user-dashboard",
     guard: true,
     layout: DashboardLayout,
-    component: lazy(() => import("src/views/pages/DashboardUser/index")),
+    // component: lazy(() => import("src/views/pages/DashboardUser/index")),
+    component: lazy(() => import("src/views/pages/DashboardAdmin/MainDashboard/MainDashboard")),
+  
   },
   {
     exact: true,
