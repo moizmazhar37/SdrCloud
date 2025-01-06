@@ -13,7 +13,7 @@ import styles from "./MainDashboard.module.scss";
 const MainDashboard = () => {
   const [selectedTimeStamp, setSelectedTimeStamp] = useState("Current Month");
   const [selectedGraphTimeStamp, setSelectedGraphTimeStamp] =
-    useState("Current Month");
+    useState("Monthly");
   const [selectedTimeStampForTemplate, setSelectedTimeStampForTemplate] =
     useState("Current Month");
   const [selectedSentHvoVideoTimestamp, setSelectedSentHvoVideoTimestamp] =
@@ -45,23 +45,23 @@ const MainDashboard = () => {
 
   const dropdownOptionsForGraph = [
     {
-      label: "Current Month",
+      label: "Monthly",
       onClick: () => {
-        setSelectedGraphTimeStamp("Current Month");
+        setSelectedGraphTimeStamp("Monthly");
         setGraphTimePeriod("month");
       },
     },
     {
-      label: "Current Year",
+      label: "Yearly",
       onClick: () => {
-        setSelectedGraphTimeStamp("Current Year");
+        setSelectedGraphTimeStamp("Yearly");
         setGraphTimePeriod("year");
       },
     },
     {
-      label: "Current Week",
+      label: "Weekly",
       onClick: () => {
-        setSelectedGraphTimeStamp("Current Week");
+        setSelectedGraphTimeStamp("Weekly");
         setGraphTimePeriod("week");
       },
     },
@@ -163,30 +163,30 @@ const MainDashboard = () => {
       <div className={styles.cardsContainer}>
         <Card
           heading={"Tokens spent"}
-        //  growthText={"Monthly growth"}
-         // label={"New"}
+         // growthText={"Monthly growth"}
+          label={"New"}
           amount={truncateNumber(statsData.tokens_spent)}
-         // labelType="new"
+          labelType="new"
         />
         <Card
           heading={"Remaining Tokens"}
         //  growthText={"Monthly growth"}
-         // label={"global"}
+          label={"global"}
           amount={truncateNumber(statsData.remaining_tokens)}
-         // labelType="global"
+          labelType="global"
         />
         <Card
           heading={"Total sheets connected"}
          // growthText={"Monthly growth"}
-         // label={"intuitive"}
+          label={"intuitive"}
           amount={statsData.total_sheets}
-        //  labelType="intuitive"
+          labelType="intuitive"
         />
         <Card
           heading={"Templates Generated"}
         //  growthText={"Monthly growth"}
-        //  label={"intuitive"}
-        //  labelType="intuitive"
+          label={"intuitive"}
+          labelType="intuitive"
           amount={statsData.total_templates}
         />
       </div>
