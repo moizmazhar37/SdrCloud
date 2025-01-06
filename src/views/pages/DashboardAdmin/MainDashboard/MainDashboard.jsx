@@ -36,7 +36,7 @@ const MainDashboard = () => {
   const { downloadCSV, loading: csvLoading } = useDownloadCSV();
 
   const userType = localStorage.getItem("userType");
-  
+
   const truncateNumber = (num, decimals = 5) => {
     if (num === undefined || num === null) return "0";
     const str = num.toString();
@@ -265,13 +265,16 @@ const MainDashboard = () => {
             setIsViewed={setIsViewed}
           />
         </div>
-        <div className={styles.LeadsGraphContainer}>
-          <LeadsGraph
-            data={graphData}
-            timeframeOptions={timeframeOptions}
-            websiteOptions={websiteOptions}
-          />{" "}
-        </div>
+
+        {userType == "SUBADMIN" && (
+          <div className={styles.LeadsGraphContainer}>
+            <LeadsGraph
+              data={graphData}
+              timeframeOptions={timeframeOptions}
+              websiteOptions={websiteOptions}
+            />{" "}
+          </div>
+        )}
       </div>
     </>
   );
