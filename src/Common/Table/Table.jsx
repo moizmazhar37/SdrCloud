@@ -1,47 +1,100 @@
-import React from "react";
-import styles from "./table.module.scss";
+import React from 'react';
+import styles from './table.module.scss';
 
-const Table = ({ headers, data, clickableFields = [], onFieldClick }) => {
-  const handleClick = (fieldName, rowData) => {
-    if (clickableFields.includes(fieldName) && onFieldClick) {
-      onFieldClick(fieldName, rowData);
+const Table = ({ 
+  // Support both prop patterns
+  headers,
+  columns,
+  data = [],
+  clickableFields = [],
+  onFieldClick,
+  onColumnClick
+}) => {
+  // Normalize the column definitions
+  const normalizedColumns = headers 
+    ? headers.map(header => ({
+        key: header.key,
+        label: header.label,
+        clickable: clickableFields.includes(header.key)
+      }))
+    : columns || [];
+
+  const safeData = data || [];
+  
+  // Unified click handler
+  const handleClick = (row, fieldKey) => {
+    if (headers) {
+      // First prop pattern
+      if (clickableFields.includes(fieldKey) && onFieldClick) {
+        onFieldClick(fieldKey, row);
+      }
+    } else {
+      // Second prop pattern
+      const column = normalizedColumns.find(col => col.key === fieldKey);
+      if (column?.clickable && onColumnClick) {
+        onColumnClick(row, fieldKey);
+      }
     }
   };
 
-  return (
-    <div className={styles.tableWrapper}>
+  if (!safeData?.length) {
+    return (
       <div className={styles.tableContainer}>
+        <div className={styles.tableWrapper}>
+          <table className={styles.table}>
+            <thead className={styles.tableHead}>
+              <tr>
+                {normalizedColumns.map((column) => (
+                  <th key={column.key} className={styles.tableHeader}>
+                    {column.label}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td
+                  colSpan={normalizedColumns.length}
+                  className={styles.noDataCell}
+                >
+                  No data available
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={styles.tableContainer}>
+      <div className={styles.tableWrapper}>
         <table className={styles.table}>
-          <thead>
+          <thead className={styles.tableHead}>
             <tr>
-              {headers.map((header, index) => (
-                <th key={index} className={styles.tableHeader}>
-                  <span className={styles.headerContent}>{header.label}</span>
+              {normalizedColumns.map((column) => (
+                <th key={column.key} className={styles.tableHeader}>
+                  {column.label}
                 </th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {data.map((row, rowIndex) => (
-              <tr key={rowIndex} className={styles.tableRow}>
-                {headers.map((header, colIndex) => (
-                  <td
-                    key={`${rowIndex}-${colIndex}`}
-                    className={`
-                      ${styles.tableCell}
-                      ${
-                        clickableFields.includes(header.key)
-                          ? styles.clickable
-                          : ""
-                      }
-                    `}
-                    onClick={() => handleClick(header.key, row)}
-                  >
-                    <span className={styles.cellContent}>
-                      {row[header.key]}
-                    </span>
-                  </td>
-                ))}
+            {safeData.map((row, rowIndex) => (
+              <tr key={row.id || rowIndex} className={styles.tableRow}>
+                {normalizedColumns.map((column) => {
+                  const isClickable = column.clickable || clickableFields.includes(column.key);
+                  return (
+                    <td
+                      key={column.key}
+                      onClick={() => handleClick(row, column.key)}
+                      className={`${styles.tableCell} ${isClickable ? styles.clickableCell : ''}`}
+                    >
+                      {row[column.key]}
+                    </td>
+                  );
+                })}
               </tr>
             ))}
           </tbody>
