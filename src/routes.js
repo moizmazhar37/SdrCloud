@@ -87,20 +87,8 @@ export const routes = [
     ),
   },
 
-  {
-    exact: true,
-    path: "/Edit-Myprojects",
-    guard: true,
-    layout: DashboardLayout,
-    component: lazy(() => import("src/views/pages/MyProjects/EditProject")),
-  },
-  {
-    exact: true,
-    path: "/View-Myprojects",
-    guard: true,
-    layout: DashboardLayout,
-    component: lazy(() => import("src/views/pages/MyProjects/ViewProject")),
-  },
+  
+  
   {
     exact: true,
     path: "/view-myproject",
@@ -169,20 +157,6 @@ export const routes = [
 
     // component: lazy(() => import("src/views/pages/CompanyUsers/index")),
   },
-  {
-    exact: true,
-    path: "/AddUser",
-    guard: true,
-    layout: DashboardLayout,
-    component: lazy(() => import("src/views/pages/CompanyUsers/AddUser")),
-  },
-  {
-    exact: true,
-    path: "/Viewuser",
-    guard: true,
-    layout: DashboardLayout,
-    component: lazy(() => import("src/views/pages/CompanyUsers/View")),
-  },
 
   {
     exact: true,
@@ -207,14 +181,7 @@ export const routes = [
       import("src/views/pages/MyProjects/Prospects/ProspectUsers/ProspectUsers")
     ),
   },
-  
-  {
-    exact: true,
-    path: "/project-list",
-    guard: true,
-    layout: DashboardLayout,
-    component: lazy(() => import("src/views/pages/MyProjects/errorTable")),
-  },
+
   {
     exact: true,
     path: "/Create-hvo-template",
