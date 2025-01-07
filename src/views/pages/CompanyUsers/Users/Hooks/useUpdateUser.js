@@ -23,12 +23,11 @@ export const useUpdateUser = () => {
         }
       );
       
-      toast.success("User updated successfully!");
       return response.data;
     } catch (err) {
       const errorMessage = err.response?.data?.detail || "Error updating user!";
       setError(errorMessage);
-      toast.error(errorMessage);
+
       throw err;
     } finally {
       setLoading(false);
