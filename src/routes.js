@@ -165,7 +165,9 @@ export const routes = [
     path: "/companyUsers-List",
     guard: true,
     layout: DashboardLayout,
-    component: lazy(() => import("src/views/pages/CompanyUsers/index")),
+    component: lazy(() => import("src/views/pages/CompanyUsers/Users/Users")),
+
+    // component: lazy(() => import("src/views/pages/CompanyUsers/index")),
   },
   {
     exact: true,
