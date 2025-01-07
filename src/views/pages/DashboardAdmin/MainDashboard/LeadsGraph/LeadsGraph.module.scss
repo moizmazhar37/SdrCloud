@@ -1,0 +1,128 @@
+.leadsGraphContainer {
+    width: 100%;
+    background: white;
+    border-radius: 8px;
+    padding: 38px;
+    padding-top: 22px;
+    overflow: hidden;
+    border: 1px solid #ECECEC;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    position: relative; 
+  
+    h2 {
+      margin: 0;
+      font-size: 24px;
+      color: #333;
+      font-weight: 600;
+    }
+  }
+  
+  
+  .header::after {
+    content: "";
+    position: absolute;
+    bottom: -10px;
+    margin-left: -39px;
+    width: 120%;
+    height: 1px;
+    background-color: #ECECEC;
+  }
+  
+  
+  .filterContainer {
+    min-width: 120px;
+  }
+  
+  .graphOuterWrapper {
+    width: 100%;
+    overflow-x: auto;
+  }
+  
+  .graphWrapper {
+    display: flex;
+    height: 400px;
+    min-width: 360px; 
+    position: relative;
+    padding-bottom: 6px; 
+    margin-top: 20px;
+   
+  }
+  .yAxis {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: space-between;
+    min-width: 45px;
+    height: calc(100% - 40px); 
+  }
+  
+  .yAxisLabel {
+    color: #666;
+    font-size: 12px;
+    transform: translateY(50%);
+  }
+  
+  .graphContent {
+    flex-grow: 1;
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    height: calc(100% - 40px); 
+    position: relative;
+    padding-left: 1px;
+    border-left: 1px solid #e0e0e0;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .barColumn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+  }
+  
+  .barWrapper {
+    width: 100%;
+    max-width: 40px;
+    height: 100%;
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-start;
+  }
+  
+  .barSegment1 {
+    width: 100%;
+    background-color: rgb(7, 111, 216);
+    transition: height 0.3s ease;
+    border-radius: 2px 2px 0 0;
+  }
+  
+  .barSegment2 {
+    width: 100%;
+    background-color: #0099ff;
+    transition: height 0.3s ease;
+    border-radius: 2px 2px 0 0;
+    margin-bottom: 1px;
+  }
+  
+  .xAxisLabel {
+    position: absolute;
+    bottom: -30px;
+    font-size: 12px;
+    color: #666;
+    transform-origin: top left;
+    white-space: nowrap;
+  }
+  
+  @media (max-width: 576px) {
+    .leadsGraphContainer {
+      padding: 16px;
+    }
+  
+  }

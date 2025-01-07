@@ -9,11 +9,12 @@ import useTopTemplates from "./Hooks/useTopTemplates";
 import useDownloadCSV from "./Hooks/useDownloadCSV";
 import useHvoVideoSent from "./Hooks/useHvoVideoSent";
 import styles from "./MainDashboard.module.scss";
+import LeadsGraph from "./LeadsGraph/LeadsGraph";
 
 const MainDashboard = () => {
   const [selectedTimeStamp, setSelectedTimeStamp] = useState("Current Month");
   const [selectedGraphTimeStamp, setSelectedGraphTimeStamp] =
-    useState("Current Month");
+    useState("Monthly");
   const [selectedTimeStampForTemplate, setSelectedTimeStampForTemplate] =
     useState("Current Month");
   const [selectedSentHvoVideoTimestamp, setSelectedSentHvoVideoTimestamp] =
@@ -34,34 +35,34 @@ const MainDashboard = () => {
   );
   const { downloadCSV, loading: csvLoading } = useDownloadCSV();
 
-  const truncateNumber = (num, decimals = 5) => {
-    if (num === undefined || num === null) return "0";
-    const str = num.toString();
-    const dotIndex = str.indexOf(".");
-    if (dotIndex === -1) return str;
-    const truncated = '$' + str.slice(0, dotIndex + decimals + 1);
-    return truncated.length < str.length ? `${truncated}...` : truncated;
+  const roundNumber = (num, decimals = 2) => {
+    if (num === undefined || num === null) return "$0.00";
+    const factor = Math.pow(10, decimals);
+    const rounded = (Math.round(num * factor) / factor).toFixed(decimals);
+    return `$${rounded}`;
   };
+  
 
+  const userType=localStorage.getItem('userType')
   const dropdownOptionsForGraph = [
     {
-      label: "Current Month",
+      label: "Monthly",
       onClick: () => {
-        setSelectedGraphTimeStamp("Current Month");
+        setSelectedGraphTimeStamp("Monthly");
         setGraphTimePeriod("month");
       },
     },
     {
-      label: "Current Year",
+      label: "Yearly",
       onClick: () => {
-        setSelectedGraphTimeStamp("Current Year");
+        setSelectedGraphTimeStamp("Yearly");
         setGraphTimePeriod("year");
       },
     },
     {
-      label: "Current Week",
+      label: "Weekly",
       onClick: () => {
-        setSelectedGraphTimeStamp("Current Week");
+        setSelectedGraphTimeStamp("Weekly");
         setGraphTimePeriod("week");
       },
     },
@@ -69,23 +70,23 @@ const MainDashboard = () => {
 
   const dropdownOptionsHvoVideoGraph = [
     {
-      label: "Current Month",
+      label: "Monthly",
       onClick: () => {
-        setSelectedSentHvoVideoTimestamp("Current Month");
+        setSelectedSentHvoVideoTimestamp("Monthly");
         setHvoVideoTimeframe("month");
       },
     },
     {
-      label: "Current Year",
+      label: "Yearly",
       onClick: () => {
-        setSelectedSentHvoVideoTimestamp("Current Year");
+        setSelectedSentHvoVideoTimestamp("Yearly");
         setHvoVideoTimeframe("year");
       },
     },
     {
-      label: "Current Week",
+      label: "Weekly",
       onClick: () => {
-        setSelectedSentHvoVideoTimestamp("Current Week");
+        setSelectedSentHvoVideoTimestamp("Weekly");
         setHvoVideoTimeframe("week");
       },
     },
@@ -152,6 +153,39 @@ const MainDashboard = () => {
     { key: "viewed_count", label: "Times Used" },
   ];
 
+  //------------------dummy data for leads graph-----------------------
+
+  const graphData = [
+    { month: "Apr", lead: 400 },
+    { month: "May", lead: 250 },
+    { month: "Jun", lead: 600 },
+    { month: "Jul", lead: 800 },
+    { month: "Aug", lead: 150 },
+    { month: "Sep", lead: 1000 },
+    { month: "Oct", lead: 800 },
+    { month: "Nov", lead: 350 },
+    { month: "Dec", lead: 700 },
+    { month: "Jan", lead: 500 },
+    { month: "Feb", lead: 300 },
+    { month: "Mar", lead: 900 },
+  ];
+
+  const timeframeOptions = [
+    { label: "Monthly", onClick: () => console.log("Monthly selected") },
+    { label: "Yearly", onClick: () => console.log("Yearly selected") },
+    { label: "Weekly", onClick: () => console.log("Weekly selected") },
+  ];
+
+  const websiteOptions = [
+    { label: "www.google.com", onClick: () => console.log("Google selected") },
+    {
+      label: "wwww.facebook.com",
+      onClick: () => console.log("Facebook selected"),
+    },
+    { label: "www.google.com", onClick: () => console.log("Google selected") },
+  ];
+
+  //-------------------------------------------------------------------
   return (
     <>
       <div className={styles.topContainer}>
@@ -163,49 +197,52 @@ const MainDashboard = () => {
       <div className={styles.cardsContainer}>
         <Card
           heading={"Tokens spent"}
-        //  growthText={"Monthly growth"}
-         // label={"New"}
-          amount={truncateNumber(statsData.tokens_spent)}
-         // labelType="new"
+          // growthText={"Monthly growth"}
+          //  label={"New"}
+          amount={roundNumber(statsData.tokens_spent)}
+          //  labelType="new"
         />
         <Card
           heading={"Remaining Tokens"}
-        //  growthText={"Monthly growth"}
-         // label={"global"}
-          amount={truncateNumber(statsData.remaining_tokens)}
-         // labelType="global"
+          //  growthText={"Monthly growth"}
+          //  label={"global"}
+          amount={roundNumber(statsData.remaining_tokens)}
+          //  labelType="global"
         />
         <Card
           heading={"Total sheets connected"}
-         // growthText={"Monthly growth"}
-         // label={"intuitive"}
+          // growthText={"Monthly growth"}
+          //  label={"intuitive"}
           amount={statsData.total_sheets}
-        //  labelType="intuitive"
+          //  labelType="intuitive"
         />
         <Card
           heading={"Templates Generated"}
-        //  growthText={"Monthly growth"}
-        //  label={"intuitive"}
-        //  labelType="intuitive"
+          //  growthText={"Monthly growth"}
+          //  label={"intuitive"}
+          //  labelType="intuitive"
           amount={statsData.total_templates}
         />
       </div>
       <div className={styles.TableSection}>
         <div className={styles.TopUserContainer}>
+        {userType == "SUBADMIN" && (
+          
           <TopUsers
             title={"Top Performing Users"}
             dropdownOptions={dropdownOptionsForUser}
             usersData={topUsersData}
             tableHeaders={tableHeaders}
             buttonText={selectedTimeStamp}
-          />
-          <TopUsers
-            title={"Top Performing Templates"}
-            dropdownOptions={dropdownOptionsForTemplate}
-            usersData={toptemplatesData}
-            tableHeaders={tableHeaders2}
-            buttonText={selectedTimeStampForTemplate}
-          />
+          />)}
+            <TopUsers
+              title={"Top Performing Templates"}
+              dropdownOptions={dropdownOptionsForTemplate}
+              usersData={toptemplatesData}
+              tableHeaders={tableHeaders2}
+              buttonText={selectedTimeStampForTemplate}
+            />
+          
         </div>
       </div>
       <div>
@@ -227,6 +264,16 @@ const MainDashboard = () => {
             setIsViewed={setIsViewed}
           />
         </div>
+
+        {userType == "SUBADMIN" && (
+          <div className={styles.LeadsGraphContainer}>
+            <LeadsGraph
+              data={graphData}
+              timeframeOptions={timeframeOptions}
+              websiteOptions={websiteOptions}
+            />{" "}
+          </div>
+        )}
       </div>
     </>
   );
