@@ -1,17 +1,19 @@
-import React, { useState } from 'react';
-import Card from '../../settings/Card/Card';
-import Table from 'src/Common/Table/Table';
-import useGetAllUsers from './Hooks/useGetAllUsers';
-import useDeleteUser from './Hooks/useDeleteUser';
-import AdduserImage from 'src/images/AddUserImage.png';
-import Dropdown from 'src/Common/Dropdown/Dropdown';
-import WarningModal from 'src/Common/Modal/Modal';
-import styles from './Users.module.scss';
+import React, { useState } from "react";
+import Card from "../../settings/Card/Card";
+import Table from "src/Common/Table/Table";
+import useGetAllUsers from "./Hooks/useGetAllUsers";
+import useDeleteUser from "./Hooks/useDeleteUser";
+import AdduserImage from "src/images/AddUserImage.png";
+import Dropdown from "src/Common/Dropdown/Dropdown";
+import WarningModal from "src/Common/Modal/Modal";
+import CreateUser from "./CreateUser/CreateUser";
+import styles from "./Users.module.scss";
 
 const Users = () => {
   const [isDeleteOpen, setDeleteOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
-  
+  const [isCreateUserOpen, setCreateUserOpen] = useState(false);
+
   const { loading, error, data, refetch } = useGetAllUsers();
   const { deleteUser, isLoading: isDeleting } = useDeleteUser();
 
@@ -21,6 +23,11 @@ const Users = () => {
       setSelectedUserId(null);
       refetch();
     });
+  };
+
+  const handleCreateUserSuccess = () => {
+    setCreateUserOpen(false);
+    refetch(); 
   };
 
   const headers = [
@@ -46,11 +53,11 @@ const Users = () => {
     ...user,
     created_at: new Date(user.created_at).toLocaleDateString(),
     actions: (
-      <Dropdown 
-        options={dropdownOptions.map(option => ({
+      <Dropdown
+        options={dropdownOptions.map((option) => ({
           ...option,
-          onClick: () => option.onClick(user.id)
-        }))} 
+          onClick: () => option.onClick(user.id),
+        }))}
       />
     ),
   }));
@@ -59,9 +66,7 @@ const Users = () => {
     <div className={styles.container}>
       <Card
         image={AdduserImage}
-        onClick={() => {
-          console.log("Clicked");
-        }}
+        onClick={() => setCreateUserOpen(true)}
         text={"Add User"}
       />
       <div>
@@ -82,7 +87,12 @@ const Users = () => {
         }}
         onDelete={handleDelete}
         message="Please be aware that this action is irreversible. By clicking the 'Delete' button below, you will permanently remove the user from the system. This means you will not be able to retrieve or restore it in the future."
-      
+      />
+
+      <CreateUser
+        isOpen={isCreateUserOpen}
+        onClose={() => setCreateUserOpen(false)}
+        onSuccess={handleCreateUserSuccess}
       />
     </div>
   );
