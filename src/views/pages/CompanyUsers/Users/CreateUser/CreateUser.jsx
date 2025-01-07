@@ -163,7 +163,7 @@ const CreateUser = ({ isOpen, onClose, onSuccess, userId, viewState }) => {
                 value={formData.email}
                 onChange={(e) => handleChange(e, setFormData, setErrors)}
                 onBlur={(e) => handleBlur(e, setErrors)}
-                disabled={loading || (viewState === "edit")}
+                disabled={loading }
               />
               {errors.email && (
                 <span className={styles.error}>{errors.email}</span>

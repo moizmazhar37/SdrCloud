@@ -13,7 +13,7 @@ const Users = () => {
   const [isDeleteOpen, setDeleteOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [isCreateUserOpen, setCreateUserOpen] = useState(false);
-  const [viewState, setViewState] = useState("create"); // Default viewState is 'create'
+  const [viewState, setViewState] = useState("create");
 
   const { loading, error, data, refetch } = useGetAllUsers();
   const { deleteUser, isLoading: isDeleting } = useDeleteUser();
@@ -32,11 +32,12 @@ const Users = () => {
   };
 
   const headers = [
-    { label: "First Name", key: "first_name" },
-    { label: "Last Name", key: "last_name" },
+    { label: "Full Name", key: "full_name" }, 
     { label: "Email", key: "email" },
     { label: "Created At", key: "created_at" },
     { label: "Projects", key: "projects" },
+    { label: "Active", key: null },
+    { label: "Error", key: null },
     { label: "Actions", key: "actions" },
   ];
 
@@ -60,6 +61,7 @@ const Users = () => {
 
   const transformedData = (data || []).map((user) => ({
     ...user,
+    full_name: `${user.first_name} ${user.last_name}`,
     created_at: new Date(user.created_at).toLocaleDateString(),
     actions: (
       <Dropdown

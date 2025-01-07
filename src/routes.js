@@ -165,15 +165,9 @@ export const routes = [
     path: "/companyUsers-List",
     guard: true,
     layout: DashboardLayout,
-    component: lazy(() => import("src/views/pages/CompanyUsers/index")),
-  },
-  //dummy route for users
-  {
-    exact: true,
-    path: "/userss",
-    guard: true,
-    layout: DashboardLayout,
     component: lazy(() => import("src/views/pages/CompanyUsers/Users/Users")),
+
+    // component: lazy(() => import("src/views/pages/CompanyUsers/index")),
   },
   {
     exact: true,
