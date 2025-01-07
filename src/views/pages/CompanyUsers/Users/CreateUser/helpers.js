@@ -1,4 +1,3 @@
-import { toast } from 'react-toastify';
 
 export const resetForm = (setFormData, setErrors, setShowPassword) => {
   setFormData({
@@ -74,7 +73,7 @@ export const validateField = (name, value) => {
       }
       break;
     case "tokens":
-      if (!value || value.trim() === "") {
+      if (!value) {
         return "Tokens are required.";
       }
       if (isNaN(value) || parseInt(value) < 0) {
@@ -124,3 +123,4 @@ export const handleSubmit = async (formData, validateField, setErrors, createUse
     console.error('Failed to create user:', err);
   }
 };
+

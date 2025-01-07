@@ -13,6 +13,7 @@ const Users = () => {
   const [isDeleteOpen, setDeleteOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [isCreateUserOpen, setCreateUserOpen] = useState(false);
+  const [viewState, setViewState] = useState("create"); // Default viewState is 'create'
 
   const { loading, error, data, refetch } = useGetAllUsers();
   const { deleteUser, isLoading: isDeleting } = useDeleteUser();
@@ -27,7 +28,7 @@ const Users = () => {
 
   const handleCreateUserSuccess = () => {
     setCreateUserOpen(false);
-    refetch(); 
+    refetch();
   };
 
   const headers = [
@@ -45,6 +46,14 @@ const Users = () => {
       onClick: (userId) => {
         setSelectedUserId(userId);
         setDeleteOpen(true);
+      },
+    },
+    {
+      label: "Edit",
+      onClick: (userId) => {
+        setSelectedUserId(userId);
+        setViewState("edit"); 
+        setCreateUserOpen(true);
       },
     },
   ];
@@ -66,7 +75,10 @@ const Users = () => {
     <div className={styles.container}>
       <Card
         image={AdduserImage}
-        onClick={() => setCreateUserOpen(true)}
+        onClick={() => {
+          setViewState("create");
+          setCreateUserOpen(true);
+        }}
         text={"Add User"}
       />
       <div>
@@ -93,6 +105,8 @@ const Users = () => {
         isOpen={isCreateUserOpen}
         onClose={() => setCreateUserOpen(false)}
         onSuccess={handleCreateUserSuccess}
+        userId={selectedUserId}
+        viewState={viewState} 
       />
     </div>
   );

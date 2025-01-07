@@ -1,15 +1,29 @@
-import React, { useState } from "react";
-import PropTypes from 'prop-types';
+import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import { Eye, EyeOff } from "lucide-react";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import styles from "./CreateUser.module.scss";
 import { useCreateUser } from "../Hooks/useCreateUser";
-import { toast } from 'react-toastify';
-import { resetForm, validateField, handleChange, handleBlur, handleSubmit } from "./helpers";
+import useUpdateUser from "../Hooks/useUpdateUser";
+import useFetchUser from "../Hooks/useFetchUser";
+import { toast } from "react-toastify";
+import {
+  resetForm,
+  validateField,
+  handleChange,
+  handleBlur,
+  handleSubmit,
+} from "./helpers";
 
-const CreateUser = ({ isOpen, onClose, onSuccess }) => {
-  const { createUser, loading, error: apiError } = useCreateUser();
+const CreateUser = ({ isOpen, onClose, onSuccess, userId, viewState }) => {
+  const { createUser, loading: createLoading, error: createError } = useCreateUser();
+  const { updateUser, loading: updateLoading, error: updateError } = useUpdateUser();
+  const { data: userData, loadingUserData, refetch } = useFetchUser(userId);
+  
+  const loading = viewState === "edit" ? updateLoading : createLoading;
+  const apiError = viewState === "edit" ? updateError : createError;
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -19,32 +33,93 @@ const CreateUser = ({ isOpen, onClose, onSuccess }) => {
     title: "",
     linkedinUrl: "",
     meetingLink: "",
-    tokens: ""
+    tokens: "",
   });
-
+  
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
+
+  // Single effect to handle both modal state and form data
+  useEffect(() => {
+    if (!isOpen) {
+      resetForm(setFormData, setErrors, setShowPassword);
+      return;
+    }
+
+    if (viewState === "edit" && userData) {
+      setFormData({
+        firstName: userData.firstName || "",
+        lastName: userData.lastName || "",
+        email: userData.email || "",
+        phone: userData.phoneNo || "",
+        password: userData.password || "",
+        title: userData.title || "",
+        linkedinUrl: userData.linkedinUrl || "",
+        meetingLink: userData.meetLink || "",
+        tokens: userData.tokens || 0,
+      });
+    } else if (viewState === "create") {
+      resetForm(setFormData, setErrors, setShowPassword);
+    }
+  }, [isOpen, userData, viewState]);
 
   const handleClose = () => {
     resetForm(setFormData, setErrors, setShowPassword);
     onClose();
   };
+  const handleFormSubmit = async () => {
+    const validationErrors = {};
+    Object.keys(formData).forEach((field) => {
+      const error = validateField(field, formData[field]);
+      if (error) validationErrors[field] = error;
+    });
+
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    try {
+      if (viewState === "edit") {
+        await updateUser({ ...formData, id: userId });
+        toast.success("User updated successfully!");
+      } else {
+        await createUser(formData);
+        toast.success("User created successfully!");
+      }
+      
+      handleClose();
+      onSuccess();
+    } catch (error) {
+      toast.error(error.message || "An error occurred");
+    }
+  };
 
   if (!isOpen) return null;
+
+  if (viewState === "edit" && loadingUserData) {
+    return (
+      <div className={styles.modalOverlay}>
+        <div className={styles.modal}>
+          <div className={styles.modalContent}>
+            <div className={styles.modalHeader}>
+              <h2>Loading user data...</h2>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.modalOverlay}>
       <div className={styles.modal}>
         <div className={styles.modalContent}>
           <div className={styles.modalHeader}>
-            <h2>Add New User</h2>
+            <h2>{viewState === "edit" ? "Edit User" : "Add New User"}</h2>
           </div>
 
-          {apiError && (
-            <div className={styles.apiError}>
-              {apiError}
-            </div>
-          )}
+          {apiError && <div className={styles.apiError}>{apiError}</div>}
 
           <div className={styles.formContainer}>
             <div className={styles.formGroup}>
@@ -88,7 +163,7 @@ const CreateUser = ({ isOpen, onClose, onSuccess }) => {
                 value={formData.email}
                 onChange={(e) => handleChange(e, setFormData, setErrors)}
                 onBlur={(e) => handleBlur(e, setErrors)}
-                disabled={loading}
+                disabled={loading || (viewState === "edit")}
               />
               {errors.email && (
                 <span className={styles.error}>{errors.email}</span>
@@ -209,27 +284,25 @@ const CreateUser = ({ isOpen, onClose, onSuccess }) => {
             </div>
 
             <div className={styles.buttonGroup}>
-              <button 
-                className={styles.cancelButton} 
+              <button
+                className={styles.cancelButton}
                 onClick={handleClose}
                 disabled={loading}
               >
                 Cancel
               </button>
-              <button 
+              <button
                 className={styles.submitButton}
-                onClick={() => handleSubmit(
-                  formData,
-                  validateField,
-                  setErrors,
-                  createUser,
-                  toast,
-                  () => resetForm(setFormData, setErrors, setShowPassword),
-                  onSuccess
-                )}
+                onClick={handleFormSubmit}
                 disabled={loading}
               >
-                {loading ? 'Creating...' : 'Add & Send Invite'}
+                {loading
+                  ? viewState === "edit"
+                    ? "Updating..."
+                    : "Creating..."
+                  : viewState === "edit"
+                  ? "Update & Save"
+                  : "Add & Send Invite"}
               </button>
             </div>
           </div>
@@ -242,7 +315,9 @@ const CreateUser = ({ isOpen, onClose, onSuccess }) => {
 CreateUser.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  onSuccess: PropTypes.func.isRequired
+  onSuccess: PropTypes.func.isRequired,
+  userId: PropTypes.string,
+  viewState: PropTypes.oneOf(["edit", "create"]).isRequired,
 };
 
 export default CreateUser;
