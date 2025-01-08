@@ -1,0 +1,72 @@
+// modal.module.scss
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  .modalContent {
+    background: #fff;
+    border-radius: 8px;
+    padding: 24px;
+    max-width: 500px;
+    width: 100%;
+    margin: 0 16px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  
+    h2 {
+      font-size: 20px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 16px;
+    }
+  
+    p {
+      color: #4a4a4a;
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+  }
+  
+  .buttonContainer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+  }
+  
+  .cancelButton {
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-weight: 500;
+    background-color: #e2e2e2;
+    color: #333;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  
+    &:hover {
+      background-color: #d1d1d1;
+    }
+  }
+  
+  .deleteButton {
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-weight: 500;
+    background-color: #ff0000;
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  
+    &:hover {
+      background-color: #dd0000;
+    }
+  }

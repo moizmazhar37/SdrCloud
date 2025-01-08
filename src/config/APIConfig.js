@@ -29,6 +29,7 @@ const ApiConfig = {
   ppadminUserListNew: `${admin}/`,
   addUser: `${subadmin}/user`,
   getAllUserByAccountId: `${subadmin}/users`,
+  CreateUser: `${subadmin}/user`,
   fetchSheet: `${googlesheets}`,
   createVdoTemplate: `${templates}/`,
   connectedSheetVideo: `${googlesheets}/all-connected-sheets`,

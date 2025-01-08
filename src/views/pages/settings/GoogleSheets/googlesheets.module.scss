@@ -1,0 +1,97 @@
+.container {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  background-color: #ffffff;
+
+  > button {
+    background-color: #0358ac;
+    color: white;
+    font-size: 14px;
+    border: #0358ac;
+    border-radius: 5px;
+    padding: 14px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #114883;
+    }
+  }
+}
+
+@media (max-width: 630px) {
+  .container {
+    flex-direction: column;
+    align-items: center; 
+    gap: 10px; 
+  }
+
+  .container > button {
+    width: 100%;
+  }
+}
+
+
+.backNavigators {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+
+  .navigationText {
+    display: flex;
+    gap: 4px;
+    align-items: baseline;
+  }
+
+  p {
+    font-size: 13px;
+    color: gray;
+  }
+}
+
+.titleLink {
+  color: #0358AC;
+  cursor: pointer;
+  font-weight: 700;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.connectionStatus {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.connectedDot {
+  font-size: 5px;
+  color: #709868;
+}
+
+.disconnectedDot {
+  font-size: 5px;
+  color: #EF4444;
+}
+
+.connectedText {
+  color: #709868;
+  font-weight: 700;
+  
+}
+
+.disconnectedText {
+  color: #EF4444;
+  font-weight: 700;
+
+}
+
+.assignedText {
+  color: #709868;
+  font-size: 13px;
+  font-weight: 700;
+
+
+}

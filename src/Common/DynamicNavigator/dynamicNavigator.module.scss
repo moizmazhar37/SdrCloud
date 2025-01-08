@@ -1,0 +1,37 @@
+.navigator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 0;
+    font-size: 14px;
+  }
+  
+  .backArrow {
+    color: #0358AC;
+    cursor: pointer;
+    margin-right: 8px;
+    
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+  
+  .navItem {
+    color: #0358AC;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  
+    &.lastItem {
+      color: #024785; 
+      font-weight: 500;
+    }
+  }
+  
+  .separator {
+    color: #0358AC;
+    font-weight: 500;
+  }
