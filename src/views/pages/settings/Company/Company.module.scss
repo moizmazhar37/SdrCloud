@@ -1,7 +1,7 @@
 .companyContainer {
     display: flex;
     flex-wrap: wrap;
-    gap: 3.5rem;
+    gap: 56px;
     padding: 2rem;
   
     > div {
@@ -13,6 +13,7 @@
       > div {
         flex: 1 1 100%; // Full width on smaller screens
         max-width: 100%;
+        gap: 3rem;
       }
     }
   }
