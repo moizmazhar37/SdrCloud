@@ -54,7 +54,10 @@ function GoogleSheets() {
 
   const handleEdit = (row) => {
     console.log("Edit clicked", row.id);
-    history.push(`/editSheets/${row.id}`);
+    history.push({
+      pathname: "/editSheets",
+      state: { sheetId: row.id },
+    });
   };
 
   const transformedData =
@@ -114,7 +117,10 @@ function GoogleSheets() {
   ];
 
   const handleColumnClick = (row, columnKey) => {
-    history.push(`/editSheets/${row.id}`);
+    history.push({
+      pathname: "/editSheets",
+      state: { sheetId: row.id },
+    });
   };
 
   return (
