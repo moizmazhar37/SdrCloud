@@ -35,15 +35,15 @@ const MainDashboard = () => {
   );
   const { downloadCSV, loading: csvLoading } = useDownloadCSV();
 
-  const truncateNumber = (num, decimals = 5) => {
-    if (num === undefined || num === null) return "0";
-    const str = num.toString();
-    const dotIndex = str.indexOf(".");
-    if (dotIndex === -1) return str;
-    const truncated = '$' + str.slice(0, dotIndex + decimals + 1);
-    return truncated.length < str.length ? `${truncated}...` : truncated;
+  const roundNumber = (num, decimals = 2) => {
+    if (num === undefined || num === null) return "$0.00";
+    const factor = Math.pow(10, decimals);
+    const rounded = (Math.round(num * factor) / factor).toFixed(decimals);
+    return `$${rounded}`;
   };
+  
 
+  const userType=localStorage.getItem('userType')
   const dropdownOptionsForGraph = [
     {
       label: "Monthly",
@@ -182,7 +182,7 @@ const MainDashboard = () => {
       label: "wwww.facebook.com",
       onClick: () => console.log("Facebook selected"),
     },
-    {label: "www.google.com", onClick: () => console.log("Google selected")}
+    { label: "www.google.com", onClick: () => console.log("Google selected") },
   ];
 
   //-------------------------------------------------------------------
@@ -197,49 +197,52 @@ const MainDashboard = () => {
       <div className={styles.cardsContainer}>
         <Card
           heading={"Tokens spent"}
-         // growthText={"Monthly growth"}
-          label={"New"}
-          amount={truncateNumber(statsData.tokens_spent)}
-          labelType="new"
+          // growthText={"Monthly growth"}
+          //  label={"New"}
+          amount={roundNumber(statsData.tokens_spent)}
+          //  labelType="new"
         />
         <Card
           heading={"Remaining Tokens"}
-        //  growthText={"Monthly growth"}
-          label={"global"}
-          amount={truncateNumber(statsData.remaining_tokens)}
-          labelType="global"
+          //  growthText={"Monthly growth"}
+          //  label={"global"}
+          amount={roundNumber(statsData.remaining_tokens)}
+          //  labelType="global"
         />
         <Card
           heading={"Total sheets connected"}
-         // growthText={"Monthly growth"}
-          label={"intuitive"}
+          // growthText={"Monthly growth"}
+          //  label={"intuitive"}
           amount={statsData.total_sheets}
-          labelType="intuitive"
+          //  labelType="intuitive"
         />
         <Card
           heading={"Templates Generated"}
-        //  growthText={"Monthly growth"}
-          label={"intuitive"}
-          labelType="intuitive"
+          //  growthText={"Monthly growth"}
+          //  label={"intuitive"}
+          //  labelType="intuitive"
           amount={statsData.total_templates}
         />
       </div>
       <div className={styles.TableSection}>
         <div className={styles.TopUserContainer}>
+        {userType == "SUBADMIN" && (
+          
           <TopUsers
             title={"Top Performing Users"}
             dropdownOptions={dropdownOptionsForUser}
             usersData={topUsersData}
             tableHeaders={tableHeaders}
             buttonText={selectedTimeStamp}
-          />
-          <TopUsers
-            title={"Top Performing Templates"}
-            dropdownOptions={dropdownOptionsForTemplate}
-            usersData={toptemplatesData}
-            tableHeaders={tableHeaders2}
-            buttonText={selectedTimeStampForTemplate}
-          />
+          />)}
+            <TopUsers
+              title={"Top Performing Templates"}
+              dropdownOptions={dropdownOptionsForTemplate}
+              usersData={toptemplatesData}
+              tableHeaders={tableHeaders2}
+              buttonText={selectedTimeStampForTemplate}
+            />
+          
         </div>
       </div>
       <div>
