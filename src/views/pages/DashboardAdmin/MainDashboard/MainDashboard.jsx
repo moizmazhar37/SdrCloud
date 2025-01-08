@@ -1,3 +1,5 @@
+// MainDashboard.js
+
 import React, { useState, useEffect } from "react";
 import Card from "./CardBlock/Card";
 import TopUsers from "./TableCardBlock/TabularCard";
@@ -12,6 +14,15 @@ import useUrls from "./Hooks/useUrls";
 import useHvoVideoSent from "./Hooks/useHvoVideoSent";
 import styles from "./MainDashboard.module.scss";
 import LeadsGraph from "./LeadsGraph/LeadsGraph";
+import {
+  roundNumber,
+  dropdownOptionsForGraph,
+  dropdownOptionsHvoVideoGraph,
+  dropdownOptionsForUser,
+  dropdownOptionsForTemplate,
+  tableHeaders,
+  tableHeaders2,
+} from "./helpers";
 
 const MainDashboard = () => {
   // State management for various time-based filters
@@ -35,141 +46,13 @@ const MainDashboard = () => {
   const { downloadCSV, loading: csvLoading } = useDownloadCSV();
 
   // Get user type from localStorage
-  const userType = localStorage.getItem('userType');
-
-  // Utility function to round numbers and format as currency
-  const roundNumber = (num, decimals = 2) => {
-    if (num === undefined || num === null) return "$0.00";
-    const factor = Math.pow(10, decimals);
-    const rounded = (Math.round(num * factor) / factor).toFixed(decimals);
-    return `$${rounded}`;
-  };
-
-  // Graph dropdown options
-  const dropdownOptionsForGraph = [
-    {
-      label: "Monthly",
-      onClick: () => {
-        setSelectedGraphTimeStamp("Monthly");
-        setGraphTimePeriod("month");
-      },
-    },
-    {
-      label: "Yearly",
-      onClick: () => {
-        setSelectedGraphTimeStamp("Yearly");
-        setGraphTimePeriod("year");
-      },
-    },
-    {
-      label: "Weekly",
-      onClick: () => {
-        setSelectedGraphTimeStamp("Weekly");
-        setGraphTimePeriod("week");
-      },
-    },
-  ];
-
-  // HVO Video graph dropdown options
-  const dropdownOptionsHvoVideoGraph = [
-    {
-      label: "Monthly",
-      onClick: () => {
-        setSelectedSentHvoVideoTimestamp("Monthly");
-        setHvoVideoTimeframe("month");
-      },
-    },
-    {
-      label: "Yearly",
-      onClick: () => {
-        setSelectedSentHvoVideoTimestamp("Yearly");
-        setHvoVideoTimeframe("year");
-      },
-    },
-    {
-      label: "Weekly",
-      onClick: () => {
-        setSelectedSentHvoVideoTimestamp("Weekly");
-        setHvoVideoTimeframe("week");
-      },
-    },
-  ];
-
-  // User dropdown options
-  const dropdownOptionsForUser = [
-    {
-      label: "Current Month",
-      onClick: () => {
-        setSelectedTimeStamp("Current Month");
-        setUserTimePeriod("month");
-      },
-    },
-    {
-      label: "Current Year",
-      onClick: () => {
-        setSelectedTimeStamp("Current Year");
-        setUserTimePeriod("year");
-      },
-    },
-    {
-      label: "Current Week",
-      onClick: () => {
-        setSelectedTimeStamp("Current Week");
-        setUserTimePeriod("week");
-      },
-    },
-  ];
-
-  // Template dropdown options
-  const dropdownOptionsForTemplate = [
-    {
-      label: "Current Month",
-      onClick: () => {
-        setSelectedTimeStampForTemplate("Current Month");
-        setTemplateTimePeriod("month");
-      },
-    },
-    {
-      label: "Current Year",
-      onClick: () => {
-        setSelectedTimeStampForTemplate("Yearly");
-        setTemplateTimePeriod("year");
-      },
-    },
-    {
-      label: "Current Week",
-      onClick: () => {
-        setSelectedTimeStampForTemplate("Weekly");
-        setTemplateTimePeriod("week");
-      },
-    },
-  ];
-
-  // Table headers configuration
-  const tableHeaders = [
-    { key: "name", label: "Name" },
-    { key: "credits", label: "Credits used" },
-    { key: "score", label: "Score" },
-  ];
-
-  const tableHeaders2 = [
-    { key: "template_name", label: "Name" },
-    { key: "template_type", label: "Type" },
-    { key: "viewed_count", label: "Times Used" },
-  ];
-
-  // Timeframe options for leads graph
-  const timeframeOptions = [
-    { label: "Monthly" },
-    { label: "Yearly" },
-    { label: "Weekly" },
-  ];
+  const userType = localStorage.getItem("userType");
 
   // Create website options only when urls data is available
   const websiteOptions = React.useMemo(() => {
     if (!urls || loadingUrls) return [];
-    return urls.map(url => ({
-      label: url
+    return urls.map((url) => ({
+      label: url,
     }));
   }, [urls, loadingUrls]);
 
@@ -177,32 +60,16 @@ const MainDashboard = () => {
     <>
       <div className={styles.topContainer}>
         <p>Transaction Report History</p>
-        <button 
-          onClick={downloadCSV} 
-          disabled={csvLoading}
-          className={styles.downloadButton}
-        >
+        <button onClick={downloadCSV} disabled={csvLoading} className={styles.downloadButton}>
           {csvLoading ? "Downloading..." : "Download"}
         </button>
       </div>
 
       <div className={styles.cardsContainer}>
-        <Card
-          heading="Tokens spent"
-          amount={roundNumber(statsData?.tokens_spent)}
-        />
-        <Card
-          heading="Remaining Tokens"
-          amount={roundNumber(statsData?.remaining_tokens)}
-        />
-        <Card
-          heading="Total sheets connected"
-          amount={statsData?.total_sheets || 0}
-        />
-        <Card
-          heading="Templates Generated"
-          amount={statsData?.total_templates || 0}
-        />
+        <Card heading="Tokens spent" amount={roundNumber(statsData?.tokens_spent)} />
+        <Card heading="Remaining Tokens" amount={roundNumber(statsData?.remaining_tokens)} />
+        <Card heading="Total sheets connected" amount={statsData?.total_sheets || 0} />
+        <Card heading="Templates Generated" amount={statsData?.total_templates || 0} />
       </div>
 
       <div className={styles.TableSection}>
@@ -210,7 +77,10 @@ const MainDashboard = () => {
           {userType === "SUBADMIN" && (
             <TopUsers
               title="Top Performing Users"
-              dropdownOptions={dropdownOptionsForUser}
+              dropdownOptions={dropdownOptionsForUser.map((option) => ({
+                ...option,
+                onClick: () => option.onClick(setSelectedTimeStamp, setUserTimePeriod),
+              }))}
               usersData={topUsersData}
               tableHeaders={tableHeaders}
               buttonText={selectedTimeStamp}
@@ -218,7 +88,10 @@ const MainDashboard = () => {
           )}
           <TopUsers
             title="Top Performing Templates"
-            dropdownOptions={dropdownOptionsForTemplate}
+            dropdownOptions={dropdownOptionsForTemplate.map((option) => ({
+              ...option,
+              onClick: () => option.onClick(setSelectedTimeStampForTemplate, setTemplateTimePeriod),
+            }))}
             usersData={toptemplatesData}
             tableHeaders={tableHeaders2}
             buttonText={selectedTimeStampForTemplate}
@@ -231,14 +104,20 @@ const MainDashboard = () => {
           <Graph
             title="Amount of Templates Created"
             data={GraphData}
-            dropdownOptions={dropdownOptionsForGraph}
+            dropdownOptions={dropdownOptionsForGraph.map((option) => ({
+              ...option,
+              onClick: () => option.onClick(setSelectedGraphTimeStamp, setGraphTimePeriod),
+            }))}
             selectedOption={selectedGraphTimeStamp}
             type="dropdown"
           />
           <Graph
             title="Amount of HVOs/Videos Sent"
             data={hvoVideoData}
-            dropdownOptions={dropdownOptionsHvoVideoGraph}
+            dropdownOptions={dropdownOptionsHvoVideoGraph.map((option) => ({
+              ...option,
+              onClick: () => option.onClick(setSelectedSentHvoVideoTimestamp, setHvoVideoTimeframe),
+            }))}
             selectedOption={selectedSentHvoVideoTimestamp}
             type="filters"
             loading={hvoLoading}
@@ -248,10 +127,7 @@ const MainDashboard = () => {
 
         {userType === "SUBADMIN" && !loadingUrls && websiteOptions.length > 0 && (
           <div className={styles.LeadsGraphContainer}>
-            <LeadsGraph
-              timeframeOptions={timeframeOptions}
-              websiteOptions={websiteOptions}
-            />
+            <LeadsGraph timeframeOptions={[{ label: "Monthly" }, { label: "Yearly" }, { label: "Weekly" }]} websiteOptions={websiteOptions} />
           </div>
         )}
       </div>
