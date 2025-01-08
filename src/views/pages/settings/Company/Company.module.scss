@@ -1,0 +1,20 @@
+.companyContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3.5rem;
+    padding: 2rem;
+  
+    > div {
+      flex: 1 1 calc(50% - 2rem); // Two cards per row
+      max-width: calc(50% - 2rem);
+    }
+  
+    @media (max-width: 1180px) {
+      > div {
+        flex: 1 1 100%; // Full width on smaller screens
+        max-width: 100%;
+      }
+    }
+  }
+  
+  
