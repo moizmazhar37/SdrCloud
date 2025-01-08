@@ -1,5 +1,6 @@
 const url = "https://backend-283763506150.us-central1.run.app";
-// const url = "http://localhost:8000";
+//  const url = "http://localhost:8000";
+
 
 const auth = `${url}/auth`;
 const users = `${url}/users`;
@@ -28,6 +29,7 @@ const ApiConfig = {
   ppadminUserListNew: `${admin}/`,
   addUser: `${subadmin}/user`,
   getAllUserByAccountId: `${subadmin}/users`,
+  CreateUser: `${subadmin}/user`,
   fetchSheet: `${googlesheets}`,
   createVdoTemplate: `${templates}/`,
   connectedSheetVideo: `${googlesheets}/all-connected-sheets`,

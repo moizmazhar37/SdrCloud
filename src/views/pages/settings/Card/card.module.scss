@@ -1,0 +1,42 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 250px;
+  height: 193px;
+  border: 1px solid #fffefe;
+  border-radius: 5%;
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgb(224, 217, 217);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.iconContainer {
+  width: 85px;
+  height: 85px;
+  background-color: #e6f7ff; 
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 23px;
+}
+
+.icon {
+  width: 70px;
+  height: 70px;
+}
+
+.text {
+  font-size: 0.9rem;
+  color: #5e5b5b;
+  text-align: center;
+}
