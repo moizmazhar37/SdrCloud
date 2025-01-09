@@ -2,7 +2,7 @@
   background: #fff;
   border-radius: 12px;
   border: 1px solid #ECECEC;
-height: 45%;
+  height: 45%;
   max-width: 550px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
@@ -11,7 +11,7 @@ height: 45%;
   display: flex;
   justify-content: start;
   gap: 4%;
-  align-items:baseline;
+  align-items: baseline;
   padding: 16px 24px;
   background: #f4f4f4;
   border-bottom: 1px solid #e5e7eb;
@@ -90,6 +90,20 @@ height: 45%;
   }
 }
 
+.profileImageSection {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.profileImage {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 1px solid #e5e7eb;
+}
+
 .uploadButton {
   background-color: #024f9c;
   color: white;
@@ -159,31 +173,35 @@ height: 45%;
 }
 
 @media (max-width: 520px) {
-  
   .row {
     flex-direction: column;
     align-items: flex-start;
   }
 
   .label {
-    margin-bottom: 24px;   
+    margin-bottom: 8px;
   }
-  .changePassword{
-    padding-bottom: 8%;
 
+  .changePassword {
+    padding-bottom: 8%;
   }
 
   .inputContainer {
-    display: flex;
     width: 100%;
   }
+
+  .profileImageSection {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
   .uploadButton {
-  width: 100%;
-}
+    width: 100%;
+  }
 
   .actions {
     flex-direction: column;
-    align-items: stretch; 
-    gap: 8px; 
+    align-items: stretch;
+    gap: 8px;
   }
 }

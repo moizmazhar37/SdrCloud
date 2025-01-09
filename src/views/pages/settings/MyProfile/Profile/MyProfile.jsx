@@ -1,17 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ImageModal from '../ImageModal/ImageModal';
 import styles from './MyProfile.module.scss';
 
 const MyProfile = ({ data, headers, edit, setEdit }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [profileImage, setProfileImage] = useState(data.profileImage || null);
-  
+  const [tempImage, setTempImage] = useState(null);
+
+  // Update profileImage state if data.profileImage changes
+  useEffect(() => {
+    setProfileImage(data.profileImage);
+  }, [data.profileImage]);
+
   const handleSave = () => {
-    console.log('saved');
+    console.log('Saved profile data');
+    if (tempImage) {
+      setProfileImage(tempImage);
+    }
+    setTempImage(null);
     setEdit(false);
   };
 
   const handleCancel = () => {
+    setTempImage(null);
     setEdit(false);
   };
 
@@ -20,10 +31,12 @@ const MyProfile = ({ data, headers, edit, setEdit }) => {
   };
 
   const handleImageSave = (imageData) => {
-    setProfileImage(imageData);
-    // Here you would typically upload the image to your server
+    setTempImage(imageData);
     console.log('New profile image saved:', imageData);
   };
+
+  // Determine which image to display
+  const displayImage = edit ? (tempImage || profileImage) : profileImage;
 
   return (
     <div className={styles.container}>
@@ -38,24 +51,36 @@ const MyProfile = ({ data, headers, edit, setEdit }) => {
           </button>
         )}
       </div>
+
       <div className={styles.content}>
         <div className={styles.row}>
           <span className={styles.label}>Profile Picture</span>
           <div className={styles.inputContainer}>
             <div className={styles.profileImageSection}>
-              {profileImage && (
+              {displayImage ? (
                 <img 
-                  src={profileImage} 
+                  src={displayImage} 
                   alt="Profile" 
+                  className={styles.profileImage}
+                  onError={(e) => {
+                    console.error('Image failed to load:', displayImage);
+                    e.target.src = 'https://via.placeholder.com/100';
+                  }}
+                />
+              ) : (
+                <img 
+                  src="https://via.placeholder.com/100" 
+                  alt="Placeholder" 
                   className={styles.profileImage}
                 />
               )}
+
               {edit && (
                 <button 
                   className={styles.uploadButton}
                   onClick={handleUpload}
                 >
-                  {profileImage ? 'Change Photo' : 'Upload Photo'}
+                  {displayImage ? 'Change Photo' : 'Upload Photo'}
                 </button>
               )}
             </div>
@@ -68,12 +93,12 @@ const MyProfile = ({ data, headers, edit, setEdit }) => {
             {edit ? (
               <input
                 type="text"
-                placeholder="Enter Your FirstName"
+                placeholder="Enter Your First Name"
                 defaultValue={data.firstName}
               />
             ) : (
               <span className={styles.value}>
-                {data.firstName || 'Enter Your FirstName'}
+                {data.firstName || 'Enter Your First Name'}
               </span>
             )}
           </div>
@@ -85,12 +110,12 @@ const MyProfile = ({ data, headers, edit, setEdit }) => {
             {edit ? (
               <input
                 type="text"
-                placeholder="Enter Your LastName"
+                placeholder="Enter Your Last Name"
                 defaultValue={data.lastName}
               />
             ) : (
               <span className={styles.value}>
-                {data.lastName || 'Enter Your LastName'}
+                {data.lastName || 'Enter Your Last Name'}
               </span>
             )}
           </div>
@@ -102,29 +127,29 @@ const MyProfile = ({ data, headers, edit, setEdit }) => {
             {edit ? (
               <input
                 type="email"
-                placeholder="Enter Your AdminEmail"
+                placeholder="Enter Your Email"
                 defaultValue={data.email}
               />
             ) : (
               <span className={styles.value}>
-                {data.email || 'Enter Your AdminEmail'}
+                {data.email || 'Enter Your Email'}
               </span>
             )}
           </div>
         </div>
 
         <div className={styles.row}>
-          <span className={styles.label}>PhoneNo</span>
+          <span className={styles.label}>Phone Number</span>
           <div className={styles.inputContainer}>
             {edit ? (
               <input
                 type="tel"
-                placeholder="Enter Your PhoneNo"
+                placeholder="Enter Your Phone Number"
                 defaultValue={data.phoneNo}
               />
             ) : (
               <span className={styles.value}>
-                {data.phoneNo || 'Enter Your PhoneNo'}
+                {data.phoneNo || 'Enter Your Phone Number'}
               </span>
             )}
           </div>

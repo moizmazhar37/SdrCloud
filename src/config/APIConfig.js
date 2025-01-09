@@ -3,7 +3,7 @@ const url = "https://backend-283763506150.us-central1.run.app";
 
 
 const auth = `${url}/auth`;
-const users = `${url}/users`;
+export const users = `${url}/users`;
 const urls = `${url}/url`;
 
 const admin = `${url}/admin`;
