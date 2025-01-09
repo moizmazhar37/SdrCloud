@@ -1,27 +1,63 @@
 import React, { useState, useEffect } from 'react';
 import ImageModal from '../ImageModal/ImageModal';
 import styles from './MyProfile.module.scss';
+import useUpdateUser from './Hooks/useUpdateUser';
 
 const MyProfile = ({ data, headers, edit, setEdit }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [profileImage, setProfileImage] = useState(data.profileImage || null);
   const [tempImage, setTempImage] = useState(null);
+  const [formData, setFormData] = useState({
+    firstName: data.firstName || '',
+    lastName: data.lastName || '',
+    phoneNo: data.phoneNo || '',
+  });
 
-  // Update profileImage state if data.profileImage changes
+  const { updateUser, isLoading, error, success } = useUpdateUser();
+
   useEffect(() => {
+    setFormData({
+      firstName: data.firstName || '',
+      lastName: data.lastName || '',
+      phoneNo: data.phoneNo || '',
+    });
     setProfileImage(data.profileImage);
-  }, [data.profileImage]);
+  }, [data]);
 
-  const handleSave = () => {
-    console.log('Saved profile data');
-    if (tempImage) {
-      setProfileImage(tempImage);
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSave = async () => {
+    try {
+      await updateUser({
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        phoneNo: formData.phoneNo,
+        imageData: tempImage 
+      });
+
+
+      if (tempImage) {
+        setProfileImage(tempImage);
+      }
+      setTempImage(null);
+      setEdit(false);
+    } catch (err) {
+      console.error('Error updating profile:', err);
     }
-    setTempImage(null);
-    setEdit(false);
   };
 
   const handleCancel = () => {
+    setFormData({
+      firstName: data.firstName || '',
+      lastName: data.lastName || '',
+      phoneNo: data.phoneNo || '',
+    });
     setTempImage(null);
     setEdit(false);
   };
@@ -32,10 +68,9 @@ const MyProfile = ({ data, headers, edit, setEdit }) => {
 
   const handleImageSave = (imageData) => {
     setTempImage(imageData);
-    console.log('New profile image saved:', imageData);
+    setIsModalOpen(false);
   };
 
-  // Determine which image to display
   const displayImage = edit ? (tempImage || profileImage) : profileImage;
 
   return (
@@ -93,8 +128,10 @@ const MyProfile = ({ data, headers, edit, setEdit }) => {
             {edit ? (
               <input
                 type="text"
+                name="firstName"
                 placeholder="Enter Your First Name"
-                defaultValue={data.firstName}
+                value={formData.firstName}
+                onChange={handleInputChange}
               />
             ) : (
               <span className={styles.value}>
@@ -110,8 +147,10 @@ const MyProfile = ({ data, headers, edit, setEdit }) => {
             {edit ? (
               <input
                 type="text"
+                name="lastName"
                 placeholder="Enter Your Last Name"
-                defaultValue={data.lastName}
+                value={formData.lastName}
+                onChange={handleInputChange}
               />
             ) : (
               <span className={styles.value}>
@@ -124,17 +163,9 @@ const MyProfile = ({ data, headers, edit, setEdit }) => {
         <div className={styles.row}>
           <span className={styles.label}>Email</span>
           <div className={styles.inputContainer}>
-            {edit ? (
-              <input
-                type="email"
-                placeholder="Enter Your Email"
-                defaultValue={data.email}
-              />
-            ) : (
-              <span className={styles.value}>
-                {data.email || 'Enter Your Email'}
-              </span>
-            )}
+            <span className={styles.value}>
+              {data.email || 'Enter Your Email'}
+            </span>
           </div>
         </div>
 
@@ -144,8 +175,10 @@ const MyProfile = ({ data, headers, edit, setEdit }) => {
             {edit ? (
               <input
                 type="tel"
+                name="phoneNo"
                 placeholder="Enter Your Phone Number"
-                defaultValue={data.phoneNo}
+                value={formData.phoneNo}
+                onChange={handleInputChange}
               />
             ) : (
               <span className={styles.value}>
@@ -155,26 +188,23 @@ const MyProfile = ({ data, headers, edit, setEdit }) => {
           </div>
         </div>
 
-        <div className={styles.row}>
-          <span className={styles.label}></span>
-          <div className={styles.inputContainer}>
-            <a href="#" className={styles.changePassword}>Change Password</a>
-          </div>
-        </div>
-
         {edit && (
           <div className={styles.actions}>
+            {error && <p className={styles.error}>{error}</p>}
+            {success && <p className={styles.success}>Profile updated successfully!</p>}
             <button 
               className={styles.cancelButton}
               onClick={handleCancel}
+              disabled={isLoading}
             >
               Cancel
             </button>
             <button 
-              className={styles.saveButton}
+              className={`${styles.saveButton} ${isLoading ? styles.loading : ''}`}
               onClick={handleSave}
+              disabled={isLoading}
             >
-              Save
+              {isLoading ? 'Saving...' : 'Save'}
             </button>
           </div>
         )}

@@ -7,11 +7,11 @@ const ProfileContainer = () => {
   const { data, loading, error } = useUserProfile();
 
   const data2 = {
-    profileImage: data?.logo || "",
-    firstName: data?.first_name || "John",
-    lastName: data?.last_name || "Doe",
-    email: data?.email || "john@example.com",
-    phoneNo: "1234567890",
+    profileImage: data?.profile_picture || "",
+    firstName: data?.first_name || "Not Available",
+    lastName: data?.last_name || "Not Available",
+    email: data?.email || "Not Available",
+    phoneNo: data?.phone_no || "Not Available",
   };
 
   const headers = {
