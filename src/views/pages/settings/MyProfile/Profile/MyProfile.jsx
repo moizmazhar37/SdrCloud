@@ -3,7 +3,7 @@ import ImageModal from '../ImageModal/ImageModal';
 import styles from './MyProfile.module.scss';
 import useUpdateUser from './Hooks/useUpdateUser';
 
-const MyProfile = ({ data, headers, edit, setEdit }) => {
+const MyProfile = ({ data, headers, edit, setEdit, onUpdateSuccess }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [profileImage, setProfileImage] = useState(data.profileImage || null);
   const [tempImage, setTempImage] = useState(null);
@@ -13,7 +13,7 @@ const MyProfile = ({ data, headers, edit, setEdit }) => {
     phoneNo: data.phoneNo || '',
   });
 
-  const { updateUser, isLoading, error, success } = useUpdateUser();
+  const { updateUser, isLoading, error, success } = useUpdateUser(onUpdateSuccess);
 
   useEffect(() => {
     setFormData({
@@ -38,9 +38,9 @@ const MyProfile = ({ data, headers, edit, setEdit }) => {
         firstName: formData.firstName,
         lastName: formData.lastName,
         phoneNo: formData.phoneNo,
-        imageData: tempImage 
+        imageData: tempImage,
+        originalProfileImage: profileImage
       });
-
 
       if (tempImage) {
         setProfileImage(tempImage);
@@ -132,6 +132,7 @@ const MyProfile = ({ data, headers, edit, setEdit }) => {
                 placeholder="Enter Your First Name"
                 value={formData.firstName}
                 onChange={handleInputChange}
+                className={styles.input}
               />
             ) : (
               <span className={styles.value}>
@@ -151,6 +152,7 @@ const MyProfile = ({ data, headers, edit, setEdit }) => {
                 placeholder="Enter Your Last Name"
                 value={formData.lastName}
                 onChange={handleInputChange}
+                className={styles.input}
               />
             ) : (
               <span className={styles.value}>
@@ -179,6 +181,7 @@ const MyProfile = ({ data, headers, edit, setEdit }) => {
                 placeholder="Enter Your Phone Number"
                 value={formData.phoneNo}
                 onChange={handleInputChange}
+                className={styles.input}
               />
             ) : (
               <span className={styles.value}>

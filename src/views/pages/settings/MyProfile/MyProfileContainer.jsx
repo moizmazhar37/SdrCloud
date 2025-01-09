@@ -4,7 +4,7 @@ import useUserProfile from "./Profile/Hooks/useUserProfile";
 
 const ProfileContainer = () => {
   const [edit, setEdit] = useState(false);
-  const { data, loading, error } = useUserProfile();
+  const { data, loading, error, refetch } = useUserProfile();
 
   const data2 = {
     profileImage: data?.profile_picture || "",
@@ -20,7 +20,13 @@ const ProfileContainer = () => {
 
   return (
     <div>
-      <MyProfile data={data2} headers={headers} edit={edit} setEdit={setEdit} />
+      <MyProfile 
+        data={data2} 
+        headers={headers} 
+        edit={edit} 
+        setEdit={setEdit}
+        onUpdateSuccess={refetch}
+      />
     </div>
   );
 };
