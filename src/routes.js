@@ -241,7 +241,7 @@ export const routes = [
     guard: true,
     layout: DashboardLayout,
     component: lazy(() =>
-      import("src/views/pages/settings/Company/EditCompanySettings")
+      import("src/views/pages/settings/Company/Company")
     ),
   },
 
