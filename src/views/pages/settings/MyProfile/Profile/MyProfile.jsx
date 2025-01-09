@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
+import ImageModal from '../ImageModal/ImageModal';
 import styles from './MyProfile.module.scss';
 
 const MyProfile = ({ data, headers, edit, setEdit }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [profileImage, setProfileImage] = useState(data.profileImage || null);
+  
   const handleSave = () => {
     console.log('saved');
     setEdit(false);
@@ -12,7 +16,13 @@ const MyProfile = ({ data, headers, edit, setEdit }) => {
   };
 
   const handleUpload = () => {
-    console.log('uploaded');
+    setIsModalOpen(true);
+  };
+
+  const handleImageSave = (imageData) => {
+    setProfileImage(imageData);
+    // Here you would typically upload the image to your server
+    console.log('New profile image saved:', imageData);
   };
 
   return (
@@ -32,18 +42,23 @@ const MyProfile = ({ data, headers, edit, setEdit }) => {
         <div className={styles.row}>
           <span className={styles.label}>Profile Picture</span>
           <div className={styles.inputContainer}>
-            {edit ? (
-              <button 
-                className={styles.uploadButton}
-                onClick={handleUpload}
-              >
-                Upload
-              </button>
-            ) : (
-              <span className={styles.value}>
-                {data.profileImage || 'Enter Your AdminProfileImage'}
-              </span>
-            )}
+            <div className={styles.profileImageSection}>
+              {profileImage && (
+                <img 
+                  src={profileImage} 
+                  alt="Profile" 
+                  className={styles.profileImage}
+                />
+              )}
+              {edit && (
+                <button 
+                  className={styles.uploadButton}
+                  onClick={handleUpload}
+                >
+                  {profileImage ? 'Change Photo' : 'Upload Photo'}
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
@@ -139,6 +154,12 @@ const MyProfile = ({ data, headers, edit, setEdit }) => {
           </div>
         )}
       </div>
+
+      <ImageModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSave={handleImageSave}
+      />
     </div>
   );
 };
