@@ -7,6 +7,7 @@ const ImageModal = ({ isOpen, onClose, onSave }) => {
   const [croppedImage, setCroppedImage] = useState(null);
   const [zoom, setZoom] = useState(100);
   const [rotation, setRotation] = useState(0);
+  const [originalDimensions, setOriginalDimensions] = useState({ width: 0, height: 0 });
   const fileInputRef = useRef(null);
   const imageRef = useRef(null);
 
@@ -17,6 +18,7 @@ const ImageModal = ({ isOpen, onClose, onSave }) => {
       setCroppedImage(null);
       setZoom(100);
       setRotation(0);
+      setOriginalDimensions({ width: 0, height: 0 });
     }
   }, [isOpen]);
 
@@ -27,6 +29,14 @@ const ImageModal = ({ isOpen, onClose, onSave }) => {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
+        const img = new Image();
+        img.onload = () => {
+          setOriginalDimensions({
+            width: img.width,
+            height: img.height
+          });
+        };
+        img.src = reader.result;
         setSelectedImage(reader.result);
         setCurrentStep('crop');
         setZoom(100);
@@ -42,20 +52,39 @@ const ImageModal = ({ isOpen, onClose, onSave }) => {
       const img = new Image();
 
       img.onload = () => {
-        const size = 400;
-        canvas.width = size;
-        canvas.height = size;
+        const targetSize = 400;
+        canvas.width = targetSize;
+        canvas.height = targetSize;
         const ctx = canvas.getContext('2d');
 
-        ctx.fillStyle = 'white';
-        ctx.fillRect(0, 0, size, size);
+        // Calculate scaling to maintain aspect ratio
+        const scale = Math.min(
+          targetSize / img.width,
+          targetSize / img.height
+        ) * (zoom / 100);
 
-        ctx.translate(size / 2, size / 2);
+        // Center the image
+        const scaledWidth = img.width * scale;
+        const scaledHeight = img.height * scale;
+        const x = (targetSize - scaledWidth) / 2;
+        const y = (targetSize - scaledHeight) / 2;
+
+        // Clear canvas with white background
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, targetSize, targetSize);
+
+        // Apply transformations
+        ctx.save();
+        ctx.translate(targetSize / 2, targetSize / 2);
         ctx.rotate((rotation * Math.PI) / 180);
-        const scale = zoom / 100;
-        ctx.scale(scale, scale);
-        ctx.drawImage(img, -size / 2, -size / 2, size, size);
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.drawImage(
+          img,
+          -scaledWidth / 2,
+          -scaledHeight / 2,
+          scaledWidth,
+          scaledHeight
+        );
+        ctx.restore();
 
         const transformedImage = canvas.toDataURL('image/jpeg', 0.95);
         resolve(transformedImage);
@@ -124,8 +153,11 @@ const ImageModal = ({ isOpen, onClose, onSave }) => {
               alt="Preview"
               className={styles.cropImage}
               style={{
-                transform: `scale(${zoom / 100}) rotate(${rotation}deg)`, // Adjust scaling smoothly
-                transition: "transform 0.2s ease-in-out", // Add smooth transition for zoom changes
+                transform: `scale(${zoom / 100}) rotate(${rotation}deg)`,
+                maxWidth: '100%',
+                maxHeight: '100%',
+                objectFit: 'contain',
+                transition: "transform 0.2s ease-in-out",
               }}
             />
           </div>
@@ -140,7 +172,7 @@ const ImageModal = ({ isOpen, onClose, onSave }) => {
               min="100"
               max="200"
               value={zoom}
-              onChange={(e) => setZoom(Number(e.target.value))} // Set zoom state directly
+              onChange={(e) => setZoom(Number(e.target.value))}
             />
           </div>
           <div className={styles.controlGroup}>
@@ -150,7 +182,7 @@ const ImageModal = ({ isOpen, onClose, onSave }) => {
               min="-180"
               max="180"
               value={rotation}
-              onChange={(e) => setRotation(Number(e.target.value))} // Set rotation state directly
+              onChange={(e) => setRotation(Number(e.target.value))}
             />
           </div>
         </div>
@@ -165,12 +197,15 @@ const ImageModal = ({ isOpen, onClose, onSave }) => {
       </div>
     </div>
   );
-  
 
   const renderPreviewStep = () => (
     <div className={styles.contentWrapper}>
       <div className={styles.previewArea}>
-        <img src={croppedImage} alt="Preview" />
+        <img 
+          src={croppedImage} 
+          alt="Preview"
+          className={styles.previewImage}
+        />
       </div>
       <div className={styles.actions}>
         <button className={styles.cancelButton} onClick={handleCancel}>
