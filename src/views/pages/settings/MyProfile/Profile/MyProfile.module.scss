@@ -97,10 +97,10 @@
 }
 
 .profileImage {
-  width: 100px;
-  height: 100px;
+  width: fit-content;
+  height: fit-content;
   object-fit: cover;
-  border-radius: 50%;
+  border-radius: 5%;
   border: 1px solid #e5e7eb;
 }
 
