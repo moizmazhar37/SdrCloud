@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ImageModal from '../ImageModal/ImageModal';
-import styles from './MyProfile.module.scss';
 import useUpdateUser from './Hooks/useUpdateUser';
+import styles from './MyProfile.module.scss';
 
 const MyProfile = ({ data, headers, edit, setEdit, onUpdateSuccess }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -34,14 +34,25 @@ const MyProfile = ({ data, headers, edit, setEdit, onUpdateSuccess }) => {
 
   const handleSave = async () => {
     try {
-      await updateUser({
+      // Get the current displayed image (either new uploaded image or existing profile image)
+      const currentImageToUse = tempImage || profileImage;
+  
+      if (!currentImageToUse) {
+        console.error('No image available');
+        return;
+      }
+  
+      console.log('Updating profile with image:', currentImageToUse);
+  
+      const updateData = {
         firstName: formData.firstName,
         lastName: formData.lastName,
         phoneNo: formData.phoneNo,
-        imageData: tempImage,
-        originalProfileImage: profileImage
-      });
-
+        imageData: currentImageToUse
+      };
+  
+      await updateUser(updateData);
+  
       if (tempImage) {
         setProfileImage(tempImage);
       }
@@ -51,7 +62,6 @@ const MyProfile = ({ data, headers, edit, setEdit, onUpdateSuccess }) => {
       console.error('Error updating profile:', err);
     }
   };
-
   const handleCancel = () => {
     setFormData({
       firstName: data.firstName || '',
@@ -76,7 +86,7 @@ const MyProfile = ({ data, headers, edit, setEdit, onUpdateSuccess }) => {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <span className={styles.title}>Personal Details</span>
+        <span className={styles.title}>{headers.title}</span>
         {!edit && (
           <button 
             className={styles.editButton}

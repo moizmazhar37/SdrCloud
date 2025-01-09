@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import axios from 'axios';
 import { users } from 'src/config/APIConfig';
@@ -8,31 +7,70 @@ const useUpdateUser = (onSuccess) => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
 
-  const updateUser = async ({ firstName, lastName, phoneNo, imageData, originalProfileImage }) => {
+  const convertImageToFile = async (imageData) => {
+    try {
+      // For data URLs (new uploads)
+      if (imageData.startsWith('data:image')) {
+        const response = await fetch(imageData);
+        const blob = await response.blob();
+        return new File([blob], 'profile.jpg', { type: 'image/jpeg' });
+      } 
+      // For URLs (existing profile picture)
+      else {
+        let imageUrl = imageData;
+        
+        // If it's a relative URL, make it absolute
+        if (imageData.startsWith('/')) {
+          imageUrl = `${window.location.origin}${imageData}`;
+        }
+
+        // Add authorization header for fetching the image
+        const response = await fetch(imageUrl, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch image: ${response.statusText}`);
+        }
+
+        const blob = await response.blob();
+        return new File([blob], 'profile.jpg', { type: blob.type || 'image/jpeg' });
+      }
+    } catch (err) {
+      console.error('Image conversion error:', err);
+      // Instead of throwing error, return the original URL
+      return imageData;
+    }
+  };
+
+  const updateUser = async ({ firstName, lastName, phoneNo, imageData }) => {
     setIsLoading(true);
     setError(null);
     setSuccess(false);
 
     try {
+      if (!imageData) {
+        throw new Error('Profile image is required');
+      }
+
       const formData = new FormData();
-      
       formData.append('first_name', firstName);
       formData.append('last_name', lastName);
       formData.append('phone_no', phoneNo);
 
-      if (imageData && imageData.startsWith('data:image')) {
-        const response = await fetch(imageData);
-        const blob = await response.blob();
-        const file = new File([blob], 'profile.jpg', { type: 'image/jpeg' });
-        formData.append('file', file);
-      } else if (originalProfileImage) {
-        try {
-          const response = await fetch(originalProfileImage);
-          const blob = await response.blob();
-          const file = new File([blob], 'profile.jpg', { type: 'image/jpeg' });
-          formData.append('file', file);
-        } catch (err) {
-          console.error('Error processing original image:', err);
+      // If imageData is a URL that starts with http or https, append it directly
+      if (typeof imageData === 'string' && (imageData.startsWith('http://') || imageData.startsWith('https://'))) {
+        formData.append('profile_picture_url', imageData);
+      } else {
+        // Try to convert to file, but if it fails, use the original URL
+        const processedImage = await convertImageToFile(imageData);
+        
+        if (processedImage instanceof File) {
+          formData.append('file', processedImage);
+        } else {
+          formData.append('profile_picture_url', imageData);
         }
       }
 
@@ -49,7 +87,7 @@ const useUpdateUser = (onSuccess) => {
       }
       return response.data;
     } catch (err) {
-      const errorMessage = err.response?.data?.detail || 'Failed to update user';
+      const errorMessage = err.response?.data?.detail || err.message || 'Failed to update user';
       setError(errorMessage);
       throw new Error(errorMessage);
     } finally {
