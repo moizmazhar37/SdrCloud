@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { Formik, Form } from "formik";
 import SheetDetails from "./SheetDetails";
 import styles from "./sheet-details.module.scss";
@@ -9,12 +9,14 @@ import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
 import { hvoTypes, videoTypes } from "./types";
 
 function EditGoogleSheet() {
-  const { sheetid } = useParams();
+  const location = useLocation();
+  const { sheetId } = location.state || {}
+  
   const [isEditing, setIsEditing] = useState(false);
   const [dropdownData, setDropdownData] = useState([]);
   const [updatedData, setUpdatedData] = useState([]);
 
-  const { data, loading, error } = useGoogleSheetTypes(sheetid);
+  const { data, loading, error } = useGoogleSheetTypes(sheetId);
   const {
     saveSheetTypes,
     loading: saving,
@@ -53,7 +55,7 @@ function EditGoogleSheet() {
   };
 
   const handleEditToggle = async () => {
-    isEditing && (await saveSheetTypes(sheetid, updatedData));
+    isEditing && (await saveSheetTypes(sheetId, updatedData));
     setIsEditing((prevState) => !prevState);
   };
 
