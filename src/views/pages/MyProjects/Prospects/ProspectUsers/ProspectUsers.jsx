@@ -1,7 +1,6 @@
 import React from "react";
 import Table from "src/Common/Table/Table";
 import styles from "./Prospectusers.module.scss";
-import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
 import useProspectUserList from "../Hooks/useProspectUserList";
 
 const Prospectusers = ({ templateId, tempType }) => {

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import MyProfile from "./Profile/MyProfile";
+import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
 import useUserProfile from "./Profile/Hooks/useUserProfile";
 
 const ProfileContainer = () => {
@@ -13,13 +14,18 @@ const ProfileContainer = () => {
     email: data?.email || "Not Available",
     phoneNo: data?.phone_no || "Not Available",
   };
-
+  const navigationItems = [
+    { text: "Settings", route: "/settings" },
+    { text: "My Profile", route: "/myprofile" },
+  ];
   const headers = {
     title: "Personal Details",
   };
 
   return (
     <div>
+                <DynamicNavigator items={navigationItems} />
+
       <MyProfile
         data={data2}
         headers={headers}
