@@ -20,10 +20,10 @@ const ProfileContainer = () => {
 
   return (
     <div>
-      <MyProfile 
-        data={data2} 
-        headers={headers} 
-        edit={edit} 
+      <MyProfile
+        data={data2}
+        headers={headers}
+        edit={edit}
         setEdit={setEdit}
         onUpdateSuccess={refetch}
       />

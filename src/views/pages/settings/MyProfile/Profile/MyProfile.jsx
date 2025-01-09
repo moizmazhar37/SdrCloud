@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import ImageModal from '../ImageModal/ImageModal';
+import Password from './Password/Password';
 import useUpdateUser from './Hooks/useUpdateUser';
 import styles from './MyProfile.module.scss';
 
 const MyProfile = ({ data, headers, edit, setEdit, onUpdateSuccess }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const [profileImage, setProfileImage] = useState(data.profileImage || null);
   const [tempImage, setTempImage] = useState(null);
   const [formData, setFormData] = useState({
@@ -34,15 +36,12 @@ const MyProfile = ({ data, headers, edit, setEdit, onUpdateSuccess }) => {
 
   const handleSave = async () => {
     try {
-      // Get the current displayed image (either new uploaded image or existing profile image)
       const currentImageToUse = tempImage || profileImage;
   
       if (!currentImageToUse) {
         console.error('No image available');
         return;
       }
-  
-      console.log('Updating profile with image:', currentImageToUse);
   
       const updateData = {
         firstName: formData.firstName,
@@ -62,6 +61,7 @@ const MyProfile = ({ data, headers, edit, setEdit, onUpdateSuccess }) => {
       console.error('Error updating profile:', err);
     }
   };
+
   const handleCancel = () => {
     setFormData({
       firstName: data.firstName || '',
@@ -201,6 +201,10 @@ const MyProfile = ({ data, headers, edit, setEdit, onUpdateSuccess }) => {
           </div>
         </div>
 
+        <button onClick={() => setIsPasswordModalOpen(true)}>
+          Change Password
+        </button>
+
         {edit && (
           <div className={styles.actions}>
             {error && <p className={styles.error}>{error}</p>}
@@ -228,6 +232,10 @@ const MyProfile = ({ data, headers, edit, setEdit, onUpdateSuccess }) => {
         onClose={() => setIsModalOpen(false)}
         onSave={handleImageSave}
       />
+
+      {isPasswordModalOpen && (
+        <Password onClose={() => setIsPasswordModalOpen(false)} />
+      )}
     </div>
   );
 };
