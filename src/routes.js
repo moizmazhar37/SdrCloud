@@ -261,7 +261,7 @@ export const routes = [
     guard: true,
     layout: DashboardLayout,
     component: lazy(() =>
-      import("src/views/pages/settings/MyProfile/MyProfile")
+      import("src/views/pages/settings/MyProfile/profile.js")
     ),
   },
 
@@ -310,7 +310,7 @@ export const routes = [
     guard: true,
     layout: DashboardLayout,
     component: lazy(() =>
-      import("src/views/pages/settings/MyProfile/MyProfile")
+      import("src/views/pages/settings/MyProfile/MyProfileContainer")
     ),
   },
   {

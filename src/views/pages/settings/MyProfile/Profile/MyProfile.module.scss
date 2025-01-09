@@ -1,0 +1,156 @@
+.container {
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #e5e7eb;
+  
+    h2 {
+      color: #1f2937;
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin: 0;
+    }
+  }
+  
+  .editButton {
+    color: #2563eb;
+    background: none;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0;
+  
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+  
+  .content {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  
+    @media (min-width: 640px) {
+      flex-direction: row;
+      align-items: center;
+    }
+  
+    label {
+      color: #6b7280;
+      font-size: 1rem;
+      min-width: 150px;
+    }
+  
+    input {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 4px;
+      font-size: 1rem;
+      color: #374151;
+  
+      &::placeholder {
+        color: #9ca3af;
+      }
+  
+      &:focus {
+        outline: none;
+        border-color: #2563eb;
+        box-shadow: 0 0 0 1px #2563eb;
+      }
+    }
+  }
+  
+  .placeholderText {
+    color: #9ca3af;
+    font-size: 1rem;
+    flex: 1;
+  }
+  
+  .profilePicture {
+    flex: 1;
+  }
+  
+  .uploadButton {
+    background-color: #2563eb;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+  
+    &:hover {
+      background-color: #1d4ed8;
+    }
+  }
+  
+  .changePassword {
+    padding-top: 8px;
+  
+    a {
+      color: #2563eb;
+      text-decoration: none;
+      font-size: 1rem;
+  
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+  
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+  }
+  
+  .cancelButton {
+    background-color: #f3f4f6;
+    color: #374151;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+  
+    &:hover {
+      background-color: #e5e7eb;
+    }
+  }
+  
+  .saveButton {
+    background-color: #2563eb;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+  
+    &:hover {
+      background-color: #1d4ed8;
+    }
+  }
