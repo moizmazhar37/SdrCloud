@@ -18,7 +18,7 @@ const MyProfile = ({ data, headers, edit, setEdit }) => {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h2>{headers.title || 'Personal Details'}</h2>
+        <span className={styles.title}>Personal Details</span>
         {!edit && (
           <button 
             className={styles.editButton}
@@ -29,9 +29,9 @@ const MyProfile = ({ data, headers, edit, setEdit }) => {
         )}
       </div>
       <div className={styles.content}>
-        <div className={styles.field}>
-          <label>Profile Picture</label>
-          <div className={styles.profilePicture}>
+        <div className={styles.row}>
+          <span className={styles.label}>Profile Picture</span>
+          <div className={styles.inputContainer}>
             {edit ? (
               <button 
                 className={styles.uploadButton}
@@ -40,75 +40,86 @@ const MyProfile = ({ data, headers, edit, setEdit }) => {
                 Upload
               </button>
             ) : (
-              <span className={styles.placeholderText}>
+              <span className={styles.value}>
                 {data.profileImage || 'Enter Your AdminProfileImage'}
               </span>
             )}
           </div>
         </div>
 
-        <div className={styles.field}>
-          <label>First Name</label>
-          {edit ? (
-            <input
-              type="text"
-              placeholder="Enter Your FirstName"
-              defaultValue={data.firstName}
-            />
-          ) : (
-            <span className={styles.placeholderText}>
-              {data.firstName || 'Enter Your FirstName'}
-            </span>
-          )}
+        <div className={styles.row}>
+          <span className={styles.label}>First Name</span>
+          <div className={styles.inputContainer}>
+            {edit ? (
+              <input
+                type="text"
+                placeholder="Enter Your FirstName"
+                defaultValue={data.firstName}
+              />
+            ) : (
+              <span className={styles.value}>
+                {data.firstName || 'Enter Your FirstName'}
+              </span>
+            )}
+          </div>
         </div>
 
-        <div className={styles.field}>
-          <label>Last Name</label>
-          {edit ? (
-            <input
-              type="text"
-              placeholder="Enter Your LastName"
-              defaultValue={data.lastName}
-            />
-          ) : (
-            <span className={styles.placeholderText}>
-              {data.lastName || 'Enter Your LastName'}
-            </span>
-          )}
+        <div className={styles.row}>
+          <span className={styles.label}>Last Name</span>
+          <div className={styles.inputContainer}>
+            {edit ? (
+              <input
+                type="text"
+                placeholder="Enter Your LastName"
+                defaultValue={data.lastName}
+              />
+            ) : (
+              <span className={styles.value}>
+                {data.lastName || 'Enter Your LastName'}
+              </span>
+            )}
+          </div>
         </div>
 
-        <div className={styles.field}>
-          <label>Email</label>
-          {edit ? (
-            <input
-              type="email"
-              placeholder="Enter Your AdminEmail"
-              defaultValue={data.email}
-            />
-          ) : (
-            <span className={styles.placeholderText}>
-              {data.email || 'Enter Your AdminEmail'}
-            </span>
-          )}
+        <div className={styles.row}>
+          <span className={styles.label}>Email</span>
+          <div className={styles.inputContainer}>
+            {edit ? (
+              <input
+                type="email"
+                placeholder="Enter Your AdminEmail"
+                defaultValue={data.email}
+              />
+            ) : (
+              <span className={styles.value}>
+                {data.email || 'Enter Your AdminEmail'}
+              </span>
+            )}
+          </div>
         </div>
 
-        <div className={styles.field}>
-          <label>PhoneNo</label>
-          {edit ? (
-            <input
-              type="tel"
-              placeholder="Enter Your PhoneNo"
-              defaultValue={data.phoneNo}
-            />
-          ) : (
-            <span className={styles.placeholderText}>
-              {data.phoneNo || 'Enter Your PhoneNo'}
-            </span>
-          )}
+        <div className={styles.row}>
+          <span className={styles.label}>PhoneNo</span>
+          <div className={styles.inputContainer}>
+            {edit ? (
+              <input
+                type="tel"
+                placeholder="Enter Your PhoneNo"
+                defaultValue={data.phoneNo}
+              />
+            ) : (
+              <span className={styles.value}>
+                {data.phoneNo || 'Enter Your PhoneNo'}
+              </span>
+            )}
+          </div>
         </div>
 
-        <div className={styles.changePassword}>
-          <a href="#change-password">Change Password</a>
+        <div className={styles.row}>
+          <span className={styles.label}></span>
+          <div className={styles.inputContainer}>
+            <a href="#" className={styles.changePassword}>Change Password</a>
+          </div>
         </div>
 
         {edit && (
