@@ -86,7 +86,7 @@ function EditGoogleSheet() {
               <SheetDetails viewData={viewData} />
             </div>
 
-            
+            {/* ------------------- Right Column Table ----------------- */}
             <div className={styles.rightColumn}>
               <table className={styles.table}>
                 <thead>
@@ -104,8 +104,8 @@ function EditGoogleSheet() {
                     </th>
                   </tr>
                 </thead>
-                <tbody>
-                  <tr className={styles.dropdownRow}>
+                <div className={styles.RowsContainer}>
+                  <div className={styles.dropdownRow}>
                     <td className={styles.column}>
                       {updatedData.map((item) => (
                         <div
@@ -133,8 +133,8 @@ function EditGoogleSheet() {
                         </div>
                       ))}
                     </td>
-                  </tr>
-                </tbody>
+                  </div>
+                </div>
               </table>
             </div>
           </div>
