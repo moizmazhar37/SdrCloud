@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import styles from "./sheet-details.module.scss";
 import CompanyTable from "../../../Company/CompanyTable/CompanyTable";
 import SheetDropdown from '../SheetDropdown/SheetDropdown';
+import SheetDropdownTable from '../SheetDropdownTable.jsx/SheetDropdownTable';
 
 const SheetDetails = ({ viewData }) => {
   const [tableData, setTableData] = useState(null);
   const [selectedSheetType, setSelectedSheetType] = useState('');
+  const [dropdownTableData, setDropdownTableData] = useState([]);
 
   const truncateUrl = (url) => {
     if (!url) return 'N/A';
@@ -40,14 +42,27 @@ const SheetDetails = ({ viewData }) => {
         fetch_url: formatUrl(viewData.fetch_url),
         created_at: formatDate(viewData.created_at),
       });
-      
+
       setSelectedSheetType(viewData.sheet_type || '');
+      
+      // Initialize dropdown table data
+      setDropdownTableData([
+        {
+          id: 'customer_id',
+          label: 'Customer ID',
+          dropdown: selectedSheetType
+        }
+      ]);
     }
   }, [viewData]);
 
-  const handleSheetTypeChange = (value) => {
+  const handleSheetTypeChange = (rowIndex, value) => {
     setSelectedSheetType(value);
-    // You can add additional logic here, like making an API call
+    setDropdownTableData(prev => 
+      prev.map((row, idx) => 
+        idx === rowIndex ? { ...row, dropdown: value } : row
+      )
+    );
   };
 
   const mainHeaders = [
@@ -58,6 +73,8 @@ const SheetDetails = ({ viewData }) => {
     { key: "created_at", label: "Creation Date" },
   ];
 
+  const dropdownHeaders = ['Field', 'Type'];
+
   if (!tableData) {
     return (
       <div className={styles.container}>
@@ -66,24 +83,35 @@ const SheetDetails = ({ viewData }) => {
     );
   }
 
+  // Props for the SheetDropdown component
+  const dropdownProps = {
+    options: ['Video', 'HVO'],
+    label: "Customer ID",
+    disabled: false
+  };
+
   return (
-    <div>
-      <CompanyTable 
-        heading="Sheet Details" 
-        headers={mainHeaders} 
-        data={tableData} 
-        canEdit={false} 
+    <div className={styles.sheetDetailsContainer}>
+      <CompanyTable
+        heading="Sheet Details"
+        headers={mainHeaders}
+        data={tableData}
+        canEdit={false}
         onSave={() => {}}
       />
-      {/* <div className={styles.sheetTypeContainer}>
-        <SheetDropdown
-          options={['Video', 'HVO']}
-          selectedValue={selectedSheetType}
-          onSelect={handleSheetTypeChange}
-          label="Customer ID"
-          disabled={false}
-        />
-      </div> */}
+      
+      <SheetDropdownTable
+        title="Sheet Configuration"
+        edit={false}
+        headers={dropdownHeaders}
+        rows={dropdownTableData}
+        SheetDropdownComponent={SheetDropdown}
+        dropdownProps={{
+          ...dropdownProps,
+          onSelect: handleSheetTypeChange
+        }}
+    
+      />
     </div>
   );
 };
