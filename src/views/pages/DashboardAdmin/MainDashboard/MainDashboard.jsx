@@ -1,5 +1,3 @@
-// MainDashboard.js
-
 import React, { useState, useEffect } from "react";
 import Card from "./CardBlock/Card";
 import TopUsers from "./TableCardBlock/TabularCard";
@@ -31,12 +29,11 @@ const MainDashboard = () => {
   const [selectedTimeStampForTemplate, setSelectedTimeStampForTemplate] = useState("Current Month");
   const [selectedSentHvoVideoTimestamp, setSelectedSentHvoVideoTimestamp] = useState("Current Month");
   const [hvoVideoTimeframe, setHvoVideoTimeframe] = useState("month");
-  const [isViewed, setIsViewed] = useState(false);
+  const [isViewed, setIsViewed] = useState(null);
   const [userTimePeriod, setUserTimePeriod] = useState("month");
   const [templateTimePeriod, setTemplateTimePeriod] = useState("month");
   const [graphTimePeriod, setGraphTimePeriod] = useState("month");
 
-  // Custom hooks for fetching data
   const { statsData = {}, isStatsLoading, statsError } = useUserCounts();
   const { GraphData = [] } = useGraphData(graphTimePeriod);
   const { topUsersData = [] } = useTopUsers(userTimePeriod);
@@ -45,14 +42,13 @@ const MainDashboard = () => {
   const { urls = [], loadingUrls, errorInUrls } = useUrls();
   const { downloadCSV, loading: csvLoading } = useDownloadCSV();
 
-  // Get user type from localStorage
   const userType = localStorage.getItem("userType");
 
-  // Create website options only when urls data is available
+  // Transform the new URL format into the list of strings
   const websiteOptions = React.useMemo(() => {
     if (!urls || loadingUrls) return [];
-    return urls.map((url) => ({
-      label: url,
+    return urls.map((urlObj) => ({
+      label: urlObj.url
     }));
   }, [urls, loadingUrls]);
 

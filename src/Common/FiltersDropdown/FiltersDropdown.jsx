@@ -5,10 +5,10 @@ import Dropdown from "src/Common/Dropdown/Dropdown";
 
 const FiltersDropdown = ({ options = [], setIsViewed }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [response, setResponse] = useState('not-clicked');
+  const [clicked, setClicked] = useState(true); // Default to checked
+  const [notClicked, setNotClicked] = useState(true); // Default to checked
   const [selectedTimeframe, setSelectedTimeframe] = useState('Monthly');
 
-  // options array in the format expected by Dropdown component
   const timeframeOptions = options.map(option => ({
     label: option.label,
     onClick: () => {
@@ -21,10 +21,24 @@ const FiltersDropdown = ({ options = [], setIsViewed }) => {
     setIsOpen(prevState => !prevState);
   };
 
-  const handleResponseChange = (value) => {
-    setResponse(value);
+  const handleCheckboxChange = (type) => {
+    if (type === 'clicked') {
+      setClicked(!clicked);
+    } else {
+      setNotClicked(!notClicked);
+    }
+
+    const nextClickedState = type === 'clicked' ? !clicked : clicked;
+    const nextNotClickedState = type === 'not-clicked' ? !notClicked : notClicked;
+
     if (setIsViewed) {
-      setIsViewed(value === 'clicked');
+      if (nextClickedState && !nextNotClickedState) {
+        setIsViewed(true);
+      } else if (!nextClickedState && nextNotClickedState) {
+        setIsViewed(false);
+      } else {
+        setIsViewed(null);
+      }
     }
   };
 
@@ -36,8 +50,8 @@ const FiltersDropdown = ({ options = [], setIsViewed }) => {
 
   return (
     <div className={styles.container}>
-      <button 
-        className={styles.filtersButton} 
+      <button
+        className={styles.filtersButton}
         onClick={handleButtonClick}
         type="button"
       >
@@ -49,7 +63,7 @@ const FiltersDropdown = ({ options = [], setIsViewed }) => {
         <div className={styles.dropdown} onClick={e => e.stopPropagation()}>
           <div className={styles.section}>
             <div className={styles.dropdownWrapper}>
-              <Dropdown 
+              <Dropdown
                 options={timeframeOptions}
                 buttonText={selectedTimeframe}
               />
@@ -61,11 +75,9 @@ const FiltersDropdown = ({ options = [], setIsViewed }) => {
             <div className={styles.responseOptions}>
               <label className={styles.radioLabel}>
                 <input
-                  type="radio"
-                  name="response"
-                  value="clicked"
-                  checked={response === 'clicked'}
-                  onChange={(e) => handleResponseChange(e.target.value)}
+                  type="checkbox"
+                  checked={clicked}
+                  onChange={() => handleCheckboxChange('clicked')}
                   className={styles.radioInput}
                 />
                 <span className={styles.customRadio}></span>
@@ -73,11 +85,9 @@ const FiltersDropdown = ({ options = [], setIsViewed }) => {
               </label>
               <label className={styles.radioLabel}>
                 <input
-                  type="radio"
-                  name="response"
-                  value="not-clicked"
-                  checked={response === 'not-clicked'}
-                  onChange={(e) => handleResponseChange(e.target.value)}
+                  type="checkbox"
+                  checked={notClicked}
+                  onChange={() => handleCheckboxChange('not-clicked')}
                   className={styles.radioInput}
                 />
                 <span className={styles.customRadio}></span>
@@ -98,7 +108,7 @@ FiltersDropdown.propTypes = {
       onClick: PropTypes.func.isRequired,
     })
   ),
-  setIsViewed: PropTypes.func, 
+  setIsViewed: PropTypes.func,
 };
 
 FiltersDropdown.defaultProps = {
