@@ -3,7 +3,7 @@ const url = "https://backend-283763506150.us-central1.run.app";
 
 
 const auth = `${url}/auth`;
-const users = `${url}/users`;
+export const users = `${url}/users`;
 const urls = `${url}/url`;
 
 const admin = `${url}/admin`;
@@ -24,6 +24,7 @@ const ApiConfig = {
   addUrl: `${url}/url`,
   mainDashboard: `${url}/dashboard`,
   login: `${auth}/signin`,
+  changePassword: `${auth}/change-password`,
   createNewAccount: `${admin}/subadmin`,
   getAllCategories: `${categories}/`,
   ppadminUserListNew: `${admin}/`,

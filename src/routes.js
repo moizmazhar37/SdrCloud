@@ -255,15 +255,15 @@ export const routes = [
     ),
   },
 
-  {
-    exact: true,
-    path: "/myprofile",
-    guard: true,
-    layout: DashboardLayout,
-    component: lazy(() =>
-      import("src/views/pages/settings/MyProfile/MyProfile")
-    ),
-  },
+  // {
+  //   exact: true,
+  //   path: "/myprofile",
+  //   guard: true,
+  //   layout: DashboardLayout,
+  //   component: lazy(() =>
+  //     import("src/views/pages/settings/MyProfile/profile.js")
+  //   ),
+  // },
 
   {
     exact: true,
@@ -306,11 +306,11 @@ export const routes = [
 
   {
     exact: true,
-    path: "/my-profile",
+    path: "/myprofile",
     guard: true,
     layout: DashboardLayout,
     component: lazy(() =>
-      import("src/views/pages/settings/MyProfile/MyProfile")
+      import("src/views/pages/settings/MyProfile/MyProfileContainer")
     ),
   },
   {

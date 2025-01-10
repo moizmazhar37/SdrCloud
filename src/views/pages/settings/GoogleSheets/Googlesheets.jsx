@@ -9,7 +9,7 @@ import { faCircle } from "@fortawesome/free-solid-svg-icons";
 import styles from "./googlesheets.module.scss";
 import { useGoogleSheetsData, useDeleteGoogleSheet } from "./hooks";
 import WarningModal from "../../../../Common/Modal/Modal";
-import DynamicNavigator from "../../../../Common/DynamicNavigator/DynamicNavigator"; // Adjust the import path as needed
+import DynamicNavigator from "../../../../Common/DynamicNavigator/DynamicNavigator"; 
 
 function GoogleSheets() {
   const history = useHistory();
