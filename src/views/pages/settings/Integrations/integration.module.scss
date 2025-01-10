@@ -1,6 +1,10 @@
 .container {
     margin: 2px;
     border-radius: 50px;
+    padding-left: 2%;
+    @media (max-width: 768px) {
+    padding-left: 9%;}
+    
   }
   
   .breadcrumbNav {
@@ -23,12 +27,15 @@
   }
   
   .table {
+    
     width: 100%;
     max-width: 48%;
     border-collapse: collapse;
     margin-top: 16px;
     table-layout: fixed;
     border-radius: 8px;
+
+    
   }
   
   .tableHeader {
