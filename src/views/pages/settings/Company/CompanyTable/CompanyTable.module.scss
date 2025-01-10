@@ -9,8 +9,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 20px;
-  background: #f8f9fa;
+  padding: 20px 22px;
+  background: #ECECEC;
   border-bottom: 1px solid #e6e6e6;
 border-radius: 8px;
 border-bottom-right-radius: 0;
@@ -19,8 +19,8 @@ border-bottom-left-radius: 0;
 
 .heading {
   color: #152F40;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 16px;
+  font-weight: 600;
 }
 
 .editButton {
@@ -58,13 +58,13 @@ border-bottom-left-radius: 0;
 .label {
   width: 180px;
   color: #6b7280;
-  font-size: 16px;
+  font-size: 14px;
   padding-right: 16px;
 }
 
 .value {
-  color: #1f2937;
-  font-size: 16px;
+  color: #6b7280;
+  font-size: 14px;
   flex: 1;
 }
 
