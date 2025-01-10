@@ -1,5 +1,3 @@
-// MainDashboard.js
-
 import React, { useState, useEffect } from "react";
 import Card from "./CardBlock/Card";
 import TopUsers from "./TableCardBlock/TabularCard";
@@ -46,11 +44,11 @@ const MainDashboard = () => {
 
   const userType = localStorage.getItem("userType");
 
-  // Create website options only when urls data is available
+  // Transform the new URL format into the list of strings
   const websiteOptions = React.useMemo(() => {
     if (!urls || loadingUrls) return [];
-    return urls.map((url) => ({
-      label: url,
+    return urls.map((urlObj) => ({
+      label: urlObj.url
     }));
   }, [urls, loadingUrls]);
 
