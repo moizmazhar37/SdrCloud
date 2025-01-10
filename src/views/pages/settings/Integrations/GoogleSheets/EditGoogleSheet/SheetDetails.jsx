@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import styles from "./sheet-details.module.scss";
 import CompanyTable from "../../../Company/CompanyTable/CompanyTable";
+import SheetDropdown from '../SheetDropdown/SheetDropdown';
 
 const SheetDetails = ({ viewData }) => {
   const [tableData, setTableData] = useState(null);
+  const [selectedSheetType, setSelectedSheetType] = useState('');
 
   const truncateUrl = (url) => {
     if (!url) return 'N/A';
@@ -25,13 +27,7 @@ const SheetDetails = ({ viewData }) => {
       const formatUrl = (url) => {
         if (!url) return 'N/A';
         return (
-          <a
-            href={url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.urlLink}
-            title={url} 
-          >
+          <a href={url} target="_blank" rel="noopener noreferrer" className={styles.urlLink} title={url}>
             {truncateUrl(url)}
           </a>
         );
@@ -44,10 +40,17 @@ const SheetDetails = ({ viewData }) => {
         fetch_url: formatUrl(viewData.fetch_url),
         created_at: formatDate(viewData.created_at),
       });
+      
+      setSelectedSheetType(viewData.sheet_type || '');
     }
   }, [viewData]);
 
-  const headers = [
+  const handleSheetTypeChange = (value) => {
+    setSelectedSheetType(value);
+    // You can add additional logic here, like making an API call
+  };
+
+  const mainHeaders = [
     { key: "title", label: "Title" },
     { key: "field_count", label: "Field Count" },
     { key: "total_records", label: "Total Records" },
@@ -58,39 +61,29 @@ const SheetDetails = ({ viewData }) => {
   if (!tableData) {
     return (
       <div className={styles.container}>
-        <div className={styles.loading}> </div>
+        <div className={styles.loading}></div>
       </div>
     );
   }
 
   return (
     <div>
-      <CompanyTable
-        heading="Sheet Details"
-        headers={headers}
-        data={tableData}
-        canEdit={false}
+      <CompanyTable 
+        heading="Sheet Details" 
+        headers={mainHeaders} 
+        data={tableData} 
+        canEdit={false} 
         onSave={() => {}}
       />
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            <th className={styles.tableHeader}>Sheet Type</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr className={styles.dropwdrownrow}>
-            <td className={styles.column}>
-              <p className={styles.title}>Select Sheet Type</p>
-              <select className={styles.dropdown} disabled>
-                <option value={viewData?.sheet_type || ''}>
-                  {viewData?.sheet_type || 'N/A'}
-                </option>
-              </select>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      {/* <div className={styles.sheetTypeContainer}>
+        <SheetDropdown
+          options={['Video', 'HVO']}
+          selectedValue={selectedSheetType}
+          onSelect={handleSheetTypeChange}
+          label="Customer ID"
+          disabled={false}
+        />
+      </div> */}
     </div>
   );
 };

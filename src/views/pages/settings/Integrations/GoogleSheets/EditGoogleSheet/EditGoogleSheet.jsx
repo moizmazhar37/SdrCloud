@@ -85,6 +85,8 @@ function EditGoogleSheet() {
             <div className={styles.leftColumn}>
               <SheetDetails viewData={viewData} />
             </div>
+
+            
             <div className={styles.rightColumn}>
               <table className={styles.table}>
                 <thead>
