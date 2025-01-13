@@ -21,9 +21,8 @@ const Integration = () => {
   ];
 
   return (
-    <div className={styles.container}>
+    <><DynamicNavigator items={navs} /><div className={styles.container}>
       <div className={styles.breadcrumbNav}>
-        <DynamicNavigator items={navs}/>
       </div>
       <table className={styles.table}>
         <thead>
@@ -49,19 +48,16 @@ const Integration = () => {
                     <div className={styles.serviceNameStatus}>
                       <p className={styles.servicesText}>{source.name}</p>
                       <span
-                        className={
-                          source.status === "Enabled"
-                            ? styles.statusEnabled
-                            : styles.statusDisabled
-                        }
+                        className={source.status === "Enabled"
+                          ? styles.statusEnabled
+                          : styles.statusDisabled}
                       >
                         {source.status}
                       </span>
                     </div>
                     <FontAwesomeIcon
                       icon={faChevronRight}
-                      className={styles.arrowIcon}
-                    />
+                      className={styles.arrowIcon} />
                   </div>
                 ))}
               </div>
@@ -69,7 +65,7 @@ const Integration = () => {
           </tr>
         </tbody>
       </table>
-    </div>
+    </div></>
   );
 };
 
