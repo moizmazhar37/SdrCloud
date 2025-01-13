@@ -32,7 +32,7 @@ const Users = () => {
   };
 
   const headers = [
-    { label: "Full Name", key: "full_name" }, 
+    { label: "Full Name", key: "full_name" },
     { label: "Email", key: "email" },
     { label: "Created At", key: "created_at" },
     { label: "Projects", key: "projects" },
@@ -53,7 +53,7 @@ const Users = () => {
       label: "Edit",
       onClick: (userId) => {
         setSelectedUserId(userId);
-        setViewState("edit"); 
+        setViewState("edit");
         setCreateUserOpen(true);
       },
     },
@@ -108,7 +108,7 @@ const Users = () => {
         onClose={() => setCreateUserOpen(false)}
         onSuccess={handleCreateUserSuccess}
         userId={selectedUserId}
-        viewState={viewState} 
+        viewState={viewState}
       />
     </div>
   );
