@@ -1,12 +1,11 @@
 .cardsContainer {
+    padding-top: 1%;
+    padding-bottom: 1%;
     display: flex;
-    gap: 2%;
-  
-    @media (max-width: 820px) {
-      flex-direction: column;
-      align-items: center;
-      gap: 40px;
-    }
+    gap: 45px;
+
+
+   
   }
   
   .radioGroup {
@@ -47,7 +46,6 @@
   
   .categoryContainer {
     display: flex;
-    
     margin-left: -10%;
   }
   
@@ -56,9 +54,31 @@
     width: 55%;
     background-color: #E6FFE6;
     color: #152F40;
-    border: 1px solid #93ee93;
+    border: 1px solid #7dc371;
     border-radius: 20px;
-
     text-align: center;
-
   }
+
+  @media (max-width: 1080px) {
+.cardsContainer{ align-items: center;
+    justify-content: center;
+    padding-bottom: 7%;
+    padding-top: 5%;    
+}    
+    .radioGroup{justify-content: center;
+        padding-bottom: 7%;
+    gap: 2%;}
+    
+}
+@media (max-width: 520px) {
+   
+.cardsContainer{     
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+    padding-top: 5%;
+    
+}
+.radioGroup{gap: 5%;}
+
+}
