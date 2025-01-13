@@ -10,18 +10,14 @@ import { hvoTypes, videoTypes } from "./types";
 
 function EditGoogleSheet() {
   const location = useLocation();
-  const { sheetId } = location.state || {}
-  
+  const { sheetId } = location.state || {};
+
   const [isEditing, setIsEditing] = useState(false);
   const [dropdownData, setDropdownData] = useState([]);
   const [updatedData, setUpdatedData] = useState([]);
 
   const { data, loading, error } = useGoogleSheetTypes(sheetId);
-  const {
-    saveSheetTypes,
-    loading: saving,
-    error: saveError,
-  } = useSaveGoogleSheetTypes();
+  const { saveSheetTypes, loading: saving, error: saveError } = useSaveGoogleSheetTypes();
 
   const sheetData = data?.headers_with_data_types;
   const viewData = data?.google_sheet_response;
@@ -55,7 +51,7 @@ function EditGoogleSheet() {
   };
 
   const handleEditToggle = async () => {
-    isEditing && (await saveSheetTypes(sheetId, updatedData));
+    if (isEditing) await saveSheetTypes(sheetId, updatedData);
     setIsEditing((prevState) => !prevState);
   };
 
@@ -68,13 +64,13 @@ function EditGoogleSheet() {
     <>
       {loading && <FullScreenLoader />}
       <div className={styles.breadcrumbNav}>
-        <DynamicNavigator items={navs} />{" "}
+        <DynamicNavigator items={navs} />
       </div>
       <Formik
         initialValues={{
           data: updatedData || [],
         }}
-        enableReinitialize={true}
+        enableReinitialize
         onSubmit={(values, { setSubmitting }) => {
           console.log("Submitted values:", values);
           setSubmitting(false);
@@ -103,13 +99,10 @@ function EditGoogleSheet() {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr className={styles.dropdownRow}>
-                    <td className={styles.column}>
-                      {updatedData.map((item) => (
-                        <div
-                          key={item.value}
-                          className={styles.dropdownContainer}
-                        >
+                  {updatedData.map((item) => (
+                    <tr key={item.value} className={styles.row}>
+                      <td className={styles.column}>
+                        <div className={styles.dropdownContainer}>
                           <p className={styles.title}>{item.value}</p>
                           <select
                             className={styles.dropdown}
@@ -129,9 +122,9 @@ function EditGoogleSheet() {
                             ))}
                           </select>
                         </div>
-                      ))}
-                    </td>
-                  </tr>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>

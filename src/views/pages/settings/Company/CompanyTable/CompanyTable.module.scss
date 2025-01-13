@@ -2,25 +2,25 @@
   border: 1px solid #e6e6e6;
   border-radius: 4px;
   background: #fff;
-  border-radius:10px;
+  border-radius: 10px;
 }
 
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 20px;
-  background: #f8f9fa;
+  padding: 20px 22px;
+  background: #ECECEC;
   border-bottom: 1px solid #e6e6e6;
-border-radius: 8px;
-border-bottom-right-radius: 0;
-border-bottom-left-radius: 0;
+  border-radius: 8px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
 }
 
 .heading {
   color: #152F40;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 16px;
+  font-weight: 600;
 }
 
 .editButton {
@@ -31,40 +31,40 @@ border-bottom-left-radius: 0;
   cursor: pointer;
   padding: 0;
   font-weight: 600;
+}
 
-  &:hover {
-    color: #1d4ed8;
-  }
+.editButton:hover {
+  color: #1d4ed8;
 }
 
 .scrollable {
-  overflow-x: auto; 
+  overflow-x: visible;
 }
 
 .content {
   padding: 20px;
-  min-width:320px; 
+  min-width: auto;
 }
 
 .row {
   display: flex;
   margin-bottom: 16px;
-  
-  &:last-child {
-    margin-bottom: 0;
-  }
+}
+
+.row:last-child {
+  margin-bottom: 0;
 }
 
 .label {
   width: 180px;
   color: #6b7280;
-  font-size: 16px;
+  font-size: 14px;
   padding-right: 16px;
 }
 
 .value {
-  color: #1f2937;
-  font-size: 16px;
+  color: #6b7280;
+  font-size: 14px;
   flex: 1;
 }
 
@@ -74,10 +74,30 @@ border-bottom-left-radius: 0;
   border: 1px solid #d1d5db;
   border-radius: 4px;
   font-size: 16px;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 1px #2563eb;
+}
+
+@media (max-width: 460px) {
+  .row {
+    flex-direction: column;
+    gap: 8px;
+  }
   
-  &:focus {
-    outline: none;
-    border-color: #2563eb;
-    box-shadow: 0 0 0 1px #2563eb;
+  .label {
+    width: 100%;
+    padding-right: 0;
+  }
+  
+  .value {
+    width: 100%;
+  }
+  
+  .content {
+    padding: 16px;
   }
 }

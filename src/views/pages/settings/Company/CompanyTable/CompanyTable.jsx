@@ -1,15 +1,13 @@
-import React, { useState } from 'react';
-import styles from './CompanyTable.module.scss';
+import React, { useState, useEffect } from "react";
+import styles from "./CompanyTable.module.scss";
 
-const CompanyTable = ({ 
-  heading, 
-  headers, 
-  data, 
-  canEdit = false, 
-  onSave 
-}) => {
+const CompanyTable = ({ heading, headers, data, canEdit = false, onSave }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedData, setEditedData] = useState(data);
+
+  useEffect(() => {
+    setEditedData(data);
+  }, [data]);
 
   const handleEdit = () => {
     if (isEditing) {
@@ -19,10 +17,35 @@ const CompanyTable = ({
   };
 
   const handleInputChange = (key, value) => {
-    setEditedData(prev => ({
+    setEditedData((prev) => ({
       ...prev,
-      [key]: value
+      [key]: value,
     }));
+  };
+
+  const isValidUrl = (string) => {
+    try {
+      new URL(string);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  };
+
+  const renderValue = (value) => {
+    if (typeof value === "string" && isValidUrl(value)) {
+      return (
+        <a
+          href={value}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.urlLink}
+        >
+          {value}
+        </a>
+      );
+    }
+    return value;
   };
 
   return (
@@ -30,17 +53,14 @@ const CompanyTable = ({
       <div className={styles.header}>
         <span className={styles.heading}>{heading}</span>
         {canEdit && (
-          <button 
-            className={styles.editButton}
-            onClick={handleEdit}
-          >
-            {isEditing ? 'Save' : 'Edit'}
+          <button className={styles.editButton} onClick={handleEdit}>
+            {isEditing ? "Save" : "Edit"}
           </button>
         )}
       </div>
       <div className={styles.scrollable}>
         <div className={styles.content}>
-          {headers.map(header => (
+          {headers.map((header) => (
             <div key={header.key} className={styles.row}>
               <div className={styles.label}>{header.label}:</div>
               <div className={styles.value}>
@@ -48,11 +68,13 @@ const CompanyTable = ({
                   <input
                     type="text"
                     value={editedData[header.key]}
-                    onChange={(e) => handleInputChange(header.key, e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange(header.key, e.target.value)
+                    }
                     className={styles.input}
                   />
                 ) : (
-                  editedData[header.key]
+                  renderValue(editedData[header.key])
                 )}
               </div>
             </div>

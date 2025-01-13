@@ -1,6 +1,10 @@
 .container {
     margin: 2px;
     border-radius: 50px;
+    padding-left: 2%;
+    @media (max-width: 768px) {
+    padding-left: 9%;}
+    
   }
   
   .breadcrumbNav {
@@ -23,20 +27,22 @@
   }
   
   .table {
+    
     width: 100%;
     max-width: 48%;
     border-collapse: collapse;
     margin-top: 16px;
-    border: 1px solid #ddd;
     table-layout: fixed;
     border-radius: 8px;
+
+    
   }
   
   .tableHeader {
     background-color: #ececec;
     color: #333;
     font-size: 16px;
-    padding: 12px 20px;
+    padding: 24px 38px;
     text-align: left;
     border-radius: 8px 8px 0 0;
   }
@@ -44,6 +50,7 @@
   .sourceTypeRow {
     background-color: transparent;
     border-bottom: 1px solid #ddd;
+    border: 1px solid #e9e8e8;
     font-size: 14px;
     color: #0358ac;
     font-weight: bold;
@@ -69,7 +76,7 @@
     justify-content: space-between;
     align-items: center;
     background-color: transparent;
-    padding: 6px 10px;
+    padding: 14px 14px;
     border: 1px solid #ddd;
     border-radius: 5px;
     cursor: pointer;
@@ -93,8 +100,8 @@
   .statusEnabled {
     color: #152F40;
     background-color: #F4FFF4;
-    padding: 4px 8px;
-    border-radius: 16px;
+    padding:  10px 22px;
+    border-radius: 20px;
     border: 1px solid #7DC371;
     font-size: 14px;
   }
@@ -102,8 +109,8 @@
   .statusDisabled {
     color: #152F40;
     background-color: #FDE9E9;
-    padding: 4px 8px;
-    border-radius: 12px;
+    padding:  10px 22px;
+    border-radius: 20px;
     border: 1px solid #EC2727;
     font-size: 14px;
   }
