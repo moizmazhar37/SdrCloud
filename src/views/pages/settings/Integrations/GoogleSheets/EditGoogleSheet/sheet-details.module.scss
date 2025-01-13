@@ -4,11 +4,13 @@
   gap: 16px;
   padding: 1%;
 }
-.sheetDetailsContainer{
+
+.sheetDetailsContainer {
   display: flex;
   flex-direction: column;
   gap: 24px;
 }
+
 @media (max-width: 1120px) {
   .container {
     flex-direction: column;
@@ -24,22 +26,19 @@
 .table {
   width: 100%;
   max-width: 100%;
- 
   table-layout: fixed;
   border-radius: 8px;
 }
 
-.tableBody{
+.tableBody {
   margin-top: -2px;
   border: 1px solid #ddd;
-//  background-color: #858585; 
 }
 
 .tableHeader {
   background-color: #ececec;
   display: flex;
   gap: 20px;
-
   border-bottom: 1px solid #ddd;
   justify-content: space-between;
   align-items: baseline;
@@ -83,12 +82,16 @@
   border: 1px solid #ddd;
   border-radius: 5px;
   background-color: white;
+  padding-right: 48px; 
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23858585' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M6 9l6 6 6-6'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  
+  &:focus {
+    border-color: #d8d3d3;
+  }
 }
-
-.dropdown:focus {
-  border-color: #858585;
-}
-
 
 .editButton {
   background: none;
@@ -106,5 +109,14 @@
 .leftColumn,
 .rightColumn {
   flex: 1;
-  min-width: 0; 
+  min-width: 0;
+}
+
+.urlLink {
+  color: #0143a7;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
