@@ -1,24 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import styles from "./sheet-details.module.scss";
 import CompanyTable from "../../../Company/CompanyTable/CompanyTable";
-import SheetDropdown from '../SheetDropdown/SheetDropdown';
-import SheetDropdownTable from '../SheetDropdownTable.jsx/SheetDropdownTable';
+import SheetDropdown from "../SheetDropdown/SheetDropdown";
+import SheetDropdownTable from "../SheetDropdownTable.jsx/SheetDropdownTable";
 
 const SheetDetails = ({ viewData }) => {
   const [tableData, setTableData] = useState(null);
-  const [selectedSheetType, setSelectedSheetType] = useState('');
+  const [selectedSheetType, setSelectedSheetType] = useState("");
   const [dropdownTableData, setDropdownTableData] = useState([]);
 
   const truncateUrl = (url) => {
-    if (!url) return 'N/A';
+    if (!url) return "N/A";
     if (url.length <= 30) return url;
-    return url.substring(0, 30) + '...';
+    return url.substring(0, 30) + "...";
   };
 
   useEffect(() => {
     if (viewData) {
       const formatDate = (dateString) => {
-        if (!dateString) return 'N/A';
+        if (!dateString) return "N/A";
         try {
           return new Date(dateString).toLocaleString();
         } catch (e) {
@@ -27,39 +27,45 @@ const SheetDetails = ({ viewData }) => {
       };
 
       const formatUrl = (url) => {
-        if (!url) return 'N/A';
+        if (!url) return "N/A";
         return (
-          <a href={url} target="_blank" rel="noopener noreferrer" className={styles.urlLink} title={url}>
+          <a
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.urlLink}
+            title={url}
+          >
             {truncateUrl(url)}
           </a>
         );
       };
 
       setTableData({
-        title: viewData.title || 'N/A',
-        field_count: viewData.field_count?.toString() || 'N/A',
-        total_records: viewData.total_records?.toString() || 'N/A',
+        title: viewData.title || "N/A",
+        field_count: viewData.field_count?.toString() || "N/A",
+        total_records: viewData.total_records?.toString() || "N/A",
         fetch_url: formatUrl(viewData.fetch_url),
         created_at: formatDate(viewData.created_at),
       });
 
-      setSelectedSheetType(viewData.sheet_type || '');
-      
+      setSelectedSheetType(viewData.sheet_type || "");
+
       // Initialize dropdown table data
       setDropdownTableData([
         {
-          id: 'customer_id',
-          label: 'Customer ID',
-          dropdown: selectedSheetType
-        }
+          id: "customer_id",
+          label: "Customer ID",
+          dropdown: selectedSheetType,
+        },
       ]);
     }
   }, [viewData]);
 
   const handleSheetTypeChange = (rowIndex, value) => {
     setSelectedSheetType(value);
-    setDropdownTableData(prev => 
-      prev.map((row, idx) => 
+    setDropdownTableData((prev) =>
+      prev.map((row, idx) =>
         idx === rowIndex ? { ...row, dropdown: value } : row
       )
     );
@@ -73,7 +79,7 @@ const SheetDetails = ({ viewData }) => {
     { key: "created_at", label: "Creation Date" },
   ];
 
-  const dropdownHeaders = ['Field', 'Type'];
+  const dropdownHeaders = ["Field", "Type"];
 
   if (!tableData) {
     return (
@@ -85,9 +91,9 @@ const SheetDetails = ({ viewData }) => {
 
   // Props for the SheetDropdown component
   const dropdownProps = {
-    options: ['Video', 'HVO'],
+    options: ["Video", "HVO"],
     label: "Customer ID",
-    disabled: false
+    disabled: false,
   };
 
   return (
@@ -99,7 +105,7 @@ const SheetDetails = ({ viewData }) => {
         canEdit={false}
         onSave={() => {}}
       />
-      
+
       <SheetDropdownTable
         title="Sheet Configuration"
         edit={false}
@@ -108,9 +114,8 @@ const SheetDetails = ({ viewData }) => {
         SheetDropdownComponent={SheetDropdown}
         dropdownProps={{
           ...dropdownProps,
-          onSelect: handleSheetTypeChange
+          onSelect: handleSheetTypeChange,
         }}
-    
       />
     </div>
   );

@@ -24,15 +24,23 @@
 .table {
   width: 100%;
   max-width: 100%;
-  border: 1px solid #ddd;
+ 
   table-layout: fixed;
   border-radius: 8px;
+}
+
+.tableBody{
+  margin-top: -2px;
+  border: 1px solid #ddd;
+//  background-color: #858585; 
 }
 
 .tableHeader {
   background-color: #ececec;
   display: flex;
   gap: 20px;
+
+  border-bottom: 1px solid #ddd;
   justify-content: space-between;
   align-items: baseline;
   color: #333;
@@ -45,7 +53,8 @@
 .row {
   display: flex;
   justify-content: space-between;
-
+  border-right: 1px solid #ddd;
+  border-left: 1px solid #ddd;
   align-items: center;
 }
 
@@ -68,7 +77,7 @@
 
 .dropdown {
   width: 100%;
-  padding: 12px;
+  padding: 15px;
   font-size: 14px;
   color: #152f40;
   border: 1px solid #ddd;
