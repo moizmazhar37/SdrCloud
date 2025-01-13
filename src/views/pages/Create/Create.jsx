@@ -23,6 +23,15 @@ const Create = () => {
 
   const tableData = data[activeTab]?.map(row => ({
     ...row,
+    category_name: (
+      <div className={styles.categoryContainer}>
+        {row.category_name.split(',').map((category, index) => (
+          <div key={index} className={styles.categoryBadge}>
+            {category}
+          </div>
+        ))}
+      </div>
+    ),
     sent: '--',
     actions: (
       <Dropdown 
