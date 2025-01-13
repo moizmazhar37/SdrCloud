@@ -98,7 +98,7 @@ function EditGoogleSheet() {
                     </th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className={styles.tableBody}>
                   {updatedData.map((item) => (
                     <tr key={item.value} className={styles.row}>
                       <td className={styles.column}>
