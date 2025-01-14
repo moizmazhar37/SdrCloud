@@ -8,7 +8,8 @@ const Table = ({
   data = [],
   clickableFields = [],
   onFieldClick,
-  onColumnClick
+  onColumnClick,
+  columnStyles = {} // New prop for column-specific styles
 }) => {
   // Normalize the column definitions
   const normalizedColumns = headers 
@@ -20,7 +21,7 @@ const Table = ({
     : columns || [];
 
   const safeData = data || [];
-  
+
   // Unified click handler
   const handleClick = (row, fieldKey) => {
     if (headers) {
@@ -85,11 +86,14 @@ const Table = ({
               <tr key={row.id || rowIndex} className={styles.tableRow}>
                 {normalizedColumns.map((column) => {
                   const isClickable = column.clickable || clickableFields.includes(column.key);
+                  const columnStyle = columnStyles[column.key] || {}; // Get style for the current column
+
                   return (
                     <td
                       key={column.key}
                       onClick={() => handleClick(row, column.key)}
                       className={`${styles.tableCell} ${isClickable ? styles.clickableCell : ''}`}
+                      style={columnStyle} // Apply custom column style
                     >
                       {row[column.key]}
                     </td>
