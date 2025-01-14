@@ -1,5 +1,5 @@
 :root {
-    --input-height: 40px; 
+    --input-height: 40px;
 }
 
 .container {
@@ -46,41 +46,38 @@
     gap: 20px;
 
     @media (max-width: 768px) {
-        flex-direction: column; 
-        gap: 10px; 
+        flex-direction: column;
+        gap: 10px;
     }
 }
 
-.input,
-.select {
-    flex: 1;
-    padding: 0 16px; 
-    border: 1px solid #ececec;
-    border-radius: 6px;
+.input {
+    padding: 7px;
+    padding-left: 18px;
     font-size: 14px;
-    height: var(--input-height);  
+    color: rgb(145, 142, 142);
+    background-color: transparent;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    cursor: pointer;
     display: flex;
-    align-items: center; 
+    justify-content: space-between;
+    align-items: center;
 
-    &::placeholder {
-        color: #999;
-    }
-
-    &:focus {
-        outline: none;
-        border-color: #0358AC;
+    &:hover {
+        background-color: #f1f1f1;
     }
 }
 
 .button {
-    padding: 0 20px; 
-    background: #0358AC;
+    padding: 0 20px;
+    background: #0358ac;
     color: black;
     border: none;
     border-radius: 6px;
     font-size: 14px;
     font-weight: 500;
-    font-family: 'Inter';
+    font-family: "Inter";
     cursor: pointer;
     transition: background 0.2s;
     height: var(--input-height);
@@ -110,7 +107,7 @@
     }
 
     .button {
-        font-size: 12px; 
+        font-size: 12px;
         padding: 0 16px;
     }
 }

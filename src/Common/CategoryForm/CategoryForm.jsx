@@ -60,14 +60,7 @@ const CategoryForm = () => {
                     <div className={styles.field}>
                         <label>Ingestion</label>
                         <div className={styles.inputWithButton}>
-                            <select
-                                value={ingestionSource}
-                                onChange={(e) => setIngestionSource(e.target.value)}
-                                className={styles.select}
-                            >
-                                <option value="">Select Ingestion Source</option>
-                                {/* Add your ingestion source options here */}
-                            </select>
+                            <CategoryDropdown options={initialOptions} allowAddNew={false} />
                             <button
                                 onClick={handleConnect}
                                 disabled={isConnectDisabled}
