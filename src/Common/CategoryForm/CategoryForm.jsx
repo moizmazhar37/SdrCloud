@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import styles from './CategoryForm.module.scss';
+import CategoryDropdown from 'src/views/pages/Create/CreateVideo/CategoryDropdown/CategoryDropdown';
 
 const CategoryForm = () => {
     const [category, setCategory] = useState('');
@@ -8,6 +9,8 @@ const CategoryForm = () => {
 
     const [isSaveDisabled, setIsSaveDisabled] = useState(true);
     const [isConnectDisabled, setIsConnectDisabled] = useState(true);
+
+    const initialOptions = ["ENT", "MM", "SMB", "Startup"];
 
     useEffect(() => {
         setIsSaveDisabled(!(category && templateName));
@@ -31,14 +34,7 @@ const CategoryForm = () => {
                 <div className={styles.row}>
                     <div className={styles.field}>
                         <label>Category</label>
-                        <select
-                            value={category}
-                            onChange={(e) => setCategory(e.target.value)}
-                            className={styles.select}
-                        >
-                            <option value="">Select Category</option>
-                            <option value="category1">Category 1</option>
-                        </select>
+                        <CategoryDropdown options={initialOptions} allowAddNew={true} />
                     </div>
                     <div className={styles.field}>
                         <label>Template Name</label>
