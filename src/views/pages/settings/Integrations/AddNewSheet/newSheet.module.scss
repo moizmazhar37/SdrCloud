@@ -1,126 +1,125 @@
 .container {
-    display: flex;
-    gap: 20px;
-    padding: 20px 24px;
-    width: 100%;
-    box-sizing: border-box;
-  
-    @media (max-width: 1024px) {
-      flex-wrap: wrap;
-    }
-  
-    @media (max-width: 640px) {
-      flex-direction: column;
-    }
+  display: flex;
+  gap: 20px;
+  padding: 20px 24px;
+  width: 100%;
+  box-sizing: border-box;
+
+  @media (max-width: 1024px) {
+    flex-wrap: wrap;
   }
-  
-  .field {
-    flex: 1;
-    min-width: 200px;
-    padding-right: 4px;
+
+  @media (max-width: 640px) {
+    flex-direction: column;
   }
-  
-  .label {
-    color: #1a237e;
-    font-size: 14px;
-    font-weight: 500;
-    margin-bottom: 8px;
+}
+
+.field {
+  flex: 1;
+  min-width: 200px;
+  padding-right: 4px;
+}
+
+.label {
+  color: #1a237e;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.select {
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 5px solid transparent;
+    border-top-color: #666;
   }
-  
-  .select {
-    position: relative;
-  
-    &::after {
-      content: '';
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      border: 5px solid transparent;
-      border-top-color: #666;
-    }
-  
-    select {
-      width: 100%;
-      height: 38px;
-      padding: 6px 12px; /* Adjusted padding to avoid text clipping */
-      line-height: 1.2; /* Ensures text is vertically centered */
-      border: 1px solid #e0e0e0;
-      border-radius: 4px;
-      background: white;
-      appearance: none;
-      font-size: 14px;
-      color: #333;
-      box-sizing: border-box;
-  
-      &:focus {
-        outline: none;
-        border-color: #0358AC;
-      }
-    }
-  }
-  
-  .input {
+
+  select {
     width: 100%;
     height: 38px;
-    padding: 6px 12px; /* Adjusted padding */
+    padding: 6px 12px; /* Adjusted padding to avoid text clipping */
+    line-height: 1.2; /* Ensures text is vertically centered */
     border: 1px solid #e0e0e0;
     border-radius: 4px;
+    background: white;
+    appearance: none;
     font-size: 14px;
     color: #333;
     box-sizing: border-box;
-  
+
     &:focus {
       outline: none;
-      border-color: #0358AC;
-    }
-  
-    &::placeholder {
-      color: #999;
+      border-color: #0358ac;
     }
   }
-  
-  .error {
-    color: #f44336;
-    font-size: 12px;
-    margin-top: 4px;
+}
+
+.input {
+  width: 100%;
+  height: 38px;
+  padding: 6px 12px; /* Adjusted padding */
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #333;
+  box-sizing: border-box;
+
+  &:focus {
+    outline: none;
+    border-color: #0358ac;
   }
-  
-  .inputWithButton {
-    position: relative;
-    width: 100%;
-  
-    .input {
-      padding-right: 80px;
-    }
-  
-    .button {
-      position: absolute;
-      right: 0;
-      top: 0;
-      height: 38px;
-      border-top-left-radius: 0;
-      border-bottom-left-radius: 0;
-    }
+
+  &::placeholder {
+    color: #999;
   }
-  
+}
+
+.error {
+  color: #f44336;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.inputWithButton {
+  position: relative;
+  width: 100%;
+
+  .input {
+    padding-right: 80px;
+  }
+
   .button {
-    padding: 0 16px;
-    background: #0358AC;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-weight: 500;
-    cursor: pointer;
-    font-size: 14px;
-  
-    &:hover {
-      background: #083e8f;
-    }
-  
-    &:focus {
-      outline: none;
-      box-shadow: 0 0 0 2px rgba(0, 82, 204, 0.3);
-    }
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 38px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
   }
-  
+}
+
+.button {
+  padding: 0 16px;
+  background: #0358ac;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 14px;
+
+  &:hover {
+    background: #083e8f;
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 82, 204, 0.3);
+  }
+}
