@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Card from "../../../../Common/Card/Card";
+import Card from "src/Common/Card/Card";
 import Table from "src/Common/Table/Table";
 import useGetAllUsers from "./Hooks/useGetAllUsers";
 import useDeleteUser from "./Hooks/useDeleteUser";
