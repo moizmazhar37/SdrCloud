@@ -6,12 +6,16 @@ import Dropdown from "src/Common/Dropdown/Dropdown";
 import hvo from "src/images/Hvo.png";
 import video from "src/images/video.png";
 import useTemplateList from "./Hooks/useTemplateList";
+import useDeleteTemplate from "./Hooks/useDeleteTemplate";
+import WarningModal from "src/Common/Modal/Modal";
 import styles from "./Create.module.scss";
 
 const Create = () => {
   const history = useHistory();
-  const { data, loading, error } = useTemplateList();
+  const { data, loading, refetch } = useTemplateList();
+  const { deleteTemplate, loading: deleting } = useDeleteTemplate(refetch);
   const [activeTab, setActiveTab] = useState("VIDEO");
+  const [modalData, setModalData] = useState({ isOpen: false, id: null });
 
   const headers = [
     { label: "Template Name", key: "template_name" },
@@ -22,6 +26,11 @@ const Create = () => {
     { label: "Sent", key: "sent" },
     { label: "Action", key: "actions" },
   ];
+
+  const handleDelete = async (id) => {
+    setModalData({ isOpen: false, id: null }); // Close the modal
+    await deleteTemplate(id);
+  };
 
   const tableData =
     data[activeTab]?.map((row) => ({
@@ -43,11 +52,20 @@ const Create = () => {
               label: "View",
               value: "view",
               onClick: () => {
-                console.log("Clicked");
+                history.push({
+                  pathname: `/createtemplate&Video`,
+                  state: "summary",
+                  search: `templateId=${row.id}`,
+                });
               },
             },
+            {
+              label: "Delete",
+              value: "delete",
+              onClick: () => setModalData({ isOpen: true, id: row.id }),
+            },
           ]}
-          buttonText="View"
+          buttonText={"Actions"}
         />
       ),
     })) || [];
@@ -99,6 +117,14 @@ const Create = () => {
           <Table headers={headers} data={tableData} />
         </div>
       )}
+
+      {/* Warning Modal */}
+      <WarningModal
+        isOpen={modalData.isOpen}
+        message="Please be aware that this action is irreversible. By clicking the 'Delete' button below, you will permanently delete this tempelate from the system. Note that you will not be able to retrieve or restore it in the future."
+        onCancel={() => setModalData({ isOpen: false, id: null })}
+        onDelete={() => handleDelete(modalData.id)}
+      />
     </div>
   );
 };
