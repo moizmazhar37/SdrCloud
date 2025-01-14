@@ -6,7 +6,7 @@
     display: flex;
     flex-direction: column;
     border: 1px solid #ececec;
-    margin: 0px;
+    margin: 0;
     padding: 24px;
     background: #fff;
     box-shadow: 0px 8px 24px 0px rgba(0, 0, 0, 0.04);
@@ -22,6 +22,10 @@
 .row {
     display: flex;
     gap: 20px;
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+    }
 }
 
 .field {
@@ -40,6 +44,11 @@
 .inputWithButton {
     display: flex;
     gap: 20px;
+
+    @media (max-width: 768px) {
+        flex-direction: column; 
+        gap: 10px; 
+    }
 }
 
 .input,
@@ -77,6 +86,7 @@
     height: var(--input-height);
     display: flex;
     align-items: center;
+    justify-content: center;
 
     &:hover {
         background: #0056b3;
@@ -85,5 +95,22 @@
     &.disabled {
         background: #ececec;
         cursor: not-allowed;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 16px;
+    }
+
+    .input,
+    .select {
+        font-size: 12px;
+        padding: 0 12px;
+    }
+
+    .button {
+        font-size: 12px; 
+        padding: 0 16px;
     }
 }
