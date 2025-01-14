@@ -1,0 +1,88 @@
+:root {
+    --input-height: 40px; /* Define a single variable for height */
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #ececec;
+    margin: 0px;
+    padding: 24px;
+    background: #fff;
+    box-shadow: 0px 8px 24px 0px rgba(0, 0, 0, 0.04);
+    border-radius: 12px;
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.row {
+    display: flex;
+    gap: 20px;
+}
+
+.field {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    label {
+        font-size: 14px;
+        font-weight: 500;
+        color: #333;
+    }
+}
+
+.inputWithButton {
+    display: flex;
+    gap: 20px;
+}
+
+.input,
+.select {
+    flex: 1;
+    padding: 0 16px; /* Reset vertical padding for consistency */
+    border: 1px solid #ececec;
+    border-radius: 6px;
+    font-size: 14px;
+    height: var(--input-height);  /* Use the variable for height */
+    display: flex;
+    align-items: center; /* Vertically align text inside the field */
+
+    &::placeholder {
+        color: #999;
+    }
+
+    &:focus {
+        outline: none;
+        border-color: #0358AC;
+    }
+}
+
+.button {
+    padding: 0 20px; /* Ensure consistent padding */
+    background: #0358AC;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+    height: var(--input-height); /* Ensure the button height matches input height */
+    display: flex;
+    align-items: center; /* Vertically align text inside the button */
+
+    &:hover {
+        background: #0056b3;
+    }
+
+    &.disabled {
+        background: #d3d3d3;
+        cursor: not-allowed;
+    }
+}
