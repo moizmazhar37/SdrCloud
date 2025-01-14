@@ -14,7 +14,7 @@ const Create = () => {
   const [activeTab, setActiveTab] = useState("VIDEO");
 
   const headers = [
-    { label: "Template Name", key: "hvo_template_name" },
+    { label: "Template Name", key: "template_name" },
     { label: "Type", key: "template_type" },
     { label: "Creation Date", key: "created_at" },
     { label: "Categories", key: "category_name" },
