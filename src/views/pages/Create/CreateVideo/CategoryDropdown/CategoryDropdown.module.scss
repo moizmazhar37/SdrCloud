@@ -45,7 +45,9 @@
 }
 
 .dropdownOption {
-    padding: 14px;
+    padding: 12px;
+    font-size: 12px;
+
     background-color: transparent;
     border: 0.5px solid #f3f1f1;
     cursor: pointer;
@@ -56,12 +58,14 @@
 }
 
 .addNewCategory {
-    padding: 14px;
-    color: white;
+    padding: 12px;
+    padding-right: 15px;
+    color: #0358AC;
+    font-size: 12px;
     cursor: pointer;
     text-align: center;
-    background-color: #0358ac;
+    
     &:hover {
-        background-color: #024b94;
+        background-color: #adb8c7;
     }
 }
