@@ -109,11 +109,21 @@ export const routes = [
   },
   {
     exact: true,
-    path: "/CreateTemplate",
+    path: "/CreateTemplates",
     guard: true,
     layout: DashboardLayout,
     component: lazy(() => import("src/views/pages/CreateVideo/index")),
   },
+
+  // Dummy Route for create
+  {
+    exact: true,
+    path: "/CreateTemplate",
+    guard: true,
+    layout: DashboardLayout,
+    component: lazy(() => import("src/views/pages/Create/Create")),
+  },
+
   {
     exact: true,
     path: "/preview-video",

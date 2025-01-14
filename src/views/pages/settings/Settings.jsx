@@ -1,5 +1,5 @@
 import React from "react";
-import Card from "./Card/Card";
+import Card from "../../../Common/Card/Card";
 import styles from "./settings.module.scss";
 import add_integration from "../../../images/Setting/add_integration.svg";
 import add_archive_user from "../../../images/Setting/add_archive_user.svg";
