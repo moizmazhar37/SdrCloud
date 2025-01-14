@@ -38,9 +38,16 @@ const Create = () => {
       sent: "--",
       actions: (
         <Dropdown
-          options={[{ label: "View", value: "view" }]}
+          options={[
+            {
+              label: "View",
+              value: "view",
+              onClick: () => {
+                console.log("Clicked");
+              },
+            },
+          ]}
           buttonText="View"
-          onChange={(value) => console.log("viewed", row)}
         />
       ),
     })) || [];
