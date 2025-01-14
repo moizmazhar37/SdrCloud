@@ -1,7 +1,8 @@
-import React from 'react';
-import styles from './table.module.scss';
+import React from "react";
+import NoData from "../NoData/NoData";
+import styles from "./table.module.scss";
 
-const Table = ({ 
+const Table = ({
   // Support both prop patterns
   headers,
   columns,
@@ -9,14 +10,14 @@ const Table = ({
   clickableFields = [],
   onFieldClick,
   onColumnClick,
-  columnStyles = {} // New prop for column-specific styles
+  columnStyles = {}, // New prop for column-specific styles
 }) => {
   // Normalize the column definitions
-  const normalizedColumns = headers 
-    ? headers.map(header => ({
+  const normalizedColumns = headers
+    ? headers.map((header) => ({
         key: header.key,
         label: header.label,
-        clickable: clickableFields.includes(header.key)
+        clickable: clickableFields.includes(header.key),
       }))
     : columns || [];
 
@@ -31,7 +32,7 @@ const Table = ({
       }
     } else {
       // Second prop pattern
-      const column = normalizedColumns.find(col => col.key === fieldKey);
+      const column = normalizedColumns.find((col) => col.key === fieldKey);
       if (column?.clickable && onColumnClick) {
         onColumnClick(row, fieldKey);
       }
@@ -58,7 +59,7 @@ const Table = ({
                   colSpan={normalizedColumns.length}
                   className={styles.noDataCell}
                 >
-                  No data available
+                  <NoData />{" "}
                 </td>
               </tr>
             </tbody>
@@ -85,14 +86,17 @@ const Table = ({
             {safeData.map((row, rowIndex) => (
               <tr key={row.id || rowIndex} className={styles.tableRow}>
                 {normalizedColumns.map((column) => {
-                  const isClickable = column.clickable || clickableFields.includes(column.key);
+                  const isClickable =
+                    column.clickable || clickableFields.includes(column.key);
                   const columnStyle = columnStyles[column.key] || {}; // Get style for the current column
 
                   return (
                     <td
                       key={column.key}
                       onClick={() => handleClick(row, column.key)}
-                      className={`${styles.tableCell} ${isClickable ? styles.clickableCell : ''}`}
+                      className={`${styles.tableCell} ${
+                        isClickable ? styles.clickableCell : ""
+                      }`}
                       style={columnStyle} // Apply custom column style
                     >
                       {row[column.key]}

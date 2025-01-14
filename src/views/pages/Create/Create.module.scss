@@ -1,85 +1,84 @@
 .cardsContainer {
-    padding-top: 1%;
-    padding-bottom: 1%;
-    display: flex;
-    gap: 30px;
+  padding-top: 1%;
+  padding-bottom: 1%;
+  display: flex;
+  gap: 30px;
+}
 
+.radioGroup {
+  padding-top: 3%;
+  padding-left: 1%;
+  padding-bottom: 0.5%;
+  display: flex;
+  gap: 1.2%;
+}
 
-   
-  }
-  
-  .radioGroup {
-    padding-top: 3%;
-    padding-left: 1%;
-    padding-bottom: 0.5%;
-    display: flex;
-    gap: 1.2%;
-  }
-  
-  .radioButton {
-    padding: 18px 40px;
-    border-radius: 6px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    border: none;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.09), 
-      0 -4px 8px rgba(0, 0, 0, 0.09), 
-      4px 0 8px rgba(0, 0, 0, 0.09), 
-      -4px 0 8px rgba(0, 0, 0, 0.09);
-    transition: all 0.2s ease;
-  
-    &.active {
-      background-color: #0358AC;
-      color: white;
-    }
-  
-    &:not(.active) {
-      background-color: white;
-      color: #666;
-    }
-  }
-  
-  .tableContainer {
-     padding: 18px 16px;
-  }
-  
-  .categoryContainer {
-    display: flex;
-    margin-left: -10%;
-  }
-  
-  .categoryBadge {
-    padding: 11px 22px;
-    width: 55%;
-    background-color: #E6FFE6;
-    color: #152F40;
-    border: 1px solid #7dc371;
-    border-radius: 20px;
-    text-align: center;
+.radioButton {
+  padding: 18px 40px;
+  border-radius: 6px;
+  font-size: 1.12rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  box-shadow:
+    0 4px 8px rgba(0, 0, 0, 0.09),
+    0 -4px 8px rgba(0, 0, 0, 0.09),
+    4px 0 8px rgba(0, 0, 0, 0.09),
+    -4px 0 8px rgba(0, 0, 0, 0.09);
+  transition: all 0.2s ease;
+
+  &.active {
+    background-color: #0358ac;
+    color: white;
   }
 
-  @media (max-width: 1080px) {
-.cardsContainer{ align-items: center;
+  &:not(.active) {
+    background-color: white;
+    color: #666;
+  }
+}
+
+.tableContainer {
+  padding: 18px 16px;
+}
+
+.categoryContainer {
+  display: flex;
+  margin-left: -10%;
+}
+
+.categoryBadge {
+  padding: 11px 22px;
+  width: 55%;
+  background-color: #e6ffe6;
+  color: #152f40;
+  border: 1px solid #7dc371;
+  border-radius: 20px;
+  text-align: center;
+}
+
+@media (max-width: 1080px) {
+  .cardsContainer {
+    align-items: center;
     justify-content: center;
     padding-bottom: 3%;
-    padding-top: 5%;    
-}    
-    .radioGroup{justify-content: center;
-        padding-bottom: 3.5%;
-    gap: 2%;}
-    
+    padding-top: 5%;
+  }
+  .radioGroup {
+    justify-content: center;
+    padding-bottom: 3.5%;
+    gap: 2%;
+  }
 }
 @media (max-width: 520px) {
-   
-.cardsContainer{     
+  .cardsContainer {
     flex-direction: column;
     align-items: center;
     gap: 40px;
     padding-top: 5%;
-    
-}
-.radioGroup{gap: 5%;
-padding-top: 5%;}
-
+  }
+  .radioGroup {
+    gap: 5%;
+    padding-top: 5%;
+  }
 }

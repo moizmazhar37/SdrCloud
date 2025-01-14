@@ -45,19 +45,22 @@ const Create = () => {
       ),
     })) || [];
 
-
   return (
     <div>
       <div className={styles.cardsContainer}>
         <Card
           image={video}
           text={"Create Video Template"}
-          onClick={    (()=>{history.push("/createtemplate&Video")})}
+          onClick={() => {
+            history.push("/createtemplate&Video");
+          }}
         />
         <Card
           image={hvo}
           text={"Create HVO Template"}
-          onClick={(()=>{history.push("/create-hvo-template");})}
+          onClick={() => {
+            history.push("/create-hvo-template");
+          }}
         />
       </div>
 
@@ -84,7 +87,7 @@ const Create = () => {
         </button>
       </div>
 
-      {!loading && !error && (
+      {!loading && (
         <div className={styles.tableContainer}>
           <Table headers={headers} data={tableData} />
         </div>
