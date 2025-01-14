@@ -4,7 +4,10 @@
     font-family: Arial, sans-serif;
 
     &Header {
-        padding: 16px;
+        padding: 7px;
+        padding-left: 18px;
+        font-size: 14px;
+        color: rgb(145, 142, 142);
         background-color: transparent;
         border: 1px solid #ccc;
         border-radius: 8px;
@@ -17,27 +20,28 @@
             background-color: #f1f1f1;
         }
     }
+    &dropdownOptions {
+        width: 100%;
+    }
+    .dropdownOptions {
+        display: block;
 
+        position: fixed;
+        background-color: white;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        border-top-left-radius: 0px;
+        border-top-right-radius: 0px;
+
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        max-height: 240px;
+        overflow-y: auto;
+        margin-top: 5px;
+    }
     .expanded svg {
         transform: rotate(180deg);
     }
-}
-
-.dropdownOptions {
-    display: block;
-    
-    position: fixed;
-    background-color: white;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    border-top-left-radius: 0px;
-    border-top-right-radius: 0px;
-
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-    max-height: 240px;
-    overflow-y: auto;
-    margin-top: 5px;
 }
 
 .dropdownOption {
