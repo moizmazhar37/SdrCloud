@@ -144,7 +144,7 @@ export const routes = [
     path: "/createtemplate&Video",
     guard: true,
     layout: DashboardLayout,
-    component: lazy(() => import("src/views/pages/CreateVideo/CreateTemplate")),
+    component: lazy(() => import("src/views/pages/Create/CreateVideo/CreateVideo")),
   },
   {
     exact: true,
