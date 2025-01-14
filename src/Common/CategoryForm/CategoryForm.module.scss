@@ -1,5 +1,5 @@
 :root {
-    --input-height: 40px; /* Define a single variable for height */
+    --input-height: 40px; 
 }
 
 .container {
@@ -45,13 +45,13 @@
 .input,
 .select {
     flex: 1;
-    padding: 0 16px; /* Reset vertical padding for consistency */
+    padding: 0 16px; 
     border: 1px solid #ececec;
     border-radius: 6px;
     font-size: 14px;
-    height: var(--input-height);  /* Use the variable for height */
+    height: var(--input-height);  
     display: flex;
-    align-items: center; /* Vertically align text inside the field */
+    align-items: center; 
 
     &::placeholder {
         color: #999;
@@ -64,25 +64,26 @@
 }
 
 .button {
-    padding: 0 20px; /* Ensure consistent padding */
+    padding: 0 20px; 
     background: #0358AC;
-    color: white;
+    color: black;
     border: none;
     border-radius: 6px;
     font-size: 14px;
     font-weight: 500;
+    font-family: 'Inter';
     cursor: pointer;
     transition: background 0.2s;
-    height: var(--input-height); /* Ensure the button height matches input height */
+    height: var(--input-height);
     display: flex;
-    align-items: center; /* Vertically align text inside the button */
+    align-items: center;
 
     &:hover {
         background: #0056b3;
     }
 
     &.disabled {
-        background: #d3d3d3;
+        background: #ececec;
         cursor: not-allowed;
     }
 }

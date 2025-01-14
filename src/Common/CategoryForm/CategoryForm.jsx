@@ -38,7 +38,6 @@ const CategoryForm = () => {
                         >
                             <option value="">Select Category</option>
                             <option value="category1">Category 1</option>
-                            {/* Add your category options here */}
                         </select>
                     </div>
                     <div className={styles.field}>
