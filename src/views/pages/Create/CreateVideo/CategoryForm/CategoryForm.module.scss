@@ -91,12 +91,12 @@
     margin: -1px;
 
     &:hover {
-        background: #0052cc;
+        background: #0248b3;
     }
 
     &:disabled {
-        background: #99c2ff;
         cursor: not-allowed;
+        color: #99c2ff;
     }
 }
 
@@ -142,7 +142,7 @@
     }
 
     &:disabled {
-        border-color: #99c2ff;
+        border-color: #1864d6;
         color: #99c2ff;
         cursor: not-allowed;
     }

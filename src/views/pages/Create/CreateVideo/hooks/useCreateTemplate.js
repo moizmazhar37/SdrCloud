@@ -32,6 +32,7 @@ export const useCreateTemplate = () => {
       toast.success(
         response?.data?.message || "Template created successfully!"
       );
+      return response.data;
     } catch (err) {
       console.error("Error creating template:", err);
 

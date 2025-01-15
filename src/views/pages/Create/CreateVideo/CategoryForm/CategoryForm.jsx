@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import styles from "./CategoryForm.module.scss";
 import CategoryDropdown from "src/views/pages/Create/CreateVideo/CategoryDropdown/CategoryDropdown";
 import useGetCategories from "../hooks/useGetCategories";
@@ -11,6 +11,7 @@ const CategoryForm = () => {
   const [ingestionSource, setIngestionSource] = useState(null);
   const [templateName, setTemplateName] = useState("");
   const [showError, setShowError] = useState(false);
+  const [templateId, setTemplateId] = useState(null);
 
   const { data: categoryData, loading: categoriesLoading } = useGetCategories();
   const { data: sheetData, loading: sheetsLoading } = useGetSheets();
@@ -40,13 +41,39 @@ const CategoryForm = () => {
       setShowError(true);
       return;
     }
+
     setShowError(false);
-    await createTemplate({ templateName, category });
+    try {
+      const response = await createTemplate({ templateName, category });
+      if (response?.id) {
+        setTemplateId(response.id); // Update state with the template ID
+        console.log("Template created with ID:", response.id);
+      }
+    } catch (error) {
+      console.error("Error creating template:", error);
+    }
   };
 
   const handleConnect = async () => {
-    await connectSheet({ ingestionSource });
+    if (!templateId || !ingestionSource) return;
+
+    try {
+      await connectSheet({
+        sheet_id: ingestionSource,
+        template_id: templateId,
+      });
+      console.log("Sheet connected successfully!");
+    } catch (error) {
+      console.error("Error connecting sheet:", error);
+    }
   };
+
+  // Log templateId when it updates
+  useEffect(() => {
+    if (templateId) {
+      console.log("Updated Template ID:", templateId);
+    }
+  }, [templateId]);
 
   return (
     <div className={styles.formWrapper}>
@@ -63,7 +90,6 @@ const CategoryForm = () => {
               />
             )}
           </div>
-
           <div className={styles.templateSection}>
             <h2 className={styles.sectionTitle}>Template Name</h2>
             <div className={styles.templateInputContainer}>
@@ -78,7 +104,7 @@ const CategoryForm = () => {
                 <button
                   onClick={handleSave}
                   className={styles.saveButton}
-                  disabled={createLoading}
+                  disabled={!templateName.trim() || !category || createLoading}
                 >
                   Save
                 </button>
@@ -89,7 +115,6 @@ const CategoryForm = () => {
             </div>
           </div>
         </div>
-
         <div className={styles.ingestionSection}>
           <h2 className={styles.sectionTitle}>Ingestion</h2>
           <div className={styles.ingestionWrapper}>
@@ -101,11 +126,10 @@ const CategoryForm = () => {
                 allowAddNew={false}
               />
             )}
-
             <button
               onClick={handleConnect}
               className={styles.connectButton}
-              disabled={connectLoading}
+              disabled={!templateId || !ingestionSource || connectLoading}
             >
               Connect
             </button>
