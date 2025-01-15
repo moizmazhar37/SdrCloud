@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import styles from "./CategoryForm.module.scss";
 import CategoryDropdown from "src/views/pages/Create/CreateVideo/CategoryDropdown/CategoryDropdown";
 import useGetCategories from "../hooks/useGetCategories";
@@ -7,17 +7,15 @@ import { useCreateTemplate } from "../hooks/useCreateTemplate";
 import { useConnectSheet } from "../hooks/useConnectSheet";
 
 const CategoryForm = () => {
+  const [category, setCategory] = useState(null);
+  const [ingestionSource, setIngestionSource] = useState(null);
+  const [templateName, setTemplateName] = useState("");
+  const [showError, setShowError] = useState(false);
+
   const { data: categoryData, loading: categoriesLoading } = useGetCategories();
   const { data: sheetData, loading: sheetsLoading } = useGetSheets();
   const { createTemplate, loading: createLoading } = useCreateTemplate();
   const { connectSheet, loading: connectLoading } = useConnectSheet();
-
-  const [category, setCategory] = useState("");
-  const [templateName, setTemplateName] = useState("");
-  const [ingestionSource, setIngestionSource] = useState("");
-
-  const isSaveDisabled = useMemo(() => !(category && templateName), [category, templateName]);
-  const isConnectDisabled = useMemo(() => !ingestionSource, [ingestionSource]);
 
   const categories = useMemo(
     () =>
@@ -38,43 +36,24 @@ const CategoryForm = () => {
   );
 
   const handleSave = async () => {
-    const payload = {
-      categoryId: category,
-      hvoTemplateName: templateName,
-      templateType: "VIDEO",
-    };
-
-    try {
-      await createTemplate(payload);
-      setCategory("");
-      setTemplateName("");
-      setIngestionSource("");
-    } catch (err) {
-      console.error("Failed to create template:", err);
+    if (!templateName.trim()) {
+      setShowError(true);
+      return;
     }
+    setShowError(false);
+    await createTemplate({ templateName, category });
   };
 
   const handleConnect = async () => {
-    const payload = {
-      sheet_id: ingestionSource,
-      template_id: category,
-      type: "VIDEO",
-    };
-
-    try {
-      await connectSheet(payload);
-      console.log("Sheet connected successfully!");
-    } catch (err) {
-      console.error("Failed to connect sheet:", err);
-    }
+    await connectSheet({ ingestionSource });
   };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.formGroup}>
-        <div className={styles.row}>
-          <div className={styles.field}>
-            <label>Category</label>
+    <div className={styles.formWrapper}>
+      <div className={styles.formContainer}>
+        <div className={styles.topSection}>
+          <div className={styles.categorySection}>
+            <h2 className={styles.sectionTitle}>Category</h2>
             {!categoriesLoading && (
               <CategoryDropdown
                 options={categories}
@@ -84,31 +63,36 @@ const CategoryForm = () => {
               />
             )}
           </div>
-          <div className={styles.field}>
-            <label>Template Name</label>
-            <div className={styles.inputWithButton}>
-              <input
-                type="text"
-                value={templateName}
-                onChange={(e) => setTemplateName(e.target.value)}
-                placeholder="Enter Template Name"
-                className={styles.input}
-              />
-              <button
-                onClick={handleSave}
-                disabled={isSaveDisabled || createLoading}
-                className={`${styles.button} ${
-                  isSaveDisabled || createLoading ? styles.disabled : ""
-                }`}
-              >
-                {createLoading ? "Saving..." : "Save"}
-              </button>
+
+          <div className={styles.templateSection}>
+            <h2 className={styles.sectionTitle}>Template Name</h2>
+            <div className={styles.templateInputContainer}>
+              <div className={styles.inputWithButton}>
+                <input
+                  type="text"
+                  placeholder="Enter Template Name"
+                  value={templateName}
+                  onChange={(e) => setTemplateName(e.target.value)}
+                  className={styles.templateInput}
+                />
+                <button
+                  onClick={handleSave}
+                  className={styles.saveButton}
+                  disabled={createLoading}
+                >
+                  Save
+                </button>
+              </div>
+              {showError && (
+                <p className={styles.errorMessage}>Template Name is required</p>
+              )}
             </div>
           </div>
         </div>
-        <div className={styles.row}>
-          <div className={styles.field}>
-            <label>Ingestion</label>
+
+        <div className={styles.ingestionSection}>
+          <h2 className={styles.sectionTitle}>Ingestion</h2>
+          <div className={styles.ingestionWrapper}>
             {!sheetsLoading && (
               <CategoryDropdown
                 options={sheets}
@@ -117,14 +101,13 @@ const CategoryForm = () => {
                 allowAddNew={false}
               />
             )}
+
             <button
               onClick={handleConnect}
-              disabled={isConnectDisabled || connectLoading}
-              className={`${styles.button} ${
-                isConnectDisabled || connectLoading ? styles.disabled : ""
-              }`}
+              className={styles.connectButton}
+              disabled={connectLoading}
             >
-              {connectLoading ? "Connecting..." : "Connect"}
+              Connect
             </button>
           </div>
         </div>
