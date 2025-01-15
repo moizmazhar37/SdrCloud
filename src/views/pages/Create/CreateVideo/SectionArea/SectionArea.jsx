@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import CategoryDropdown from "../CategoryDropdown/CategoryDropdown";
-import ImageUpload from "../CategoryForm/UploadImage/UploadImage";
+import ImageUpload from "../CategoryForm/ImageUpload/ImageUpload";
 import styles from "./SectionArea.module.scss";
 
 const SectionArea = ({ initialOptions }) => {

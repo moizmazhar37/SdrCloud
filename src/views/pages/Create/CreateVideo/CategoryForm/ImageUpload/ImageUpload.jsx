@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import styles from "./UploadImage.module.scss";
+import styles from "./ImageUpload.module.scss";
 import CategoryDropdown from "../../CategoryDropdown/CategoryDropdown";
 
 const ImageUpload = ({ categories, onSave }) => {

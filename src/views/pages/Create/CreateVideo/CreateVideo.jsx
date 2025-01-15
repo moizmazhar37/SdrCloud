@@ -2,7 +2,7 @@ import CategoryForm from "./CategoryForm/CategoryForm";
 import SectionArea from "./SectionArea/SectionArea";
 import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
 import styles from "./CreateVideo.module.scss";
-import ImageUpload from "./CategoryForm/UploadImage/UploadImage";
+import ImageUpload from "./CategoryForm/ImageUpload/ImageUpload";
 
 const CreateVideo = () => {
   const navigationItems = [
