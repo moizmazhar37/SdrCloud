@@ -4,34 +4,45 @@ import ApiConfig from "src/config/APIConfig";
 import { toast } from "react-toastify";
 
 export const useCreateTemplate = () => {
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-    const createTemplate = async (payload) => {
-        setLoading(true);
-        setError(null);
-        try {
-            const response = await Axios({
-                url: `${ApiConfig.createVdoTemplate}`,
-                method: "POST",
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
-                data: payload,
-            });
+  const createTemplate = async (payload) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const transformedPayload = {
+        ...payload,
+        hvoTemplateName: payload.templateName,
+        categoryId: payload.category,
+        templateType: "VIDEO",
+      };
+      delete transformedPayload.category;
+      delete transformedPayload.templateName;
 
-            toast.success(response?.data?.message || "Template created successfully!");
-        } catch (err) {
-            console.error("Error creating template:", err);
+      const response = await Axios({
+        url: `${ApiConfig.createVdoTemplate}`,
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        data: transformedPayload,
+      });
 
-            const errorMessage = err.response?.data?.message || "Failed to create template.";
-            toast.error(errorMessage);
-            setError(err);
-            throw err;
-        } finally {
-            setLoading(false);
-        }
-    };
+      toast.success(
+        response?.data?.message || "Template created successfully!"
+      );
+    } catch (err) {
+      console.error("Error creating template:", err);
 
-    return { createTemplate, loading, error };
+      const errorMessage =
+        err.response?.data?.message || "Failed to create template.";
+      toast.error(errorMessage);
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { createTemplate, loading, error };
 };
