@@ -1,14 +1,22 @@
 import React, { useState } from "react";
 import styles from "./CategoryModal.module.scss";
+import { useAddCateogry } from "../hooks/useAddCategory"; // Make sure the path is correct
 
 const CategoryModal = ({ isOpen, onClose, onAdd }) => {
   const [category, setCategory] = useState("");
+  const { addCategory, loading } = useAddCateogry(); // Use the hook here
 
-  const handleAdd = () => {
+  const handleAdd = async () => {
     if (category.trim()) {
-      onAdd(category);
-      setCategory("");
-      onClose();
+      const payload = { category_name: category };
+      try {
+        await addCategory(payload); // Call the hook to add category
+        onAdd(category); // Optional: Notify the parent component if needed
+        setCategory("");
+        onClose(); // Close the modal after successful addition
+      } catch (err) {
+        // Handle any errors here, if necessary
+      }
     }
   };
 
@@ -31,8 +39,12 @@ const CategoryModal = ({ isOpen, onClose, onAdd }) => {
           <button className={styles.cancelButton} onClick={onClose}>
             Cancel
           </button>
-          <button className={styles.addButton} onClick={handleAdd}>
-            Add
+          <button
+            className={styles.addButton}
+            onClick={handleAdd}
+            disabled={loading}
+          >
+            {loading ? "Adding..." : "Add"}
           </button>
         </div>
       </div>

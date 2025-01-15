@@ -1,4 +1,4 @@
-import CategoryForm from "src/Common/CategoryForm/CategoryForm";
+import CategoryForm from "./CategoryForm/CategoryForm";
 import SectionArea from "./SectionArea/SectionArea";
 import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
 import styles from "./CreateVideo.module.scss";
