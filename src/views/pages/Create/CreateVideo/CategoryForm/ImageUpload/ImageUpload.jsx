@@ -28,7 +28,6 @@ const ImageUpload = ({ categories, onSave }) => {
   };
 
   const handleUploadAudio = () => {
-    console.log("Upload Audio clicked");
     audioInputRef.current?.click();
   };
 
