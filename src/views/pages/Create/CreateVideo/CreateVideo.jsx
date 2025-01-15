@@ -9,6 +9,8 @@ const CreateVideo = () => {
     { text: "New Video Template", route: "/createtemplate&Video" },
   ];
 
+  const initialOptions = ["Image", "Video", "Static URL", "Dynamic URL"];
+
   return (
     <div className={styles.wrapper}>
       <DynamicNavigator items={navigationItems} />
@@ -17,7 +19,7 @@ const CreateVideo = () => {
           <CategoryForm />
         </div>
         <div className={styles.rightComponent}>
-          <SectionArea />
+          <SectionArea initialOptions={initialOptions} />
         </div>
       </div>
     </div>
