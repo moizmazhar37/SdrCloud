@@ -88,12 +88,14 @@
 }
 
 .addNewCategory {
-    padding: 14px;
-    color: white;
+    padding: 12px;
+    padding-right: 15px;
+    color: #0358ac;
+    font-size: 12px;
     cursor: pointer;
     text-align: center;
-    background-color: #0358ac;
+
     &:hover {
-        background-color: #024b94;
+        background-color: #adb8c7;
     }
 }
