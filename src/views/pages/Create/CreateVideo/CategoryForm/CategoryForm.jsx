@@ -46,8 +46,7 @@ const CategoryForm = () => {
     try {
       const response = await createTemplate({ templateName, category });
       if (response?.id) {
-        setTemplateId(response.id); // Update state with the template ID
-        console.log("Template created with ID:", response.id);
+        setTemplateId(response.id);
       }
     } catch (error) {
       console.error("Error creating template:", error);
@@ -62,18 +61,10 @@ const CategoryForm = () => {
         sheet_id: ingestionSource,
         template_id: templateId,
       });
-      console.log("Sheet connected successfully!");
     } catch (error) {
       console.error("Error connecting sheet:", error);
     }
   };
-
-  // Log templateId when it updates
-  useEffect(() => {
-    if (templateId) {
-      console.log("Updated Template ID:", templateId);
-    }
-  }, [templateId]);
 
   return (
     <div className={styles.formWrapper}>
