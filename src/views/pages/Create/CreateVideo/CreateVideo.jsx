@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import CategoryForm from "./CategoryForm/CategoryForm";
 import SectionArea from "./SectionArea/SectionArea";
 import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
@@ -5,6 +6,8 @@ import styles from "./CreateVideo.module.scss";
 import ImageUpload from "./CategoryForm/ImageUpload/ImageUpload";
 
 const CreateVideo = () => {
+  const [showImageUpload, setShowImageUpload] = useState(false);
+
   const navigationItems = [
     { text: "Template", route: "/CreateTemplate" },
     { text: "New Video Template", route: "/createtemplate&Video" },
@@ -16,7 +19,16 @@ const CreateVideo = () => {
     { id: 3, name: "Category 3" },
   ];
 
-  const initialOptions = ["Image", "Video", "Static URL", "Dynamic URL"];
+  const initialOptions = [
+    { label: "Image", value: "image" },
+    { label: "Video", value: "video" },
+    { label: "Static URL", value: "static_url" },
+    { label: "Dynamic URL", value: "dynamic_url" },
+  ];
+
+  const handleSectionTypeChange = (selectedValue) => {
+    setShowImageUpload(selectedValue === "image");
+  };
 
   return (
     <>
@@ -24,16 +36,19 @@ const CreateVideo = () => {
         <DynamicNavigator items={navigationItems} />
         <div className={styles.container}>
           <div className={styles.leftComponent}>
-            {/* Left side components */}
             <CategoryForm />
-            <ImageUpload
-              categories={categories}
-              onSave={() => console.log("Save data:")}
-            />
+            {showImageUpload && (
+              <ImageUpload
+                categories={categories}
+                onSave={() => console.log("Save data:")}
+              />
+            )}
           </div>
           <div className={styles.rightComponent}>
-            {/* Right side components */}
-            <SectionArea initialOptions={initialOptions} />
+            <SectionArea
+              initialOptions={initialOptions}
+              onSectionTypeChange={handleSectionTypeChange}
+            />
           </div>
         </div>
       </div>

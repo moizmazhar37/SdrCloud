@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import CategoryDropdown from "../CategoryDropdown/CategoryDropdown";
-import ImageUpload from "../CategoryForm/ImageUpload/ImageUpload";
 import styles from "./SectionArea.module.scss";
 
-const SectionArea = ({ initialOptions }) => {
+const SectionArea = ({ initialOptions, onSectionTypeChange }) => {
   const [sections, setSections] = useState([1, 2, 3, 4]);
 
   const addNewSection = () => {
@@ -12,6 +11,10 @@ const SectionArea = ({ initialOptions }) => {
 
   const handleProgressClick = () => {
     console.log("Progress Overview clicked");
+  };
+
+  const handleSelect = (value) => {
+    onSectionTypeChange(value);
   };
 
   return (
@@ -25,12 +28,9 @@ const SectionArea = ({ initialOptions }) => {
             <div className={styles.sectionContent}>
               <div className={styles.sectionLabel}>Section {sectionNum}</div>
               <CategoryDropdown
-                options={initialOptions.map((option) => ({
-                  label: option,
-                  value: option.toLowerCase().replace(/\s+/g, "_"),
-                }))}
+                options={initialOptions}
                 buttonText="Choose type"
-                onSelect={() => {}}
+                onSelect={handleSelect}
                 allowAddNew={false}
               />
             </div>
