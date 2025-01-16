@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CategoryForm from "./CategoryForm/CategoryForm";
 import SectionArea from "./SectionArea/SectionArea";
 import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
@@ -14,8 +14,14 @@ const CreateVideo = () => {
   const [showVideoUpload, setShowVideoUpload] = useState(false);
   const [showStaticURL, setShowStaticURL] = useState(false);
   const [templateId, setTemplateId] = useState(null);
+  const [connectedSheetId, setConnectedSheetId] = useState(null);
+  const [isSheetConnected, setIsSheetConnected] = useState(false);
 
   const { data: sheetData, loading: sheetsLoading } = useGetSheets();
+  const { data, loading, error } = useGetSheetData(
+    isSheetConnected ? templateId : null
+  );
+
   const navigationItems = [
     { text: "Template", route: "/CreateTemplate" },
     { text: "New Video Template", route: "/createtemplate&Video" },
@@ -43,48 +49,52 @@ const CreateVideo = () => {
   const handleTemplateSave = (id) => {
     setTemplateId(id);
   };
-  const { data, loading, error } = useGetSheetData(templateId);
-  console.log(data);
-  console.log("========", templateId);
+
+  const handleSheetConnectSuccess = (sheetId) => {
+    setIsSheetConnected(true);
+    setConnectedSheetId(sheetId);
+  };
+
+  console.log("Connected Sheet ID:", connectedSheetId);
+  console.log("Sheet Data:", sheetData);
 
   return (
-    <>
-      <div className={styles.wrapper}>
-        <DynamicNavigator items={navigationItems} />
-        <div className={styles.container}>
-          <div className={styles.leftComponent}>
-            <CategoryForm
-              sheetData={sheetData}
-              sheetsLoading={sheetsLoading}
-              onTemplateSave={handleTemplateSave}
+    <div className={styles.wrapper}>
+      <DynamicNavigator items={navigationItems} />
+      <div className={styles.container}>
+        <div className={styles.leftComponent}>
+          <CategoryForm
+            sheetData={sheetData}
+            sheetsLoading={sheetsLoading}
+            onTemplateSave={handleTemplateSave}
+            onSheetConnectSuccess={handleSheetConnectSuccess}
+          />
+          {showImageUpload && (
+            <ImageUpload
+              categories={categories}
+              onSave={() => console.log("Save data: Image Upload")}
+              templateId={templateId}
             />
-            {showImageUpload && (
-              <ImageUpload
-                categories={categories}
-                onSave={() => console.log("Save data: Image Upload")}
-                templateId={templateId}
-              />
-            )}
-            {showVideoUpload && templateId && (
-              <VideoUpload
-                categories={categories}
-                onSave={() => console.log("Save data: Video Upload")}
-              />
-            )}
-            {showStaticURL && (
-              <StaticURL templateId={templateId} categories={categories} />
-            )}
-          </div>
-          <div className={styles.rightComponent}>
-            <SectionArea
-              initialOptions={initialOptions}
-              onSectionTypeChange={handleSectionTypeChange}
-              editable={false}
+          )}
+          {showVideoUpload && templateId && (
+            <VideoUpload
+              categories={categories}
+              onSave={() => console.log("Save data: Video Upload")}
             />
-          </div>
+          )}
+          {showStaticURL && (
+            <StaticURL templateId={templateId} categories={categories} />
+          )}
+        </div>
+        <div className={styles.rightComponent}>
+          <SectionArea
+            initialOptions={initialOptions}
+            onSectionTypeChange={handleSectionTypeChange}
+            editable={isSheetConnected}
+          />
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

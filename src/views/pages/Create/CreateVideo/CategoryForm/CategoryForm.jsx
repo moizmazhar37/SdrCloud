@@ -6,7 +6,12 @@ import { useCreateTemplate } from "../hooks/useCreateTemplate";
 import { useConnectSheet } from "../hooks/useConnectSheet";
 import useDeleteCategory from "../hooks/useDeleteCategory";
 
-const CategoryForm = ({ sheetData, sheetsLoading, onTemplateSave }) => {
+const CategoryForm = ({
+  sheetData,
+  sheetsLoading,
+  onTemplateSave,
+  onSheetConnectSuccess,
+}) => {
   const [category, setCategory] = useState(null);
   const [ingestionSource, setIngestionSource] = useState(null);
   const [templateName, setTemplateName] = useState("");
@@ -73,6 +78,7 @@ const CategoryForm = ({ sheetData, sheetsLoading, onTemplateSave }) => {
         sheet_id: ingestionSource,
         template_id: templateId,
       });
+      onSheetConnectSuccess(ingestionSource); // Pass connected sheet ID to parent
     } catch (error) {
       console.error("Error connecting sheet:", error);
     }
