@@ -24,17 +24,19 @@ const CreateVideo = () => {
         <DynamicNavigator items={navigationItems} />
         <div className={styles.container}>
           <div className={styles.leftComponent}>
+            {/* Left side components */}
             <CategoryForm />
+            <ImageUpload
+              categories={categories}
+              onSave={() => console.log("Save data:")}
+            />
           </div>
           <div className={styles.rightComponent}>
+            {/* Right side components */}
             <SectionArea initialOptions={initialOptions} />
           </div>
         </div>
       </div>
-      <ImageUpload
-        categories={categories}
-        onSave={() => console.log("Save data:")}
-      />
     </>
   );
 };
