@@ -2,16 +2,20 @@ import React, { useState } from "react";
 import CategoryForm from "./CategoryForm/CategoryForm";
 import SectionArea from "./SectionArea/SectionArea";
 import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
+import useGetSheets from "./hooks/useGetSheets";
 import styles from "./CreateVideo.module.scss";
 import ImageUpload from "./CategoryForm/ImageUpload/ImageUpload";
 import VideoUpload from "./CategoryForm/VideoUpload/VideoUpload";
 import StaticURL from "./CategoryForm/StaticURL/StaticURL";
+import useGetSheetData from "../Hooks/useGetSheetData";
 
 const CreateVideo = () => {
   const [showImageUpload, setShowImageUpload] = useState(false);
   const [showVideoUpload, setShowVideoUpload] = useState(false);
   const [showStaticURL, setShowStaticURL] = useState(false);
+  const [templateId, setTemplateId] = useState(null);
 
+  const { data: sheetData, loading: sheetsLoading } = useGetSheets();
   const navigationItems = [
     { text: "Template", route: "/CreateTemplate" },
     { text: "New Video Template", route: "/createtemplate&Video" },
@@ -36,31 +40,46 @@ const CreateVideo = () => {
     setShowStaticURL(selectedValue === "static_url");
   };
 
+  const handleTemplateSave = (id) => {
+    setTemplateId(id);
+  };
+  const { data, loading, error } = useGetSheetData(templateId);
+  console.log(data);
+  console.log("========", templateId);
+
   return (
     <>
       <div className={styles.wrapper}>
         <DynamicNavigator items={navigationItems} />
         <div className={styles.container}>
           <div className={styles.leftComponent}>
-            <CategoryForm />
+            <CategoryForm
+              sheetData={sheetData}
+              sheetsLoading={sheetsLoading}
+              onTemplateSave={handleTemplateSave}
+            />
             {showImageUpload && (
               <ImageUpload
                 categories={categories}
                 onSave={() => console.log("Save data: Image Upload")}
+                templateId={templateId}
               />
             )}
-            {showVideoUpload && (
+            {showVideoUpload && templateId && (
               <VideoUpload
                 categories={categories}
                 onSave={() => console.log("Save data: Video Upload")}
               />
             )}
-            {showStaticURL && <StaticURL categories={categories} />}
+            {showStaticURL && (
+              <StaticURL templateId={templateId} categories={categories} />
+            )}
           </div>
           <div className={styles.rightComponent}>
             <SectionArea
               initialOptions={initialOptions}
               onSectionTypeChange={handleSectionTypeChange}
+              editable={false}
             />
           </div>
         </div>

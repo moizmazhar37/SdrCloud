@@ -2,7 +2,11 @@ import React, { useState } from "react";
 import CategoryDropdown from "../CategoryDropdown/CategoryDropdown";
 import styles from "./SectionArea.module.scss";
 
-const SectionArea = ({ initialOptions, onSectionTypeChange }) => {
+const SectionArea = ({
+  initialOptions,
+  onSectionTypeChange,
+  editable = true,
+}) => {
   const [sections, setSections] = useState([1, 2, 3, 4]);
 
   const addNewSection = () => {
@@ -32,6 +36,7 @@ const SectionArea = ({ initialOptions, onSectionTypeChange }) => {
                 buttonText="Choose type"
                 onSelect={handleSelect}
                 allowAddNew={false}
+                editable={editable}
               />
             </div>
           </div>

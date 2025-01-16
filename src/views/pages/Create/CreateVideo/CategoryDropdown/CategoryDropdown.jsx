@@ -13,6 +13,7 @@ const CategoryDropdown = ({
   onSelect,
   onDelete,
   allowAddNew = false,
+  editable = true, // Optional prop; default to true
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
@@ -92,12 +93,15 @@ const CategoryDropdown = ({
     <div className={styles.container}>
       <button
         ref={triggerRef}
-        onClick={() => setIsExpanded(!isExpanded)}
-        className={styles.trigger}
+        onClick={() => editable && setIsExpanded(!isExpanded)} // Disable dropdown toggle when not editable
+        className={`${styles.trigger} ${!editable ? styles.disabled : ""}`} // Add disabled style
+        disabled={!editable} // Disable button functionality
       >
         {selectedOption}
         <svg
-          className={`${styles.arrow} ${isExpanded ? styles.arrowOpen : ""}`}
+          className={`${styles.arrow} ${isExpanded ? styles.arrowOpen : ""} ${
+            !editable ? styles.disabledArrow : ""
+          }`} // Add arrow style for disabled
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -110,6 +114,7 @@ const CategoryDropdown = ({
       </button>
 
       {isExpanded &&
+        editable &&
         createPortal(
           <div
             className={styles.menu}

@@ -2,12 +2,11 @@ import React, { useState, useMemo, useEffect } from "react";
 import styles from "./CategoryForm.module.scss";
 import CategoryDropdown from "src/views/pages/Create/CreateVideo/CategoryDropdown/CategoryDropdown";
 import useGetCategories from "../hooks/useGetCategories";
-import useGetSheets from "../hooks/useGetSheets";
 import { useCreateTemplate } from "../hooks/useCreateTemplate";
 import { useConnectSheet } from "../hooks/useConnectSheet";
 import useDeleteCategory from "../hooks/useDeleteCategory";
 
-const CategoryForm = () => {
+const CategoryForm = ({ sheetData, sheetsLoading, onTemplateSave }) => {
   const [category, setCategory] = useState(null);
   const [ingestionSource, setIngestionSource] = useState(null);
   const [templateName, setTemplateName] = useState("");
@@ -20,7 +19,6 @@ const CategoryForm = () => {
     loading: categoriesLoading,
     refetch: refetchCategories,
   } = useGetCategories();
-  const { data: sheetData, loading: sheetsLoading } = useGetSheets();
   const { createTemplate, loading: createLoading } = useCreateTemplate();
   const { connectSheet, loading: connectLoading } = useConnectSheet();
   const { deleteCategory, loading: deleteLoading } =
@@ -31,7 +29,7 @@ const CategoryForm = () => {
       categoryData?.map((item) => ({
         label: item.category_name,
         value: item.id,
-        id: item.id, // Ensure ID is included for deletion
+        id: item.id,
       })) || [],
     [categoryData]
   );
@@ -60,6 +58,7 @@ const CategoryForm = () => {
       const response = await createTemplate({ templateName, category });
       if (response?.id) {
         setTemplateId(response.id);
+        onTemplateSave(response.id); // Pass templateId to parent
       }
     } catch (error) {
       console.error("Error creating template:", error);
@@ -82,9 +81,7 @@ const CategoryForm = () => {
   const handleCategoryDelete = async (categoryId) => {
     try {
       await deleteCategory(categoryId);
-      // Update local state to remove the deleted category
       setLocalCategories((prev) => prev.filter((cat) => cat.id !== categoryId));
-      // Reset category selection if the deleted category was selected
       if (category === categoryId) {
         setCategory(null);
       }
