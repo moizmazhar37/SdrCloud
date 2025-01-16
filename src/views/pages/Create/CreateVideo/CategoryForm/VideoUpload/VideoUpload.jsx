@@ -1,0 +1,158 @@
+import React, { useState, useRef } from "react";
+import styles from "./VideoUpload.module.scss";
+import CategoryDropdown from "../../CategoryDropdown/CategoryDropdown";
+
+const VideoUpload = ({ categories, onSave }) => {
+  const [videoFile, setVideoFile] = useState(null);
+  const [videoPreview, setVideoPreview] = useState("");
+  const [audioFile, setAudioFile] = useState(null);
+  const [duration, setDuration] = useState("");
+  const videoInputRef = useRef(null);
+  const audioInputRef = useRef(null);
+
+  const handleVideoUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setVideoFile(file);
+      setVideoPreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleAudioUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setAudioFile(file);
+    }
+  };
+
+  const handleUploadAudio = () => {
+    audioInputRef.current?.click();
+  };
+
+  const handleAddDescription = () => {
+    console.log("Add Audio Description clicked");
+  };
+
+  const isFormValid = () => {
+    return (videoFile || videoPreview) && duration.trim() !== "";
+  };
+
+  return (
+    <div className={styles.wrapper}>
+      <div className={styles.container}>
+        <div className={styles.header}>
+          <span className={styles.backLink}>Upload Video | Element 1</span>
+        </div>
+
+        <div className={styles.uploadSection}>
+          <div className={styles.row}>
+            <div className={styles.imageUploadContainer}>
+              <label>Upload Video</label>
+              <div className={styles.uploadField}>
+                <input
+                  type="text"
+                  readOnly
+                  value={videoFile?.name || ""}
+                  placeholder="Untitled video.mp4"
+                  className={styles.uploadInput}
+                />
+                <button
+                  className={styles.chooseButton}
+                  onClick={() => videoInputRef.current?.click()}
+                >
+                  Choose
+                </button>
+              </div>
+              <input
+                ref={videoInputRef}
+                type="file"
+                accept="video/*"
+                onChange={handleVideoUpload}
+                className={styles.hiddenInput}
+              />
+            </div>
+
+            <div className={styles.dropdownContainer}>
+              <label>Select Video URL</label>
+              <CategoryDropdown
+                options={categories}
+                buttonText="Select Video URL"
+                onSelect={() => {}}
+                allowAddNew={false}
+              />
+            </div>
+          </div>
+
+          {videoPreview && (
+            <div className={styles.previewContainer}>
+              <video
+                src={videoPreview}
+                controls
+                className={styles.imagePreview}
+              />
+            </div>
+          )}
+
+          <div className={styles.row}>
+            <div className={styles.durationContainer}>
+              <label>Duration (sec)</label>
+              <input
+                type="text"
+                value={duration}
+                onChange={(e) => setDuration(e.target.value)}
+                placeholder="00"
+                className={styles.durationInput}
+              />
+            </div>
+
+            <div className={styles.audioContainer}>
+              <input
+                ref={audioInputRef}
+                type="file"
+                accept="audio/*"
+                onChange={handleAudioUpload}
+                className={styles.hiddenInput}
+              />
+              <div className={styles.audioButtons}>
+                <button className={styles.chooseFileBtn}>
+                  <u>Choose File</u>
+                  <span className={styles.noFile}>
+                    {audioFile ? audioFile.name : "No file chosen"}
+                  </span>
+                </button>
+                <div className={styles.audioActions}>
+                  <button
+                    className={styles.uploadButton}
+                    onClick={handleUploadAudio}
+                  >
+                    Upload Audio
+                  </button>
+                  <button
+                    className={styles.descriptionButton}
+                    onClick={handleAddDescription}
+                  >
+                    Add Audio Description
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className={styles.actionButtons}>
+            <button
+              className={`${styles.saveButton} ${
+                !isFormValid() ? styles.disabled : ""
+              }`}
+              disabled={!isFormValid()}
+            >
+              Save
+            </button>
+            <button className={styles.nextButton}>Next</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default VideoUpload;

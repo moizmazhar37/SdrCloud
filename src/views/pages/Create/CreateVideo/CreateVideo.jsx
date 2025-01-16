@@ -4,9 +4,10 @@ import SectionArea from "./SectionArea/SectionArea";
 import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
 import styles from "./CreateVideo.module.scss";
 import ImageUpload from "./CategoryForm/ImageUpload/ImageUpload";
-
+import VideoUpload from "./CategoryForm/VideoUpload/VideoUpload";
 const CreateVideo = () => {
   const [showImageUpload, setShowImageUpload] = useState(false);
+  const [showVideoUpload, setShowVideoUpload] = useState(false);
 
   const navigationItems = [
     { text: "Template", route: "/CreateTemplate" },
@@ -28,6 +29,7 @@ const CreateVideo = () => {
 
   const handleSectionTypeChange = (selectedValue) => {
     setShowImageUpload(selectedValue === "image");
+    setShowVideoUpload(selectedValue === "video");
   };
 
   return (
@@ -39,6 +41,12 @@ const CreateVideo = () => {
             <CategoryForm />
             {showImageUpload && (
               <ImageUpload
+                categories={categories}
+                onSave={() => console.log("Save data:")}
+              />
+            )}
+            {showVideoUpload && (
+              <VideoUpload
                 categories={categories}
                 onSave={() => console.log("Save data:")}
               />
