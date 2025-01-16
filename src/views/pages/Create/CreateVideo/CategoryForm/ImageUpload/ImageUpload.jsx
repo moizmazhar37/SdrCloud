@@ -107,20 +107,6 @@ const ImageUpload = ({ categories, onSave }) => {
               />
             </div>
 
-            <div className={styles.scrollContainer}>
-              <label>Scroll</label>
-              <CategoryDropdown
-                options={[
-                  { id: 1, name: "No Scroll" },
-                  { id: 2, name: "Scroll Vertical" },
-                  { id: 3, name: "Scroll Horizontal" },
-                ]}
-                buttonText="Select type"
-                onSelect={setScrollType}
-                allowAddNew={false}
-              />
-            </div>
-
             <div className={styles.audioContainer}>
               <input
                 ref={audioInputRef}
@@ -131,7 +117,7 @@ const ImageUpload = ({ categories, onSave }) => {
               />
               <div className={styles.audioButtons}>
                 <button className={styles.chooseFileBtn}>
-                  Choose File
+                  <u> Choose File</u>
                   <span className={styles.noFile}>
                     {audioFile ? audioFile.name : "No file chosen"}
                   </span>
