@@ -8,6 +8,7 @@ const StaticURL = ({ categories = [] }) => {
   const [selectedType, setSelectedType] = useState("");
   const iframeRef = useRef(null);
   const [showPreview, setShowPreview] = useState(false);
+  const [audioTitle, setAudioTitle] = useState("");
 
   useEffect(() => {
     if (url.length > 12 && url !== "https://www.") {
@@ -19,13 +20,19 @@ const StaticURL = ({ categories = [] }) => {
 
   const handleUrlChange = (e) => {
     let value = e.target.value;
-
     setUrl(value);
   };
 
   const handleDurationChange = (e) => {
     const value = e.target.value.replace(/[^0-9]/g, "");
     setDuration(value);
+  };
+
+  const handleAudioUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setAudioTitle(file.name);
+    }
   };
 
   const scrollTypes = ["Vertical", "Horizontal", "Both"];
@@ -84,13 +91,31 @@ const StaticURL = ({ categories = [] }) => {
 
             <div className={styles.audioControls}>
               <div className={styles.audioButtons}>
-                <button className={styles.uploadBtn}>Upload Audio</button>
+                <button
+                  className={styles.uploadBtn}
+                  onClick={() => document.getElementById("audioUpload").click()}
+                >
+                  Upload Audio
+                </button>
                 <button className={styles.descriptionBtn}>
                   Add Audio Description
                 </button>
               </div>
+              <input
+                type="file"
+                id="audioUpload"
+                accept="audio/*"
+                style={{ display: "none" }}
+                onChange={handleAudioUpload}
+              />
             </div>
           </div>
+
+          {audioTitle && (
+            <div className={styles.audioTitle}>
+              <p>Uploaded Audio: {audioTitle}</p>
+            </div>
+          )}
 
           {showPreview && (
             <div className={styles.previewSection}>
