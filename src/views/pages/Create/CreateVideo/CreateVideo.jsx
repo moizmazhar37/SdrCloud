@@ -5,9 +5,12 @@ import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
 import styles from "./CreateVideo.module.scss";
 import ImageUpload from "./CategoryForm/ImageUpload/ImageUpload";
 import VideoUpload from "./CategoryForm/VideoUpload/VideoUpload";
+import StaticURL from "./CategoryForm/StaticURL/StaticURL";
+
 const CreateVideo = () => {
   const [showImageUpload, setShowImageUpload] = useState(false);
   const [showVideoUpload, setShowVideoUpload] = useState(false);
+  const [showStaticURL, setShowStaticURL] = useState(false);
 
   const navigationItems = [
     { text: "Template", route: "/CreateTemplate" },
@@ -30,6 +33,7 @@ const CreateVideo = () => {
   const handleSectionTypeChange = (selectedValue) => {
     setShowImageUpload(selectedValue === "image");
     setShowVideoUpload(selectedValue === "video");
+    setShowStaticURL(selectedValue === "static_url");
   };
 
   return (
@@ -42,15 +46,16 @@ const CreateVideo = () => {
             {showImageUpload && (
               <ImageUpload
                 categories={categories}
-                onSave={() => console.log("Save data:")}
+                onSave={() => console.log("Save data: Image Upload")}
               />
             )}
             {showVideoUpload && (
               <VideoUpload
                 categories={categories}
-                onSave={() => console.log("Save data:")}
+                onSave={() => console.log("Save data: Video Upload")}
               />
             )}
+            {showStaticURL && <StaticURL categories={categories} />}
           </div>
           <div className={styles.rightComponent}>
             <SectionArea
