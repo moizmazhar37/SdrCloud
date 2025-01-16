@@ -4,6 +4,7 @@ import CategoryDropdown from "../../CategoryDropdown/CategoryDropdown";
 
 const VideoUpload = ({ categories, onSave }) => {
   const [videoFile, setVideoFile] = useState(null);
+  const [videoURL, setVideoURL] = useState("");
   const [videoPreview, setVideoPreview] = useState("");
   const [audioFile, setAudioFile] = useState(null);
   const [duration, setDuration] = useState("");
@@ -14,8 +15,16 @@ const VideoUpload = ({ categories, onSave }) => {
     const file = e.target.files[0];
     if (file) {
       setVideoFile(file);
+      setVideoURL("");
       setVideoPreview(URL.createObjectURL(file));
     }
+  };
+
+  const handleVideoURLChange = (e) => {
+    const url = e.target.value;
+    setVideoURL(url);
+    setVideoFile(null);
+    setVideoPreview(url);
   };
 
   const handleAudioUpload = (e) => {
@@ -34,7 +43,7 @@ const VideoUpload = ({ categories, onSave }) => {
   };
 
   const isFormValid = () => {
-    return (videoFile || videoPreview) && duration.trim() !== "";
+    return (videoFile || videoURL.trim() !== "") && duration.trim() !== "";
   };
 
   return (
@@ -47,13 +56,14 @@ const VideoUpload = ({ categories, onSave }) => {
         <div className={styles.uploadSection}>
           <div className={styles.row}>
             <div className={styles.imageUploadContainer}>
-              <label>Upload Video</label>
+              <label>Upload Video or Enter URL</label>
               <div className={styles.uploadField}>
                 <input
                   type="text"
-                  readOnly
-                  value={videoFile?.name || ""}
-                  placeholder="Untitled video.mp4"
+                  readOnly={!!videoFile}
+                  value={videoFile?.name || videoURL}
+                  onChange={!videoFile ? handleVideoURLChange : undefined}
+                  placeholder="Upload video or enter URL"
                   className={styles.uploadInput}
                 />
                 <button
@@ -77,7 +87,7 @@ const VideoUpload = ({ categories, onSave }) => {
               <CategoryDropdown
                 options={categories}
                 buttonText="Select Video URL"
-                onSelect={() => {}}
+                onSelect={(value) => setVideoURL(value)}
                 allowAddNew={false}
               />
             </div>
@@ -114,12 +124,6 @@ const VideoUpload = ({ categories, onSave }) => {
                 className={styles.hiddenInput}
               />
               <div className={styles.audioButtons}>
-                <button className={styles.chooseFileBtn}>
-                  <u>Choose File</u>
-                  <span className={styles.noFile}>
-                    {audioFile ? audioFile.name : "No file chosen"}
-                  </span>
-                </button>
                 <div className={styles.audioActions}>
                   <button
                     className={styles.uploadButton}
@@ -144,6 +148,7 @@ const VideoUpload = ({ categories, onSave }) => {
                 !isFormValid() ? styles.disabled : ""
               }`}
               disabled={!isFormValid()}
+              onClick={() => onSave({ videoFile, videoURL, duration })}
             >
               Save
             </button>

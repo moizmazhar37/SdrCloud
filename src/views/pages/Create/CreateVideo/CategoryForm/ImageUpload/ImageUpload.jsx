@@ -4,10 +4,10 @@ import CategoryDropdown from "../../CategoryDropdown/CategoryDropdown";
 
 const ImageUpload = ({ categories, onSave }) => {
   const [imageFile, setImageFile] = useState(null);
+  const [imageURL, setImageURL] = useState("");
   const [imagePreview, setImagePreview] = useState("");
   const [audioFile, setAudioFile] = useState(null);
   const [duration, setDuration] = useState("");
-  const [scrollType, setScrollType] = useState("");
 
   const imageInputRef = useRef(null);
   const audioInputRef = useRef(null);
@@ -16,8 +16,16 @@ const ImageUpload = ({ categories, onSave }) => {
     const file = e.target.files[0];
     if (file) {
       setImageFile(file);
+      setImageURL("");
       setImagePreview(URL.createObjectURL(file));
     }
+  };
+
+  const handleImageURLChange = (e) => {
+    const url = e.target.value;
+    setImageURL(url);
+    setImageFile(null);
+    setImagePreview(url);
   };
 
   const handleAudioUpload = (e) => {
@@ -36,7 +44,7 @@ const ImageUpload = ({ categories, onSave }) => {
   };
 
   const isFormValid = () => {
-    return (imageFile || imagePreview) && duration.trim() !== "";
+    return (imageFile || imageURL.trim() !== "") && duration.trim() !== "";
   };
 
   return (
@@ -49,13 +57,14 @@ const ImageUpload = ({ categories, onSave }) => {
         <div className={styles.uploadSection}>
           <div className={styles.row}>
             <div className={styles.imageUploadContainer}>
-              <label>Upload Image</label>
+              <label>Upload Image or Enter URL</label>
               <div className={styles.uploadField}>
                 <input
                   type="text"
-                  readOnly
-                  value={imageFile?.name || ""}
-                  placeholder="Untitled design.png"
+                  readOnly={!!imageFile}
+                  value={imageFile?.name || imageURL}
+                  onChange={!imageFile ? handleImageURLChange : undefined}
+                  placeholder="Upload image or enter URL"
                   className={styles.uploadInput}
                 />
                 <button
@@ -79,7 +88,11 @@ const ImageUpload = ({ categories, onSave }) => {
               <CategoryDropdown
                 options={categories}
                 buttonText="Select Image URL"
-                onSelect={() => {}}
+                onSelect={(value) => {
+                  setImageURL(value);
+                  setImageFile(null);
+                  setImagePreview(value);
+                }}
                 allowAddNew={false}
               />
             </div>
@@ -116,12 +129,6 @@ const ImageUpload = ({ categories, onSave }) => {
                 className={styles.hiddenInput}
               />
               <div className={styles.audioButtons}>
-                <button className={styles.chooseFileBtn}>
-                  <u> Choose File</u>
-                  <span className={styles.noFile}>
-                    {audioFile ? audioFile.name : "No file chosen"}
-                  </span>
-                </button>
                 <div className={styles.audioActions}>
                   <button
                     className={styles.uploadButton}
@@ -146,6 +153,7 @@ const ImageUpload = ({ categories, onSave }) => {
                 !isFormValid() ? styles.disabled : ""
               }`}
               disabled={!isFormValid()}
+              onClick={() => onSave({ imageFile, imageURL, duration })}
             >
               Save
             </button>
