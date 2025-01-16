@@ -19,9 +19,7 @@ const StaticURL = ({ categories = [] }) => {
 
   const handleUrlChange = (e) => {
     let value = e.target.value;
-    if (!value.startsWith("https://www.")) {
-      value = "https://www." + value.replace(/https:\/\/www\./, "");
-    }
+
     setUrl(value);
   };
 
