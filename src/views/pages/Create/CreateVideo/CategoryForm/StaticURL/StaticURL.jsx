@@ -35,8 +35,10 @@ const StaticURL = ({ categories = [] }) => {
     }
   };
 
-  const scrollTypes = ["Vertical", "Horizontal", "Both"];
-
+  const scrollTypes = [
+    { label: "yes", value: "Yes" },
+    { label: "No", value: "No" },
+  ];
   return (
     <div className={styles.wrapper}>
       <div className={styles.container}>

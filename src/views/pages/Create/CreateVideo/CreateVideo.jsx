@@ -18,9 +18,9 @@ const CreateVideo = () => {
   ];
 
   const categories = [
-    { id: 1, name: "Category 1" },
-    { id: 2, name: "Category 2" },
-    { id: 3, name: "Category 3" },
+    { label: "Category 1", value: "Category 1" },
+    { label: "Category 2", value: "Category 2" },
+    { label: "Category 3", value: "Category 3" },
   ];
 
   const initialOptions = [
