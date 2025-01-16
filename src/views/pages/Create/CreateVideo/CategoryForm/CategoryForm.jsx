@@ -5,6 +5,7 @@ import useGetCategories from "../hooks/useGetCategories";
 import useGetSheets from "../hooks/useGetSheets";
 import { useCreateTemplate } from "../hooks/useCreateTemplate";
 import { useConnectSheet } from "../hooks/useConnectSheet";
+import useDeleteCategory from "../hooks/useDeleteCategory";
 
 const CategoryForm = () => {
   const [category, setCategory] = useState(null);
@@ -12,20 +13,32 @@ const CategoryForm = () => {
   const [templateName, setTemplateName] = useState("");
   const [showError, setShowError] = useState(false);
   const [templateId, setTemplateId] = useState(null);
+  const [localCategories, setLocalCategories] = useState([]);
 
-  const { data: categoryData, loading: categoriesLoading } = useGetCategories();
+  const {
+    data: categoryData,
+    loading: categoriesLoading,
+    refetch: refetchCategories,
+  } = useGetCategories();
   const { data: sheetData, loading: sheetsLoading } = useGetSheets();
   const { createTemplate, loading: createLoading } = useCreateTemplate();
   const { connectSheet, loading: connectLoading } = useConnectSheet();
+  const { deleteCategory, loading: deleteLoading } =
+    useDeleteCategory(refetchCategories);
 
   const categories = useMemo(
     () =>
       categoryData?.map((item) => ({
         label: item.category_name,
         value: item.id,
+        id: item.id, // Ensure ID is included for deletion
       })) || [],
     [categoryData]
   );
+
+  useEffect(() => {
+    setLocalCategories(categories);
+  }, [categories]);
 
   const sheets = useMemo(
     () =>
@@ -66,6 +79,20 @@ const CategoryForm = () => {
     }
   };
 
+  const handleCategoryDelete = async (categoryId) => {
+    try {
+      await deleteCategory(categoryId);
+      // Update local state to remove the deleted category
+      setLocalCategories((prev) => prev.filter((cat) => cat.id !== categoryId));
+      // Reset category selection if the deleted category was selected
+      if (category === categoryId) {
+        setCategory(null);
+      }
+    } catch (error) {
+      console.error("Error deleting category:", error);
+    }
+  };
+
   return (
     <div className={styles.formWrapper}>
       <div className={styles.formContainer}>
@@ -74,9 +101,10 @@ const CategoryForm = () => {
             <h2 className={styles.sectionTitle}>Category</h2>
             {!categoriesLoading && (
               <CategoryDropdown
-                options={categories}
+                options={localCategories}
                 buttonText="Select Category"
                 onSelect={setCategory}
+                onDelete={handleCategoryDelete}
                 allowAddNew={true}
               />
             )}

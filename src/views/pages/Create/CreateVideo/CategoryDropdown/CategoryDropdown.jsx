@@ -1,13 +1,17 @@
 import React, { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
+import { Trash2 } from "lucide-react";
 import styles from "./CategoryDropdown.module.scss";
 import CategoryModal from "../CategoryModal/CategoryModal";
+
+const PROTECTED_CATEGORIES = ["ENT", "MM", "SMB", "Startup"];
 
 const CategoryDropdown = ({
   options = [],
   buttonText = "Select Category",
   className = "",
   onSelect,
+  onDelete,
   allowAddNew = false,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -21,6 +25,10 @@ const CategoryDropdown = ({
   });
 
   const triggerRef = useRef(null);
+
+  useEffect(() => {
+    setDropdownOptions(options);
+  }, [options]);
 
   useEffect(() => {
     if (isExpanded && triggerRef.current) {
@@ -58,13 +66,26 @@ const CategoryDropdown = ({
 
   const handleOpenCategoryModal = () => {
     setIsCategoryModalOpen(true);
-    setIsExpanded(false); // Close the dropdown when modal opens
+    setIsExpanded(false);
   };
 
   const handleSelectOption = (option) => {
     setSelectedOption(option.label);
     onSelect(option.value);
     setIsExpanded(false);
+  };
+
+  const handleDelete = (e, option) => {
+    e.stopPropagation();
+    if (onDelete && option.id) {
+      onDelete(option.id);
+    }
+  };
+
+  const shouldShowDeleteIcon = (option) => {
+    return (
+      allowAddNew && !PROTECTED_CATEGORIES.includes(option.label) && onDelete
+    );
   };
 
   return (
@@ -110,12 +131,19 @@ const CategoryDropdown = ({
             )}
             {dropdownOptions.map((option, index) => (
               <button
-                key={index}
+                key={option.id || index}
                 className={styles.option}
                 onClick={() => handleSelectOption(option)}
                 role="menuitem"
               >
-                {option.label}
+                <span className={styles.optionText}>{option.label}</span>
+                {shouldShowDeleteIcon(option) && (
+                  <Trash2
+                    className={styles.deleteIcon}
+                    size={16}
+                    onClick={(e) => handleDelete(e, option)}
+                  />
+                )}
               </button>
             ))}
           </div>,

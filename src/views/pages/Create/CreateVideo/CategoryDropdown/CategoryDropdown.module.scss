@@ -100,3 +100,26 @@
         background-color: #adb8c7;
     }
 }
+
+.option {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+
+    .deleteIcon {
+        color: #0358ac;
+        opacity: 1;
+        cursor: pointer;
+
+        &:hover {
+            opacity: 1;
+            color: #ff4444;
+        }
+    }
+}
+
+.optionText {
+    flex: 1;
+    text-align: left;
+}
