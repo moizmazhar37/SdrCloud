@@ -1,6 +1,7 @@
 import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
 import styles from "./intent-tracking.module.scss";
 import FooterLinks from "./FooterLinks";
+import TrackingPixels from "./TrackingPixels";
 
 
 const IntentTracking = () => {
@@ -16,7 +17,7 @@ const IntentTracking = () => {
                     <FooterLinks />
                 </div>
                 <div className={styles.rightComponent}>
-                    <h1>Right Panel</h1>
+                    <TrackingPixels />
                 </div>
             </div>
         </div>

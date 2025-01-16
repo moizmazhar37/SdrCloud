@@ -4,7 +4,7 @@
   background-color: #ffffff;
   width: 100%;
   margin: 0 auto;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  // box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .header {
@@ -24,10 +24,10 @@
   color: #1f2937;
 }
 
-.scrollable {
-  overflow-y: auto;
-  max-height: 650px;
-}
+// .scrollable {
+//   overflow-y: auto;
+//   max-height: 650px;
+// }
 
 .content {
   padding: 16px 20px;
@@ -66,6 +66,23 @@
     padding: 4px 14px;
     font-size: 14px;
     color: #4b5563;
+    
+
+    &:focus {
+      outline: none;
+      border-color: #152f40;
+    }
+  }
+
+  .inputTracking {
+    height: 40px;
+    width: 100%;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    padding: 4px;
+    font-size: 14px;
+    color: #4b5563;
+    
 
     &:focus {
       outline: none;
@@ -85,7 +102,7 @@
     border: none;
     cursor: pointer;
     font-size: 16px;
-    color: #6b7280;
+    color: #0358ac;
 
     &:hover {
       color: #152f40;
@@ -102,7 +119,7 @@
   margin-top: 16px;
   padding: 10px 16px;
   background-color: #ffffff;
-  color: #152f40;
+  color: #0358ac;
   border: none;
   border-radius: 8px;
   font-size: 16px;
@@ -112,7 +129,6 @@
 
   &:hover {
     color: #0c1d28;
-    background-color: #f3f4f6;
   }
 
   &:disabled {
@@ -140,4 +156,26 @@
 .errorMessage {
   color: #dc2626;
   font-size: 14px;
+}
+
+.saveButton {
+  margin-top: 16px;
+  padding: 10px 16px;
+  background-color: #152f40;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: center;
+
+  &:hover {
+    background-color: #0c1d28;
+  }
+
+  &:disabled {
+    background-color: #9ca3af;
+    cursor: not-allowed;
+  }
 }
