@@ -17,8 +17,8 @@ const SectionArea = ({
     console.log("Progress Overview clicked");
   };
 
-  const handleSelect = (value) => {
-    onSectionTypeChange(value);
+  const handleSelect = (value, sectionNum) => {
+    onSectionTypeChange(value, sectionNum);
   };
 
   return (
@@ -34,7 +34,7 @@ const SectionArea = ({
               <CategoryDropdown
                 options={initialOptions}
                 buttonText="Choose type"
-                onSelect={handleSelect}
+                onSelect={(value) => handleSelect(value, sectionNum)}
                 allowAddNew={false}
                 editable={editable}
               />

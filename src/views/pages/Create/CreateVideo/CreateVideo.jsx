@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import CategoryForm from "./CategoryForm/CategoryForm";
 import SectionArea from "./SectionArea/SectionArea";
 import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
@@ -16,6 +16,7 @@ const CreateVideo = () => {
   const [templateId, setTemplateId] = useState(null);
   const [connectedSheetId, setConnectedSheetId] = useState(null);
   const [isSheetConnected, setIsSheetConnected] = useState(false);
+  const [sectionNum, setSectionNum] = useState(null);
 
   const { data: sheetData, loading: sheetsLoading } = useGetSheets();
   const { data, loading, error } = useGetSheetData(
@@ -50,7 +51,12 @@ const CreateVideo = () => {
     { label: "DYNAMIC URL", value: "dynamic_url" },
   ];
 
-  const handleSectionTypeChange = (selectedValue) => {
+  const handleSectionTypeChange = (selectedValue, sectionNumber) => {
+    setSectionNum(sectionNumber);
+    console.log(
+      `Selected option: ${selectedValue}, Section number: ${sectionNumber}`
+    );
+
     setShowImageUpload(selectedValue === "image");
     setShowVideoUpload(selectedValue === "video");
     setShowStaticURL(selectedValue === "static_url");
@@ -64,9 +70,6 @@ const CreateVideo = () => {
     setIsSheetConnected(true);
     setConnectedSheetId(sheetId);
   };
-
-  console.log("Connected Sheet ID:", connectedSheetId);
-  console.log("Sheet Data:", sheetData);
 
   return (
     <div className={styles.wrapper}>
@@ -84,6 +87,7 @@ const CreateVideo = () => {
               categories={imageCategories}
               onSave={() => console.log("Save data: Image Upload")}
               templateId={templateId}
+              sectionNumber={sectionNum}
             />
           )}
           {showVideoUpload && templateId && (

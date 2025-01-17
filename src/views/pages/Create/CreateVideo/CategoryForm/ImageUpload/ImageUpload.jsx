@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import styles from "./ImageUpload.module.scss";
 import CategoryDropdown from "../../CategoryDropdown/CategoryDropdown";
 
-const ImageUpload = ({ categories, onSave, templateId }) => {
+const ImageUpload = ({ categories, onSave, templateId, sectionNumber }) => {
   const [imageFile, setImageFile] = useState(null);
   const [imageURL, setImageURL] = useState("");
   const [imagePreview, setImagePreview] = useState("");
@@ -11,7 +11,6 @@ const ImageUpload = ({ categories, onSave, templateId }) => {
 
   const imageInputRef = useRef(null);
   const audioInputRef = useRef(null);
-
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
