@@ -1,22 +1,30 @@
 import React, { useState, useRef } from "react";
 import styles from "./ImageUpload.module.scss";
 import CategoryDropdown from "../../CategoryDropdown/CategoryDropdown";
+import useCreateVideoSection from "../../../Hooks/useCreateVideoSection";
+import { toast } from "react-toastify";
 
-const ImageUpload = ({ categories, onSave, templateId, sectionNumber }) => {
+const ImageUpload = ({ categories, templateId, sectionNumber }) => {
   const [imageFile, setImageFile] = useState(null);
   const [imageURL, setImageURL] = useState("");
   const [imagePreview, setImagePreview] = useState("");
   const [audioFile, setAudioFile] = useState(null);
   const [duration, setDuration] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [audioDescription, setAudioDescription] = useState(false);
+  const [scroll, setScroll] = useState(null);
 
+  const { createVideoSection, loading } = useCreateVideoSection();
   const imageInputRef = useRef(null);
   const audioInputRef = useRef(null);
+
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
       setImageFile(file);
       setImageURL("");
       setImagePreview(URL.createObjectURL(file));
+      setSelectedCategory(null);
     }
   };
 
@@ -25,6 +33,7 @@ const ImageUpload = ({ categories, onSave, templateId, sectionNumber }) => {
     setImageURL(url);
     setImageFile(null);
     setImagePreview(url);
+    setSelectedCategory(null);
   };
 
   const handleAudioUpload = (e) => {
@@ -34,12 +43,49 @@ const ImageUpload = ({ categories, onSave, templateId, sectionNumber }) => {
     }
   };
 
+  const handleCategorySelect = (value, label) => {
+    setImageURL(value);
+    setImageFile(null);
+    setImagePreview(value);
+    setSelectedCategory(label);
+  };
+
   const handleUploadAudio = () => {
     audioInputRef.current?.click();
   };
 
   const handleAddDescription = () => {
-    console.log("Add Audio Description clicked");
+    setAudioDescription(!audioDescription);
+  };
+
+  const handleSave = async () => {
+    if (!isFormValid()) return;
+
+    const videoSectionData = {
+      hvoTemplateId: templateId,
+      sectionName: selectedCategory || "IMAGE URL",
+      sectionNumber: sectionNumber,
+      sequence: 1,
+      duration: duration,
+      audioEmbedded: !!audioFile,
+      scroll: scroll,
+      audioDescription: audioDescription,
+      firstRowValue: null,
+      isDynamic: !!selectedCategory,
+      file: imageFile,
+      value: selectedCategory ? imageURL : null,
+      audio: audioFile,
+    };
+
+    try {
+      const response = await createVideoSection(videoSectionData);
+      if (response) {
+        toast.success("Image section saved successfully!");
+        // Add any additional success handling here
+      }
+    } catch (error) {
+      toast.error("Failed to save image section");
+    }
   };
 
   const isFormValid = () => {
@@ -87,11 +133,7 @@ const ImageUpload = ({ categories, onSave, templateId, sectionNumber }) => {
               <CategoryDropdown
                 options={categories}
                 buttonText="Select Image URL"
-                onSelect={(value) => {
-                  setImageURL(value);
-                  setImageFile(null);
-                  setImagePreview(value);
-                }}
+                onSelect={(value, label) => handleCategorySelect(value, label)}
                 allowAddNew={false}
               />
             </div>
@@ -136,7 +178,9 @@ const ImageUpload = ({ categories, onSave, templateId, sectionNumber }) => {
                     Upload Audio
                   </button>
                   <button
-                    className={styles.descriptionButton}
+                    className={`${styles.descriptionButton} ${
+                      audioDescription ? styles.active : ""
+                    }`}
                     onClick={handleAddDescription}
                   >
                     Add Audio Description
@@ -149,12 +193,12 @@ const ImageUpload = ({ categories, onSave, templateId, sectionNumber }) => {
           <div className={styles.actionButtons}>
             <button
               className={`${styles.saveButton} ${
-                !isFormValid() ? styles.disabled : ""
+                !isFormValid() || loading ? styles.disabled : ""
               }`}
-              disabled={!isFormValid()}
-              onClick={() => onSave({ imageFile, imageURL, duration })}
+              disabled={!isFormValid() || loading}
+              onClick={handleSave}
             >
-              Save
+              {loading ? "Saving..." : "Save"}
             </button>
             <button className={styles.nextButton}>Next</button>
           </div>

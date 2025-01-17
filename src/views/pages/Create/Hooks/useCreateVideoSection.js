@@ -23,19 +23,36 @@ const useCreateVideoSection = () => {
   }) => {
     const formData = new FormData();
 
-    formData.append("hvo_template_id", hvoTemplateId ?? null);
-    formData.append("section_name", sectionName ?? null);
-    formData.append("section_number", sectionNumber ?? null);
-    formData.append("sequence", sequence ?? 1);
-    formData.append("audio_embedded", audioEmbedded ?? false);
-    formData.append("is_dynamic", isDynamic ?? false);
-    formData.append("duration", duration ?? null);
-    formData.append("scroll", scroll ?? null);
-    formData.append("audio_description", audioDescription ?? null);
-    formData.append("first_row_value", firstRowValue ?? null);
-    formData.append("value", value ?? null);
-    formData.append("file", file ?? null);
-    formData.append("audio", audio ?? null);
+    // Handle required fields
+    formData.append("hvo_template_id", hvoTemplateId || "");
+    formData.append("section_name", sectionName || "");
+    formData.append("section_number", sectionNumber || "");
+    formData.append("sequence", sequence || 1);
+
+    // Handle boolean fields
+    formData.append("audio_embedded", audioEmbedded ? "true" : "false");
+    formData.append("is_dynamic", isDynamic ? "true" : "false");
+    formData.append("audio_description", audioDescription ? "true" : "false");
+
+    // Handle numeric fields
+    formData.append("duration", duration || "");
+
+    // Handle scroll - convert null to false
+    formData.append("scroll", scroll ? "true" : "false");
+
+    // Handle optional text fields
+    formData.append("first_row_value", firstRowValue || "");
+    formData.append("value", value || "");
+
+    // Handle file uploads - only append if file exists
+    if (file) {
+      formData.append("file", file);
+    }
+
+    // Handle audio file - only append if audio exists
+    if (audio instanceof File) {
+      formData.append("audio", audio);
+    }
 
     setLoading(true);
 
@@ -45,13 +62,18 @@ const useCreateVideoSection = () => {
         url: ApiConfig.createVideoTemplateReferral,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "multipart/form-data",
         },
         data: formData,
       });
       toast.success("Video section created successfully!");
       return response.data;
     } catch (error) {
-      toast.error(error.message || "Failed to create video section.");
+      console.error("Error details:", error.response?.data);
+      toast.error(
+        error.response?.data?.detail?.[0]?.msg ||
+          "Failed to create video section."
+      );
       return null;
     } finally {
       setLoading(false);
