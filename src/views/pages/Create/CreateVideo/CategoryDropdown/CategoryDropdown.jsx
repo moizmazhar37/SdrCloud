@@ -13,7 +13,7 @@ const CategoryDropdown = ({
   onSelect,
   onDelete,
   allowAddNew = false,
-  editable = true, // Optional prop; default to true
+  editable = true,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
@@ -30,6 +30,10 @@ const CategoryDropdown = ({
   useEffect(() => {
     setDropdownOptions(options);
   }, [options]);
+
+  useEffect(() => {
+    setSelectedOption(buttonText);
+  }, [buttonText]);
 
   useEffect(() => {
     if (isExpanded && triggerRef.current) {
@@ -72,7 +76,7 @@ const CategoryDropdown = ({
 
   const handleSelectOption = (option) => {
     setSelectedOption(option.label);
-    onSelect(option.value);
+    onSelect?.(option.value, option.label);
     setIsExpanded(false);
   };
 
@@ -93,15 +97,15 @@ const CategoryDropdown = ({
     <div className={styles.container}>
       <button
         ref={triggerRef}
-        onClick={() => editable && setIsExpanded(!isExpanded)} // Disable dropdown toggle when not editable
-        className={`${styles.trigger} ${!editable ? styles.disabled : ""}`} // Add disabled style
-        disabled={!editable} // Disable button functionality
+        onClick={() => editable && setIsExpanded(!isExpanded)}
+        className={`${styles.trigger} ${!editable ? styles.disabled : ""}`}
+        disabled={!editable}
       >
         {selectedOption}
         <svg
           className={`${styles.arrow} ${isExpanded ? styles.arrowOpen : ""} ${
             !editable ? styles.disabledArrow : ""
-          }`} // Add arrow style for disabled
+          }`}
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
