@@ -10,9 +10,10 @@ const ImageUpload = ({ categories, templateId, sectionNumber }) => {
   const [imagePreview, setImagePreview] = useState("");
   const [audioFile, setAudioFile] = useState(null);
   const [duration, setDuration] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [audioDescription, setAudioDescription] = useState(false);
   const [scroll, setScroll] = useState(null);
+  const [isDropdownSelected, setIsDropdownSelected] = useState(false);
 
   const { createVideoSection, loading } = useCreateVideoSection();
   const imageInputRef = useRef(null);
@@ -24,16 +25,19 @@ const ImageUpload = ({ categories, templateId, sectionNumber }) => {
       setImageFile(file);
       setImageURL("");
       setImagePreview(URL.createObjectURL(file));
-      setSelectedCategory(null);
+      setSelectedCategory("");
+      setIsDropdownSelected(false);
     }
   };
 
   const handleImageURLChange = (e) => {
     const url = e.target.value;
-    setImageURL(url);
-    setImageFile(null);
-    setImagePreview(url);
-    setSelectedCategory(null);
+    if (!isDropdownSelected) {
+      setImageURL(url);
+      setImageFile(null);
+      setImagePreview(url);
+      setSelectedCategory("");
+    }
   };
 
   const handleAudioUpload = (e) => {
@@ -48,6 +52,7 @@ const ImageUpload = ({ categories, templateId, sectionNumber }) => {
     setImageFile(null);
     setImagePreview(value);
     setSelectedCategory(label);
+    setIsDropdownSelected(true);
   };
 
   const handleUploadAudio = () => {
@@ -61,27 +66,48 @@ const ImageUpload = ({ categories, templateId, sectionNumber }) => {
   const handleSave = async () => {
     if (!isFormValid()) return;
 
-    const videoSectionData = {
-      hvoTemplateId: templateId,
-      sectionName: selectedCategory || "IMAGE URL",
-      sectionNumber: sectionNumber,
-      sequence: 1,
-      duration: duration,
-      audioEmbedded: !!audioFile,
-      scroll: scroll,
-      audioDescription: audioDescription,
-      firstRowValue: null,
-      isDynamic: !!selectedCategory,
-      file: imageFile,
-      value: selectedCategory ? imageURL : null,
-      audio: audioFile,
-    };
+    let videoSectionData;
+
+    if (isDropdownSelected) {
+      // When dropdown option is selected
+      videoSectionData = {
+        hvoTemplateId: templateId,
+        sectionName: selectedCategory,
+        sectionNumber: sectionNumber,
+        sequence: 1,
+        duration: duration,
+        audioEmbedded: !!audioFile,
+        scroll: scroll,
+        audioDescription: audioDescription,
+        firstRowValue: null,
+        isDynamic: true,
+        file: null,
+        value: imageURL,
+        audio: audioFile,
+      };
+    } else {
+      // When file is uploaded through Choose button
+      videoSectionData = {
+        hvoTemplateId: templateId,
+        sectionName: "IMAGE URL",
+        sectionNumber: sectionNumber,
+        sequence: 1,
+        duration: duration,
+        audioEmbedded: !!audioFile,
+        scroll: scroll,
+        audioDescription: audioDescription,
+        firstRowValue: null,
+        isDynamic: false,
+        file: imageFile,
+        value: null,
+        audio: audioFile,
+      };
+    }
 
     try {
       const response = await createVideoSection(videoSectionData);
       if (response) {
         toast.success("Image section saved successfully!");
-        // Add any additional success handling here
       }
     } catch (error) {
       toast.error("Failed to save image section");
@@ -106,15 +132,23 @@ const ImageUpload = ({ categories, templateId, sectionNumber }) => {
               <div className={styles.uploadField}>
                 <input
                   type="text"
-                  readOnly={!!imageFile}
+                  readOnly={isDropdownSelected}
                   value={imageFile?.name || imageURL}
-                  onChange={!imageFile ? handleImageURLChange : undefined}
+                  onChange={handleImageURLChange}
                   placeholder="Upload image or enter URL"
-                  className={styles.uploadInput}
+                  className={`${styles.uploadInput} ${
+                    isDropdownSelected ? styles.disabled : ""
+                  }`}
+                  disabled={isDropdownSelected}
                 />
                 <button
-                  className={styles.chooseButton}
-                  onClick={() => imageInputRef.current?.click()}
+                  className={`${styles.chooseButton} ${
+                    isDropdownSelected ? styles.disabled : ""
+                  }`}
+                  onClick={() =>
+                    !isDropdownSelected && imageInputRef.current?.click()
+                  }
+                  disabled={isDropdownSelected}
                 >
                   Choose
                 </button>
@@ -125,6 +159,7 @@ const ImageUpload = ({ categories, templateId, sectionNumber }) => {
                 accept="image/*"
                 onChange={handleImageUpload}
                 className={styles.hiddenInput}
+                disabled={isDropdownSelected}
               />
             </div>
 
@@ -133,8 +168,9 @@ const ImageUpload = ({ categories, templateId, sectionNumber }) => {
               <CategoryDropdown
                 options={categories}
                 buttonText="Select Image URL"
-                onSelect={(value, label) => handleCategorySelect(value, label)}
+                onSelect={handleCategorySelect}
                 allowAddNew={false}
+                editable={!imageFile}
               />
             </div>
           </div>
