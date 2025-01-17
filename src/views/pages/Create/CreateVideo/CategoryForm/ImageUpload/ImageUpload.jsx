@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import styles from "./ImageUpload.module.scss";
 import CategoryDropdown from "../../CategoryDropdown/CategoryDropdown";
 
-const ImageUpload = ({ categories, onSave }) => {
+const ImageUpload = ({ categories, onSave, templateId }) => {
   const [imageFile, setImageFile] = useState(null);
   const [imageURL, setImageURL] = useState("");
   const [imagePreview, setImagePreview] = useState("");

@@ -22,22 +22,32 @@ const CreateVideo = () => {
     isSheetConnected ? templateId : null
   );
 
+  // Extract values by data type
+  const extractCategories = (type) => {
+    if (!data || !Array.isArray(data)) {
+      console.warn("Data is null or not an array");
+      return [];
+    }
+    return data
+      .filter((item) => item.dataType === type)
+      .map((item) => ({ label: item.value, value: item.value }));
+  };
+
+  const imageCategories = extractCategories("Image URL");
+  const staticUrlCategories = extractCategories("Static URL");
+  const dynamicUrlCategories = extractCategories("Dynamic URL");
+  const videoCategories = extractCategories("Video URL");
+
   const navigationItems = [
     { text: "Template", route: "/CreateTemplate" },
     { text: "New Video Template", route: "/createtemplate&Video" },
   ];
 
-  const categories = [
-    { label: "Category 1", value: "Category 1" },
-    { label: "Category 2", value: "Category 2" },
-    { label: "Category 3", value: "Category 3" },
-  ];
-
   const initialOptions = [
-    { label: "Image", value: "image" },
-    { label: "Video", value: "video" },
-    { label: "Static URL", value: "static_url" },
-    { label: "Dynamic URL", value: "dynamic_url" },
+    { label: "UPLOAD IMAGE", value: "image" },
+    { label: "VIDEO CLIPS", value: "video" },
+    { label: "STATIC URL", value: "static_url" },
+    { label: "DYNAMIC URL", value: "dynamic_url" },
   ];
 
   const handleSectionTypeChange = (selectedValue) => {
@@ -71,19 +81,22 @@ const CreateVideo = () => {
           />
           {showImageUpload && (
             <ImageUpload
-              categories={categories}
+              categories={imageCategories}
               onSave={() => console.log("Save data: Image Upload")}
               templateId={templateId}
             />
           )}
           {showVideoUpload && templateId && (
             <VideoUpload
-              categories={categories}
+              categories={videoCategories}
               onSave={() => console.log("Save data: Video Upload")}
             />
           )}
           {showStaticURL && (
-            <StaticURL templateId={templateId} categories={categories} />
+            <StaticURL
+              templateId={templateId}
+              categories={staticUrlCategories}
+            />
           )}
         </div>
         <div className={styles.rightComponent}>
