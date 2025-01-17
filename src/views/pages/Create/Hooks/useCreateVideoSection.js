@@ -23,33 +23,22 @@ const useCreateVideoSection = () => {
   }) => {
     const formData = new FormData();
 
-    // Handle required fields
     formData.append("hvo_template_id", hvoTemplateId || "");
     formData.append("section_name", sectionName || "");
     formData.append("section_number", sectionNumber || "");
     formData.append("sequence", sequence || 1);
 
-    // Handle boolean fields
     formData.append("audio_embedded", audioEmbedded ? "true" : "false");
     formData.append("is_dynamic", isDynamic ? "true" : "false");
     formData.append("audio_description", audioDescription ? "true" : "false");
 
-    // Handle numeric fields
     formData.append("duration", duration || "");
-
-    // Handle scroll - convert null to false
     formData.append("scroll", scroll ? "true" : "false");
-
-    // Handle optional text fields
     formData.append("first_row_value", firstRowValue || "");
     formData.append("value", value || "");
-
-    // Handle file uploads - only append if file exists
     if (file) {
       formData.append("file", file);
     }
-
-    // Handle audio file - only append if audio exists
     if (audio instanceof File) {
       formData.append("audio", audio);
     }

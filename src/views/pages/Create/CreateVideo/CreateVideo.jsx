@@ -85,23 +85,18 @@ const CreateVideo = () => {
           {showImageUpload && (
             <ImageUpload
               categories={imageCategories}
-              onSave={() => console.log("Save data: Image Upload")}
               templateId={templateId}
               sectionNumber={sectionNum}
             />
           )}
-          {showVideoUpload && templateId && (
+          {showVideoUpload && (
             <VideoUpload
-              categories={videoCategories}
-              onSave={() => console.log("Save data: Video Upload")}
-            />
-          )}
-          {showStaticURL && (
-            <StaticURL
               templateId={templateId}
-              categories={staticUrlCategories}
+              categories={videoCategories}
+              sectionNumber={sectionNum}
             />
           )}
+          {showStaticURL && <StaticURL categories={staticUrlCategories} />}
         </div>
         <div className={styles.rightComponent}>
           <SectionArea
