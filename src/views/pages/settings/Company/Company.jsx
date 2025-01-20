@@ -65,7 +65,7 @@ const Company = () => {
           heading={displayNames[section]}
           headers={tableHeaders[section]}
           data={tenantData[section]}
-          canEdit={true}
+          canEdit={false}
           onSave={(updatedData) => handleSave(section, updatedData)}
         />
       ))}
