@@ -7,12 +7,15 @@ import styles from "./CreateVideo.module.scss";
 import ImageUpload from "./CategoryForm/ImageUpload/ImageUpload";
 import VideoUpload from "./CategoryForm/VideoUpload/VideoUpload";
 import StaticURL from "./CategoryForm/StaticURL/StaticURL";
+import DynamicURL from "./CategoryForm/DynamicURL/DynamicURL";
 import useGetSheetData from "../Hooks/useGetSheetData";
 import SectionCard from "./SectionCard/SectionCard";
 import useGetSections from "../Hooks/useGetSection";
 
 const CreateVideo = () => {
   const [showImageUpload, setShowImageUpload] = useState(false);
+  const [showDynamicURL, setShowDynamicURL] = useState(false);
+
   const [showVideoUpload, setShowVideoUpload] = useState(false);
   const [showStaticURL, setShowStaticURL] = useState(false);
   const [templateId, setTemplateId] = useState(null);
@@ -25,11 +28,13 @@ const CreateVideo = () => {
     isSheetConnected ? templateId : null
   );
 
-  const { data: sectionData, loading: sectionLoading, error: sectionError } = useGetSections(
-    isSheetConnected ? templateId : null
-  );
+  const {
+    data: sectionData,
+    loading: sectionLoading,
+    error: sectionError,
+  } = useGetSections(isSheetConnected ? templateId : null);
 
-  const elementsList = sectionData?.elementsList
+  const elementsList = sectionData?.elementsList;
 
   // Extract values by data type
   const extractCategories = (type) => {
@@ -41,7 +46,6 @@ const CreateVideo = () => {
       .filter((item) => item.dataType === type)
       .map((item) => ({ label: item.value, value: item.value }));
   };
-
 
   const imageCategories = extractCategories("Image URL");
   const staticUrlCategories = extractCategories("Static URL");
@@ -69,6 +73,7 @@ const CreateVideo = () => {
     setShowImageUpload(selectedValue === "image");
     setShowVideoUpload(selectedValue === "video");
     setShowStaticURL(selectedValue === "static_url");
+    setShowDynamicURL(selectedValue === "dynamic_url");
   };
 
   const handleTemplateSave = (id) => {
@@ -79,8 +84,6 @@ const CreateVideo = () => {
     setIsSheetConnected(true);
     setConnectedSheetId(sheetId);
   };
-
-
 
   return (
     <div className={styles.wrapper}>
@@ -111,22 +114,30 @@ const CreateVideo = () => {
             <StaticURL
               categories={staticUrlCategories}
               templateId={templateId}
+              sectionNumber={sectionNum}
+            />
+          )}
+          {showDynamicURL && (
+            <DynamicURL
+              categories={staticUrlCategories}
+              templateId={templateId}
+              sectionNumber={sectionNum}
             />
           )}
           <div className={styles.cardContainer}>
-          {elementsList?.map((element) => (
-            <SectionCard
-              key={element.id}
-              sectionNumber={element.section_number}
-              sectionName={element.section_name}
-              templateId={element.template_id}
-              duration={element.duration}
-              scroll={element.scroll}
-              previewContent={element.value}
-            // onDelete={() => handleDelete(element.id)}
-            />
-          ))}
-        </div>
+            {elementsList?.map((element) => (
+              <SectionCard
+                key={element.id}
+                sectionNumber={element.section_number}
+                sectionName={element.section_name}
+                templateId={element.template_id}
+                duration={element.duration}
+                scroll={element.scroll}
+                previewContent={element.value}
+                // onDelete={() => handleDelete(element.id)}
+              />
+            ))}
+          </div>
         </div>
         <div className={styles.rightComponent}>
           <SectionArea
@@ -135,7 +146,6 @@ const CreateVideo = () => {
             editable={isSheetConnected}
           />
         </div>
-       
       </div>
     </div>
   );
