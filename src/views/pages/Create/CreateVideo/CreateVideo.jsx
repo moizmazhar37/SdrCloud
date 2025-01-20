@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CategoryForm from "./CategoryForm/CategoryForm";
 import SectionArea from "./SectionArea/SectionArea";
 import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
@@ -23,6 +23,11 @@ const CreateVideo = () => {
   const [isSheetConnected, setIsSheetConnected] = useState(false);
   const [sectionNum, setSectionNum] = useState(null);
 
+  const url = new URL(window.location.href);
+  useEffect(() => {
+    setTemplateId(url.searchParams.get("templateId"));
+  });
+
   const { data: sheetData, loading: sheetsLoading } = useGetSheets();
   const { data, loading, error } = useGetSheetData(
     isSheetConnected ? templateId : null
@@ -32,7 +37,7 @@ const CreateVideo = () => {
     data: sectionData,
     loading: sectionLoading,
     error: sectionError,
-  } = useGetSections(isSheetConnected ? templateId : null);
+  } = useGetSections(templateId);
 
   const elementsList = sectionData?.elementsList;
 
