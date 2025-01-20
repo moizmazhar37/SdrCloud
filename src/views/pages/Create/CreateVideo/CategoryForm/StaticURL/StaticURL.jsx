@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import styles from "./StaticURL.module.scss";
 import CategoryDropdown from "../../CategoryDropdown/CategoryDropdown";
 
-const StaticURL = ({ categories = [] }) => {
+const StaticURL = ({ categories = [], templateId }) => {
   const [url, setUrl] = useState("https://www.");
   const [duration, setDuration] = useState("");
   const [selectedType, setSelectedType] = useState("");

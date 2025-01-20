@@ -96,7 +96,12 @@ const CreateVideo = () => {
               sectionNumber={sectionNum}
             />
           )}
-          {showStaticURL && <StaticURL categories={staticUrlCategories} />}
+          {showStaticURL && (
+            <StaticURL
+              categories={staticUrlCategories}
+              templateId={templateId}
+            />
+          )}
         </div>
         <div className={styles.rightComponent}>
           <SectionArea
