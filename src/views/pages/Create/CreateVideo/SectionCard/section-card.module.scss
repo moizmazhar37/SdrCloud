@@ -1,7 +1,7 @@
 .sectionCard {
-    flex: 1 1 calc(50% - 16px); /* Each card takes 50% width minus the gap */
-    max-width: calc(50% - 16px); /* Ensures max width for consistent spacing */
-    box-sizing: border-box; /* Ensures padding is included in the card's width */
+    flex: 1 1 calc(50% - 16px);
+    max-width: calc(50% - 16px);
+    box-sizing: border-box;
     border: 1px solid #e0e0e0;
     border-radius: 6px;
     background-color: #ffffff;
@@ -13,11 +13,10 @@
     }
 
     @media (max-width: 700px) {
-        flex: 1 1 100%; /* Full width on smaller screens */
-        max-width: 100%; /* Ensures card spans the full container width */
+        flex: 1 1 100%;
+        max-width: 100%;
     }
 }
-
 
 .header {
     display: flex;
@@ -26,15 +25,15 @@
 }
 
 .sectionTitle {
-    font-size: 1rem;
-    font-weight: bold;
-    color: #2c3e50;
-    margin: 0;
+    font-size: 14px;
+    font-weight: 400;
+    color: #0f0037;
+    margin-bottom: 12px;
 }
 
 .sectionName {
-    font-size: 0.875rem;
-    color: #7f8c8d;
+    font-size: 14px;
+    color: #0358ac;
     margin: 0;
 }
 
@@ -76,7 +75,7 @@
     display: flex;
     justify-content: space-between;
     font-size: 0.875rem;
-    color: #34495e;
+    color: #0358ac;
 
     span {
         margin: 0;
