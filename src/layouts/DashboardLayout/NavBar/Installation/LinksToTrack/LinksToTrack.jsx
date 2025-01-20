@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import ShowURLTable from "./ShowURLTable";
 import "./LinksToTrack.css";
-import ApiConfig from "../../../../../../src/config/APIConfig";
+import ApiConfig from "src/config/APIConfig";
 
 const LinksToTrack = () => {
   const [trackedUrls, setTrackedUrls] = useState([]);
