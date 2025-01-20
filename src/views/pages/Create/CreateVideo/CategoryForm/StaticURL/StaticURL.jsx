@@ -13,10 +13,11 @@ const StaticURL = ({ categories = [], templateId, sectionNumber }) => {
   const [audioTitle, setAudioTitle] = useState("");
   const [audioDescription, setAudioDescription] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [dropdownKey, setDropdownKey] = useState(0);
 
   const iframeRef = useRef(null);
-  const { createVideoSection } = useCreateVideoSection();
+  const audioInputRef = useRef(null);
+  const { createVideoSection, loading } = useCreateVideoSection();
 
   useEffect(() => {
     if (url.length > 12 && url !== "https://www.") {
@@ -27,9 +28,10 @@ const StaticURL = ({ categories = [], templateId, sectionNumber }) => {
   }, [url]);
 
   const handleUrlChange = (e) => {
-    let value = e.target.value;
+    const value = e.target.value;
     setUrl(value);
     setSelectedCategory(null);
+    setDropdownKey((prev) => prev + 1); // Reset dropdown when URL is manually entered
   };
 
   const handleDurationChange = (e) => {
@@ -45,9 +47,13 @@ const StaticURL = ({ categories = [], templateId, sectionNumber }) => {
     }
   };
 
-  const handleCategorySelect = (value) => {
+  const handleCategorySelect = (value, label) => {
     setUrl(value);
-    setSelectedCategory(value);
+    setSelectedCategory(label);
+  };
+
+  const handleUploadAudio = () => {
+    audioInputRef.current?.click();
   };
 
   const scrollTypes = [
@@ -65,8 +71,6 @@ const StaticURL = ({ categories = [], templateId, sectionNumber }) => {
       return;
     }
 
-    setLoading(true);
-
     const videoSectionData = {
       hvoTemplateId: templateId,
       sectionName: "Static URL",
@@ -77,7 +81,7 @@ const StaticURL = ({ categories = [], templateId, sectionNumber }) => {
       scroll: selectedType === "Yes",
       audioDescription: audioDescription,
       firstRowValue: null,
-      isDynamic: !!selectedCategory, // true if URL is selected from dropdown
+      isDynamic: !!selectedCategory,
       value: url,
       audio: audioFile,
     };
@@ -89,8 +93,6 @@ const StaticURL = ({ categories = [], templateId, sectionNumber }) => {
       }
     } catch (error) {
       toast.error("Failed to save static URL section");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -111,14 +113,16 @@ const StaticURL = ({ categories = [], templateId, sectionNumber }) => {
                 value={url}
                 onChange={handleUrlChange}
                 spellCheck="false"
+                placeholder="https://www."
               />
             </div>
 
             <div className={styles.urlSelect}>
               <label>Select Static URL</label>
               <CategoryDropdown
+                key={dropdownKey}
                 options={categories}
-                buttonText="Select Image URL"
+                buttonText="Select Static URL"
                 onSelect={handleCategorySelect}
                 allowAddNew={false}
               />
@@ -150,7 +154,7 @@ const StaticURL = ({ categories = [], templateId, sectionNumber }) => {
               <div className={styles.audioButtons}>
                 <button
                   className={styles.uploadBtn}
-                  onClick={() => document.getElementById("audioUpload").click()}
+                  onClick={handleUploadAudio}
                 >
                   Upload Audio
                 </button>
@@ -164,8 +168,8 @@ const StaticURL = ({ categories = [], templateId, sectionNumber }) => {
                 </button>
               </div>
               <input
+                ref={audioInputRef}
                 type="file"
-                id="audioUpload"
                 accept="audio/*"
                 style={{ display: "none" }}
                 onChange={handleAudioUpload}
