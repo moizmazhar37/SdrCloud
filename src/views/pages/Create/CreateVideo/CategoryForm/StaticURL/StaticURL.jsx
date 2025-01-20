@@ -100,7 +100,6 @@ const StaticURL = ({ categories = [], templateId, sectionNumber }) => {
     <div className={styles.wrapper}>
       <div className={styles.container}>
         <div className={styles.header}>
-          <span className={styles.backArrow}>←</span>
           <span className={styles.headerText}>Static URL | Element 1</span>
         </div>
 
