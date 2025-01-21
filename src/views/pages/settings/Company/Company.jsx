@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import useCompanyTenant from "./Hooks/useCompanyTenant";
 import styles from "./Company.module.scss";
 import CompanyTable from "./CompanyTable/CompanyTable";
 
 const Company = () => {
   const { data: tenantData, loading, error } = useCompanyTenant();
+  const [canEdit, setCanEdit] = useState(false);
 
   const tableHeaders = {
     account_details: [
@@ -53,22 +54,42 @@ const Company = () => {
     console.log(`Saving updated data for ${section}:`, updatedData);
   };
 
+  const handleEditClick = () => {
+    if (canEdit) {
+      Object.keys(tenantData).forEach((section) => {
+        handleSave(section, tenantData[section]);
+      });
+    }
+    setCanEdit(!canEdit);
+  };
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
   if (!tenantData) return <div>No data available</div>;
 
   return (
-    <div className={styles.companyContainer}>
-      {Object.keys(tenantData).map((section) => (
-        <CompanyTable
-          key={section}
-          heading={displayNames[section]}
-          headers={tableHeaders[section]}
-          data={tenantData[section]}
-          canEdit={false}
-          onSave={(updatedData) => handleSave(section, updatedData)}
-        />
-      ))}
+    <div className={styles.wrapper}>
+      <div className={styles.buttonContainer}>
+        <button
+          className={`${styles.editButton} absolute right-4 top-4`}
+          onClick={handleEditClick}
+        >
+          {canEdit ? "Save" : "Edit"}
+        </button>
+      </div>
+
+      <div className={styles.companyContainer}>
+        {Object.keys(tenantData).map((section) => (
+          <CompanyTable
+            key={section}
+            heading={displayNames[section]}
+            headers={tableHeaders[section]}
+            data={tenantData[section]}
+            canEdit={canEdit}
+            onSave={(updatedData) => handleSave(section, updatedData)}
+          />
+        ))}
+      </div>
     </div>
   );
 };
