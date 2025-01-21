@@ -261,7 +261,7 @@ export const routes = [
     guard: true,
     layout: DashboardLayout,
     component: lazy(() =>
-      import("src/views/pages/settings/IntentTracking/Intent")
+      import("src/views/pages/settings/IntentTracking/IntentTracking")
     ),
   },
 

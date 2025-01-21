@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "./sheet-details.module.scss";
-import CompanyTable from "../../../Company/CompanyTable/CompanyTable";
+import Table from "./Table/Table";
 import SheetDropdown from "../SheetDropdown/SheetDropdown";
 import SheetDropdownTable from "../SheetDropdownTable.jsx/SheetDropdownTable";
 
@@ -98,7 +98,7 @@ const SheetDetails = ({ viewData }) => {
 
   return (
     <div className={styles.sheetDetailsContainer}>
-      <CompanyTable
+      <Table
         heading="Sheet Details"
         headers={mainHeaders}
         data={tableData}

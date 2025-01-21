@@ -65,7 +65,6 @@ const Prospects = () => {
 
       {activeView === "video" && (
         <>
-          <h2>Video Templates</h2>
           <Table
             headers={headers}
             data={videoData}
@@ -77,7 +76,6 @@ const Prospects = () => {
 
       {activeView === "hvo" && (
         <>
-          <h2>HVO Templates</h2>
           <Table
             headers={headers}
             data={hvoData}

@@ -1,11 +1,10 @@
 const url = "https://backend-283763506150.us-central1.run.app";
 //  const url = "http://localhost:8000";
 
-
 const auth = `${url}/auth`;
 export const users = `${url}/users`;
 const urls = `${url}/url`;
-
+export const tenant = `${url}/tenant`;
 const admin = `${url}/admin`;
 const subadmin = `${url}/subadmin`;
 const categories = `${url}/categories`;
@@ -17,6 +16,7 @@ const upload = `${url}/upload`;
 const prospects = `${url}/prospect`;
 const hvo = `${url}/hvo`;
 const video = `${url}/video`;
+const footer = `${url}/footer-link`;
 // export const mainDashboard = `${url}/dashboard`;
 
 const ApiConfig = {
@@ -66,6 +66,7 @@ const ApiConfig = {
   setHeadersDataType: `${googlesheets}/sheet-data-types`,
   hvoStatus: `${hvo}/hvo-status`,
   video: `${video}`,
+  footerLink: `${footer}`,
   // userSignup: `${user}/userSignUp`,
   // // verifyEmail: `${user}/verifyEmail`,
   // goggleLogin: `${user}/googleLogin`,
