@@ -1,74 +1,115 @@
-import React from "react";
-import useCompanyTenant from "./Hooks/useCompanyTenant";
+import React, { useState, useEffect } from "react";
 import styles from "./Company.module.scss";
 import CompanyTable from "./CompanyTable/CompanyTable";
+import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
+import useCompanyTenant from "./Hooks/useCompanyTenant";
+import useUpdateTenant from "./Hooks/useUpdateTenant";
+import {
+  EDITABLE_FIELDS,
+  tableHeaders,
+  displayNames,
+  extractChangedFields,
+  updateChangedFields,
+} from "./helpers";
 
 const Company = () => {
   const { data: tenantData, loading, error } = useCompanyTenant();
+  const {
+    updateTenant,
+    loading: saving,
+    error: saveError,
+    success,
+  } = useUpdateTenant();
 
-  const tableHeaders = {
-    account_details: [
-      { key: "accountName", label: "Account Name" },
-      { key: "accountPhone", label: "Account Phone" },
-      { key: "personaProAdmin", label: "PersonaPro Admin" },
-    ],
-    contract_term: [
-      { key: "contractDate", label: "Contract Date" },
-      { key: "contractTerm", label: "Contract Term" },
-      { key: "contractEndDate", label: "Contract End Date" },
-    ],
-    create_account_admin: [
-      { key: "adminFirstName", label: "Admin First Name" },
-      { key: "adminLastName", label: "Admin Last Name" },
-      { key: "accountAdminEmail", label: "Account Admin Email" },
-      { key: "accountAdminPhone", label: "Account Admin Phone" },
-    ],
-    contact_details: [
-      { key: "customerType", label: "Customer Type" },
-      { key: "userCount", label: "User Count" },
-      { key: "mediaCredits", label: "Media Credits" },
-      { key: "activeMediaLimit", label: "Active Media Limit" },
-    ],
-    account_colors_and_links: [
-      { key: "primaryColor", label: "Primary Color" },
-      { key: "secondaryColor", label: "Secondary Color" },
-      { key: "bookDemoUrl", label: "Book Demo URL" },
-      { key: "redirectUrl", label: "Redirect URL" },
-    ],
-    account_logo: [{ key: "uploadLogo", label: "Upload Logo" }],
-    view_agreement: [{ key: "viewAgreement", label: "View Agreement" }],
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedData, setEditedData] = useState({});
+  const [changedFields, setChangedFields] = useState({});
+
+  useEffect(() => {
+    if (tenantData) {
+      setEditedData(tenantData);
+    }
+  }, [tenantData]);
+  const navigationItems = [
+    { text: "Settings", route: "/settings" },
+    { text: "Company", route: "/company-information" },
+  ];
+  const handleEditClick = async () => {
+    if (isEditing) {
+      const changes = extractChangedFields(changedFields, editedData);
+
+      if (Object.keys(changes).length > 0) {
+        await updateTenant(changes);
+      }
+
+      setChangedFields({});
+    }
+    setIsEditing(!isEditing);
   };
 
-  const displayNames = {
-    account_details: "Account Details",
-    contract_term: "Contract Term",
-    create_account_admin: "Create Account Admin",
-    contact_details: "Contact Details",
-    account_colors_and_links: "Account Details",
-    account_logo: "Account Logo",
-    view_agreement: "View Agreement",
+  const handleInputChange = (section, key, value) => {
+    if (!EDITABLE_FIELDS.includes(key)) return;
+
+    setEditedData((prev) => ({
+      ...prev,
+      [section]: {
+        ...prev[section],
+        [key]: value,
+      },
+    }));
+
+    setChangedFields((prev) =>
+      updateChangedFields(prev, section, key, value, tenantData)
+    );
   };
 
-  const handleSave = (section, updatedData) => {
-    console.log(`Saving updated data for ${section}:`, updatedData);
+  const handleFileUpload = (file) => {
+    if (file) {
+      setEditedData((prev) => ({
+        ...prev,
+        account_logo: {
+          ...prev.account_logo,
+          uploadLogo: file,
+        },
+      }));
+
+      setChangedFields((prev) => ({
+        ...prev,
+        account_logo: {
+          uploadLogo: true,
+        },
+      }));
+
+      console.log("File selected for upload:", file);
+    }
   };
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
-  if (!tenantData) return <div>No data available</div>;
+  if (loading || saving) return <div>Loading...</div>;
 
   return (
-    <div className={styles.companyContainer}>
-      {Object.keys(tenantData).map((section) => (
-        <CompanyTable
-          key={section}
-          heading={displayNames[section]}
-          headers={tableHeaders[section]}
-          data={tenantData[section]}
-          canEdit={false}
-          onSave={(updatedData) => handleSave(section, updatedData)}
-        />
-      ))}
+    <div className={styles.wrapper}>
+      <div className={styles.buttonContainer}>
+        <DynamicNavigator items={navigationItems} />
+        <button className={styles.editButton} onClick={handleEditClick}>
+          {isEditing ? "Save" : "Edit"}
+        </button>
+      </div>
+
+      <div className={styles.companyContainer}>
+        {Object.keys(tenantData).map((section) => (
+          <CompanyTable
+            key={section}
+            heading={displayNames[section]}
+            headers={tableHeaders[section]}
+            data={editedData[section]}
+            isEditing={isEditing}
+            onInputChange={(key, value) =>
+              handleInputChange(section, key, value)
+            }
+            onFileUpload={handleFileUpload}
+          />
+        ))}
+      </div>
     </div>
   );
 };
