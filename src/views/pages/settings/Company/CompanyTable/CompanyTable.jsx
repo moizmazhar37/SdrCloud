@@ -1,27 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useRef } from "react";
 import styles from "./CompanyTable.module.scss";
 
-const CompanyTable = ({ heading, headers, data, canEdit = false, onSave }) => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [editedData, setEditedData] = useState(data);
-
-  useEffect(() => {
-    setEditedData(data);
-  }, [data]);
-
-  const handleEdit = () => {
-    if (isEditing) {
-      onSave(editedData);
-    }
-    setIsEditing(!isEditing);
-  };
-
-  const handleInputChange = (key, value) => {
-    setEditedData((prev) => ({
-      ...prev,
-      [key]: value,
-    }));
-  };
+const CompanyTable = ({
+  heading,
+  headers,
+  data,
+  isEditing,
+  onInputChange,
+  onFileUpload,
+}) => {
+  const fileInputRef = useRef(null);
 
   const isValidUrl = (string) => {
     try {
@@ -32,50 +20,97 @@ const CompanyTable = ({ heading, headers, data, canEdit = false, onSave }) => {
     }
   };
 
-  const renderValue = (value) => {
-    if (typeof value === "string" && isValidUrl(value)) {
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      onFileUpload(file);
+    }
+  };
+
+  const renderField = (header, value) => {
+    if (header.type === "file") {
       return (
-        <a
-          href={value}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={styles.urlLink}
-        >
-          {value}
-        </a>
+        <div className={styles.logoContainer}>
+          {value && (
+            <img src={value} alt="Logo" className={styles.circularLogo} />
+          )}
+          {isEditing && (
+            <div className={styles.fileUpload}>
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                style={{ display: "none" }}
+                accept="image/*"
+              />
+              <button
+                className={styles.uploadButton}
+                onClick={() => fileInputRef.current.click()}
+              >
+                {value ? "Change Logo" : "Upload Logo"}
+              </button>
+            </div>
+          )}
+        </div>
       );
     }
-    return value;
+
+    if (header.type === "pdf") {
+      return (
+        <button
+          onClick={() => window.open(value, "_blank")}
+          className={styles.pdfButton}
+        >
+          hubspotcontract.pdf
+        </button>
+      );
+    }
+
+    if (!isEditing) {
+      if (typeof value === "string" && isValidUrl(value)) {
+        return (
+          <a
+            href={value}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.urlLink}
+          >
+            {value}
+          </a>
+        );
+      }
+      return value;
+    }
+
+    if (!header.editable) {
+      return value;
+    }
+
+    return (
+      <input
+        type="text"
+        value={value || ""}
+        onChange={(e) => onInputChange(header.key, e.target.value)}
+        className={styles.input}
+        style={{ color: "inherit" }} // Keep the color consistent
+      />
+    );
   };
 
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         <span className={styles.heading}>{heading}</span>
-        {canEdit && (
-          <button className={styles.editButton} onClick={handleEdit}>
-            {isEditing ? "Save" : "Edit"}
-          </button>
-        )}
       </div>
       <div className={styles.scrollable}>
         <div className={styles.content}>
           {headers.map((header) => (
             <div key={header.key} className={styles.row}>
-              <div className={styles.label}>{header.label}:</div>
+              {header.type !== "pdf" && (
+                <div className={styles.label}>{header.label}:</div>
+              )}
               <div className={styles.value}>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    value={editedData[header.key]}
-                    onChange={(e) =>
-                      handleInputChange(header.key, e.target.value)
-                    }
-                    className={styles.input}
-                  />
-                ) : (
-                  renderValue(editedData[header.key])
-                )}
+                {renderField(header, data?.[header.key])}
               </div>
             </div>
           ))}
