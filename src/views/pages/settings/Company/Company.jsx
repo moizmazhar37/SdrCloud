@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styles from "./Company.module.scss";
 import CompanyTable from "./CompanyTable/CompanyTable";
+import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
 import useCompanyTenant from "./Hooks/useCompanyTenant";
 import useUpdateTenant from "./Hooks/useUpdateTenant";
 import {
@@ -18,7 +19,7 @@ const Company = () => {
     loading: saving,
     error: saveError,
     success,
-  } = useUpdateTenant("your_token_here");
+  } = useUpdateTenant();
 
   const [isEditing, setIsEditing] = useState(false);
   const [editedData, setEditedData] = useState({});
@@ -29,13 +30,15 @@ const Company = () => {
       setEditedData(tenantData);
     }
   }, [tenantData]);
-
+  const navigationItems = [
+    { text: "Settings", route: "/settings" },
+    { text: "Company", route: "/company-information" },
+  ];
   const handleEditClick = async () => {
     if (isEditing) {
       const changes = extractChangedFields(changedFields, editedData);
 
       if (Object.keys(changes).length > 0) {
-        console.log("Payload to send:", changes);
         await updateTenant(changes);
       }
 
@@ -86,6 +89,7 @@ const Company = () => {
   return (
     <div className={styles.wrapper}>
       <div className={styles.buttonContainer}>
+        <DynamicNavigator items={navigationItems} />
         <button className={styles.editButton} onClick={handleEditClick}>
           {isEditing ? "Save" : "Edit"}
         </button>
