@@ -48,7 +48,7 @@
 
 .row {
   display: flex;
-  margin-bottom: 8px; /* Reduced gap between rows */
+  margin-bottom: 8px;
   align-items: center;
 }
 
@@ -57,10 +57,11 @@
 }
 
 .label {
-  width: 150px; /* Adjusted to reduce excessive space */
+  width: 150px;
   color: #6b7280;
-  font-size: 14px;
-  padding-right: 8px; /* Reduced padding */
+  font-size: 14.5px;
+  font-weight: 600;
+  padding-right: 8px;
 }
 
 .value {
@@ -70,7 +71,7 @@
 }
 
 .value input {
-  color: inherit; /* Keep text color consistent */
+  color: inherit;
 }
 
 .input,
