@@ -1,7 +1,7 @@
 .companyContainer {
   display: flex;
   flex-wrap: wrap;
-  gap: 56px;
+  gap: 50px;
   padding: 2rem;
 
   > div {
@@ -26,9 +26,11 @@
   display: flex;
   justify-content: end;
   align-items: flex-end;
+  padding-right: 3%;
 }
 .editButton {
-  padding: 10px 32px;
+  padding: 12px 32px;
+  font-weight: 600;
   background-color: #0358ac;
   color: white;
   border: none;

@@ -2,12 +2,23 @@ import React, { useState, useEffect } from "react";
 import styles from "./Company.module.scss";
 import CompanyTable from "./CompanyTable/CompanyTable";
 import useCompanyTenant from "./Hooks/useCompanyTenant";
+import useUpdateTenant from "./Hooks/useUpdateTenant";
 
 const Company = () => {
   const { data: tenantData, loading, error } = useCompanyTenant();
+  const {
+    updateTenant,
+    loading: updateLoading,
+    error: updateError,
+    success: updateSuccess,
+    clearError,
+    clearSuccess,
+  } = useUpdateTenant();
+
   const [isEditing, setIsEditing] = useState(false);
   const [editedData, setEditedData] = useState({});
   const [changedFields, setChangedFields] = useState({});
+  const [selectedFile, setSelectedFile] = useState(null);
 
   const EDITABLE_FIELDS = [
     "accountName",
@@ -92,23 +103,31 @@ const Company = () => {
     }
   }, [tenantData]);
 
-  const handleEditClick = () => {
+  const handleEditClick = async () => {
     if (isEditing) {
       const changes = {};
       Object.keys(changedFields).forEach((section) => {
         if (Object.keys(changedFields[section]).length > 0) {
-          changes[section] = {};
           Object.keys(changedFields[section]).forEach((key) => {
-            changes[section][key] = editedData[section][key];
+            changes[key] = editedData[section][key];
           });
         }
       });
 
-      if (Object.keys(changes).length > 0) {
-        console.log("Changed fields:", changes);
+      // Handle file upload
+      if (selectedFile) {
+        changes.uploadLogo = selectedFile;
       }
 
-      setChangedFields({});
+      if (Object.keys(changes).length > 0) {
+        try {
+          await updateTenant(changes);
+          setChangedFields({});
+          setSelectedFile(null);
+        } catch (err) {
+          return;
+        }
+      }
     }
     setIsEditing(!isEditing);
   };
@@ -153,6 +172,7 @@ const Company = () => {
 
   const handleFileUpload = (file) => {
     if (file) {
+      setSelectedFile(file);
       setEditedData((prev) => ({
         ...prev,
         account_logo: {
@@ -167,8 +187,6 @@ const Company = () => {
           uploadLogo: true,
         },
       }));
-
-      console.log("File selected for upload:", file);
     }
   };
 
@@ -178,9 +196,20 @@ const Company = () => {
 
   return (
     <div className={styles.wrapper}>
+      {updateError && (
+        <div className={styles.error}>
+          {updateError}
+          <button onClick={clearError}>×</button>
+        </div>
+      )}
+
       <div className={styles.buttonContainer}>
-        <button className={styles.editButton} onClick={handleEditClick}>
-          {isEditing ? "Save" : "Edit"}
+        <button
+          className={styles.editButton}
+          onClick={handleEditClick}
+          disabled={updateLoading}
+        >
+          {isEditing ? (updateLoading ? "Saving..." : "Save") : "Edit"}
         </button>
       </div>
 
