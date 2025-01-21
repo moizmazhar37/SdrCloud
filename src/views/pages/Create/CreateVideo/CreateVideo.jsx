@@ -11,22 +11,21 @@ import DynamicURL from "./CategoryForm/DynamicURL/DynamicURL";
 import useGetSheetData from "../Hooks/useGetSheetData";
 import SectionCard from "./SectionCard/SectionCard";
 import useGetSections from "../Hooks/useGetSection";
+import { extractCategories, navigationItems, initialOptions } from "./helpers";
 
 const CreateVideo = () => {
   const [showImageUpload, setShowImageUpload] = useState(false);
   const [showDynamicURL, setShowDynamicURL] = useState(false);
-
   const [showVideoUpload, setShowVideoUpload] = useState(false);
   const [showStaticURL, setShowStaticURL] = useState(false);
   const [templateId, setTemplateId] = useState(null);
-  const [connectedSheetId, setConnectedSheetId] = useState(null);
   const [isSheetConnected, setIsSheetConnected] = useState(false);
   const [sectionNum, setSectionNum] = useState(null);
 
   const url = new URL(window.location.href);
   useEffect(() => {
     setTemplateId(url.searchParams.get("templateId"));
-  });
+  }, []);
 
   const { data: sheetData, loading: sheetsLoading } = useGetSheets();
   const { data, loading, error } = useGetSheetData(
@@ -41,33 +40,10 @@ const CreateVideo = () => {
 
   const elementsList = sectionData?.elementsList;
 
-  // Extract values by data type
-  const extractCategories = (type) => {
-    if (!data || !Array.isArray(data)) {
-      console.warn("Data is null or not an array");
-      return [];
-    }
-    return data
-      .filter((item) => item.dataType === type)
-      .map((item) => ({ label: item.value, value: item.value }));
-  };
-
-  const imageCategories = extractCategories("Image URL");
-  const staticUrlCategories = extractCategories("Static URL");
-  const dynamicUrlCategories = extractCategories("Dynamic URL");
-  const videoCategories = extractCategories("Video URL");
-
-  const navigationItems = [
-    { text: "Template", route: "/CreateTemplate" },
-    { text: "New Video Template", route: "/createtemplate&Video" },
-  ];
-
-  const initialOptions = [
-    { label: "UPLOAD IMAGE", value: "image" },
-    { label: "VIDEO CLIPS", value: "video" },
-    { label: "STATIC URL", value: "static_url" },
-    { label: "DYNAMIC URL", value: "dynamic_url" },
-  ];
+  const imageCategories = extractCategories(data, "Image URL");
+  const staticUrlCategories = extractCategories(data, "Static URL");
+  const dynamicUrlCategories = extractCategories(data, "Dynamic URL");
+  const videoCategories = extractCategories(data, "Video URL");
 
   const handleSectionTypeChange = (selectedValue, sectionNumber) => {
     setSectionNum(sectionNumber);
@@ -87,7 +63,6 @@ const CreateVideo = () => {
 
   const handleSheetConnectSuccess = (sheetId) => {
     setIsSheetConnected(true);
-    setConnectedSheetId(sheetId);
   };
 
   return (
@@ -139,7 +114,6 @@ const CreateVideo = () => {
                 duration={element.duration}
                 scroll={element.scroll}
                 previewContent={element.value}
-                // onDelete={() => handleDelete(element.id)}
               />
             ))}
           </div>

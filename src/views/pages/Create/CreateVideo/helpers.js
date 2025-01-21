@@ -1,0 +1,21 @@
+export const extractCategories = (data, type) => {
+  if (!data || !Array.isArray(data)) {
+    console.warn("Data is null or not an array");
+    return [];
+  }
+  return data
+    .filter((item) => item.dataType === type)
+    .map((item) => ({ label: item.value, value: item.value }));
+};
+
+export const navigationItems = [
+  { text: "Template", route: "/CreateTemplate" },
+  { text: "New Video Template", route: "/createtemplate&Video" },
+];
+
+export const initialOptions = [
+  { label: "UPLOAD IMAGE", value: "image" },
+  { label: "VIDEO CLIPS", value: "video" },
+  { label: "STATIC URL", value: "static_url" },
+  { label: "DYNAMIC URL", value: "dynamic_url" },
+];
