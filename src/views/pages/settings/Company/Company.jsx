@@ -1,45 +1,10 @@
 import React from "react";
+import useCompanyTenant from "./Hooks/useCompanyTenant";
 import styles from "./Company.module.scss";
-
 import CompanyTable from "./CompanyTable/CompanyTable";
 
 const Company = () => {
-  const companyData = {
-    account_details: {
-      accountName: "Hubspot",
-      accountPhone: "(937) 313-4466",
-      personaProAdmin: "Jacob Marti",
-    },
-    contract_term: {
-      contractDate: "01/07/2024",
-      contractTerm: "1 Year",
-      contractEndDate: "01/06/2025",
-    },
-    create_account_admin: {
-      adminFirstName: "Janet",
-      adminLastName: "Stevens",
-      accountAdminEmail: "JanetS@Hubspot.com",
-      accountAdminPhone: "(932) 759-7493",
-    },
-    contact_details: {
-      customerType: "Big Enterprise",
-      userCount: 25,
-      mediaCredits: 6000,
-      activeMediaLimit: 6000,
-    },
-    account_colors_and_links: {
-      primaryColor: "RGB #000000",
-      secondaryColor: "RGB #FFFFFF",
-      bookDemoUrl: "www.calendly.com/jstevens",
-      redirectUrl: "www.hubspot.com/demovideo",
-    },
-    account_logo: {
-      uploadLogo: "Hubspot.456765.jpg",
-    },
-    view_agreement: {
-      viewAgreement: "hubspotcontract.pdf",
-    },
-  };
+  const { data: tenantData, loading, error } = useCompanyTenant();
 
   const tableHeaders = {
     account_details: [
@@ -88,15 +53,19 @@ const Company = () => {
     console.log(`Saving updated data for ${section}:`, updatedData);
   };
 
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+  if (!tenantData) return <div>No data available</div>;
+
   return (
     <div className={styles.companyContainer}>
-      {Object.keys(companyData).map((section) => (
+      {Object.keys(tenantData).map((section) => (
         <CompanyTable
           key={section}
           heading={displayNames[section]}
           headers={tableHeaders[section]}
-          data={companyData[section]}
-          canEdit={true}
+          data={tenantData[section]}
+          canEdit={false}
           onSave={(updatedData) => handleSave(section, updatedData)}
         />
       ))}
