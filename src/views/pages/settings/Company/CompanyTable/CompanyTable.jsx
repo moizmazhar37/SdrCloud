@@ -1,4 +1,5 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
+import { HexColorPicker } from "react-colorful";
 import styles from "./CompanyTable.module.scss";
 
 const CompanyTable = ({
@@ -10,6 +11,7 @@ const CompanyTable = ({
   onFileUpload,
 }) => {
   const fileInputRef = useRef(null);
+  const [activeColorPicker, setActiveColorPicker] = useState(null);
 
   const isValidUrl = (string) => {
     try {
@@ -25,6 +27,42 @@ const CompanyTable = ({
     if (file) {
       onFileUpload(file);
     }
+  };
+
+  const isColorField = (key) => {
+    return key === "primaryColor" || key === "secondaryColor";
+  };
+
+  const renderColorPicker = (header, value) => {
+    return (
+      <div className={styles.colorPickerContainer}>
+        <div
+          className={styles.colorPreview}
+          style={{ backgroundColor: value || "#ffffff" }}
+          onClick={() => setActiveColorPicker(header.key)}
+        />
+        <input
+          type="text"
+          value={value || ""}
+          onChange={(e) => onInputChange(header.key, e.target.value)}
+          className={styles.colorInput}
+        />
+        {activeColorPicker === header.key && (
+          <div className={styles.colorPickerPopover}>
+            <div
+              className={styles.colorPickerCover}
+              onClick={() => setActiveColorPicker(null)}
+            />
+            <HexColorPicker
+              color={value || "#ffffff"}
+              onChange={(color) => {
+                onInputChange(header.key, color);
+              }}
+            />
+          </div>
+        )}
+      </div>
+    );
   };
 
   const renderField = (header, value) => {
@@ -79,11 +117,26 @@ const CompanyTable = ({
           </a>
         );
       }
+      if (isColorField(header.key)) {
+        return (
+          <div className={styles.colorDisplay}>
+            <div
+              className={styles.colorPreview}
+              style={{ backgroundColor: value || "#ffffff" }}
+            />
+            <span>{value}</span>
+          </div>
+        );
+      }
       return value;
     }
 
     if (!header.editable) {
       return value;
+    }
+
+    if (isColorField(header.key)) {
+      return renderColorPicker(header, value);
     }
 
     return (
@@ -92,7 +145,7 @@ const CompanyTable = ({
         value={value || ""}
         onChange={(e) => onInputChange(header.key, e.target.value)}
         className={styles.input}
-        style={{ color: "inherit" }} // Keep the color consistent
+        style={{ color: "inherit" }}
       />
     );
   };

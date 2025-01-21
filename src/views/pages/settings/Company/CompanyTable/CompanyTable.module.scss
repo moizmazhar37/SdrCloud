@@ -73,7 +73,8 @@
   color: inherit; /* Keep text color consistent */
 }
 
-.input {
+.input,
+.colorInput {
   width: 90%;
   padding: 6px 8px;
   border: 1px solid #d1d5db;
@@ -126,6 +127,45 @@
 
 .uploadButton {
   margin-top: 10px;
+}
+.colorPickerContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.colorPreview {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid #ddd;
+  cursor: pointer;
+}
+
+.colorPickerPopover {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 100;
+}
+
+.colorPickerCover {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.colorDisplay {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  span {
+    font-family: monospace;
+  }
 }
 
 @media (max-width: 460px) {
