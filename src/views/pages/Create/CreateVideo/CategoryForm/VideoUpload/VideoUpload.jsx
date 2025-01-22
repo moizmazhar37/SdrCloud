@@ -113,7 +113,7 @@ const VideoUpload = ({
 
         <div className={styles.uploadSection}>
           <div className={styles.row}>
-            <div className={styles.videoUploadContainer}>
+            <div className={styles.dropdownContainer}>
               <label>Upload Video or Enter URL</label>
               <div className={styles.uploadField}>
                 <input

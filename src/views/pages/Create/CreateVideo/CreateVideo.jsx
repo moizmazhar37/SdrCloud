@@ -24,10 +24,13 @@ const CreateVideo = () => {
   const [saveTriggered, setSaveTriggered] = useState(false);
 
   const url = new URL(window.location.href);
+  // Extract templateId from the URL
   useEffect(() => {
-    setTemplateId(url.searchParams.get("templateId"));
+    const id = url.searchParams.get("templateId");
+    setTemplateId(id);
   }, []);
 
+  // Update URL with templateId
   useEffect(() => {
     if (templateId) {
       const newUrl = `/createtemplate&Video?templateId=${templateId}`;
@@ -36,9 +39,7 @@ const CreateVideo = () => {
   }, [templateId]);
 
   const { data: sheetData, loading: sheetsLoading } = useGetSheets();
-  const { data, loading, error } = useGetSheetData(
-    isSheetConnected ? templateId : null
-  );
+  const { data, loading, error } = useGetSheetData(templateId);
 
   const {
     data: sectionData,
@@ -73,9 +74,11 @@ const CreateVideo = () => {
     setShowDynamicURL(false);
   };
 
-  const handleSheetConnectSuccess = (sheetId) => {
+  const handleSheetConnectSuccess = () => {
     setIsSheetConnected(true);
   };
+
+  const isEditable = Boolean(templateId || isSheetConnected); // Editable if templateId exists or sheet is connected
 
   return (
     <div className={styles.wrapper}>
@@ -142,7 +145,7 @@ const CreateVideo = () => {
           <SectionArea
             initialOptions={initialOptions}
             onSectionTypeChange={handleSectionTypeChange}
-            editable={isSheetConnected}
+            editable={isEditable}
             templateId={templateId}
             elementsList={elementsList}
           />
