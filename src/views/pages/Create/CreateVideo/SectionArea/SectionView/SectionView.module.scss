@@ -1,0 +1,55 @@
+.viewCard {
+  background-color: #f2f7ff;
+  border-radius: 8px;
+  padding: 16px;
+  border: 1px solid #dfe4eb;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.sectionTitle {
+  font-size: 16px;
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+.viewButton {
+  padding: 4px 16px;
+  background-color: transparent;
+  border: 1px solid;
+  border-radius: 999px;
+  color: #0358ac;
+  cursor: pointer;
+  align-self: end;
+  align-content: end;
+  font-weight: 500;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: rgba(0, 102, 255, 0.05);
+  }
+}
+
+.metaInfo {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: #0358ac;
+  font-size: 14px;
+}
+
+.duration {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.icon {
+  width: 16px;
+  height: 16px;
+}

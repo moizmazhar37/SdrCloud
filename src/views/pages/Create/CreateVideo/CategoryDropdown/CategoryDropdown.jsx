@@ -3,8 +3,7 @@ import { createPortal } from "react-dom";
 import { Trash2 } from "lucide-react";
 import styles from "./CategoryDropdown.module.scss";
 import CategoryModal from "../CategoryModal/CategoryModal";
-
-const PROTECTED_CATEGORIES = ["ENT", "MM", "SMB", "Startup"];
+import { getMenuPosition, shouldShowDeleteIcon } from "./helpers";
 
 const CategoryDropdown = ({
   options = [],
@@ -27,36 +26,12 @@ const CategoryDropdown = ({
 
   const triggerRef = useRef(null);
 
-  useEffect(() => {
-    setDropdownOptions(options);
-  }, [options]);
+  useEffect(() => setDropdownOptions(options), [options]);
+  useEffect(() => setSelectedOption(buttonText), [buttonText]);
 
   useEffect(() => {
-    setSelectedOption(buttonText);
-  }, [buttonText]);
-
-  useEffect(() => {
-    if (isExpanded && triggerRef.current) {
-      const triggerRect = triggerRef.current.getBoundingClientRect();
-      const scrollTop =
-        window.pageYOffset || document.documentElement.scrollTop;
-      const scrollLeft =
-        window.pageXOffset || document.documentElement.scrollLeft;
-
-      let top = triggerRect.bottom + scrollTop;
-      let left = triggerRect.left + scrollLeft;
-      const width = triggerRect.width;
-
-      if (left + width > window.innerWidth) {
-        left = triggerRect.right + scrollLeft - width;
-      }
-
-      const menuHeight = 40 * dropdownOptions.length;
-      if (top + menuHeight > window.innerHeight + scrollTop) {
-        top = triggerRect.top + scrollTop - menuHeight;
-      }
-
-      setMenuPosition({ top, left, width });
+    if (isExpanded) {
+      setMenuPosition(getMenuPosition(triggerRef, dropdownOptions.length));
     }
   }, [isExpanded, dropdownOptions.length]);
 
@@ -85,12 +60,6 @@ const CategoryDropdown = ({
     if (onDelete && option.id) {
       onDelete(option.id);
     }
-  };
-
-  const shouldShowDeleteIcon = (option) => {
-    return (
-      allowAddNew && !PROTECTED_CATEGORIES.includes(option.label) && onDelete
-    );
   };
 
   return (
@@ -146,7 +115,7 @@ const CategoryDropdown = ({
                 role="menuitem"
               >
                 <span className={styles.optionText}>{option.label}</span>
-                {shouldShowDeleteIcon(option) && (
+                {shouldShowDeleteIcon(option, allowAddNew, onDelete) && (
                   <Trash2
                     className={styles.deleteIcon}
                     size={16}

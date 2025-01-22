@@ -123,6 +123,8 @@ const CreateVideo = () => {
             initialOptions={initialOptions}
             onSectionTypeChange={handleSectionTypeChange}
             editable={isSheetConnected}
+            templateId={templateId}
+            elementsList={elementsList}
           />
         </div>
       </div>
