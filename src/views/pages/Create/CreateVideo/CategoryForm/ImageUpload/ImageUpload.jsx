@@ -4,7 +4,13 @@ import CategoryDropdown from "../../CategoryDropdown/CategoryDropdown";
 import useCreateVideoSection from "../../../Hooks/useCreateVideoSection";
 import { toast } from "react-toastify";
 
-const ImageUpload = ({ categories, templateId, sectionNumber }) => {
+const ImageUpload = ({
+  categories,
+  templateId,
+  sectionNumber,
+  onSaveSuccess,
+  onClose, // New prop for closing the component
+}) => {
   const [imageFile, setImageFile] = useState(null);
   const [imageURL, setImageURL] = useState("");
   const [imagePreview, setImagePreview] = useState("");
@@ -13,7 +19,7 @@ const ImageUpload = ({ categories, templateId, sectionNumber }) => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [audioDescription, setAudioDescription] = useState(false);
   const [scroll, setScroll] = useState(null);
-  const [dropdownKey, setDropdownKey] = useState(0); // Add this state
+  const [dropdownKey, setDropdownKey] = useState(0);
 
   const { createVideoSection, loading } = useCreateVideoSection();
   const imageInputRef = useRef(null);
@@ -26,7 +32,7 @@ const ImageUpload = ({ categories, templateId, sectionNumber }) => {
       setImageURL("");
       setImagePreview(URL.createObjectURL(file));
       setSelectedCategory(null);
-      setDropdownKey((prev) => prev + 1); // Increment key to force re-render
+      setDropdownKey((prev) => prev + 1);
     }
   };
 
@@ -50,7 +56,7 @@ const ImageUpload = ({ categories, templateId, sectionNumber }) => {
     setImageFile(null);
     setImagePreview(url);
     setSelectedCategory(null);
-    setDropdownKey((prev) => prev + 1); // Reset dropdown on URL change
+    setDropdownKey((prev) => prev + 1);
   };
 
   const handleUploadAudio = () => {
@@ -82,6 +88,11 @@ const ImageUpload = ({ categories, templateId, sectionNumber }) => {
 
     try {
       const response = await createVideoSection(videoSectionData);
+      if (response) {
+        onSaveSuccess(); // Notify the parent about the successful save
+        toast.success("Image section saved successfully");
+        onClose(); // Close ImageUpload after successful save
+      }
     } catch (error) {
       toast.error("Failed to save image section");
     }
@@ -130,7 +141,7 @@ const ImageUpload = ({ categories, templateId, sectionNumber }) => {
             <div className={styles.dropdownContainer}>
               <label>Select Image URL</label>
               <CategoryDropdown
-                key={dropdownKey} // Add key prop
+                key={dropdownKey}
                 options={categories}
                 buttonText="Select Image URL"
                 onSelect={(value, label) => handleCategorySelect(value, label)}
@@ -200,7 +211,9 @@ const ImageUpload = ({ categories, templateId, sectionNumber }) => {
             >
               {loading ? "Saving..." : "Save"}
             </button>
-            <button className={styles.nextButton}>Next</button>
+            <button className={styles.cancelButton} onClick={onClose}>
+              Cancel
+            </button>
           </div>
         </div>
       </div>

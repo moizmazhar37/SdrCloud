@@ -10,16 +10,29 @@ const SectionArea = ({
   templateId = null,
   elementsList = [],
 }) => {
-  const [sections, setSections] = useState([1, 2, 3, 4]);
+  const [sections, setSections] = useState([]);
   const [sectionData, setSectionData] = useState({});
-
+  //showing sections by sequence number
   useEffect(() => {
     if (templateId && elementsList?.length > 0) {
       const sectionMap = {};
       elementsList.forEach((element) => {
-        sectionMap[element.section_number] = element;
+        sectionMap[element.sequence] = element;
       });
       setSectionData(sectionMap);
+
+      // Extract and sort sequences
+      let sortedSequences = Object.keys(sectionMap)
+        .map(Number)
+        .sort((a, b) => a - b); // Sort sequences numerically
+
+      // Ensure at least 4 sections
+      while (sortedSequences.length < 4) {
+        sortedSequences.push(sortedSequences.length + 1);
+      }
+      setSections(sortedSequences);
+    } else {
+      setSections([1, 2, 3, 4]);
     }
   }, [templateId, elementsList]);
 
@@ -31,20 +44,20 @@ const SectionArea = ({
     onSectionTypeChange(value, sectionNum);
   };
 
-  const renderSection = (sectionNum) => {
-    const hasData = sectionData[sectionNum];
+  const renderSection = (sequence) => {
+    const hasData = sectionData[sequence];
 
     if (hasData) {
-      return <SectionView sectionData={sectionData[sectionNum]} />;
+      return <SectionView sectionData={sectionData[sequence]} />;
     }
 
     return (
       <div className={styles.sectionContent}>
-        <div className={styles.sectionLabel}>Section {sectionNum}</div>
+        <div className={styles.sectionLabel}>Section {sequence}</div>
         <CategoryDropdown
           options={initialOptions}
           buttonText="Choose type"
-          onSelect={(value) => handleSelect(value, sectionNum)}
+          onSelect={(value) => handleSelect(value, sequence)}
           allowAddNew={false}
           editable={editable}
         />
@@ -55,12 +68,10 @@ const SectionArea = ({
   return (
     <div className={styles.sectionAreaContainer}>
       <div className={styles.sectionsWrapper}>
-        {sections.map((sectionNum) => (
-          <div key={sectionNum} className={styles.sectionWrapper}>
-            <div className={styles.sectionNumber}>{sectionNum}</div>
-            <div className={styles.sectionMain}>
-              {renderSection(sectionNum)}
-            </div>
+        {sections.map((sequence) => (
+          <div key={sequence} className={styles.sectionWrapper}>
+            <div className={styles.sectionNumber}>{sequence}</div>
+            <div className={styles.sectionMain}>{renderSection(sequence)}</div>
           </div>
         ))}
       </div>

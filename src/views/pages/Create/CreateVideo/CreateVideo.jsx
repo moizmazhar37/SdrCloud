@@ -21,11 +21,19 @@ const CreateVideo = () => {
   const [templateId, setTemplateId] = useState(null);
   const [isSheetConnected, setIsSheetConnected] = useState(false);
   const [sectionNum, setSectionNum] = useState(null);
+  const [saveTriggered, setSaveTriggered] = useState(false);
 
   const url = new URL(window.location.href);
   useEffect(() => {
     setTemplateId(url.searchParams.get("templateId"));
   }, []);
+
+  useEffect(() => {
+    if (templateId) {
+      const newUrl = `/createtemplate&Video?templateId=${templateId}`;
+      window.history.pushState({}, "", newUrl);
+    }
+  }, [templateId]);
 
   const { data: sheetData, loading: sheetsLoading } = useGetSheets();
   const { data, loading, error } = useGetSheetData(
@@ -36,7 +44,7 @@ const CreateVideo = () => {
     data: sectionData,
     loading: sectionLoading,
     error: sectionError,
-  } = useGetSections(templateId);
+  } = useGetSections(templateId, saveTriggered);
 
   const elementsList = sectionData?.elementsList;
 
@@ -47,10 +55,6 @@ const CreateVideo = () => {
 
   const handleSectionTypeChange = (selectedValue, sectionNumber) => {
     setSectionNum(sectionNumber);
-    console.log(
-      `Selected option: ${selectedValue}, Section number: ${sectionNumber}`
-    );
-
     setShowImageUpload(selectedValue === "image");
     setShowVideoUpload(selectedValue === "video");
     setShowStaticURL(selectedValue === "static_url");
@@ -59,6 +63,11 @@ const CreateVideo = () => {
 
   const handleTemplateSave = (id) => {
     setTemplateId(id);
+  };
+
+  const handleSaveSuccess = () => {
+    setSaveTriggered((prev) => !prev); // Refresh section data
+    setShowImageUpload(false); // Close ImageUpload after successful save
   };
 
   const handleSheetConnectSuccess = (sheetId) => {
@@ -81,6 +90,8 @@ const CreateVideo = () => {
               categories={imageCategories}
               templateId={templateId}
               sectionNumber={sectionNum}
+              onSaveSuccess={handleSaveSuccess}
+              onClose={() => setShowImageUpload(false)} // Close on manual trigger
             />
           )}
           {showVideoUpload && (
@@ -88,6 +99,7 @@ const CreateVideo = () => {
               templateId={templateId}
               categories={videoCategories}
               sectionNumber={sectionNum}
+              onSaveSuccess={handleSaveSuccess}
             />
           )}
           {showStaticURL && (
@@ -95,13 +107,15 @@ const CreateVideo = () => {
               categories={staticUrlCategories}
               templateId={templateId}
               sectionNumber={sectionNum}
+              onSaveSuccess={handleSaveSuccess}
             />
           )}
           {showDynamicURL && (
             <DynamicURL
-              categories={staticUrlCategories}
+              categories={dynamicUrlCategories}
               templateId={templateId}
               sectionNumber={sectionNum}
+              onSaveSuccess={handleSaveSuccess}
             />
           )}
           <div className={styles.cardContainer}>
