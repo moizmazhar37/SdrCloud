@@ -20,11 +20,9 @@ const SectionArea = ({
         sectionMap[element.sequence] = element;
       });
       setSectionData(sectionMap);
-
-      // Extract and sort sequences
       let sortedSequences = Object.keys(sectionMap)
         .map(Number)
-        .sort((a, b) => a - b); // Sort sequences numerically
+        .sort((a, b) => a - b);
 
       // Ensure at least 4 sections
       while (sortedSequences.length < 4) {

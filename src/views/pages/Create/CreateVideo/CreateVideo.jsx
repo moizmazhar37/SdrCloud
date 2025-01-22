@@ -69,6 +69,8 @@ const CreateVideo = () => {
     setSaveTriggered((prev) => !prev);
     setShowImageUpload(false);
     setShowVideoUpload(false);
+    setShowStaticURL(false);
+    setShowDynamicURL(false);
   };
 
   const handleSheetConnectSuccess = (sheetId) => {
@@ -110,6 +112,7 @@ const CreateVideo = () => {
               templateId={templateId}
               sectionNumber={sectionNum}
               onSaveSuccess={handleSaveSuccess}
+              onClose={() => setShowStaticURL(false)}
             />
           )}
           {showDynamicURL && (
@@ -118,6 +121,7 @@ const CreateVideo = () => {
               templateId={templateId}
               sectionNumber={sectionNum}
               onSaveSuccess={handleSaveSuccess}
+              onClose={() => setShowDynamicURL(false)}
             />
           )}
           <div className={styles.cardContainer}>

@@ -4,7 +4,13 @@ import CategoryDropdown from "../../CategoryDropdown/CategoryDropdown";
 import useCreateVideoSection from "../../../Hooks/useCreateVideoSection";
 import { toast } from "react-toastify";
 
-const StaticURL = ({ categories = [], templateId, sectionNumber }) => {
+const StaticURL = ({
+  categories = [],
+  templateId,
+  sectionNumber,
+  onSaveSuccess,
+  onClose, // New prop for closing the component
+}) => {
   const [url, setUrl] = useState("https://www.");
   const [duration, setDuration] = useState("");
   const [selectedType, setSelectedType] = useState("");
@@ -90,6 +96,8 @@ const StaticURL = ({ categories = [], templateId, sectionNumber }) => {
       const response = await createVideoSection(videoSectionData);
       if (response) {
         toast.success("Static URL section saved successfully!");
+        onSaveSuccess(); // Notify parent about successful save
+        onClose(); // Close StaticURL after successful save
       }
     } catch (error) {
       toast.error("Failed to save static URL section");
@@ -204,7 +212,9 @@ const StaticURL = ({ categories = [], templateId, sectionNumber }) => {
           >
             {loading ? "Saving..." : "Save"}
           </button>
-          <button className={styles.nextBtn}>Next</button>
+          <button className={styles.cancelBtn} onClick={onClose}>
+            Cancel
+          </button>
         </div>
       </div>
     </div>

@@ -4,7 +4,13 @@ import CategoryDropdown from "../../CategoryDropdown/CategoryDropdown";
 import useCreateVideoSection from "../../../Hooks/useCreateVideoSection";
 import { toast } from "react-toastify";
 
-const DynamicURL = ({ categories = [], templateId, sectionNumber }) => {
+const DynamicURL = ({
+  categories = [],
+  templateId,
+  sectionNumber,
+  onSaveSuccess,
+  onClose, // New prop for closing the component
+}) => {
   const [selectedURL, setSelectedURL] = useState(null);
   const [duration, setDuration] = useState("");
   const [selectedType, setSelectedType] = useState("");
@@ -68,6 +74,8 @@ const DynamicURL = ({ categories = [], templateId, sectionNumber }) => {
       const response = await createVideoSection(videoSectionData);
       if (response) {
         toast.success("Dynamic URL section saved successfully!");
+        onSaveSuccess(); // Notify parent about successful save
+        onClose(); // Close DynamicURL after successful save
       }
     } catch (error) {
       toast.error("Failed to save dynamic URL section");
@@ -159,7 +167,9 @@ const DynamicURL = ({ categories = [], templateId, sectionNumber }) => {
           >
             {loading ? "Saving..." : "Save"}
           </button>
-          <button className={styles.nextBtn}>Next</button>
+          <button className={styles.cancelBtn} onClick={onClose}>
+            Cancel
+          </button>
         </div>
       </div>
     </div>
