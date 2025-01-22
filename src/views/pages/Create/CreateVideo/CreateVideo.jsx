@@ -66,8 +66,9 @@ const CreateVideo = () => {
   };
 
   const handleSaveSuccess = () => {
-    setSaveTriggered((prev) => !prev); // Refresh section data
-    setShowImageUpload(false); // Close ImageUpload after successful save
+    setSaveTriggered((prev) => !prev);
+    setShowImageUpload(false);
+    setShowVideoUpload(false);
   };
 
   const handleSheetConnectSuccess = (sheetId) => {
@@ -91,7 +92,7 @@ const CreateVideo = () => {
               templateId={templateId}
               sectionNumber={sectionNum}
               onSaveSuccess={handleSaveSuccess}
-              onClose={() => setShowImageUpload(false)} // Close on manual trigger
+              onClose={() => setShowImageUpload(false)}
             />
           )}
           {showVideoUpload && (
@@ -100,6 +101,7 @@ const CreateVideo = () => {
               categories={videoCategories}
               sectionNumber={sectionNum}
               onSaveSuccess={handleSaveSuccess}
+              onClose={() => setShowVideoUpload(false)}
             />
           )}
           {showStaticURL && (

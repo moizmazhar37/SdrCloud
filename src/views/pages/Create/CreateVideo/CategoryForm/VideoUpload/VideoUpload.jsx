@@ -4,7 +4,13 @@ import CategoryDropdown from "../../CategoryDropdown/CategoryDropdown";
 import useCreateVideoSection from "../../../Hooks/useCreateVideoSection";
 import { toast } from "react-toastify";
 
-const VideoUpload = ({ categories, templateId, sectionNumber }) => {
+const VideoUpload = ({
+  categories,
+  templateId,
+  sectionNumber,
+  onSaveSuccess,
+  onClose, // New prop for closing the component
+}) => {
   const [videoFile, setVideoFile] = useState(null);
   const [videoURL, setVideoURL] = useState("");
   const [videoPreview, setVideoPreview] = useState("");
@@ -80,7 +86,16 @@ const VideoUpload = ({ categories, templateId, sectionNumber }) => {
       audio: audioFile,
     };
 
-    const response = await createVideoSection(videoSectionData);
+    try {
+      const response = await createVideoSection(videoSectionData);
+      if (response) {
+        onSaveSuccess(); // Notify the parent about successful save
+        toast.success("Video section saved successfully");
+        onClose(); // Close VideoUpload after successful save
+      }
+    } catch (error) {
+      toast.error("Failed to save video section");
+    }
   };
 
   const isFormValid = () => {
@@ -91,7 +106,9 @@ const VideoUpload = ({ categories, templateId, sectionNumber }) => {
     <div className={styles.wrapper}>
       <div className={styles.container}>
         <div className={styles.header}>
-          <span className={styles.backLink}>Upload Video | Element 1</span>
+          <span className={styles.backLink}>
+            Upload Video | Element {sectionNumber}
+          </span>
         </div>
 
         <div className={styles.uploadSection}>
@@ -196,7 +213,9 @@ const VideoUpload = ({ categories, templateId, sectionNumber }) => {
             >
               {loading ? "Saving..." : "Save"}
             </button>
-            <button className={styles.nextButton}>Next</button>
+            <button className={styles.cancelButton} onClick={onClose}>
+              Cancel
+            </button>
           </div>
         </div>
       </div>
