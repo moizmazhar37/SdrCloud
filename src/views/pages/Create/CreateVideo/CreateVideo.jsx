@@ -11,6 +11,7 @@ import DynamicURL from "./CategoryForm/DynamicURL/DynamicURL";
 import useGetSheetData from "../Hooks/useGetSheetData";
 import SectionCard from "./SectionCard/SectionCard";
 import useGetSections from "../Hooks/useGetSection";
+import useCreateVideo from "./hooks/useCreateVideo";
 import ConfirmationModal from "src/Common/ConfirmationModal/ConfirmationModal";
 import { extractCategories, navigationItems, initialOptions } from "./helpers";
 
@@ -24,6 +25,8 @@ const CreateVideo = () => {
   const [sectionNum, setSectionNum] = useState(null);
   const [saveTriggered, setSaveTriggered] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const { handleCreateVideo, isLoading } = useCreateVideo();
 
   const url = new URL(window.location.href);
   useEffect(() => {
@@ -83,11 +86,16 @@ const CreateVideo = () => {
   };
 
   const handleProceed = () => {
-    console.log("CLICKED");
+    handleCreateVideo(templateId);
     setIsModalOpen(false);
   };
 
   const isEditable = Boolean(templateId || isSheetConnected);
+
+  const confirmationText =
+    sectionData?.price > sectionData?.balance
+      ? "You have insufficient balance to create the videos."
+      : "You have sufficient balance to create the videos.";
 
   return (
     <div className={styles.wrapper}>
@@ -152,8 +160,9 @@ const CreateVideo = () => {
               <button
                 className={styles.createVideo}
                 onClick={() => setIsModalOpen(true)}
+                disabled={isLoading}
               >
-                Create Video
+                {isLoading ? "Creating..." : "Create Video"}
               </button>
             </div>
           )}
@@ -180,8 +189,7 @@ const CreateVideo = () => {
             value: sectionData?.price,
           },
         ]}
-        confirmationText="Please confirm if you want to proceed."
-        noteText="You have sufficient balance to create the videos."
+        confirmationText={confirmationText}
         onAction={handleProceed}
       />
     </div>
