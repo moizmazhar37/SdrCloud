@@ -52,8 +52,12 @@ const Create = () => {
               label: "View",
               value: "view",
               onClick: () => {
+                const route =
+                  activeTab === "HVO"
+                    ? "/create-hvo-template"
+                    : "/createtemplate&Video";
                 history.push({
-                  pathname: `/createtemplate&Video`,
+                  pathname: route,
                   state: "summary",
                   search: `templateId=${row.id}`,
                 });
