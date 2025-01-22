@@ -14,8 +14,8 @@ export const navigationItems = [
 ];
 
 export const initialOptions = [
-  { label: "UPLOAD IMAGE", value: "image" },
-  { label: "VIDEO CLIPS", value: "video" },
   { label: "STATIC URL", value: "static_url" },
   { label: "DYNAMIC URL", value: "dynamic_url" },
+  { label: "UPLOAD IMAGE", value: "image" },
+  { label: "VIDEO CLIPS", value: "video" },
 ];

@@ -7,7 +7,6 @@ const SectionView = ({ sectionData }) => {
   return (
     <div className={styles.viewCard}>
       <div className={styles.cardHeader}>
-        {/* <h3 className={styles.sectionTitle}>{section_name}</h3> */}
         <button className={styles.viewButton}>View</button>
       </div>
       <div className={styles.metaInfo}>

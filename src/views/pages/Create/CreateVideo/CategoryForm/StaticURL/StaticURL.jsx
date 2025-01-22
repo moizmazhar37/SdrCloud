@@ -74,8 +74,8 @@ const StaticURL = ({ categories = [], templateId, sectionNumber }) => {
     const videoSectionData = {
       hvoTemplateId: templateId,
       sectionName: "Static URL",
-      sectionNumber: sectionNumber,
-      sequence: 1,
+      sectionNumber: 1,
+      sequence: sectionNumber,
       duration: duration,
       audioEmbedded: !!audioFile,
       scroll: selectedType === "Yes",

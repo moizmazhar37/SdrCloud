@@ -67,8 +67,8 @@ const VideoUpload = ({ categories, templateId, sectionNumber }) => {
     const videoSectionData = {
       hvoTemplateId: templateId,
       sectionName: selectedCategory || "VIDEO URL",
-      sectionNumber: sectionNumber,
-      sequence: 1,
+      sectionNumber: 4,
+      sequence: sectionNumber,
       duration: duration,
       audioEmbedded: !!audioFile,
       scroll: scroll,

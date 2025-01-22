@@ -52,8 +52,8 @@ const DynamicURL = ({ categories = [], templateId, sectionNumber }) => {
     const videoSectionData = {
       hvoTemplateId: templateId,
       sectionName: "Dynamic URL",
-      sectionNumber: sectionNumber,
-      sequence: 1,
+      sectionNumber: 2,
+      sequence: sectionNumber,
       duration: duration,
       audioEmbedded: !!audioFile,
       scroll: selectedType === "Yes",
