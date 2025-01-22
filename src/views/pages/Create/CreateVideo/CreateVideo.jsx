@@ -189,7 +189,8 @@ const CreateVideo = () => {
             value: sectionData?.price,
           },
         ]}
-        confirmationText={confirmationText}
+        noteText={confirmationText}
+        confirmationText="Please confirm if you want to proceed"
         onAction={handleProceed}
       />
     </div>

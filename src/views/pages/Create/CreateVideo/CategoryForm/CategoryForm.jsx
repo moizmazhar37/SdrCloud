@@ -63,7 +63,7 @@ const CategoryForm = ({
       const response = await createTemplate({ templateName, category });
       if (response?.id) {
         setTemplateId(response.id);
-        onTemplateSave(response.id); // Pass templateId to parent
+        onTemplateSave(response.id);
       }
     } catch (error) {
       console.error("Error creating template:", error);
@@ -78,7 +78,7 @@ const CategoryForm = ({
         sheet_id: ingestionSource,
         template_id: templateId,
       });
-      onSheetConnectSuccess(ingestionSource); // Pass connected sheet ID to parent
+      onSheetConnectSuccess(ingestionSource);
     } catch (error) {
       console.error("Error connecting sheet:", error);
     }
