@@ -25,13 +25,17 @@ const CreateVideo = () => {
   const [sectionNum, setSectionNum] = useState(null);
   const [saveTriggered, setSaveTriggered] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isViewMode, setIsViewMode] = useState(false);
 
   const { handleCreateVideo, isLoading } = useCreateVideo();
 
-  const url = new URL(window.location.href);
   useEffect(() => {
+    const url = new URL(window.location.href);
     const id = url.searchParams.get("templateId");
-    setTemplateId(id);
+    if (id) {
+      setTemplateId(id);
+      setIsViewMode(true);
+    }
   }, []);
 
   useEffect(() => {
@@ -67,6 +71,7 @@ const CreateVideo = () => {
 
   const handleTemplateSave = (id) => {
     setTemplateId(id);
+    setIsViewMode(true);
   };
 
   const handleSaveSuccess = () => {
@@ -107,6 +112,8 @@ const CreateVideo = () => {
             sheetsLoading={sheetsLoading}
             onTemplateSave={handleTemplateSave}
             onSheetConnectSuccess={handleSheetConnectSuccess}
+            sectionData={sectionData}
+            isViewMode={isViewMode}
           />
           {showImageUpload && (
             <ImageUpload

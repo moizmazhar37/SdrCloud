@@ -11,8 +11,12 @@ const CategoryForm = ({
   sheetsLoading,
   onTemplateSave,
   onSheetConnectSuccess,
+  sectionData,
+  isViewMode,
 }) => {
   const [category, setCategory] = useState(null);
+  const [isEditingCategory, setIsEditingCategory] = useState(false);
+  const [isEditingTemplate, setIsEditingTemplate] = useState(false);
   const [ingestionSource, setIngestionSource] = useState(null);
   const [templateName, setTemplateName] = useState("");
   const [showError, setShowError] = useState(false);
@@ -24,6 +28,7 @@ const CategoryForm = ({
     loading: categoriesLoading,
     refetch: refetchCategories,
   } = useGetCategories();
+
   const { createTemplate, loading: createLoading } = useCreateTemplate();
   const { connectSheet, loading: connectLoading } = useConnectSheet();
   const { deleteCategory, loading: deleteLoading } =
@@ -52,6 +57,15 @@ const CategoryForm = ({
     [sheetData]
   );
 
+  useEffect(() => {
+    if (sectionData && isViewMode) {
+      setTemplateId(sectionData.getVideo?.id);
+      setTemplateName(sectionData.getVideo?.hvoTemplateName || "");
+      setCategory(sectionData.getVideo?.categoryName || null);
+      setIngestionSource(sectionData.sheet?.title || null);
+    }
+  }, [sectionData, isViewMode]);
+
   const handleSave = async () => {
     if (!templateName.trim()) {
       setShowError(true);
@@ -64,6 +78,7 @@ const CategoryForm = ({
       if (response?.id) {
         setTemplateId(response.id);
         onTemplateSave(response.id);
+        setIsEditingTemplate(false);
       }
     } catch (error) {
       console.error("Error creating template:", error);
@@ -72,16 +87,11 @@ const CategoryForm = ({
 
   const handleConnect = async () => {
     if (!templateId || !ingestionSource) return;
+    console.log("Clicked");
+  };
 
-    try {
-      await connectSheet({
-        sheet_id: ingestionSource,
-        template_id: templateId,
-      });
-      onSheetConnectSuccess(ingestionSource);
-    } catch (error) {
-      console.error("Error connecting sheet:", error);
-    }
+  const handleView = () => {
+    console.log("Clicked");
   };
 
   const handleCategoryDelete = async (categoryId) => {
@@ -102,7 +112,7 @@ const CategoryForm = ({
         <div className={styles.topSection}>
           <div className={styles.categorySection}>
             <h2 className={styles.sectionTitle}>Category</h2>
-            {!categoriesLoading && (
+            {!categoriesLoading && !isViewMode && (
               <CategoryDropdown
                 options={localCategories}
                 buttonText="Select Category"
@@ -111,50 +121,130 @@ const CategoryForm = ({
                 allowAddNew={true}
               />
             )}
+            {isViewMode && !isEditingCategory && (
+              <div className={styles.viewModeContainer}>
+                <span>{category}</span>
+                <button
+                  onClick={() => setIsEditingCategory(true)}
+                  className={styles.editButton}
+                >
+                  Edit
+                </button>
+              </div>
+            )}
+            {isViewMode && isEditingCategory && (
+              <CategoryDropdown
+                options={localCategories}
+                buttonText="Select Category"
+                onSelect={(val) => {
+                  setCategory(val);
+                  setIsEditingCategory(false);
+                }}
+                onDelete={handleCategoryDelete}
+                allowAddNew={true}
+              />
+            )}
           </div>
           <div className={styles.templateSection}>
             <h2 className={styles.sectionTitle}>Template Name</h2>
-            <div className={styles.templateInputContainer}>
-              <div className={styles.inputWithButton}>
-                <input
-                  type="text"
-                  placeholder="Enter Template Name"
-                  value={templateName}
-                  onChange={(e) => setTemplateName(e.target.value)}
-                  className={styles.templateInput}
-                />
+            {!isViewMode && (
+              <div className={styles.templateInputContainer}>
+                <div className={styles.inputWithButton}>
+                  <input
+                    type="text"
+                    placeholder="Enter Template Name"
+                    value={templateName}
+                    onChange={(e) => setTemplateName(e.target.value)}
+                    className={styles.templateInput}
+                  />
+                  <button
+                    onClick={handleSave}
+                    className={styles.saveButton}
+                    disabled={
+                      !templateName.trim() || !category || createLoading
+                    }
+                  >
+                    Save
+                  </button>
+                </div>
+                {showError && (
+                  <p className={styles.errorMessage}>
+                    Template Name is required
+                  </p>
+                )}
+              </div>
+            )}
+            {isViewMode && !isEditingTemplate && (
+              <div className={styles.viewModeContainer}>
+                <span>{templateName}</span>
                 <button
-                  onClick={handleSave}
-                  className={styles.saveButton}
-                  disabled={!templateName.trim() || !category || createLoading}
+                  onClick={() => setIsEditingTemplate(true)}
+                  className={styles.editButton}
                 >
-                  Save
+                  Edit
                 </button>
               </div>
-              {showError && (
-                <p className={styles.errorMessage}>Template Name is required</p>
-              )}
-            </div>
+            )}
+            {isViewMode && isEditingTemplate && (
+              <div className={styles.templateInputContainer}>
+                <div className={styles.inputWithButton}>
+                  <input
+                    type="text"
+                    placeholder="Enter Template Name"
+                    value={templateName}
+                    onChange={(e) => setTemplateName(e.target.value)}
+                    className={styles.templateInput}
+                  />
+                  <button
+                    onClick={handleSave}
+                    className={styles.saveButton}
+                    disabled={
+                      !templateName.trim() || !category || createLoading
+                    }
+                  >
+                    Save
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
         <div className={styles.ingestionSection}>
           <h2 className={styles.sectionTitle}>Ingestion</h2>
           <div className={styles.ingestionWrapper}>
-            {!sheetsLoading && (
-              <CategoryDropdown
-                options={sheets}
-                buttonText="Select Ingestion Source"
-                onSelect={setIngestionSource}
-                allowAddNew={false}
-              />
+            {!isViewMode && !sheetsLoading && (
+              <>
+                <CategoryDropdown
+                  options={sheets}
+                  buttonText="Select Ingestion Source"
+                  onSelect={setIngestionSource}
+                  allowAddNew={false}
+                />
+                <button
+                  onClick={handleConnect}
+                  className={styles.connectButton}
+                  disabled={!templateId || !ingestionSource || connectLoading}
+                >
+                  Connect
+                </button>
+              </>
             )}
-            <button
-              onClick={handleConnect}
-              className={styles.connectButton}
-              disabled={!templateId || !ingestionSource || connectLoading}
-            >
-              Connect
-            </button>
+            {isViewMode && ingestionSource && (
+              <div className={styles.viewModeContainer}>
+                <span>{ingestionSource}</span>
+                <div className={styles.actionButtons}>
+                  <button onClick={handleView} className={styles.viewButton}>
+                    View
+                  </button>
+                  <button
+                    onClick={handleConnect}
+                    className={styles.disconnectButton}
+                  >
+                    Disconnect
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
