@@ -2,11 +2,15 @@ import React from "react";
 import styles from "./SectionView.module.scss";
 
 const SectionView = ({ sectionData }) => {
-  const { duration, scroll, audio_embedded, section_number } = sectionData;
+  const { duration, scroll, audio_embedded, sequence, section_name } =
+    sectionData;
 
   return (
     <div className={styles.viewCard}>
       <div className={styles.cardHeader}>
+        <span className={styles.sectionName}>
+          Section {sequence} | {section_name}{" "}
+        </span>
         <button className={styles.viewButton}>View</button>
       </div>
       <div className={styles.metaInfo}>

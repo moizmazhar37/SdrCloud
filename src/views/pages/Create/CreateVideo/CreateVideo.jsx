@@ -11,6 +11,7 @@ import DynamicURL from "./CategoryForm/DynamicURL/DynamicURL";
 import useGetSheetData from "../Hooks/useGetSheetData";
 import SectionCard from "./SectionCard/SectionCard";
 import useGetSections from "../Hooks/useGetSection";
+import ConfirmationModal from "src/Common/ConfirmationModal/ConfirmationModal";
 import { extractCategories, navigationItems, initialOptions } from "./helpers";
 
 const CreateVideo = () => {
@@ -22,15 +23,14 @@ const CreateVideo = () => {
   const [isSheetConnected, setIsSheetConnected] = useState(false);
   const [sectionNum, setSectionNum] = useState(null);
   const [saveTriggered, setSaveTriggered] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const url = new URL(window.location.href);
-  // Extract templateId from the URL
   useEffect(() => {
     const id = url.searchParams.get("templateId");
     setTemplateId(id);
   }, []);
 
-  // Update URL with templateId
   useEffect(() => {
     if (templateId) {
       const newUrl = `/createtemplate&Video?templateId=${templateId}`;
@@ -78,7 +78,16 @@ const CreateVideo = () => {
     setIsSheetConnected(true);
   };
 
-  const isEditable = Boolean(templateId || isSheetConnected); // Editable if templateId exists or sheet is connected
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleProceed = () => {
+    console.log("CLICKED");
+    setIsModalOpen(false);
+  };
+
+  const isEditable = Boolean(templateId || isSheetConnected);
 
   return (
     <div className={styles.wrapper}>
@@ -127,19 +136,27 @@ const CreateVideo = () => {
               onClose={() => setShowDynamicURL(false)}
             />
           )}
-          <div className={styles.cardContainer}>
-            {elementsList?.map((element) => (
-              <SectionCard
-                key={element.id}
-                sectionNumber={element.section_number}
-                sectionName={element.section_name}
-                templateId={element.template_id}
-                duration={element.duration}
-                scroll={element.scroll}
-                previewContent={element.value}
-              />
-            ))}
-          </div>
+          {elementsList && (
+            <div className={styles.cardContainer}>
+              {elementsList?.map((element) => (
+                <SectionCard
+                  key={element.id}
+                  sectionNumber={element.section_number}
+                  sectionName={element.section_name}
+                  templateId={element.template_id}
+                  duration={element.duration}
+                  scroll={element.scroll}
+                  previewContent={element.value}
+                />
+              ))}
+              <button
+                className={styles.createVideo}
+                onClick={() => setIsModalOpen(true)}
+              >
+                Create Video
+              </button>
+            </div>
+          )}
         </div>
         <div className={styles.rightComponent}>
           <SectionArea
@@ -151,6 +168,22 @@ const CreateVideo = () => {
           />
         </div>
       </div>
+
+      <ConfirmationModal
+        isOpen={isModalOpen}
+        onClose={handleModalClose}
+        title="Confirm Video Creation"
+        infoItems={[
+          { label: "Your balance", value: sectionData?.balance },
+          {
+            label: "Total price for generating videos",
+            value: sectionData?.price,
+          },
+        ]}
+        confirmationText="Please confirm if you want to proceed."
+        noteText="You have sufficient balance to create the videos."
+        onAction={handleProceed}
+      />
     </div>
   );
 };

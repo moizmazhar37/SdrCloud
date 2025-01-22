@@ -89,9 +89,9 @@ const VideoUpload = ({
     try {
       const response = await createVideoSection(videoSectionData);
       if (response) {
-        onSaveSuccess(); // Notify the parent about successful save
+        onSaveSuccess();
         toast.success("Video section saved successfully");
-        onClose(); // Close VideoUpload after successful save
+        onClose();
       }
     } catch (error) {
       toast.error("Failed to save video section");
