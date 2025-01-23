@@ -160,7 +160,6 @@ const CreateVideo = () => {
                     id={element.id}
                     sectionNumber={element.section_number}
                     sectionName={element.section_name}
-                    templateId={element.template_id}
                     duration={element.duration}
                     scroll={element.scroll}
                     previewContent={element.value}

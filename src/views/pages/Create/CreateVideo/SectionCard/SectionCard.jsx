@@ -1,5 +1,5 @@
 import React from "react";
-import { FaTrash } from "react-icons/fa";
+import { FaTrash, FaSpinner } from "react-icons/fa";
 import styles from "./section-card.module.scss";
 import useDeleteSection from "../../Hooks/useDeleteSection";
 
@@ -7,7 +7,6 @@ const SectionCard = ({
   id,
   sectionNumber,
   sectionName,
-  templateId,
   duration,
   scroll,
   previewContent,
@@ -31,7 +30,7 @@ const SectionCard = ({
           className={styles.deleteButton}
           disabled={loading}
         >
-          {loading ? "Deleting..." : <FaTrash />}
+          {loading ? <FaSpinner className={styles.spinner} /> : <FaTrash />}
         </button>
       </header>
       <div className={styles.preview}>
