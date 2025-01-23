@@ -5,6 +5,7 @@
   padding: 30px;
   background: #fff;
   border: 1px rgb(240, 239, 239) solid;
+
   box-shadow: 0px 8px 24px 0px rgba(0, 0, 0, 0.04);
 }
 
@@ -112,6 +113,7 @@
 .ingestionWrapper {
   display: flex;
   gap: 12px;
+
   align-items: center;
 
   @media (max-width: 768px) {
@@ -147,62 +149,5 @@
 
   @media (max-width: 768px) {
     width: 100%;
-  }
-}
-
-.viewModeContainer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 16px;
-  background: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 6px;
-  // min-height: 48px;
-}
-
-.editButton,
-.viewButton,
-.disconnectButton {
-  padding: 6px 12px;
-  border-radius: 4px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.editButton {
-  background: transparent;
-  color: #0358ac;
-  border: none;
-
-  &:hover {
-    background: rgba(3, 88, 172, 0.1);
-  }
-}
-
-.actionButtons {
-  display: flex;
-  gap: 8px;
-}
-
-.viewButton {
-  background: transparent;
-  color: #0358ac;
-  border: none;
-
-  &:hover {
-    background: rgba(3, 88, 172, 0.1);
-  }
-}
-
-.disconnectButton {
-  background: white;
-  color: #0358ac;
-  border: 1px solid #0358ac;
-
-  &:hover {
-    background: #0358ac;
-    color: white;
   }
 }
