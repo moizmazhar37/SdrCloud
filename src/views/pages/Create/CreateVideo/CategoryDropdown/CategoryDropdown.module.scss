@@ -1,0 +1,125 @@
+.container {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+.trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    color: #60646b;
+    background-color: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+        background-color: #f9fafb;
+    }
+
+    &:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px white;
+    }
+}
+
+.arrow {
+    width: 1rem;
+    height: 1rem;
+    margin-left: 0.5rem;
+    stroke: currentColor;
+    stroke-width: 2;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform 0.2s ease;
+}
+
+.arrowOpen {
+    transform: rotate(180deg);
+}
+
+.menu {
+    background-color: white;
+    border-radius: 4px;
+    box-shadow:
+        0 4px 6px -1px rgba(0, 0, 0, 0.1),
+        0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    z-index: 9999;
+    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+}
+
+.option {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    font-size: 0.875rem;
+    text-align: left;
+    color: #374151;
+    background-color: transparent;
+    border: none;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+        background-color: #f9fafb;
+        color: #111827;
+    }
+
+    &:first-child {
+        border-top-left-radius: 0.375rem;
+        border-top-right-radius: 0.375rem;
+    }
+
+    &:last-child {
+        border-bottom-left-radius: 0.375rem;
+        border-bottom-right-radius: 0.375rem;
+    }
+
+    &:focus {
+        outline: none;
+        background-color: #f9fafb;
+    }
+}
+
+.addNewCategory {
+    padding: 12px;
+    padding-right: 15px;
+    color: #0358ac;
+    font-size: 12px;
+    cursor: pointer;
+    text-align: center;
+
+    &:hover {
+        background-color: #adb8c7;
+    }
+}
+
+.option {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+
+    .deleteIcon {
+        color: #0358ac;
+        opacity: 1;
+        cursor: pointer;
+
+        &:hover {
+            opacity: 1;
+            color: #ff4444;
+        }
+    }
+}
+
+.optionText {
+    flex: 1;
+    text-align: left;
+}
