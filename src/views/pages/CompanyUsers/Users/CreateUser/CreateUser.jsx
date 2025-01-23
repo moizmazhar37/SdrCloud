@@ -91,7 +91,8 @@ const CreateUser = ({ isOpen, onClose, onSuccess, userId, viewState }) => {
       handleClose();
       onSuccess();
     } catch (error) {
-      toast.error(error.message || "An error occurred");
+      toast.error(error.response?.data?.detail || "Failed to create user");
+      console.error("Failed to create user:", error);
     }
   };
 
@@ -119,7 +120,6 @@ const CreateUser = ({ isOpen, onClose, onSuccess, userId, viewState }) => {
             <h2>{viewState === "edit" ? "Edit User" : "Add New User"}</h2>
           </div>
 
-          {apiError && <div className={styles.apiError}>{apiError}</div>}
 
           <div className={styles.formContainer}>
             <div className={styles.formGroup}>

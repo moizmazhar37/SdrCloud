@@ -37,6 +37,7 @@ function EditGoogleSheet() {
         sheetData.map((item) => ({
           value: item.value,
           dataType: item.dataType || "",
+          column: item.column,
         }))
       );
     }
@@ -45,7 +46,9 @@ function EditGoogleSheet() {
   const handleDropdownChange = (value, newType) => {
     setUpdatedData((prev) =>
       prev.map((item) =>
-        item.value === value ? { ...item, dataType: newType } : item
+        item.value === value
+          ? { ...item, dataType: newType, column: item.column }
+          : item
       )
     );
   };

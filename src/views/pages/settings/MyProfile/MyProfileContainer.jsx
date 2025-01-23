@@ -24,7 +24,7 @@ const ProfileContainer = () => {
 
   return (
     <div>
-                <DynamicNavigator items={navigationItems} />
+      <DynamicNavigator items={navigationItems} />
 
       <MyProfile
         data={data2}
