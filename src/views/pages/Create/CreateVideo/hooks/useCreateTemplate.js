@@ -12,14 +12,10 @@ export const useCreateTemplate = () => {
     setError(null);
     try {
       const transformedPayload = {
-        ...payload,
         hvoTemplateName: payload.templateName,
-        categoryId: payload.category,
+        categoryId: payload.categoryId,
         templateType: "VIDEO",
       };
-      delete transformedPayload.category;
-      delete transformedPayload.templateName;
-
       const response = await Axios({
         url: `${ApiConfig.createVdoTemplate}`,
         method: "POST",

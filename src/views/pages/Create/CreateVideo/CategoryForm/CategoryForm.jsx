@@ -26,6 +26,8 @@ const CategoryForm = ({
   const [templateId, setTemplateId] = useState(null);
   const [localCategories, setLocalCategories] = useState([]);
 
+  const [createModeName, setCreateModeName] = useState(null);
+  const [createModeId, setCreateModeId] = useState(null);
   const {
     data: categoryData,
     loading: categoriesLoading,
@@ -37,7 +39,6 @@ const CategoryForm = ({
   const { deleteCategory, loading: deleteLoading } =
     useDeleteCategory(refetchCategories);
   const { editCategory, loading: editLoading } = useEditCategory();
-
   const categories = useMemo(
     () =>
       categoryData?.map((item) => ({
@@ -87,7 +88,7 @@ const CategoryForm = ({
       }
     } else {
       try {
-        const response = await createTemplate({ templateName, category });
+        const response = await createTemplate({ templateName, categoryId });
         if (response?.id) {
           setTemplateId(response.id);
           onTemplateSave(response.id);
@@ -114,7 +115,8 @@ const CategoryForm = ({
   };
 
   const handleView = () => {
-    console.log("Clicked");
+    const fetchUrl = sectionData.sheet.fetchUrl;
+    window.open(fetchUrl, "_blank");
   };
 
   const handleCategoryDelete = async (categoryId) => {
