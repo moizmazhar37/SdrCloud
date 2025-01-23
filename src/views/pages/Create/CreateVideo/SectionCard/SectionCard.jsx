@@ -1,16 +1,24 @@
 import React from "react";
 import { FaTrash } from "react-icons/fa";
 import styles from "./section-card.module.scss";
+import useDeleteSection from "../../Hooks/useDeleteSection";
 
 const SectionCard = ({
+  id,
   sectionNumber,
   sectionName,
   templateId,
   duration,
   scroll,
   previewContent,
-  onDelete,
+  onDeleteSuccess,
 }) => {
+  const { deleteSection, loading } = useDeleteSection(onDeleteSuccess);
+
+  const handleDelete = () => {
+    deleteSection(id);
+  };
+
   return (
     <div className={styles.sectionCard}>
       <header className={styles.header}>
@@ -18,8 +26,12 @@ const SectionCard = ({
           <h3 className={styles.sectionTitle}>Section {sectionNumber}</h3>
           <p className={styles.sectionName}>{sectionName}</p>
         </div>
-        <button onClick={onDelete} className={styles.deleteButton}>
-          <FaTrash />
+        <button
+          onClick={handleDelete}
+          className={styles.deleteButton}
+          disabled={loading}
+        >
+          {loading ? "Deleting..." : <FaTrash />}
         </button>
       </header>
       <div className={styles.preview}>

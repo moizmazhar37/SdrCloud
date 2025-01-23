@@ -83,7 +83,7 @@ const CreateVideo = () => {
   const handleSheetConnectSuccess = () => {
     setIsSheetConnected(true);
     setIsViewMode(true);
-    setSaveTriggered((prev) => !prev); // This will trigger refetch for getsections and getsheetsdata
+    setSaveTriggered((prev) => !prev);
   };
 
   const handleModalClose = () => {
@@ -157,12 +157,14 @@ const CreateVideo = () => {
                 {elementsList?.map((element) => (
                   <SectionCard
                     key={element.id}
+                    id={element.id}
                     sectionNumber={element.section_number}
                     sectionName={element.section_name}
                     templateId={element.template_id}
                     duration={element.duration}
                     scroll={element.scroll}
                     previewContent={element.value}
+                    onDeleteSuccess={() => setSaveTriggered((prev) => !prev)}
                   />
                 ))}
               </div>
