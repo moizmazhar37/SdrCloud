@@ -1,15 +1,17 @@
 import React, { useState, useRef } from "react";
 import styles from "./VideoUpload.module.scss";
 import CategoryDropdown from "../CategoryDropdown/CategoryDropdown";
+import AudioDescModal from "src/Common/AudioDescModal/AudioDescModal";
 import useCreateVideoSection from "../../Hooks/useCreateVideoSection";
 import { toast } from "react-toastify";
 
 const VideoUpload = ({
   categories,
+  audioCategories,
   templateId,
   sectionNumber,
   onSaveSuccess,
-  onClose, // New prop for closing the component
+  onClose,
 }) => {
   const [videoFile, setVideoFile] = useState(null);
   const [videoURL, setVideoURL] = useState("");
@@ -17,9 +19,10 @@ const VideoUpload = ({
   const [audioFile, setAudioFile] = useState(null);
   const [duration, setDuration] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [audioDescription, setAudioDescription] = useState(false);
+  const [audioDescription, setAudioDescription] = useState("");
   const [scroll, setScroll] = useState(null);
   const [dropdownKey, setDropdownKey] = useState(0);
+  const [showAudioDescModal, setShowAudioDescModal] = useState(false);
 
   const { createVideoSection, loading } = useCreateVideoSection();
   const videoInputRef = useRef(null);
@@ -32,7 +35,7 @@ const VideoUpload = ({
       setVideoURL("");
       setVideoPreview(URL.createObjectURL(file));
       setSelectedCategory(null);
-      setDropdownKey((prev) => prev + 1); // Reset dropdown when video is uploaded
+      setDropdownKey((prev) => prev + 1);
     }
   };
 
@@ -56,7 +59,7 @@ const VideoUpload = ({
     setVideoFile(null);
     setVideoPreview(url);
     setSelectedCategory(null);
-    setDropdownKey((prev) => prev + 1); // Reset dropdown on URL change
+    setDropdownKey((prev) => prev + 1);
   };
 
   const handleUploadAudio = () => {
@@ -64,7 +67,12 @@ const VideoUpload = ({
   };
 
   const handleAddDescription = () => {
-    setAudioDescription(!audioDescription);
+    setShowAudioDescModal(true);
+  };
+
+  const handleAudioDescriptionSave = (description) => {
+    setAudioDescription(description);
+    setShowAudioDescModal(false);
   };
 
   const handleSave = async () => {
@@ -219,6 +227,14 @@ const VideoUpload = ({
           </div>
         </div>
       </div>
+
+      {showAudioDescModal && (
+        <AudioDescModal
+          dynamicFields={audioCategories}
+          onSave={handleAudioDescriptionSave}
+          onClose={() => setShowAudioDescModal(false)}
+        />
+      )}
     </div>
   );
 };

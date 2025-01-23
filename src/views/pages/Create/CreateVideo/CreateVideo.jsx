@@ -64,13 +64,6 @@ const CreateVideo = () => {
   const staticUrlCategories = extractCategories(data, "Static URL");
   const dynamicUrlCategories = extractCategories(data, "Dynamic URL");
   const videoCategories = extractCategories(data, "Video URL");
-
-  // New category extractions
-  const textCategories = extractCategories(data, "Text");
-  const firstNameCategories = extractCategories(data, "First name (Required)");
-  const lastNameCategories = extractCategories(data, "Last name");
-  const orgCategories = extractCategories(data, "Customer organization");
-
   const audioCategories = getAudioCategories(data);
 
   const handleSectionTypeChange = (selectedValue, sectionNumber) => {
@@ -142,6 +135,7 @@ const CreateVideo = () => {
           {showVideoUpload && (
             <VideoUpload
               templateId={templateId}
+              audioCategories={audioCategories}
               categories={videoCategories}
               sectionNumber={sectionNum}
               onSaveSuccess={handleSaveSuccess}
@@ -151,6 +145,7 @@ const CreateVideo = () => {
           {showStaticURL && (
             <StaticURL
               categories={staticUrlCategories}
+              audioCategories={audioCategories}
               templateId={templateId}
               sectionNumber={sectionNum}
               onSaveSuccess={handleSaveSuccess}
@@ -160,6 +155,7 @@ const CreateVideo = () => {
           {showDynamicURL && (
             <DynamicURL
               categories={dynamicUrlCategories}
+              audioCategories={audioCategories}
               templateId={templateId}
               sectionNumber={sectionNum}
               onSaveSuccess={handleSaveSuccess}

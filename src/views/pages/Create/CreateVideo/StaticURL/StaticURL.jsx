@@ -1,15 +1,17 @@
 import React, { useState, useRef, useEffect } from "react";
 import styles from "./StaticURL.module.scss";
 import CategoryDropdown from "../CategoryDropdown/CategoryDropdown";
+import AudioDescModal from "src/Common/AudioDescModal/AudioDescModal";
 import useCreateVideoSection from "../../Hooks/useCreateVideoSection";
 import { toast } from "react-toastify";
 
 const StaticURL = ({
   categories = [],
+  audioCategories,
   templateId,
   sectionNumber,
   onSaveSuccess,
-  onClose, // New prop for closing the component
+  onClose,
 }) => {
   const [url, setUrl] = useState("https://www.");
   const [duration, setDuration] = useState("");
@@ -17,9 +19,10 @@ const StaticURL = ({
   const [showPreview, setShowPreview] = useState(false);
   const [audioFile, setAudioFile] = useState(null);
   const [audioTitle, setAudioTitle] = useState("");
-  const [audioDescription, setAudioDescription] = useState(false);
+  const [audioDescription, setAudioDescription] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [dropdownKey, setDropdownKey] = useState(0);
+  const [showAudioDescModal, setShowAudioDescModal] = useState(false);
 
   const iframeRef = useRef(null);
   const audioInputRef = useRef(null);
@@ -37,7 +40,7 @@ const StaticURL = ({
     const value = e.target.value;
     setUrl(value);
     setSelectedCategory(null);
-    setDropdownKey((prev) => prev + 1); // Reset dropdown when URL is manually entered
+    setDropdownKey((prev) => prev + 1);
   };
 
   const handleDurationChange = (e) => {
@@ -60,6 +63,15 @@ const StaticURL = ({
 
   const handleUploadAudio = () => {
     audioInputRef.current?.click();
+  };
+
+  const handleAddDescription = () => {
+    setShowAudioDescModal(true);
+  };
+
+  const handleAudioDescriptionSave = (description) => {
+    setAudioDescription(description);
+    setShowAudioDescModal(false);
   };
 
   const scrollTypes = [
@@ -96,8 +108,8 @@ const StaticURL = ({
       const response = await createVideoSection(videoSectionData);
       if (response) {
         toast.success("Static URL section saved successfully!");
-        onSaveSuccess(); // Notify parent about successful save
-        onClose(); // Close StaticURL after successful save
+        onSaveSuccess();
+        onClose();
       }
     } catch (error) {
       toast.error("Failed to save static URL section");
@@ -169,7 +181,7 @@ const StaticURL = ({
                   className={`${styles.descriptionBtn} ${
                     audioDescription ? styles.active : ""
                   }`}
-                  onClick={() => setAudioDescription(!audioDescription)}
+                  onClick={handleAddDescription}
                 >
                   Add Audio Description
                 </button>
@@ -217,6 +229,14 @@ const StaticURL = ({
           </button>
         </div>
       </div>
+
+      {showAudioDescModal && (
+        <AudioDescModal
+          dynamicFields={audioCategories}
+          onSave={handleAudioDescriptionSave}
+          onClose={() => setShowAudioDescModal(false)}
+        />
+      )}
     </div>
   );
 };

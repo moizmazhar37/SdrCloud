@@ -1,23 +1,26 @@
 import React, { useState } from "react";
 import styles from "./DynamicURL.module.scss";
 import CategoryDropdown from "../CategoryDropdown/CategoryDropdown";
+import AudioDescModal from "src/Common/AudioDescModal/AudioDescModal";
 import useCreateVideoSection from "../../Hooks/useCreateVideoSection";
 import { toast } from "react-toastify";
 
 const DynamicURL = ({
   categories = [],
+  audioCategories,
   templateId,
   sectionNumber,
   onSaveSuccess,
-  onClose, // New prop for closing the component
+  onClose,
 }) => {
   const [selectedURL, setSelectedURL] = useState(null);
   const [duration, setDuration] = useState("");
   const [selectedType, setSelectedType] = useState("");
   const [audioFile, setAudioFile] = useState(null);
   const [audioTitle, setAudioTitle] = useState("");
-  const [audioDescription, setAudioDescription] = useState(false);
+  const [audioDescription, setAudioDescription] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showAudioDescModal, setShowAudioDescModal] = useState(false);
 
   const { createVideoSection } = useCreateVideoSection();
 
@@ -36,6 +39,15 @@ const DynamicURL = ({
       setAudioFile(file);
       setAudioTitle(file.name);
     }
+  };
+
+  const handleAddDescription = () => {
+    setShowAudioDescModal(true);
+  };
+
+  const handleAudioDescriptionSave = (description) => {
+    setAudioDescription(description);
+    setShowAudioDescModal(false);
   };
 
   const scrollTypes = [
@@ -74,8 +86,8 @@ const DynamicURL = ({
       const response = await createVideoSection(videoSectionData);
       if (response) {
         toast.success("Dynamic URL section saved successfully!");
-        onSaveSuccess(); // Notify parent about successful save
-        onClose(); // Close DynamicURL after successful save
+        onSaveSuccess();
+        onClose();
       }
     } catch (error) {
       toast.error("Failed to save dynamic URL section");
@@ -142,8 +154,10 @@ const DynamicURL = ({
               Upload Audio
             </button>
             <button
-              className={styles.descriptionBtn}
-              onClick={() => setAudioDescription(!audioDescription)}
+              className={`${styles.descriptionBtn} ${
+                audioDescription ? styles.active : ""
+              }`}
+              onClick={handleAddDescription}
             >
               Add Audio Description
             </button>
@@ -172,6 +186,14 @@ const DynamicURL = ({
           </button>
         </div>
       </div>
+
+      {showAudioDescModal && (
+        <AudioDescModal
+          dynamicFields={audioCategories}
+          onSave={handleAudioDescriptionSave}
+          onClose={() => setShowAudioDescModal(false)}
+        />
+      )}
     </div>
   );
 };
