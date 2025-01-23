@@ -3,22 +3,27 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import ApiConfig from "src/config/APIConfig";
 
-const useGetSheetData = (templateId) => {
+const useGetSheetData = (templateId, trigger) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const getSheetType = async () => {
+      if (!templateId) {
+        setData(null);
+        return;
+      }
+
       try {
         setLoading(true);
         setError(null);
-        console.log("Fetching data for template ID:", templateId);
         const res = await axios.get(`${ApiConfig.headers}/${templateId}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
+
         if (res?.status === 200) {
           setData(res?.data);
         }
@@ -31,12 +36,8 @@ const useGetSheetData = (templateId) => {
       }
     };
 
-    if (templateId) {
-      getSheetType();
-    } else {
-      setData(null);
-    }
-  }, [templateId]);
+    getSheetType();
+  }, [templateId, trigger]);
 
   return { data, loading, error };
 };

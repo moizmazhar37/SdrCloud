@@ -10,16 +10,24 @@ const SectionArea = ({
   templateId = null,
   elementsList = [],
 }) => {
-  const [sections, setSections] = useState([]);
+  const [sections, setSections] = useState([1, 2, 3, 4]);
   const [sectionData, setSectionData] = useState({});
-  //showing sections by sequence number
+
+  // Manage sections and section data based on the templateId and elementsList
   useEffect(() => {
     if (templateId && elementsList?.length > 0) {
       const sectionMap = {};
       elementsList.forEach((element) => {
         sectionMap[element.sequence] = element;
       });
-      setSectionData(sectionMap);
+
+      // Only update sectionData if it has changed
+      setSectionData((prev) => {
+        const prevKeys = Object.keys(prev || {}).join();
+        const currentKeys = Object.keys(sectionMap || {}).join();
+        return prevKeys === currentKeys ? prev : sectionMap;
+      });
+
       let sortedSequences = Object.keys(sectionMap)
         .map(Number)
         .sort((a, b) => a - b);
@@ -28,20 +36,34 @@ const SectionArea = ({
       while (sortedSequences.length < 4) {
         sortedSequences.push(sortedSequences.length + 1);
       }
-      setSections(sortedSequences);
+
+      // Only update sections if they have changed
+      setSections((prev) =>
+        JSON.stringify(prev) === JSON.stringify(sortedSequences)
+          ? prev
+          : sortedSequences
+      );
     } else {
-      setSections([1, 2, 3, 4]);
+      // Default to 4 sections if no elements are present
+      setSections((prev) =>
+        JSON.stringify(prev) === JSON.stringify([1, 2, 3, 4])
+          ? prev
+          : [1, 2, 3, 4]
+      );
     }
   }, [templateId, elementsList]);
 
+  // Add a new section
   const addNewSection = () => {
-    setSections([...sections, sections.length + 1]);
+    setSections((prev) => [...prev, prev.length + 1]);
   };
 
+  // Handle selecting a type for a section
   const handleSelect = (value, sectionNum) => {
     onSectionTypeChange(value, sectionNum);
   };
 
+  // Render a single section
   const renderSection = (sequence) => {
     const hasData = sectionData[sequence];
 

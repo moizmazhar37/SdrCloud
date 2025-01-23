@@ -25,25 +25,28 @@ const CreateVideo = () => {
   const [sectionNum, setSectionNum] = useState(null);
   const [saveTriggered, setSaveTriggered] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isViewMode, setIsViewMode] = useState(false);
 
   const { handleCreateVideo, isLoading } = useCreateVideo();
 
-  const url = new URL(window.location.href);
   useEffect(() => {
+    const url = new URL(window.location.href);
     const id = url.searchParams.get("templateId");
-    setTemplateId(id);
+    if (id) {
+      setTemplateId(id);
+      setIsViewMode(true);
+    }
   }, []);
 
   useEffect(() => {
     if (templateId) {
       const newUrl = `/createtemplate&Video?templateId=${templateId}`;
-      window.history.pushState({}, "", newUrl);
+      if (isSheetConnected) window.history.pushState({}, "", newUrl);
     }
   }, [templateId]);
 
   const { data: sheetData, loading: sheetsLoading } = useGetSheets();
-  const { data, loading, error } = useGetSheetData(templateId);
-
+  const { data, loading, error } = useGetSheetData(templateId, saveTriggered);
   const {
     data: sectionData,
     loading: sectionLoading,
@@ -79,6 +82,8 @@ const CreateVideo = () => {
 
   const handleSheetConnectSuccess = () => {
     setIsSheetConnected(true);
+    setIsViewMode(true);
+    setSaveTriggered((prev) => !prev); // This will trigger refetch for getsections and getsheetsdata
   };
 
   const handleModalClose = () => {
@@ -90,7 +95,7 @@ const CreateVideo = () => {
     setIsModalOpen(false);
   };
 
-  const isEditable = Boolean(templateId || isSheetConnected);
+  const isEditable = Boolean(isViewMode || isSheetConnected);
 
   const confirmationText =
     sectionData?.price > sectionData?.balance
@@ -107,6 +112,8 @@ const CreateVideo = () => {
             sheetsLoading={sheetsLoading}
             onTemplateSave={handleTemplateSave}
             onSheetConnectSuccess={handleSheetConnectSuccess}
+            sectionData={sectionData}
+            isViewMode={isViewMode}
           />
           {showImageUpload && (
             <ImageUpload
@@ -145,25 +152,29 @@ const CreateVideo = () => {
             />
           )}
           {elementsList && (
-            <div className={styles.cardContainer}>
-              {elementsList?.map((element) => (
-                <SectionCard
-                  key={element.id}
-                  sectionNumber={element.section_number}
-                  sectionName={element.section_name}
-                  templateId={element.template_id}
-                  duration={element.duration}
-                  scroll={element.scroll}
-                  previewContent={element.value}
-                />
-              ))}
-              <button
-                className={styles.createVideo}
-                onClick={() => setIsModalOpen(true)}
-                disabled={isLoading}
-              >
-                {isLoading ? "Creating..." : "Create Video"}
-              </button>
+            <div>
+              <div className={styles.cardContainer}>
+                {elementsList?.map((element) => (
+                  <SectionCard
+                    key={element.id}
+                    sectionNumber={element.section_number}
+                    sectionName={element.section_name}
+                    templateId={element.template_id}
+                    duration={element.duration}
+                    scroll={element.scroll}
+                    previewContent={element.value}
+                  />
+                ))}
+              </div>
+              {elementsList.length > 0 && (
+                <button
+                  className={styles.createVideo}
+                  onClick={() => setIsModalOpen(true)}
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Creating..." : "Create Video"}
+                </button>
+              )}
             </div>
           )}
         </div>

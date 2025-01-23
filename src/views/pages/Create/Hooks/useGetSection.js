@@ -10,10 +10,14 @@ const useGetSections = (templateId, trigger) => {
 
   useEffect(() => {
     const getSections = async () => {
+      if (!templateId) {
+        setData(null);
+        return;
+      }
+
       try {
         setLoading(true);
         setError(null);
-        console.log("Fetching data for template ID:", templateId);
         const res = await axios.get(
           `${ApiConfig.getTemplatebyID}/${templateId}`,
           {
@@ -22,6 +26,7 @@ const useGetSections = (templateId, trigger) => {
             },
           }
         );
+
         if (res?.status === 200) {
           setData(res?.data);
         }
@@ -34,11 +39,7 @@ const useGetSections = (templateId, trigger) => {
       }
     };
 
-    if (templateId) {
-      getSections();
-    } else {
-      setData(null);
-    }
+    getSections();
   }, [templateId, trigger]);
 
   return { data, loading, error };
