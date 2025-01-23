@@ -169,7 +169,7 @@ const CreateVideo = () => {
                   <SectionCard
                     key={element.id}
                     id={element.id}
-                    sectionNumber={element.section_number}
+                    sectionNumber={element.sequence}
                     sectionName={element.section_name}
                     duration={element.duration}
                     scroll={element.scroll}

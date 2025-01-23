@@ -1,5 +1,5 @@
 import React from "react";
-import { FaTrash, FaSpinner } from "react-icons/fa";
+import { FaTrash, FaSpinner, FaEdit } from "react-icons/fa";
 import styles from "./section-card.module.scss";
 import useDeleteSection from "../../Hooks/useDeleteSection";
 
@@ -18,15 +18,19 @@ const SectionCard = ({
     deleteSection(id);
   };
 
+  const handleEdit = () => {
+    console.log("OPEN");
+  };
+
   const renderPreview = () => {
     if (!previewContent) {
       return <p className={styles.noPreview}>No Preview Available</p>;
     }
-    //if it is a video
+    // If it is a video
     if (previewContent.endsWith(".mp4")) {
       return <video src={previewContent} controls className={styles.video} />;
     }
-    //if image
+    // If image
     if (
       previewContent.endsWith(".jpg") ||
       previewContent.endsWith(".png") ||
@@ -58,13 +62,18 @@ const SectionCard = ({
           <h3 className={styles.sectionTitle}>Section {sectionNumber}</h3>
           <p className={styles.sectionName}>{sectionName}</p>
         </div>
-        <button
-          onClick={handleDelete}
-          className={styles.deleteButton}
-          disabled={loading}
-        >
-          {loading ? <FaSpinner className={styles.spinner} /> : <FaTrash />}
-        </button>
+        <div>
+          <button onClick={handleEdit} className={styles.deleteButton}>
+            <FaEdit />
+          </button>
+          <button
+            onClick={handleDelete}
+            className={styles.deleteButton}
+            disabled={loading}
+          >
+            {loading ? <FaSpinner className={styles.spinner} /> : <FaTrash />}
+          </button>
+        </div>
       </header>
       <div className={styles.preview}>{renderPreview()}</div>
       <footer className={styles.footer}>
