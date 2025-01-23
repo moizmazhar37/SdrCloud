@@ -9,7 +9,7 @@ const ImageUpload = ({
   templateId,
   sectionNumber,
   onSaveSuccess,
-  onClose, // New prop for closing the component
+  onClose,
 }) => {
   const [imageFile, setImageFile] = useState(null);
   const [imageURL, setImageURL] = useState("");
@@ -17,7 +17,7 @@ const ImageUpload = ({
   const [audioFile, setAudioFile] = useState(null);
   const [duration, setDuration] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [audioDescription, setAudioDescription] = useState(false);
+  const [audioDescription, setAudioDescription] = useState("");
   const [scroll, setScroll] = useState(null);
   const [dropdownKey, setDropdownKey] = useState(0);
 
@@ -64,7 +64,7 @@ const ImageUpload = ({
   };
 
   const handleAddDescription = () => {
-    setAudioDescription(!audioDescription);
+    console.log("");
   };
 
   const handleSave = async () => {
@@ -91,7 +91,7 @@ const ImageUpload = ({
       if (response) {
         onSaveSuccess(); // Notify the parent about the successful save
         toast.success("Image section saved successfully");
-        onClose(); // Close ImageUpload after successful save
+        onClose();
       }
     } catch (error) {
       toast.error("Failed to save image section");
