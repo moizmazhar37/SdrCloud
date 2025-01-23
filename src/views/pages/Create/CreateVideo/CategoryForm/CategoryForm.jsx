@@ -5,6 +5,7 @@ import useGetCategories from "../hooks/useGetCategories";
 import { useCreateTemplate } from "../hooks/useCreateTemplate";
 import { useConnectSheet } from "../hooks/useConnectSheet";
 import useDeleteCategory from "../hooks/useDeleteCategory";
+import useEditCategory from "../../Hooks/useEditCategoey";
 
 const CategoryForm = ({
   sheetData,
@@ -12,9 +13,11 @@ const CategoryForm = ({
   onTemplateSave,
   onSheetConnectSuccess,
   sectionData,
+  template_id, //required for view mode and null in create mode
   isViewMode,
 }) => {
   const [category, setCategory] = useState(null);
+  const [categoryId, setCategoryId] = useState(null);
   const [isEditingCategory, setIsEditingCategory] = useState(false);
   const [isEditingTemplate, setIsEditingTemplate] = useState(false);
   const [ingestionSource, setIngestionSource] = useState(null);
@@ -33,6 +36,7 @@ const CategoryForm = ({
   const { connectSheet, loading: connectLoading } = useConnectSheet();
   const { deleteCategory, loading: deleteLoading } =
     useDeleteCategory(refetchCategories);
+  const { editCategory, loading: editLoading } = useEditCategory();
 
   const categories = useMemo(
     () =>
@@ -59,9 +63,9 @@ const CategoryForm = ({
 
   useEffect(() => {
     if (sectionData && isViewMode) {
-      setTemplateId(sectionData.getVideo?.id);
       setTemplateName(sectionData.getVideo?.hvoTemplateName || "");
       setCategory(sectionData.getVideo?.categoryName || null);
+      setCategoryId(sectionData.getVideo?.categoryId || null);
       setIngestionSource(sectionData.sheet?.title || null);
     }
   }, [sectionData, isViewMode]);
@@ -73,15 +77,25 @@ const CategoryForm = ({
     }
 
     setShowError(false);
-    try {
-      const response = await createTemplate({ templateName, category });
-      if (response?.id) {
-        setTemplateId(response.id);
-        onTemplateSave(response.id);
+
+    if (isViewMode) {
+      try {
+        await editCategory(template_id, categoryId, templateName);
         setIsEditingTemplate(false);
+      } catch (error) {
+        console.error("Error editing template:", error);
       }
-    } catch (error) {
-      console.error("Error creating template:", error);
+    } else {
+      try {
+        const response = await createTemplate({ templateName, category });
+        if (response?.id) {
+          setTemplateId(response.id);
+          onTemplateSave(response.id);
+          setIsEditingTemplate(false);
+        }
+      } catch (error) {
+        console.error("Error creating template:", error);
+      }
     }
   };
 
@@ -98,6 +112,7 @@ const CategoryForm = ({
       console.error("Error connecting sheet:", error);
     }
   };
+
   const handleView = () => {
     console.log("Clicked");
   };
@@ -114,6 +129,17 @@ const CategoryForm = ({
     }
   };
 
+  const handleCategorySelect = (selectedValue) => {
+    const selectedCategory = localCategories.find(
+      (cat) => cat.value === selectedValue
+    );
+    if (selectedCategory) {
+      setCategory(selectedCategory.label);
+      setCategoryId(selectedCategory.id);
+      setIsEditingCategory(false);
+    }
+  };
+
   return (
     <div className={styles.formWrapper}>
       <div className={styles.formContainer}>
@@ -124,7 +150,7 @@ const CategoryForm = ({
               <CategoryDropdown
                 options={localCategories}
                 buttonText="Select Category"
-                onSelect={setCategory}
+                onSelect={handleCategorySelect}
                 onDelete={handleCategoryDelete}
                 allowAddNew={true}
               />
@@ -143,11 +169,8 @@ const CategoryForm = ({
             {isViewMode && isEditingCategory && (
               <CategoryDropdown
                 options={localCategories}
-                buttonText="Select Category"
-                onSelect={(val) => {
-                  setCategory(val);
-                  setIsEditingCategory(false);
-                }}
+                buttonText="Select New Category"
+                onSelect={handleCategorySelect}
                 onDelete={handleCategoryDelete}
                 allowAddNew={true}
               />
@@ -206,9 +229,7 @@ const CategoryForm = ({
                   <button
                     onClick={handleSave}
                     className={styles.saveButton}
-                    disabled={
-                      !templateName.trim() || !category || createLoading
-                    }
+                    disabled={!templateName.trim() || !category || editLoading}
                   >
                     Save
                   </button>

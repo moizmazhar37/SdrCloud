@@ -114,6 +114,7 @@ const CreateVideo = () => {
             onSheetConnectSuccess={handleSheetConnectSuccess}
             sectionData={sectionData}
             isViewMode={isViewMode}
+            template_id={templateId}
           />
           {showImageUpload && (
             <ImageUpload
