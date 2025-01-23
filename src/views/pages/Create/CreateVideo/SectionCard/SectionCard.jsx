@@ -18,6 +18,39 @@ const SectionCard = ({
     deleteSection(id);
   };
 
+  const renderPreview = () => {
+    if (!previewContent) {
+      return <p className={styles.noPreview}>No Preview Available</p>;
+    }
+    //if it is a video
+    if (previewContent.endsWith(".mp4")) {
+      return <video src={previewContent} controls className={styles.video} />;
+    }
+    //if image
+    if (
+      previewContent.endsWith(".jpg") ||
+      previewContent.endsWith(".png") ||
+      previewContent.endsWith(".gif") ||
+      previewContent.endsWith(".jpeg")
+    ) {
+      return (
+        <img src={previewContent} alt="Preview" className={styles.image} />
+      );
+    }
+
+    // Assume it's a link and render an iframe
+    return (
+      <iframe
+        src={previewContent}
+        className={styles.iframe}
+        width="100%"
+        height="300px"
+        allowFullScreen
+        title="Preview"
+      />
+    );
+  };
+
   return (
     <div className={styles.sectionCard}>
       <header className={styles.header}>
@@ -33,17 +66,7 @@ const SectionCard = ({
           {loading ? <FaSpinner className={styles.spinner} /> : <FaTrash />}
         </button>
       </header>
-      <div className={styles.preview}>
-        {previewContent ? (
-          previewContent.endsWith(".mp4") ? (
-            <video src={previewContent} controls className={styles.video} />
-          ) : (
-            <img src={previewContent} alt="Preview" className={styles.image} />
-          )
-        ) : (
-          <p className={styles.noPreview}>No Preview Available</p>
-        )}
-      </div>
+      <div className={styles.preview}>{renderPreview()}</div>
       <footer className={styles.footer}>
         <span>{duration} sec</span>
         <span>Scroll - {scroll ? "Yes" : "No"}</span>
