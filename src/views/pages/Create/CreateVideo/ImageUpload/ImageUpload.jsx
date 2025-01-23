@@ -1,19 +1,28 @@
 import React, { useState, useRef } from "react";
 import styles from "./ImageUpload.module.scss";
-import CategoryDropdown from "../../CategoryDropdown/CategoryDropdown";
-import useCreateVideoSection from "../../../Hooks/useCreateVideoSection";
+import CategoryDropdown from "../CategoryDropdown/CategoryDropdown";
+import useCreateVideoSection from "../../Hooks/useCreateVideoSection";
 import { toast } from "react-toastify";
+import AudioDescModal from "src/Common/AudioDescModal/AudioDescModal";
 
-const ImageUpload = ({ categories, templateId, sectionNumber }) => {
+const ImageUpload = ({
+  categories,
+  audioCategories,
+  templateId,
+  sectionNumber,
+  onSaveSuccess,
+  onClose,
+}) => {
   const [imageFile, setImageFile] = useState(null);
   const [imageURL, setImageURL] = useState("");
   const [imagePreview, setImagePreview] = useState("");
   const [audioFile, setAudioFile] = useState(null);
   const [duration, setDuration] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [audioDescription, setAudioDescription] = useState(false);
+  const [audioDescription, setAudioDescription] = useState("");
   const [scroll, setScroll] = useState(null);
-  const [dropdownKey, setDropdownKey] = useState(0); // Add this state
+  const [dropdownKey, setDropdownKey] = useState(0);
+  const [showAudioDescModal, setShowAudioDescModal] = useState(false);
 
   const { createVideoSection, loading } = useCreateVideoSection();
   const imageInputRef = useRef(null);
@@ -26,7 +35,7 @@ const ImageUpload = ({ categories, templateId, sectionNumber }) => {
       setImageURL("");
       setImagePreview(URL.createObjectURL(file));
       setSelectedCategory(null);
-      setDropdownKey((prev) => prev + 1); // Increment key to force re-render
+      setDropdownKey((prev) => prev + 1);
     }
   };
 
@@ -50,7 +59,7 @@ const ImageUpload = ({ categories, templateId, sectionNumber }) => {
     setImageFile(null);
     setImagePreview(url);
     setSelectedCategory(null);
-    setDropdownKey((prev) => prev + 1); // Reset dropdown on URL change
+    setDropdownKey((prev) => prev + 1);
   };
 
   const handleUploadAudio = () => {
@@ -58,7 +67,12 @@ const ImageUpload = ({ categories, templateId, sectionNumber }) => {
   };
 
   const handleAddDescription = () => {
-    setAudioDescription(!audioDescription);
+    setShowAudioDescModal(true);
+  };
+
+  const handleAudioDescriptionSave = (description) => {
+    setAudioDescription(description);
+    setShowAudioDescModal(false);
   };
 
   const handleSave = async () => {
@@ -67,8 +81,8 @@ const ImageUpload = ({ categories, templateId, sectionNumber }) => {
     const videoSectionData = {
       hvoTemplateId: templateId,
       sectionName: selectedCategory || "IMAGE URL",
-      sectionNumber: sectionNumber,
-      sequence: 1,
+      sectionNumber: 3,
+      sequence: sectionNumber,
       duration: duration,
       audioEmbedded: !!audioFile,
       scroll: scroll,
@@ -82,6 +96,11 @@ const ImageUpload = ({ categories, templateId, sectionNumber }) => {
 
     try {
       const response = await createVideoSection(videoSectionData);
+      if (response) {
+        onSaveSuccess();
+        toast.success("Image section saved successfully");
+        onClose();
+      }
     } catch (error) {
       toast.error("Failed to save image section");
     }
@@ -130,7 +149,7 @@ const ImageUpload = ({ categories, templateId, sectionNumber }) => {
             <div className={styles.dropdownContainer}>
               <label>Select Image URL</label>
               <CategoryDropdown
-                key={dropdownKey} // Add key prop
+                key={dropdownKey}
                 options={categories}
                 buttonText="Select Image URL"
                 onSelect={(value, label) => handleCategorySelect(value, label)}
@@ -200,10 +219,20 @@ const ImageUpload = ({ categories, templateId, sectionNumber }) => {
             >
               {loading ? "Saving..." : "Save"}
             </button>
-            <button className={styles.nextButton}>Next</button>
+            <button className={styles.cancelButton} onClick={onClose}>
+              Cancel
+            </button>
           </div>
         </div>
       </div>
+      <div className={styles.audioModal}></div>
+      {showAudioDescModal && (
+        <AudioDescModal
+          dynamicFields={audioCategories}
+          onSave={handleAudioDescriptionSave}
+          onClose={() => setShowAudioDescModal(false)}
+        />
+      )}
     </div>
   );
 };

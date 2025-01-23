@@ -4,89 +4,109 @@ import SectionArea from "./SectionArea/SectionArea";
 import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
 import useGetSheets from "./hooks/useGetSheets";
 import styles from "./CreateVideo.module.scss";
-import ImageUpload from "./CategoryForm/ImageUpload/ImageUpload";
-import VideoUpload from "./CategoryForm/VideoUpload/VideoUpload";
-import StaticURL from "./CategoryForm/StaticURL/StaticURL";
+import ImageUpload from "./ImageUpload/ImageUpload";
+import VideoUpload from "./VideoUpload/VideoUpload";
+import StaticURL from "./StaticURL/StaticURL";
+import DynamicURL from "./DynamicURL/DynamicURL";
 import useGetSheetData from "../Hooks/useGetSheetData";
 import SectionCard from "./SectionCard/SectionCard";
 import useGetSections from "../Hooks/useGetSection";
+import useCreateVideo from "./hooks/useCreateVideo";
+import ConfirmationModal from "src/Common/ConfirmationModal/ConfirmationModal";
+import {
+  extractCategories,
+  navigationItems,
+  initialOptions,
+  getAudioCategories,
+} from "./helpers";
 
 const CreateVideo = () => {
   const [showImageUpload, setShowImageUpload] = useState(false);
+  const [showDynamicURL, setShowDynamicURL] = useState(false);
   const [showVideoUpload, setShowVideoUpload] = useState(false);
   const [showStaticURL, setShowStaticURL] = useState(false);
   const [templateId, setTemplateId] = useState(null);
-  const [connectedSheetId, setConnectedSheetId] = useState(null);
   const [isSheetConnected, setIsSheetConnected] = useState(false);
   const [sectionNum, setSectionNum] = useState(null);
+  const [saveTriggered, setSaveTriggered] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isViewMode, setIsViewMode] = useState(false);
 
-  const url = new URL(window.location.href);
+  const { handleCreateVideo, isLoading } = useCreateVideo();
+
   useEffect(() => {
-    setTemplateId(url.searchParams.get('templateId'))
+    const url = new URL(window.location.href);
+    const id = url.searchParams.get("templateId");
+    if (id) {
+      setTemplateId(id);
+      setIsViewMode(true);
+    }
+  }, []);
 
-  })
+  useEffect(() => {
+    if (templateId) {
+      const newUrl = `/createtemplate&Video?templateId=${templateId}`;
+      if (isSheetConnected) window.history.pushState({}, "", newUrl);
+    }
+  }, [templateId]);
 
   const { data: sheetData, loading: sheetsLoading } = useGetSheets();
-  const { data, loading, error } = useGetSheetData(
-    isSheetConnected ? templateId : null
-  );
+  const { data, loading, error } = useGetSheetData(templateId, saveTriggered);
+  const {
+    data: sectionData,
+    loading: sectionLoading,
+    error: sectionError,
+  } = useGetSections(templateId, saveTriggered);
 
-  const { data: sectionData, loading: sectionLoading, error: sectionError } = useGetSections(
-     templateId
-  );
-
-  const elementsList = sectionData?.elementsList
-
-  // Extract values by data type
-  const extractCategories = (type) => {
-    if (!data || !Array.isArray(data)) {
-      console.warn("Data is null or not an array");
-      return [];
-    }
-    return data
-      .filter((item) => item.dataType === type)
-      .map((item) => ({ label: item.value, value: item.value }));
-  };
-
-
-  const imageCategories = extractCategories("Image URL");
-  const staticUrlCategories = extractCategories("Static URL");
-  const dynamicUrlCategories = extractCategories("Dynamic URL");
-  const videoCategories = extractCategories("Video URL");
-
-  const navigationItems = [
-    { text: "Template", route: "/CreateTemplate" },
-    { text: "New Video Template", route: "/createtemplate&Video" },
-  ];
-
-  const initialOptions = [
-    { label: "UPLOAD IMAGE", value: "image" },
-    { label: "VIDEO CLIPS", value: "video" },
-    { label: "STATIC URL", value: "static_url" },
-    { label: "DYNAMIC URL", value: "dynamic_url" },
-  ];
+  const elementsList = sectionData?.elementsList;
+  // Extract categories
+  const imageCategories = extractCategories(data, "Image URL");
+  const staticUrlCategories = extractCategories(data, "Static URL");
+  const dynamicUrlCategories = extractCategories(data, "Dynamic URL");
+  const videoCategories = extractCategories(data, "Video URL");
+  const audioCategories = getAudioCategories(data);
 
   const handleSectionTypeChange = (selectedValue, sectionNumber) => {
     setSectionNum(sectionNumber);
-    console.log(
-      `Selected option: ${selectedValue}, Section number: ${sectionNumber}`
-    );
-
     setShowImageUpload(selectedValue === "image");
     setShowVideoUpload(selectedValue === "video");
     setShowStaticURL(selectedValue === "static_url");
+    setShowDynamicURL(selectedValue === "dynamic_url");
   };
 
   const handleTemplateSave = (id) => {
     setTemplateId(id);
   };
 
-  const handleSheetConnectSuccess = (sheetId) => {
-    setIsSheetConnected(true);
-    setConnectedSheetId(sheetId);
+  const handleSaveSuccess = () => {
+    setSaveTriggered((prev) => !prev);
+    setShowImageUpload(false);
+    setShowVideoUpload(false);
+    setShowStaticURL(false);
+    setShowDynamicURL(false);
   };
 
+  const handleSheetConnectSuccess = () => {
+    setIsSheetConnected(true);
+    setIsViewMode(true);
+    setSaveTriggered((prev) => !prev);
+  };
 
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleProceed = () => {
+    handleCreateVideo(templateId);
+    setIsModalOpen(false);
+  };
+
+  const isEditable = Boolean(isViewMode || isSheetConnected);
+
+  const confirmationText =
+    sectionData?.price > sectionData?.balance
+      ? "You have insufficient balance to create the videos."
+      : "You have sufficient balance to create the videos.";
 
   return (
     <div className={styles.wrapper}>
@@ -98,51 +118,104 @@ const CreateVideo = () => {
             sheetsLoading={sheetsLoading}
             onTemplateSave={handleTemplateSave}
             onSheetConnectSuccess={handleSheetConnectSuccess}
+            sectionData={sectionData}
+            isViewMode={isViewMode}
+            template_id={templateId}
           />
           {showImageUpload && (
             <ImageUpload
               categories={imageCategories}
+              audioCategories={audioCategories}
               templateId={templateId}
               sectionNumber={sectionNum}
+              onSaveSuccess={handleSaveSuccess}
+              onClose={() => setShowImageUpload(false)}
             />
           )}
           {showVideoUpload && (
             <VideoUpload
               templateId={templateId}
+              audioCategories={audioCategories}
               categories={videoCategories}
               sectionNumber={sectionNum}
+              onSaveSuccess={handleSaveSuccess}
+              onClose={() => setShowVideoUpload(false)}
             />
           )}
           {showStaticURL && (
             <StaticURL
               categories={staticUrlCategories}
+              audioCategories={audioCategories}
               templateId={templateId}
+              sectionNumber={sectionNum}
+              onSaveSuccess={handleSaveSuccess}
+              onClose={() => setShowStaticURL(false)}
             />
           )}
-          <div className={styles.cardContainer}>
-          {elementsList?.map((element) => (
-            <SectionCard
-              key={element.id}
-              sectionNumber={element.section_number}
-              sectionName={element.section_name}
-              templateId={element.template_id}
-              duration={element.duration}
-              scroll={element.scroll}
-              previewContent={element.value}
-            // onDelete={() => handleDelete(element.id)}
+          {showDynamicURL && (
+            <DynamicURL
+              categories={dynamicUrlCategories}
+              audioCategories={audioCategories}
+              templateId={templateId}
+              sectionNumber={sectionNum}
+              onSaveSuccess={handleSaveSuccess}
+              onClose={() => setShowDynamicURL(false)}
             />
-          ))}
-        </div>
+          )}
+          {elementsList && (
+            <div>
+              <div className={styles.cardContainer}>
+                {elementsList?.map((element) => (
+                  <SectionCard
+                    key={element.id}
+                    id={element.id}
+                    sectionNumber={element.sequence}
+                    sectionName={element.section_name}
+                    duration={element.duration}
+                    scroll={element.scroll}
+                    previewContent={element.value}
+                    onDeleteSuccess={() => setSaveTriggered((prev) => !prev)}
+                  />
+                ))}
+              </div>
+              {elementsList.length > 0 && (
+                <button
+                  className={styles.createVideo}
+                  onClick={() => setIsModalOpen(true)}
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Creating..." : "Create Video"}
+                </button>
+              )}
+            </div>
+          )}
         </div>
         <div className={styles.rightComponent}>
           <SectionArea
             initialOptions={initialOptions}
             onSectionTypeChange={handleSectionTypeChange}
-            editable={isSheetConnected}
+            editable={isEditable}
+            templateId={templateId}
+            elementsList={elementsList}
           />
         </div>
-       
       </div>
+
+      <ConfirmationModal
+        isOpen={isModalOpen}
+        onClose={handleModalClose}
+        title="Confirm Video Creation"
+        infoItems={[
+          { label: "Your balance", value: sectionData?.balance },
+          {
+            label: "Total price for generating videos",
+            value: sectionData?.price,
+          },
+        ]}
+        noteText={confirmationText}
+        confirmationText="Please confirm if you want to proceed"
+        onAction={handleProceed}
+      />
     </div>
   );
 };

@@ -1,19 +1,28 @@
 import React, { useState, useRef } from "react";
 import styles from "./VideoUpload.module.scss";
-import CategoryDropdown from "../../CategoryDropdown/CategoryDropdown";
-import useCreateVideoSection from "../../../Hooks/useCreateVideoSection";
+import CategoryDropdown from "../CategoryDropdown/CategoryDropdown";
+import AudioDescModal from "src/Common/AudioDescModal/AudioDescModal";
+import useCreateVideoSection from "../../Hooks/useCreateVideoSection";
 import { toast } from "react-toastify";
 
-const VideoUpload = ({ categories, templateId, sectionNumber }) => {
+const VideoUpload = ({
+  categories,
+  audioCategories,
+  templateId,
+  sectionNumber,
+  onSaveSuccess,
+  onClose,
+}) => {
   const [videoFile, setVideoFile] = useState(null);
   const [videoURL, setVideoURL] = useState("");
   const [videoPreview, setVideoPreview] = useState("");
   const [audioFile, setAudioFile] = useState(null);
   const [duration, setDuration] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [audioDescription, setAudioDescription] = useState(false);
+  const [audioDescription, setAudioDescription] = useState("");
   const [scroll, setScroll] = useState(null);
   const [dropdownKey, setDropdownKey] = useState(0);
+  const [showAudioDescModal, setShowAudioDescModal] = useState(false);
 
   const { createVideoSection, loading } = useCreateVideoSection();
   const videoInputRef = useRef(null);
@@ -26,7 +35,7 @@ const VideoUpload = ({ categories, templateId, sectionNumber }) => {
       setVideoURL("");
       setVideoPreview(URL.createObjectURL(file));
       setSelectedCategory(null);
-      setDropdownKey((prev) => prev + 1); // Reset dropdown when video is uploaded
+      setDropdownKey((prev) => prev + 1);
     }
   };
 
@@ -50,7 +59,7 @@ const VideoUpload = ({ categories, templateId, sectionNumber }) => {
     setVideoFile(null);
     setVideoPreview(url);
     setSelectedCategory(null);
-    setDropdownKey((prev) => prev + 1); // Reset dropdown on URL change
+    setDropdownKey((prev) => prev + 1);
   };
 
   const handleUploadAudio = () => {
@@ -58,7 +67,12 @@ const VideoUpload = ({ categories, templateId, sectionNumber }) => {
   };
 
   const handleAddDescription = () => {
-    setAudioDescription(!audioDescription);
+    setShowAudioDescModal(true);
+  };
+
+  const handleAudioDescriptionSave = (description) => {
+    setAudioDescription(description);
+    setShowAudioDescModal(false);
   };
 
   const handleSave = async () => {
@@ -67,8 +81,8 @@ const VideoUpload = ({ categories, templateId, sectionNumber }) => {
     const videoSectionData = {
       hvoTemplateId: templateId,
       sectionName: selectedCategory || "VIDEO URL",
-      sectionNumber: sectionNumber,
-      sequence: 1,
+      sectionNumber: 4,
+      sequence: sectionNumber,
       duration: duration,
       audioEmbedded: !!audioFile,
       scroll: scroll,
@@ -80,7 +94,16 @@ const VideoUpload = ({ categories, templateId, sectionNumber }) => {
       audio: audioFile,
     };
 
-    const response = await createVideoSection(videoSectionData);
+    try {
+      const response = await createVideoSection(videoSectionData);
+      if (response) {
+        onSaveSuccess();
+        toast.success("Video section saved successfully");
+        onClose();
+      }
+    } catch (error) {
+      toast.error("Failed to save video section");
+    }
   };
 
   const isFormValid = () => {
@@ -91,12 +114,14 @@ const VideoUpload = ({ categories, templateId, sectionNumber }) => {
     <div className={styles.wrapper}>
       <div className={styles.container}>
         <div className={styles.header}>
-          <span className={styles.backLink}>Upload Video | Element 1</span>
+          <span className={styles.backLink}>
+            Upload Video | Element {sectionNumber}
+          </span>
         </div>
 
         <div className={styles.uploadSection}>
           <div className={styles.row}>
-            <div className={styles.videoUploadContainer}>
+            <div className={styles.dropdownContainer}>
               <label>Upload Video or Enter URL</label>
               <div className={styles.uploadField}>
                 <input
@@ -196,10 +221,20 @@ const VideoUpload = ({ categories, templateId, sectionNumber }) => {
             >
               {loading ? "Saving..." : "Save"}
             </button>
-            <button className={styles.nextButton}>Next</button>
+            <button className={styles.cancelButton} onClick={onClose}>
+              Cancel
+            </button>
           </div>
         </div>
       </div>
+
+      {showAudioDescModal && (
+        <AudioDescModal
+          dynamicFields={audioCategories}
+          onSave={handleAudioDescriptionSave}
+          onClose={() => setShowAudioDescModal(false)}
+        />
+      )}
     </div>
   );
 };

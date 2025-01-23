@@ -3,22 +3,30 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import ApiConfig from "src/config/APIConfig";
 
-const useGetSections = (templateId) => {
+const useGetSections = (templateId, trigger) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const getSections = async () => {
+      if (!templateId) {
+        setData(null);
+        return;
+      }
+
       try {
         setLoading(true);
         setError(null);
-        console.log("Fetching data for template ID:", templateId);
-        const res = await axios.get(`${ApiConfig.getTemplatebyID}/${templateId}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+        const res = await axios.get(
+          `${ApiConfig.getTemplatebyID}/${templateId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+
         if (res?.status === 200) {
           setData(res?.data);
         }
@@ -31,12 +39,8 @@ const useGetSections = (templateId) => {
       }
     };
 
-    if (templateId) {
-      getSections();
-    } else {
-      setData(null);
-    }
-  }, [templateId]);
+    getSections();
+  }, [templateId, trigger]);
 
   return { data, loading, error };
 };
