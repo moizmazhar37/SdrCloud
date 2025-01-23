@@ -1,0 +1,176 @@
+.wrapper {
+    width: 100%;
+  }
+  
+  .container {
+    border: 1px solid rgb(240, 239, 239);
+    border-radius: 6px;
+    padding: 30px;
+    background: #fff;
+    box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.04);
+  }
+  
+  .header {
+    margin-bottom: 24px;
+  
+    .backArrow {
+      color: #0064b1;
+      cursor: pointer;
+      font-size: 16px;
+    }
+  
+    .headerText {
+      color: #0064b1;
+      font-size: 14px;
+    }
+  }
+  
+  .formContent {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .urlRow {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  
+    .urlSelect {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+  
+      label {
+        font-size: 14px;
+        color: #333;
+      }
+    }
+  }
+  
+  .controlRow {
+    display: flex;
+    gap: 20px;
+  
+    .durationInput {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+  
+      label {
+        font-size: 14px;
+        color: #333;
+      }
+  
+      input {
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+  
+        &:focus {
+          outline: none;
+          border-color: #0064b1;
+        }
+      }
+    }
+  
+    .scrollSelect {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+  
+      label {
+        font-size: 14px;
+        color: #333;
+      }
+    }
+  
+    }
+
+    
+      
+  .footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+  
+    .saveBtn,
+    .nextBtn {
+      padding: 10px 26px;
+      border-radius: 4px;
+      font-size: 14px;
+      cursor: pointer;
+      border: 1px solid #E3E3E3;
+  
+      &.saveBtn {
+        background: #f5f5f5;
+        color: #333;
+  
+        &:hover {
+          background: #e8e8e8;
+        }
+      }
+  
+      &.nextBtn {
+        background: #0064b1;
+        color: white;
+        border: none;
+  
+        &:hover {
+          background: #004d8c;
+        }
+      }
+  
+      &.disabled {
+        cursor: not-allowed;
+        background: #e0e0e0;
+      }
+    }
+  }
+  
+  @media (max-width: 760px) {
+    .controlRow {
+      flex-direction: column;
+    }
+  }
+  
+
+
+
+
+  .uploadBtn {
+    background: #0064b1;
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    width: fit-content;
+    border-radius: 4px;
+
+    &:hover {
+        background: #004d8c;
+    }
+}
+
+.descriptionBtn {
+    background: white;
+    color: #0064b1;
+    border: 1px solid #0064b1;
+    padding: 12px 18px;
+    width: fit-content;
+    border-radius: 4px;
+    &:hover {
+        background: #f5f5f5;
+    }
+}
+
+
+.audioControls{
+    padding-top: 10px;
+    
+}
+.audioButtons{display: flex;gap: 10px;
+padding-top: 18px;}

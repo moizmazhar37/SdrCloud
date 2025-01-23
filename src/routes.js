@@ -66,7 +66,9 @@ export const routes = [
     path: "/dashboard",
     guard: true,
     layout: DashboardLayout,
-    component: lazy(() => import("src/views/pages/DashboardAdmin/MainDashboard/MainDashboard")),
+    component: lazy(() =>
+      import("src/views/pages/DashboardAdmin/MainDashboard/MainDashboard")
+    ),
   },
   {
     exact: true,
@@ -87,8 +89,6 @@ export const routes = [
     ),
   },
 
-  
-  
   {
     exact: true,
     path: "/view-myproject",
@@ -144,7 +144,7 @@ export const routes = [
     path: "/createtemplate&Video",
     guard: true,
     layout: DashboardLayout,
-    component: lazy(() => import("src/views/pages/CreateVideo/CreateTemplate")),
+    component: lazy(() => import("src/views/pages/Create/CreateVideo/CreateVideo")),
   },
   {
     exact: true,
@@ -173,14 +173,18 @@ export const routes = [
     path: "/Myprojects",
     guard: true,
     layout: DashboardLayout,
-    component: lazy(() => import("src/views/pages/MyProjects/Prospects/Prospects")),
+    component: lazy(() =>
+      import("src/views/pages/MyProjects/Prospects/Prospects")
+    ),
   },
   {
     exact: true,
     path: "/prospects",
     guard: true,
     layout: DashboardLayout,
-    component: lazy(() => import("src/views/pages/MyProjects/Prospects/Prospects")),
+    component: lazy(() =>
+      import("src/views/pages/MyProjects/Prospects/Prospects")
+    ),
   },
   {
     exact: true,
@@ -250,9 +254,7 @@ export const routes = [
     path: "/company-information",
     guard: true,
     layout: DashboardLayout,
-    component: lazy(() =>
-      import("src/views/pages/settings/Company/Company")
-    ),
+    component: lazy(() => import("src/views/pages/settings/Company/Company")),
   },
 
   {
@@ -294,7 +296,7 @@ export const routes = [
       import("src/views/pages/settings/GoogleSheets/Googlesheets")
     ),
   },
-  
+
   {
     exact: true,
     path: "/addsheet",
@@ -304,7 +306,6 @@ export const routes = [
       import("src/views/pages/settings/Integrations/AddNewSheet/NewSheet")
     ),
   },
-
 
   // {
   //   exact: true,
@@ -472,8 +473,9 @@ export const routes = [
     guard: true,
     layout: DashboardLayout,
     // component: lazy(() => import("src/views/pages/DashboardUser/index")),
-    component: lazy(() => import("src/views/pages/DashboardAdmin/MainDashboard/MainDashboard")),
-  
+    component: lazy(() =>
+      import("src/views/pages/DashboardAdmin/MainDashboard/MainDashboard")
+    ),
   },
   {
     exact: true,
