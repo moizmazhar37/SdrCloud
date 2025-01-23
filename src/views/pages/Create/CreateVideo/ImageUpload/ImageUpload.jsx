@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import styles from "./ImageUpload.module.scss";
-import CategoryDropdown from "../../CategoryDropdown/CategoryDropdown";
-import useCreateVideoSection from "../../../Hooks/useCreateVideoSection";
+import CategoryDropdown from "../CategoryDropdown/CategoryDropdown";
+import useCreateVideoSection from "../../Hooks/useCreateVideoSection";
 import { toast } from "react-toastify";
 
 const ImageUpload = ({

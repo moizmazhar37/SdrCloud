@@ -1,33 +1,48 @@
-import React, { useState } from "react";
-import styles from "./DynamicURL.module.scss";
-import CategoryDropdown from "../../CategoryDropdown/CategoryDropdown";
-import useCreateVideoSection from "../../../Hooks/useCreateVideoSection";
+import React, { useState, useRef, useEffect } from "react";
+import styles from "./StaticURL.module.scss";
+import CategoryDropdown from "../CategoryDropdown/CategoryDropdown";
+import useCreateVideoSection from "../../Hooks/useCreateVideoSection";
 import { toast } from "react-toastify";
 
-const DynamicURL = ({
+const StaticURL = ({
   categories = [],
   templateId,
   sectionNumber,
   onSaveSuccess,
   onClose, // New prop for closing the component
 }) => {
-  const [selectedURL, setSelectedURL] = useState(null);
+  const [url, setUrl] = useState("https://www.");
   const [duration, setDuration] = useState("");
   const [selectedType, setSelectedType] = useState("");
+  const [showPreview, setShowPreview] = useState(false);
   const [audioFile, setAudioFile] = useState(null);
   const [audioTitle, setAudioTitle] = useState("");
   const [audioDescription, setAudioDescription] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [dropdownKey, setDropdownKey] = useState(0);
 
-  const { createVideoSection } = useCreateVideoSection();
+  const iframeRef = useRef(null);
+  const audioInputRef = useRef(null);
+  const { createVideoSection, loading } = useCreateVideoSection();
+
+  useEffect(() => {
+    if (url.length > 12 && url !== "https://www.") {
+      setShowPreview(true);
+    } else {
+      setShowPreview(false);
+    }
+  }, [url]);
+
+  const handleUrlChange = (e) => {
+    const value = e.target.value;
+    setUrl(value);
+    setSelectedCategory(null);
+    setDropdownKey((prev) => prev + 1); // Reset dropdown when URL is manually entered
+  };
 
   const handleDurationChange = (e) => {
     const value = e.target.value.replace(/[^0-9]/g, "");
     setDuration(value);
-  };
-
-  const handleCategorySelect = (value) => {
-    setSelectedURL(value);
   };
 
   const handleAudioUpload = (e) => {
@@ -38,13 +53,22 @@ const DynamicURL = ({
     }
   };
 
+  const handleCategorySelect = (value, label) => {
+    setUrl(value);
+    setSelectedCategory(label);
+  };
+
+  const handleUploadAudio = () => {
+    audioInputRef.current?.click();
+  };
+
   const scrollTypes = [
     { label: "Yes", value: "Yes" },
     { label: "No", value: "No" },
   ];
 
   const isFormValid = () => {
-    return selectedURL && duration.trim() !== "";
+    return url.length > 12 && url !== "https://www." && duration.trim() !== "";
   };
 
   const handleSave = async () => {
@@ -53,34 +77,30 @@ const DynamicURL = ({
       return;
     }
 
-    setLoading(true);
-
     const videoSectionData = {
       hvoTemplateId: templateId,
-      sectionName: "Dynamic URL",
-      sectionNumber: 2,
+      sectionName: "Static URL",
+      sectionNumber: 1,
       sequence: sectionNumber,
       duration: duration,
       audioEmbedded: !!audioFile,
       scroll: selectedType === "Yes",
       audioDescription: audioDescription,
       firstRowValue: null,
-      isDynamic: true,
-      value: selectedURL,
+      isDynamic: !!selectedCategory,
+      value: url,
       audio: audioFile,
     };
 
     try {
       const response = await createVideoSection(videoSectionData);
       if (response) {
-        toast.success("Dynamic URL section saved successfully!");
+        toast.success("Static URL section saved successfully!");
         onSaveSuccess(); // Notify parent about successful save
-        onClose(); // Close DynamicURL after successful save
+        onClose(); // Close StaticURL after successful save
       }
     } catch (error) {
-      toast.error("Failed to save dynamic URL section");
-    } finally {
-      setLoading(false);
+      toast.error("Failed to save static URL section");
     }
   };
 
@@ -88,17 +108,28 @@ const DynamicURL = ({
     <div className={styles.wrapper}>
       <div className={styles.container}>
         <div className={styles.header}>
-          <span className={styles.backArrow}>←</span>
-          <span className={styles.headerText}>Dynamic URL | Element</span>
+          <span className={styles.headerText}>Static URL | Element 1</span>
         </div>
 
         <div className={styles.formContent}>
           <div className={styles.urlRow}>
+            <div className={styles.urlInput}>
+              <label>Enter Static URL</label>
+              <input
+                type="text"
+                value={url}
+                onChange={handleUrlChange}
+                spellCheck="false"
+                placeholder="https://www."
+              />
+            </div>
+
             <div className={styles.urlSelect}>
-              <label>Select Dynamic URL</label>
+              <label>Select Static URL</label>
               <CategoryDropdown
+                key={dropdownKey}
                 options={categories}
-                buttonText="Select URL"
+                buttonText="Select Static URL"
                 onSelect={handleCategorySelect}
                 allowAddNew={false}
               />
@@ -125,6 +156,32 @@ const DynamicURL = ({
                 allowAddNew={false}
               />
             </div>
+
+            <div className={styles.audioControls}>
+              <div className={styles.audioButtons}>
+                <button
+                  className={styles.uploadBtn}
+                  onClick={handleUploadAudio}
+                >
+                  Upload Audio
+                </button>
+                <button
+                  className={`${styles.descriptionBtn} ${
+                    audioDescription ? styles.active : ""
+                  }`}
+                  onClick={() => setAudioDescription(!audioDescription)}
+                >
+                  Add Audio Description
+                </button>
+              </div>
+              <input
+                ref={audioInputRef}
+                type="file"
+                accept="audio/*"
+                style={{ display: "none" }}
+                onChange={handleAudioUpload}
+              />
+            </div>
           </div>
 
           {audioTitle && (
@@ -132,29 +189,17 @@ const DynamicURL = ({
               <p>Uploaded Audio: {audioTitle}</p>
             </div>
           )}
-        </div>
-        <div className={styles.audioControls}>
-          <div className={styles.audioButtons}>
-            <button
-              className={styles.uploadBtn}
-              onClick={() => document.getElementById("audioUpload").click()}
-            >
-              Upload Audio
-            </button>
-            <button
-              className={styles.descriptionBtn}
-              onClick={() => setAudioDescription(!audioDescription)}
-            >
-              Add Audio Description
-            </button>
-          </div>
-          <input
-            type="file"
-            id="audioUpload"
-            accept="audio/*"
-            style={{ display: "none" }}
-            onChange={handleAudioUpload}
-          />
+
+          {showPreview && (
+            <div className={styles.previewSection}>
+              <iframe
+                ref={iframeRef}
+                src={url}
+                title="Website Preview"
+                className={styles.previewFrame}
+              />
+            </div>
+          )}
         </div>
 
         <div className={styles.footer}>
@@ -176,4 +221,4 @@ const DynamicURL = ({
   );
 };
 
-export default DynamicURL;
+export default StaticURL;
