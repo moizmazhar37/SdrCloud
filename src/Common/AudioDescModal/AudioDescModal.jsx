@@ -1,8 +1,7 @@
-// AudioDescModal.jsx
 import React, { useState } from "react";
 import styles from "./AudioDescModal.module.scss";
 
-const AudioDescModal = ({ dynamicFields, onSave }) => {
+const AudioDescModal = ({ dynamicFields, onSave, onClose }) => {
   const [audioDesc, setAudioDesc] = useState("");
   const [selectedFields, setSelectedFields] = useState([]);
 
@@ -20,7 +19,6 @@ const AudioDescModal = ({ dynamicFields, onSave }) => {
       <div className={styles.modalContent}>
         <div className={styles.header}>
           <h2>Add Audio Description</h2>
-          <button className={styles.closeButton}>X</button>
         </div>
         <div className={styles.body}>
           <textarea
@@ -41,7 +39,9 @@ const AudioDescModal = ({ dynamicFields, onSave }) => {
           </div>
         </div>
         <div className={styles.footer}>
-          <button className={styles.cancelButton}>Cancel</button>
+          <button className={styles.cancelButton} onClick={onClose}>
+            Cancel
+          </button>
           <button className={styles.saveButton} onClick={handleSave}>
             Save
           </button>

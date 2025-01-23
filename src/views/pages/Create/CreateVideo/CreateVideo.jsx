@@ -13,7 +13,12 @@ import SectionCard from "./SectionCard/SectionCard";
 import useGetSections from "../Hooks/useGetSection";
 import useCreateVideo from "./hooks/useCreateVideo";
 import ConfirmationModal from "src/Common/ConfirmationModal/ConfirmationModal";
-import { extractCategories, navigationItems, initialOptions } from "./helpers";
+import {
+  extractCategories,
+  navigationItems,
+  initialOptions,
+  getAudioCategories,
+} from "./helpers";
 
 const CreateVideo = () => {
   const [showImageUpload, setShowImageUpload] = useState(false);
@@ -54,11 +59,19 @@ const CreateVideo = () => {
   } = useGetSections(templateId, saveTriggered);
 
   const elementsList = sectionData?.elementsList;
-
+  // Extract categories
   const imageCategories = extractCategories(data, "Image URL");
   const staticUrlCategories = extractCategories(data, "Static URL");
   const dynamicUrlCategories = extractCategories(data, "Dynamic URL");
   const videoCategories = extractCategories(data, "Video URL");
+
+  // New category extractions
+  const textCategories = extractCategories(data, "Text");
+  const firstNameCategories = extractCategories(data, "First name (Required)");
+  const lastNameCategories = extractCategories(data, "Last name");
+  const orgCategories = extractCategories(data, "Customer organization");
+
+  const audioCategories = getAudioCategories(data);
 
   const handleSectionTypeChange = (selectedValue, sectionNumber) => {
     setSectionNum(sectionNumber);
@@ -119,6 +132,7 @@ const CreateVideo = () => {
           {showImageUpload && (
             <ImageUpload
               categories={imageCategories}
+              audioCategories={audioCategories}
               templateId={templateId}
               sectionNumber={sectionNum}
               onSaveSuccess={handleSaveSuccess}

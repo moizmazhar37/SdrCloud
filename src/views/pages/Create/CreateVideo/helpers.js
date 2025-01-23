@@ -19,3 +19,25 @@ export const initialOptions = [
   { label: "UPLOAD IMAGE", value: "image" },
   { label: "VIDEO CLIPS", value: "video" },
 ];
+
+export const getAudioCategories = (data) => {
+  const validDataTypes = [
+    "First name (Required)",
+    "Last name",
+    "Customer organization",
+    "Text",
+  ];
+
+  if (!data || !Array.isArray(data)) {
+    return [];
+  }
+
+  const filteredValues = [];
+  data.forEach((item) => {
+    if (validDataTypes.includes(item.dataType)) {
+      filteredValues.push(item.value);
+    }
+  });
+
+  return filteredValues;
+};

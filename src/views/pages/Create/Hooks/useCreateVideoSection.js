@@ -30,7 +30,7 @@ const useCreateVideoSection = () => {
 
     formData.append("audio_embedded", audioEmbedded ? "true" : "false");
     formData.append("is_dynamic", isDynamic ? "true" : "false");
-    formData.append("audio_description", audioDescription ? "true" : "false");
+    formData.append("audio_description", audioDescription || "");
 
     formData.append("duration", duration || "");
     formData.append("scroll", scroll ? "true" : "false");

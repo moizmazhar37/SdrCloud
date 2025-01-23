@@ -3,9 +3,11 @@ import styles from "./ImageUpload.module.scss";
 import CategoryDropdown from "../CategoryDropdown/CategoryDropdown";
 import useCreateVideoSection from "../../Hooks/useCreateVideoSection";
 import { toast } from "react-toastify";
+import AudioDescModal from "src/Common/AudioDescModal/AudioDescModal";
 
 const ImageUpload = ({
   categories,
+  audioCategories,
   templateId,
   sectionNumber,
   onSaveSuccess,
@@ -20,6 +22,7 @@ const ImageUpload = ({
   const [audioDescription, setAudioDescription] = useState("");
   const [scroll, setScroll] = useState(null);
   const [dropdownKey, setDropdownKey] = useState(0);
+  const [showAudioDescModal, setShowAudioDescModal] = useState(false);
 
   const { createVideoSection, loading } = useCreateVideoSection();
   const imageInputRef = useRef(null);
@@ -64,7 +67,12 @@ const ImageUpload = ({
   };
 
   const handleAddDescription = () => {
-    console.log("");
+    setShowAudioDescModal(true);
+  };
+
+  const handleAudioDescriptionSave = (description) => {
+    setAudioDescription(description);
+    setShowAudioDescModal(false);
   };
 
   const handleSave = async () => {
@@ -89,7 +97,7 @@ const ImageUpload = ({
     try {
       const response = await createVideoSection(videoSectionData);
       if (response) {
-        onSaveSuccess(); // Notify the parent about the successful save
+        onSaveSuccess();
         toast.success("Image section saved successfully");
         onClose();
       }
@@ -217,6 +225,14 @@ const ImageUpload = ({
           </div>
         </div>
       </div>
+      <div className={styles.audioModal}></div>
+      {showAudioDescModal && (
+        <AudioDescModal
+          dynamicFields={audioCategories}
+          onSave={handleAudioDescriptionSave}
+          onClose={() => setShowAudioDescModal(false)}
+        />
+      )}
     </div>
   );
 };
