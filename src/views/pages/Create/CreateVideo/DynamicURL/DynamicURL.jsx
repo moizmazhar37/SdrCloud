@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styles from "./DynamicURL.module.scss";
 import CategoryDropdown from "../CategoryDropdown/CategoryDropdown";
 import AudioDescModal from "src/Common/AudioDescModal/AudioDescModal";
-import useCreateVideoSection from "../../Hooks/useCreateVideoSection";
+import useCreateVideoSection from "../hooks/useCreateVideoSection";
 import { toast } from "react-toastify";
 
 const DynamicURL = ({

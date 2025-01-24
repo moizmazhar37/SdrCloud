@@ -1,13 +1,13 @@
 import React, { useState, useMemo, useEffect } from "react";
-import styles from "./CategoryForm.module.scss";
-import CategoryDropdown from "src/views/pages/Create/CreateVideo/CategoryDropdown/CategoryDropdown";
+import styles from "./HVOCategoryForm.module.scss";
+import CategoryDropdown from "src/views/pages/Create/CreateHVO/CategoryDropdown/CategoryDropdown";
 import useGetCategories from "../../Hooks/useGetCategories";
 import { useCreateTemplate } from "../hooks/useCreateTemplate";
 import { useConnectSheet } from "../hooks/useConnectSheet";
 import useDeleteCategory from "../hooks/useDeleteCategory";
-import useEditCategory from "../../Hooks/useEditCategoey";
+import useEditCategory from "../../Hooks/useEditCategory";
 
-const CategoryForm = ({
+const HVOCategoryForm = ({
   sheetData,
   sheetsLoading,
   onTemplateSave,
@@ -64,9 +64,9 @@ const CategoryForm = ({
 
   useEffect(() => {
     if (sectionData && isViewMode) {
-      setTemplateName(sectionData.getVideo?.hvoTemplateName || "");
-      setCategory(sectionData.getVideo?.categoryName || null);
-      setCategoryId(sectionData.getVideo?.categoryId || null);
+      setTemplateName(sectionData.getHVO?.hvoTemplateName || "");
+      setCategory(sectionData.getHVO?.categoryName || null);
+      setCategoryId(sectionData.getHVO?.categoryId || null);
       setIngestionSource(sectionData.sheet?.title || null);
     }
   }, [sectionData, isViewMode]);
@@ -283,4 +283,4 @@ const CategoryForm = ({
   );
 };
 
-export default CategoryForm;
+export default HVOCategoryForm;
