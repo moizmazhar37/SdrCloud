@@ -79,7 +79,7 @@ const CreateVideo = () => {
     setEditingSection(null);
     setIsEditMode(false);
     setSectionNum(sectionNumber);
-
+    console.log(selectedValue);
     // Set the active form based on selection
     switch (selectedValue) {
       case "image":
@@ -105,7 +105,7 @@ const CreateVideo = () => {
     setIsEditMode(true);
     setEditingSection(section);
     setSectionNum(section.sequence);
-
+    console.log(section.section_name);
     // Set the active form based on section type
     switch (section.section_name) {
       case "IMAGE URL":

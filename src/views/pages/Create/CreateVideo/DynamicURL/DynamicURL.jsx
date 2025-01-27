@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./DynamicURL.module.scss";
 import CategoryDropdown from "../CategoryDropdown/CategoryDropdown";
 import AudioDescModal from "src/Common/AudioDescModal/AudioDescModal";
 import useCreateVideoSection from "../../Hooks/useCreateVideoSection";
+import useUpdateVideoSection from "../hooks/useUpdateVideoSection";
 import { toast } from "react-toastify";
 
 const DynamicURL = ({
@@ -12,6 +13,7 @@ const DynamicURL = ({
   sectionNumber,
   onSaveSuccess,
   onClose,
+  editData,
 }) => {
   const [selectedURL, setSelectedURL] = useState(null);
   const [duration, setDuration] = useState("");
@@ -23,6 +25,26 @@ const DynamicURL = ({
   const [showAudioDescModal, setShowAudioDescModal] = useState(false);
 
   const { createVideoSection } = useCreateVideoSection();
+  const { updateVideoSection } = useUpdateVideoSection();
+
+  // Initialize form with edit data if available
+  useEffect(() => {
+    if (editData) {
+      setSelectedURL(editData.value || null);
+      setDuration(editData.duration || "");
+      setSelectedType(editData.scroll ? "Yes" : "No");
+      setAudioFile(editData.audio || null);
+      setAudioTitle(editData.audio?.name || "");
+      setAudioDescription(editData.audioDescription || "");
+    } else {
+      setSelectedURL(null);
+      setDuration("");
+      setSelectedType("");
+      setAudioFile(null);
+      setAudioTitle("");
+      setAudioDescription("");
+    }
+  }, [editData]);
 
   const handleDurationChange = (e) => {
     const value = e.target.value.replace(/[^0-9]/g, "");
@@ -56,7 +78,7 @@ const DynamicURL = ({
   ];
 
   const isFormValid = () => {
-    return selectedURL && duration.trim() !== "";
+    return selectedURL && String(duration).trim() !== "";
   };
 
   const handleSave = async () => {
@@ -83,9 +105,20 @@ const DynamicURL = ({
     };
 
     try {
-      const response = await createVideoSection(videoSectionData);
+      let response;
+      if (editData) {
+        videoSectionData.id = editData.id;
+        response = await updateVideoSection(editData.id, videoSectionData);
+      } else {
+        response = await createVideoSection(videoSectionData);
+      }
+
       if (response) {
-        toast.success("Dynamic URL section saved successfully!");
+        toast.success(
+          editData
+            ? "Dynamic URL section updated successfully!"
+            : "Dynamic URL section saved successfully!"
+        );
         onSaveSuccess();
         onClose();
       }
@@ -101,7 +134,11 @@ const DynamicURL = ({
       <div className={styles.container}>
         <div className={styles.header}>
           <span className={styles.backArrow}>←</span>
-          <span className={styles.headerText}>Dynamic URL | Element</span>
+          <span className={styles.headerText}>
+            {editData
+              ? `Edit Dynamic URL | Element ${sectionNumber}`
+              : `Dynamic URL | Element ${sectionNumber}`}
+          </span>
         </div>
 
         <div className={styles.formContent}>
@@ -113,6 +150,7 @@ const DynamicURL = ({
                 buttonText="Select URL"
                 onSelect={handleCategorySelect}
                 allowAddNew={false}
+                initialValue={editData?.value}
               />
             </div>
           </div>
@@ -135,6 +173,7 @@ const DynamicURL = ({
                 buttonText="Select type"
                 onSelect={setSelectedType}
                 allowAddNew={false}
+                initialValue={editData?.scroll ? "Yes" : "No"}
               />
             </div>
           </div>
@@ -145,6 +184,7 @@ const DynamicURL = ({
             </div>
           )}
         </div>
+
         <div className={styles.audioControls}>
           <div className={styles.audioButtons}>
             <button
@@ -179,7 +219,7 @@ const DynamicURL = ({
             onClick={handleSave}
             disabled={!isFormValid() || loading}
           >
-            {loading ? "Saving..." : "Save"}
+            {loading ? "Saving..." : editData ? "Update" : "Save"}
           </button>
           <button className={styles.cancelBtn} onClick={onClose}>
             Cancel

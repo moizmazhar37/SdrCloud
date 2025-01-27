@@ -3,6 +3,7 @@ import styles from "./StaticURL.module.scss";
 import CategoryDropdown from "../CategoryDropdown/CategoryDropdown";
 import AudioDescModal from "src/Common/AudioDescModal/AudioDescModal";
 import useCreateVideoSection from "../../Hooks/useCreateVideoSection";
+import useUpdateVideoSection from "../hooks/useUpdateVideoSection";
 import { toast } from "react-toastify";
 
 const StaticURL = ({
@@ -12,6 +13,7 @@ const StaticURL = ({
   sectionNumber,
   onSaveSuccess,
   onClose,
+  editData,
 }) => {
   const [url, setUrl] = useState("https://www.");
   const [duration, setDuration] = useState("");
@@ -26,7 +28,31 @@ const StaticURL = ({
 
   const iframeRef = useRef(null);
   const audioInputRef = useRef(null);
-  const { createVideoSection, loading } = useCreateVideoSection();
+  const { createVideoSection, loading: createLoading } =
+    useCreateVideoSection();
+  const { updateVideoSection, loading: updateLoading } =
+    useUpdateVideoSection();
+
+  useEffect(() => {
+    if (editData) {
+      setUrl(editData.value || "https://www.");
+      setDuration(editData.duration || "");
+      setSelectedType(editData.scroll ? "Yes" : "No");
+      setAudioFile(editData.audio || null);
+      setAudioTitle(editData.audio?.name || "");
+      setAudioDescription(editData.audioDescription || "");
+      setSelectedCategory(editData.sectionName || null);
+      setDropdownKey((prev) => prev + 1);
+    } else {
+      setUrl("https://www.");
+      setDuration("");
+      setSelectedType("");
+      setAudioFile(null);
+      setAudioTitle("");
+      setAudioDescription("");
+      setSelectedCategory(null);
+    }
+  }, [editData]);
 
   useEffect(() => {
     if (url.length > 12 && url !== "https://www.") {
@@ -80,7 +106,11 @@ const StaticURL = ({
   ];
 
   const isFormValid = () => {
-    return url.length > 12 && url !== "https://www." && duration.trim() !== "";
+    return (
+      url.length > 12 &&
+      url !== "https://www." &&
+      String(duration).trim() !== ""
+    );
   };
 
   const handleSave = async () => {
@@ -104,15 +134,32 @@ const StaticURL = ({
       audio: audioFile,
     };
 
-    try {
-      const response = await createVideoSection(videoSectionData);
-      if (response) {
-        toast.success("Static URL section saved successfully!");
-        onSaveSuccess();
-        onClose();
+    if (editData) {
+      videoSectionData.id = editData.id;
+      try {
+        const response = await updateVideoSection(
+          editData.id,
+          videoSectionData
+        );
+        if (response) {
+          toast.success("Static URL section updated successfully!");
+          onSaveSuccess();
+          onClose();
+        }
+      } catch (error) {
+        toast.error("Failed to update static URL section");
       }
-    } catch (error) {
-      toast.error("Failed to save static URL section");
+    } else {
+      try {
+        const response = await createVideoSection(videoSectionData);
+        if (response) {
+          toast.success("Static URL section saved successfully!");
+          onSaveSuccess();
+          onClose();
+        }
+      } catch (error) {
+        toast.error("Failed to save static URL section");
+      }
     }
   };
 
@@ -120,7 +167,11 @@ const StaticURL = ({
     <div className={styles.wrapper}>
       <div className={styles.container}>
         <div className={styles.header}>
-          <span className={styles.headerText}>Static URL | Element 1</span>
+          <span className={styles.headerText}>
+            {editData
+              ? `Edit Static URL | Element ${sectionNumber}`
+              : `Static URL | Element ${sectionNumber}`}
+          </span>
         </div>
 
         <div className={styles.formContent}>
@@ -144,6 +195,7 @@ const StaticURL = ({
                 buttonText="Select Static URL"
                 onSelect={handleCategorySelect}
                 allowAddNew={false}
+                initialValue={editData?.value}
               />
             </div>
           </div>
@@ -166,6 +218,7 @@ const StaticURL = ({
                 buttonText="Select type"
                 onSelect={setSelectedType}
                 allowAddNew={false}
+                initialValue={editData?.scroll ? "Yes" : "No"}
               />
             </div>
 
@@ -217,12 +270,18 @@ const StaticURL = ({
         <div className={styles.footer}>
           <button
             className={`${styles.saveBtn} ${
-              !isFormValid() || loading ? styles.disabled : ""
+              !isFormValid() || createLoading || updateLoading
+                ? styles.disabled
+                : ""
             }`}
             onClick={handleSave}
-            disabled={!isFormValid() || loading}
+            disabled={!isFormValid() || createLoading || updateLoading}
           >
-            {loading ? "Saving..." : "Save"}
+            {createLoading || updateLoading
+              ? "Saving..."
+              : editData
+              ? "Update"
+              : "Save"}
           </button>
           <button className={styles.cancelBtn} onClick={onClose}>
             Cancel
