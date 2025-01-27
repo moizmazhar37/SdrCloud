@@ -1,4 +1,5 @@
-import React, { useState, useRef } from "react";
+// VideoUpload.jsx
+import React, { useState, useRef, useEffect } from "react";
 import styles from "./VideoUpload.module.scss";
 import CategoryDropdown from "../CategoryDropdown/CategoryDropdown";
 import AudioDescModal from "src/Common/AudioDescModal/AudioDescModal";
@@ -12,6 +13,8 @@ const VideoUpload = ({
   sectionNumber,
   onSaveSuccess,
   onClose,
+  editData,
+  onEditReset,
 }) => {
   const [videoFile, setVideoFile] = useState(null);
   const [videoURL, setVideoURL] = useState("");
@@ -27,6 +30,35 @@ const VideoUpload = ({
   const { createVideoSection, loading } = useCreateVideoSection();
   const videoInputRef = useRef(null);
   const audioInputRef = useRef(null);
+
+  // Initialize form with edit data if available
+  useEffect(() => {
+    if (editData) {
+      if (editData.value) {
+        setVideoURL(editData.value);
+        setVideoPreview(editData.value);
+        setSelectedCategory(editData.section_name);
+      } else {
+        setVideoPreview(editData.previewContent);
+      }
+
+      setDuration(editData.duration || "");
+      setAudioDescription(editData.audioDescription || "");
+      setScroll(editData.scroll || false);
+      setAudioFile(editData.audio || null);
+    } else {
+      // Reset form when not in edit mode
+      setVideoFile(null);
+      setVideoURL("");
+      setVideoPreview("");
+      setAudioFile(null);
+      setDuration("");
+      setSelectedCategory(null);
+      setAudioDescription("");
+      setScroll(null);
+      setDropdownKey((prev) => prev + 1);
+    }
+  }, [editData]);
 
   const handleVideoUpload = (e) => {
     const file = e.target.files[0];
@@ -94,6 +126,10 @@ const VideoUpload = ({
       audio: audioFile,
     };
 
+    if (editData) {
+      videoSectionData.id = editData.id;
+    }
+
     try {
       const response = await createVideoSection(videoSectionData);
       if (response) {
@@ -107,19 +143,31 @@ const VideoUpload = ({
   };
 
   const isFormValid = () => {
-    return (videoFile || videoURL.trim() !== "") && duration.trim() !== "";
+    return (
+      (videoFile || videoURL.trim() !== "") && String(duration).trim() !== ""
+    );
   };
 
   return (
     <div className={styles.wrapper}>
       <div className={styles.container}>
         <div className={styles.header}>
-          <span className={styles.backLink}>
-            Upload Video | Element {sectionNumber}
+          <span
+            className={styles.backLink}
+            onClick={() => {
+              if (!editData) {
+                onEditReset?.();
+              }
+            }}
+          >
+            {editData
+              ? `Edit Video | Element ${sectionNumber}`
+              : `Upload Video | Element ${sectionNumber}`}
           </span>
         </div>
 
         <div className={styles.uploadSection}>
+          {/* Rest of the component remains the same */}
           <div className={styles.row}>
             <div className={styles.dropdownContainer}>
               <label>Upload Video or Enter URL</label>
@@ -156,6 +204,7 @@ const VideoUpload = ({
                 buttonText="Select Video URL"
                 onSelect={(value, label) => handleCategorySelect(value, label)}
                 allowAddNew={false}
+                initialValue={editData?.value}
               />
             </div>
           </div>
@@ -219,7 +268,7 @@ const VideoUpload = ({
               disabled={!isFormValid() || loading}
               onClick={handleSave}
             >
-              {loading ? "Saving..." : "Save"}
+              {loading ? "Saving..." : editData ? "Update" : "Save"}
             </button>
             <button className={styles.cancelButton} onClick={onClose}>
               Cancel

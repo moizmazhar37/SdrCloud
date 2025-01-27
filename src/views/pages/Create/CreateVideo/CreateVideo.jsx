@@ -21,16 +21,16 @@ import {
 } from "./helpers";
 
 const CreateVideo = () => {
-  const [showImageUpload, setShowImageUpload] = useState(false);
-  const [showDynamicURL, setShowDynamicURL] = useState(false);
-  const [showVideoUpload, setShowVideoUpload] = useState(false);
-  const [showStaticURL, setShowStaticURL] = useState(false);
+  // Form visibility states
+  const [activeForm, setActiveForm] = useState(null); // 'image', 'video', 'static_url', 'dynamic_url'
   const [templateId, setTemplateId] = useState(null);
   const [isSheetConnected, setIsSheetConnected] = useState(false);
   const [sectionNum, setSectionNum] = useState(null);
   const [saveTriggered, setSaveTriggered] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isViewMode, setIsViewMode] = useState(false);
+  const [editingSection, setEditingSection] = useState(null);
+  const [isEditMode, setIsEditMode] = useState(false);
 
   const { handleCreateVideo, isLoading } = useCreateVideo();
 
@@ -59,6 +59,7 @@ const CreateVideo = () => {
   } = useGetSections(templateId, saveTriggered);
 
   const elementsList = sectionData?.elementsList;
+
   // Extract categories
   const imageCategories = extractCategories(data, "Image URL");
   const staticUrlCategories = extractCategories(data, "Static URL");
@@ -66,12 +67,67 @@ const CreateVideo = () => {
   const videoCategories = extractCategories(data, "Video URL");
   const audioCategories = getAudioCategories(data);
 
+  const resetAllStates = () => {
+    setActiveForm(null);
+    setEditingSection(null);
+    setIsEditMode(false);
+    setSectionNum(null);
+  };
+
   const handleSectionTypeChange = (selectedValue, sectionNumber) => {
+    // Reset all edit-related states when opening from section area
+    setEditingSection(null);
+    setIsEditMode(false);
     setSectionNum(sectionNumber);
-    setShowImageUpload(selectedValue === "image");
-    setShowVideoUpload(selectedValue === "video");
-    setShowStaticURL(selectedValue === "static_url");
-    setShowDynamicURL(selectedValue === "dynamic_url");
+
+    // Set the active form based on selection
+    switch (selectedValue) {
+      case "image":
+        setActiveForm("image");
+        break;
+      case "video":
+        setActiveForm("video");
+        break;
+      case "static_url":
+        setActiveForm("static_url");
+        break;
+      case "dynamic_url":
+        setActiveForm("dynamic_url");
+        break;
+      default:
+        setActiveForm(null);
+        break;
+    }
+  };
+
+  const handleEdit = (section) => {
+    // Set edit mode states
+    setIsEditMode(true);
+    setEditingSection(section);
+    setSectionNum(section.sequence);
+
+    // Set the active form based on section type
+    switch (section.section_name) {
+      case "IMAGE URL":
+        setActiveForm("image");
+        break;
+      case "VIDEO URL":
+        setActiveForm("video");
+        break;
+      case "Static URL":
+        setActiveForm("static_url");
+        break;
+      case "Dynamic URL":
+        setActiveForm("dynamic_url");
+        break;
+      default:
+        setActiveForm(null);
+        break;
+    }
+  };
+
+  const handleCloseForm = () => {
+    resetAllStates();
   };
 
   const handleTemplateSave = (id) => {
@@ -80,10 +136,7 @@ const CreateVideo = () => {
 
   const handleSaveSuccess = () => {
     setSaveTriggered((prev) => !prev);
-    setShowImageUpload(false);
-    setShowVideoUpload(false);
-    setShowStaticURL(false);
-    setShowDynamicURL(false);
+    resetAllStates();
   };
 
   const handleSheetConnectSuccess = () => {
@@ -108,6 +161,36 @@ const CreateVideo = () => {
       ? "You have insufficient balance to create the videos."
       : "You have sufficient balance to create the videos.";
 
+  const renderActiveForm = () => {
+    const commonProps = {
+      templateId,
+      sectionNumber: sectionNum,
+      onSaveSuccess: handleSaveSuccess,
+      onClose: handleCloseForm,
+      editData: isEditMode ? editingSection : null,
+      audioCategories,
+      onEditReset: () => {
+        setEditingSection(null);
+        setIsEditMode(false);
+      },
+    };
+
+    switch (activeForm) {
+      case "image":
+        return <ImageUpload {...commonProps} categories={imageCategories} />;
+      case "video":
+        return <VideoUpload {...commonProps} categories={videoCategories} />;
+      case "static_url":
+        return <StaticURL {...commonProps} categories={staticUrlCategories} />;
+      case "dynamic_url":
+        return (
+          <DynamicURL {...commonProps} categories={dynamicUrlCategories} />
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className={styles.wrapper}>
       <DynamicNavigator items={navigationItems} />
@@ -122,46 +205,7 @@ const CreateVideo = () => {
             isViewMode={isViewMode}
             template_id={templateId}
           />
-          {showImageUpload && (
-            <ImageUpload
-              categories={imageCategories}
-              audioCategories={audioCategories}
-              templateId={templateId}
-              sectionNumber={sectionNum}
-              onSaveSuccess={handleSaveSuccess}
-              onClose={() => setShowImageUpload(false)}
-            />
-          )}
-          {showVideoUpload && (
-            <VideoUpload
-              templateId={templateId}
-              audioCategories={audioCategories}
-              categories={videoCategories}
-              sectionNumber={sectionNum}
-              onSaveSuccess={handleSaveSuccess}
-              onClose={() => setShowVideoUpload(false)}
-            />
-          )}
-          {showStaticURL && (
-            <StaticURL
-              categories={staticUrlCategories}
-              audioCategories={audioCategories}
-              templateId={templateId}
-              sectionNumber={sectionNum}
-              onSaveSuccess={handleSaveSuccess}
-              onClose={() => setShowStaticURL(false)}
-            />
-          )}
-          {showDynamicURL && (
-            <DynamicURL
-              categories={dynamicUrlCategories}
-              audioCategories={audioCategories}
-              templateId={templateId}
-              sectionNumber={sectionNum}
-              onSaveSuccess={handleSaveSuccess}
-              onClose={() => setShowDynamicURL(false)}
-            />
-          )}
+          {renderActiveForm()}
           {elementsList && (
             <div>
               <div className={styles.cardContainer}>
@@ -175,6 +219,7 @@ const CreateVideo = () => {
                     scroll={element.scroll}
                     previewContent={element.value}
                     onDeleteSuccess={() => setSaveTriggered((prev) => !prev)}
+                    onEdit={() => handleEdit(element)}
                   />
                 ))}
               </div>
