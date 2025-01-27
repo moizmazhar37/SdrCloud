@@ -15,12 +15,16 @@ const DynamicURL = ({
   onClose,
   editData,
 }) => {
-  const [selectedURL, setSelectedURL] = useState(null);
-  const [duration, setDuration] = useState("");
-  const [selectedType, setSelectedType] = useState("");
-  const [audioFile, setAudioFile] = useState(null);
-  const [audioTitle, setAudioTitle] = useState("");
-  const [audioDescription, setAudioDescription] = useState("");
+  const [selectedURL, setSelectedURL] = useState(editData?.value || "");
+  const [duration, setDuration] = useState(editData?.duration || "");
+  const [selectedType, setSelectedType] = useState(
+    editData?.scroll ? "Yes" : "No"
+  );
+  const [audioFile, setAudioFile] = useState(editData?.audio || null);
+  const [audioTitle, setAudioTitle] = useState(editData?.audio?.name || "");
+  const [audioDescription, setAudioDescription] = useState(
+    editData?.audioDescription || ""
+  );
   const [loading, setLoading] = useState(false);
   const [showAudioDescModal, setShowAudioDescModal] = useState(false);
 
@@ -29,20 +33,14 @@ const DynamicURL = ({
 
   // Initialize form with edit data if available
   useEffect(() => {
-    if (editData) {
-      setSelectedURL(editData.value || null);
+    if (editData?.value) {
+      console.log("Setting edit data:", editData.value);
+      setSelectedURL(editData.value);
       setDuration(editData.duration || "");
       setSelectedType(editData.scroll ? "Yes" : "No");
       setAudioFile(editData.audio || null);
       setAudioTitle(editData.audio?.name || "");
       setAudioDescription(editData.audioDescription || "");
-    } else {
-      setSelectedURL(null);
-      setDuration("");
-      setSelectedType("");
-      setAudioFile(null);
-      setAudioTitle("");
-      setAudioDescription("");
     }
   }, [editData]);
 
@@ -52,6 +50,7 @@ const DynamicURL = ({
   };
 
   const handleCategorySelect = (value) => {
+    console.log("Category selected:", value);
     setSelectedURL(value);
   };
 
@@ -129,6 +128,12 @@ const DynamicURL = ({
     }
   };
 
+  // Find the matching option object for the selected URL
+  const selectedOption = categories.find(
+    (option) => option.value === selectedURL
+  );
+  const buttonText = selectedOption ? selectedOption.label : "Select URL";
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.container}>
@@ -147,10 +152,11 @@ const DynamicURL = ({
               <label>Select Dynamic URL</label>
               <CategoryDropdown
                 options={categories}
-                buttonText="Select URL"
+                buttonText={buttonText}
                 onSelect={handleCategorySelect}
                 allowAddNew={false}
-                initialValue={editData?.value}
+                initialValue={selectedURL}
+                selectedValue={selectedURL}
               />
             </div>
           </div>
@@ -170,10 +176,11 @@ const DynamicURL = ({
               <label>Scroll</label>
               <CategoryDropdown
                 options={scrollTypes}
-                buttonText="Select type"
+                buttonText={selectedType || "Select type"}
                 onSelect={setSelectedType}
                 allowAddNew={false}
-                initialValue={editData?.scroll ? "Yes" : "No"}
+                initialValue={selectedType}
+                selectedValue={selectedType}
               />
             </div>
           </div>
