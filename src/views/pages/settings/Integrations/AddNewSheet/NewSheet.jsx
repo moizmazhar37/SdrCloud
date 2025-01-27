@@ -4,6 +4,7 @@ import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
 import styles from "./newSheet.module.scss";
 import { toast } from "react-toastify";
 import FullScreenLoader from "src/component/FullScreenLoader";
+import { useHistory } from "react-router-dom";
 
 const NewSheet = () => {
   const { data: users, loading: usersLoading } = useGetAllUsers();
@@ -15,6 +16,7 @@ const NewSheet = () => {
   const [assignedUser, setAssignedUser] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
+  const history = useHistory();
 
   const handleFetch = async () => {
     if (!sheetName || !sheetUrl || !assignedUser) {
@@ -36,6 +38,10 @@ const NewSheet = () => {
       const responseData = await fetchSheet(payload);
       toast.success("Successfully connected to Google Sheet");
       console.log("API Response:", responseData);
+      history.push({
+        pathname: "/editSheets",
+        state: { sheetId: responseData.id },
+      });
     } catch (error) {
       toast.error(error?.response?.data?.detail || "Error fetching sheet.");
     } finally {
