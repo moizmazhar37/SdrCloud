@@ -51,6 +51,18 @@
   }
 }
 
+.editButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #0358ac;
+  font-size: 1.2rem;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
 .preview {
   margin: 10px 0;
   height: 220px;

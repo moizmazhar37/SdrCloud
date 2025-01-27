@@ -1,7 +1,8 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styles from "./ImageUpload.module.scss";
 import CategoryDropdown from "../CategoryDropdown/CategoryDropdown";
 import useCreateVideoSection from "../../Hooks/useCreateVideoSection";
+import useUpdateVideoSection from "../hooks/useUpdateVideoSection";
 import { toast } from "react-toastify";
 import AudioDescModal from "src/Common/AudioDescModal/AudioDescModal";
 
@@ -12,6 +13,7 @@ const ImageUpload = ({
   sectionNumber,
   onSaveSuccess,
   onClose,
+  editData,
 }) => {
   const [imageFile, setImageFile] = useState(null);
   const [imageURL, setImageURL] = useState("");
@@ -23,10 +25,61 @@ const ImageUpload = ({
   const [scroll, setScroll] = useState(null);
   const [dropdownKey, setDropdownKey] = useState(0);
   const [showAudioDescModal, setShowAudioDescModal] = useState(false);
+  const [currentEditData, setCurrentEditData] = useState(null);
 
-  const { createVideoSection, loading } = useCreateVideoSection();
+  const { createVideoSection, loading: createLoading } =
+    useCreateVideoSection();
+  const { updateVideoSection, loading: updateLoading } =
+    useUpdateVideoSection(); // Loading state for update
   const imageInputRef = useRef(null);
   const audioInputRef = useRef(null);
+
+  // Initialize form with edit data if available
+  useEffect(() => {
+    if (editData) {
+      // If there's a value property, it's a category URL
+      if (editData.value) {
+        setImageURL(editData.value);
+        setImagePreview(editData.value);
+        setSelectedCategory(editData.section_name);
+      } else {
+        // If no value property, it was a direct file upload
+        setImagePreview(editData.previewContent);
+      }
+
+      setDuration(editData.duration || "");
+      setScroll(editData.scroll || false);
+      setAudioDescription(editData.audioDescription || "");
+      setCurrentEditData(editData);
+    } else {
+      // Reset form when not in edit mode
+      setImageFile(null);
+      setImageURL("");
+      setImagePreview("");
+      setAudioFile(null);
+      setDuration("");
+      setSelectedCategory(null);
+      setAudioDescription("");
+      setScroll(null);
+      setCurrentEditData(null);
+    }
+  }, [editData]);
+
+  // Reset edit data if header shows "Upload Image"
+  useEffect(() => {
+    if (!editData && currentEditData) {
+      setCurrentEditData(null);
+      setImageFile(null);
+      setImageURL("");
+      setImagePreview("");
+      setAudioFile(null);
+      setDuration("");
+      setSelectedCategory(null);
+      setAudioDescription("");
+      setScroll(null);
+      setDropdownKey((prev) => prev + 1);
+    }
+  }, [editData, currentEditData]);
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -94,27 +147,50 @@ const ImageUpload = ({
       audio: audioFile,
     };
 
+    // If we're editing, include the section ID
+    if (currentEditData) {
+      videoSectionData.id = currentEditData.id;
+    }
+
     try {
-      const response = await createVideoSection(videoSectionData);
+      let response;
+      if (currentEditData) {
+        response = await updateVideoSection(
+          currentEditData.id,
+          videoSectionData
+        );
+      } else {
+        response = await createVideoSection(videoSectionData);
+      }
+
       if (response) {
         onSaveSuccess();
-        toast.success("Image section saved successfully");
+        toast.success(
+          `Image section ${currentEditData ? "updated" : "saved"} successfully`
+        );
         onClose();
       }
     } catch (error) {
-      toast.error("Failed to save image section");
+      toast.error(
+        `Failed to ${currentEditData ? "update" : "save"} image section`
+      );
     }
   };
 
   const isFormValid = () => {
-    return (imageFile || imageURL.trim() !== "") && duration.trim() !== "";
+    return (
+      (imageFile || imageURL.trim() !== "") && String(duration).trim() !== ""
+    );
   };
 
   return (
     <div className={styles.wrapper}>
       <div className={styles.container}>
         <div className={styles.header}>
-          <span className={styles.backLink}>Upload Image | Element 1</span>
+          <span className={styles.backLink}>
+            {currentEditData ? "Edit Image" : "Upload Image"} | Element{" "}
+            {sectionNumber}
+          </span>
         </div>
 
         <div className={styles.uploadSection}>
@@ -154,6 +230,7 @@ const ImageUpload = ({
                 buttonText="Select Image URL"
                 onSelect={(value, label) => handleCategorySelect(value, label)}
                 allowAddNew={false}
+                initialValue={currentEditData?.value}
               />
             </div>
           </div>
@@ -212,12 +289,18 @@ const ImageUpload = ({
           <div className={styles.actionButtons}>
             <button
               className={`${styles.saveButton} ${
-                !isFormValid() || loading ? styles.disabled : ""
+                !isFormValid() || createLoading || updateLoading
+                  ? styles.disabled
+                  : ""
               }`}
-              disabled={!isFormValid() || loading}
+              disabled={!isFormValid() || createLoading || updateLoading}
               onClick={handleSave}
             >
-              {loading ? "Saving..." : "Save"}
+              {createLoading || updateLoading
+                ? "Saving..."
+                : currentEditData
+                ? "Update"
+                : "Save"}
             </button>
             <button className={styles.cancelButton} onClick={onClose}>
               Cancel
@@ -229,6 +312,7 @@ const ImageUpload = ({
       {showAudioDescModal && (
         <AudioDescModal
           dynamicFields={audioCategories}
+          initialValue={audioDescription}
           onSave={handleAudioDescriptionSave}
           onClose={() => setShowAudioDescModal(false)}
         />
