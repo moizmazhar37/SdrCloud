@@ -10,7 +10,7 @@ const SectionArea = ({
   templateId = null,
   elementsList = [],
 }) => {
-  const [sections, setSections] = useState([1, 2, 3, 4]);
+  const [sections, setSections] = useState([]);
   const [sectionData, setSectionData] = useState({});
 
   // Manage sections and section data based on the templateId and elementsList
@@ -32,11 +32,6 @@ const SectionArea = ({
         .map(Number)
         .sort((a, b) => a - b);
 
-      // Ensure at least 4 sections
-      while (sortedSequences.length < 4) {
-        sortedSequences.push(sortedSequences.length + 1);
-      }
-
       // Only update sections if they have changed
       setSections((prev) =>
         JSON.stringify(prev) === JSON.stringify(sortedSequences)
@@ -44,12 +39,8 @@ const SectionArea = ({
           : sortedSequences
       );
     } else {
-      // Default to 4 sections if no elements are present
-      setSections((prev) =>
-        JSON.stringify(prev) === JSON.stringify([1, 2, 3, 4])
-          ? prev
-          : [1, 2, 3, 4]
-      );
+      // Set sections to empty array if no elements are present
+      setSections([]);
     }
   }, [templateId, elementsList]);
 
