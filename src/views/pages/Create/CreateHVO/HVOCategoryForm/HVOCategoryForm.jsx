@@ -1,11 +1,11 @@
 import React, { useState, useMemo, useEffect } from "react";
 import styles from "./HVOCategoryForm.module.scss";
-import CategoryDropdown from "src/views/pages/Create/CreateHVO/CategoryDropdown/CategoryDropdown";
-import useGetCategories from "../../Hooks/useGetCategories";
-import { useCreateTemplate } from "../hooks/useCreateTemplate";
-import { useConnectSheet } from "../hooks/useConnectSheet";
-import useDeleteCategory from "../hooks/useDeleteCategory";
-import useEditCategory from "../../Hooks/useEditCategory";
+import CategoryDropdown from "../../CreateVideo/CategoryDropdown/CategoryDropdown";
+import useGetCategoreis from "../../Hooks/useGetCategories";
+import { useCreateTemplate } from "../../CreateVideo/hooks/useCreateTemplate";
+import { useConnectSheet } from "../../CreateVideo/hooks/useConnectSheet";
+import useDeleteCategory from "../../CreateVideo/hooks/useDeleteCategory";
+import useEditCategory from "../../Hooks/useEditCategoey";
 
 const HVOCategoryForm = ({
   sheetData,
@@ -32,7 +32,7 @@ const HVOCategoryForm = ({
     data: categoryData,
     loading: categoriesLoading,
     refetch: refetchCategories,
-  } = useGetCategories();
+  } = useGetCategoreis();
 
   const { createTemplate, loading: createLoading } = useCreateTemplate();
   const { connectSheet, loading: connectLoading } = useConnectSheet();
