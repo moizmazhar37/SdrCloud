@@ -39,8 +39,9 @@ const SectionArea = ({
           : sortedSequences
       );
     } else {
-      // Set sections to empty array if no elements are present
+      // Set both sections and sectionData to empty when no elements
       setSections([]);
+      setSectionData({});
     }
   }, [templateId, elementsList]);
 
@@ -56,9 +57,8 @@ const SectionArea = ({
 
   // Render a single section
   const renderSection = (sequence) => {
-    const hasData = sectionData[sequence];
-
-    if (hasData) {
+    // Only show SectionView if elementsList is not empty and we have data
+    if (elementsList?.length > 0 && sectionData[sequence]) {
       return <SectionView sectionData={sectionData[sequence]} />;
     }
 
