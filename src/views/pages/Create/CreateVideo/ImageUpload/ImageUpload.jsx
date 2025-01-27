@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import styles from "./ImageUpload.module.scss";
 import CategoryDropdown from "../CategoryDropdown/CategoryDropdown";
 import useCreateVideoSection from "../../Hooks/useCreateVideoSection";
+import useUpdateVideoSection from "../hooks/useUpdateVideoSection";
 import { toast } from "react-toastify";
 import AudioDescModal from "src/Common/AudioDescModal/AudioDescModal";
 
@@ -26,7 +27,10 @@ const ImageUpload = ({
   const [showAudioDescModal, setShowAudioDescModal] = useState(false);
   const [currentEditData, setCurrentEditData] = useState(null);
 
-  const { createVideoSection, loading } = useCreateVideoSection();
+  const { createVideoSection, loading: createLoading } =
+    useCreateVideoSection();
+  const { updateVideoSection, loading: updateLoading } =
+    useUpdateVideoSection(); // Loading state for update
   const imageInputRef = useRef(null);
   const audioInputRef = useRef(null);
 
@@ -149,7 +153,16 @@ const ImageUpload = ({
     }
 
     try {
-      const response = await createVideoSection(videoSectionData);
+      let response;
+      if (currentEditData) {
+        response = await updateVideoSection(
+          currentEditData.id,
+          videoSectionData
+        );
+      } else {
+        response = await createVideoSection(videoSectionData);
+      }
+
       if (response) {
         onSaveSuccess();
         toast.success(
@@ -276,12 +289,18 @@ const ImageUpload = ({
           <div className={styles.actionButtons}>
             <button
               className={`${styles.saveButton} ${
-                !isFormValid() || loading ? styles.disabled : ""
+                !isFormValid() || createLoading || updateLoading
+                  ? styles.disabled
+                  : ""
               }`}
-              disabled={!isFormValid() || loading}
+              disabled={!isFormValid() || createLoading || updateLoading}
               onClick={handleSave}
             >
-              {loading ? "Saving..." : currentEditData ? "Update" : "Save"}
+              {createLoading || updateLoading
+                ? "Saving..."
+                : currentEditData
+                ? "Update"
+                : "Save"}
             </button>
             <button className={styles.cancelButton} onClick={onClose}>
               Cancel

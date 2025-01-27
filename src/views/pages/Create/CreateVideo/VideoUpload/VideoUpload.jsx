@@ -1,9 +1,9 @@
-// VideoUpload.jsx
 import React, { useState, useRef, useEffect } from "react";
 import styles from "./VideoUpload.module.scss";
 import CategoryDropdown from "../CategoryDropdown/CategoryDropdown";
 import AudioDescModal from "src/Common/AudioDescModal/AudioDescModal";
 import useCreateVideoSection from "../../Hooks/useCreateVideoSection";
+import useUpdateVideoSection from "../hooks/useUpdateVideoSection";
 import { toast } from "react-toastify";
 
 const VideoUpload = ({
@@ -27,7 +27,10 @@ const VideoUpload = ({
   const [dropdownKey, setDropdownKey] = useState(0);
   const [showAudioDescModal, setShowAudioDescModal] = useState(false);
 
-  const { createVideoSection, loading } = useCreateVideoSection();
+  const { createVideoSection, loading: createLoading } =
+    useCreateVideoSection();
+  const { updateVideoSection, loading: updateLoading } =
+    useUpdateVideoSection(); // Loading state for update
   const videoInputRef = useRef(null);
   const audioInputRef = useRef(null);
 
@@ -126,19 +129,28 @@ const VideoUpload = ({
       audio: audioFile,
     };
 
+    // If we're editing, include the section ID
     if (editData) {
       videoSectionData.id = editData.id;
     }
 
     try {
-      const response = await createVideoSection(videoSectionData);
+      let response;
+      if (editData) {
+        response = await updateVideoSection(editData.id, videoSectionData);
+      } else {
+        response = await createVideoSection(videoSectionData);
+      }
+
       if (response) {
         onSaveSuccess();
-        toast.success("Video section saved successfully");
+        toast.success(
+          `Video section ${editData ? "updated" : "saved"} successfully`
+        );
         onClose();
       }
     } catch (error) {
-      toast.error("Failed to save video section");
+      toast.error(`Failed to ${editData ? "update" : "save"} video section`);
     }
   };
 
@@ -167,7 +179,6 @@ const VideoUpload = ({
         </div>
 
         <div className={styles.uploadSection}>
-          {/* Rest of the component remains the same */}
           <div className={styles.row}>
             <div className={styles.dropdownContainer}>
               <label>Upload Video or Enter URL</label>
@@ -263,12 +274,18 @@ const VideoUpload = ({
           <div className={styles.actionButtons}>
             <button
               className={`${styles.saveButton} ${
-                !isFormValid() || loading ? styles.disabled : ""
+                !isFormValid() || createLoading || updateLoading
+                  ? styles.disabled
+                  : ""
               }`}
-              disabled={!isFormValid() || loading}
+              disabled={!isFormValid() || createLoading || updateLoading}
               onClick={handleSave}
             >
-              {loading ? "Saving..." : editData ? "Update" : "Save"}
+              {createLoading || updateLoading
+                ? "Saving..."
+                : editData
+                ? "Update"
+                : "Save"}
             </button>
             <button className={styles.cancelButton} onClick={onClose}>
               Cancel
