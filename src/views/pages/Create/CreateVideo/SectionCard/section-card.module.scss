@@ -1,3 +1,15 @@
+.cardContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 20px;
+  padding-top: 0px;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  justify-content: space-between;
+}
+
 .sectionCard {
   flex: 1 1 calc(50% - 16px);
   max-width: calc(49%);
