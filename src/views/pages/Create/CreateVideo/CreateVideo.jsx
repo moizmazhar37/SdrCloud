@@ -10,6 +10,7 @@ import StaticURL from "./StaticURL/StaticURL";
 import DynamicURL from "./DynamicURL/DynamicURL";
 import useGetSheetData from "../Hooks/useGetSheetData";
 import SectionCard from "./SectionCard/SectionCard";
+import SectionCardContainer from "./SectionCard/SectionCardContainer";
 import useGetSections from "../Hooks/useGetSection";
 import useCreateVideo from "./hooks/useCreateVideo";
 import ConfirmationModal from "src/Common/ConfirmationModal/ConfirmationModal";
@@ -59,7 +60,6 @@ const CreateVideo = () => {
   } = useGetSections(templateId, saveTriggered);
 
   const elementsList = sectionData?.elementsList;
-
   // Extract categories
   const imageCategories = extractCategories(data, "Image URL");
   const staticUrlCategories = extractCategories(data, "Static URL");
@@ -209,19 +209,11 @@ const CreateVideo = () => {
           {elementsList && (
             <div>
               <div className={styles.cardContainer}>
-                {elementsList?.map((element) => (
-                  <SectionCard
-                    key={element.id}
-                    id={element.id}
-                    sectionNumber={element.sequence}
-                    sectionName={element.section_name}
-                    duration={element.duration}
-                    scroll={element.scroll}
-                    previewContent={element.value}
-                    onDeleteSuccess={() => setSaveTriggered((prev) => !prev)}
-                    onEdit={() => handleEdit(element)}
-                  />
-                ))}
+                <SectionCardContainer
+                  elementsList={elementsList}
+                  setSaveTriggered={setSaveTriggered}
+                  handleEdit={handleEdit}
+                />
               </div>
               {elementsList.length > 0 && (
                 <button

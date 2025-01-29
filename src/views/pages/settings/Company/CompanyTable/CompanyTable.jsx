@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { HexColorPicker } from "react-colorful";
 import styles from "./CompanyTable.module.scss";
 
@@ -12,6 +12,7 @@ const CompanyTable = ({
 }) => {
   const fileInputRef = useRef(null);
   const [activeColorPicker, setActiveColorPicker] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
 
   const isValidUrl = (string) => {
     try {
@@ -25,7 +26,13 @@ const CompanyTable = ({
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
+      // Create a preview URL for the newly selected file
+      const previewUrl = URL.createObjectURL(file);
+      setImagePreview(previewUrl);
       onFileUpload(file);
+
+      // Clean up the preview URL when component unmounts
+      return () => URL.revokeObjectURL(previewUrl);
     }
   };
 
@@ -69,8 +76,18 @@ const CompanyTable = ({
     if (header.type === "file") {
       return (
         <div className={styles.logoContainer}>
-          {value && (
-            <img src={value} alt="Logo" className={styles.circularLogo} />
+          {/* Show image preview for both existing value and newly uploaded file */}
+          {(imagePreview || value) && (
+            <img
+              src={imagePreview || value}
+              alt="Logo"
+              className={styles.circularLogo}
+              onError={(e) => {
+                // Handle image loading errors
+                console.error("Error loading image:", e);
+                e.target.style.display = "none";
+              }}
+            />
           )}
           {isEditing && (
             <div className={styles.fileUpload}>
@@ -85,7 +102,7 @@ const CompanyTable = ({
                 className={styles.uploadButton}
                 onClick={() => fileInputRef.current.click()}
               >
-                {value ? "Change Logo" : "Upload Logo"}
+                {imagePreview || value ? "Change Logo" : "Upload Logo"}
               </button>
             </div>
           )}

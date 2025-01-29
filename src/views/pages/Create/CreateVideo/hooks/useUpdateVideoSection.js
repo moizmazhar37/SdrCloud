@@ -19,6 +19,7 @@ const useUpdateVideoSection = () => {
       audioDescription,
       firstRowValue,
       value,
+      link,
       isDynamic,
       file,
       audio,
@@ -42,6 +43,7 @@ const useUpdateVideoSection = () => {
       formData.append("scroll", scroll ? "true" : "false");
     if (firstRowValue) formData.append("first_row_value", firstRowValue);
     if (value) formData.append("value", value);
+    if (link) formData.append("link", link);
     if (file) formData.append("file", file);
     if (audio instanceof File) formData.append("audio", audio);
 

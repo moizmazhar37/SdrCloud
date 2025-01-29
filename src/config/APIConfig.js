@@ -1,5 +1,6 @@
 const url = "https://backend-283763506150.us-central1.run.app";
 //  const url = "http://localhost:8000";
+// const url = "http://192.168.18.91:8000";
 const auth = `${url}/auth`;
 export const users = `${url}/users`;
 const urls = `${url}/url`;
@@ -9,12 +10,12 @@ const subadmin = `${url}/subadmin`;
 const categories = `${url}/categories`;
 export const templates = `${url}/templates`;
 const hvoelement = `${url}/hvoelement`;
-const videoelement = `${url}/videoelement`;
+export const videoelement = `${url}/videoelement`;
 const googlesheets = `${url}/googlesheets`;
 const upload = `${url}/upload`;
 const prospects = `${url}/prospect`;
 const hvo = `${url}/hvo`;
-const video = `${url}/video`;
+export const video = `${url}/video`;
 const footer = `${url}/footer-link`;
 // export const mainDashboard = `${url}/dashboard`;
 
@@ -35,6 +36,7 @@ const ApiConfig = {
   connectedSheetVideo: `${googlesheets}/all-connected-sheets`,
   connectSheetTOTemplateVideo: `${templates}/connect-sheet-with-template`,
   createVideoTemplateReferral: `${videoelement}/video-section`,
+
   getTemplatebyID: `${video}/template`,
   previewVideo: `${video}/preview-video-with-sheet-data`,
   getFirstRowData: `${googlesheets}/first-row-data`,
