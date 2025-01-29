@@ -4,7 +4,6 @@ import styles from "./SectionView.module.scss";
 const SectionView = ({ sectionData }) => {
   const { duration, scroll, audio_embedded, sequence, section_name } =
     sectionData;
-
   return (
     <div className={styles.viewCard}>
       <div className={styles.cardHeader}>

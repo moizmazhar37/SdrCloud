@@ -60,7 +60,6 @@ const CreateVideo = () => {
   } = useGetSections(templateId, saveTriggered);
 
   const elementsList = sectionData?.elementsList;
-
   // Extract categories
   const imageCategories = extractCategories(data, "Image URL");
   const staticUrlCategories = extractCategories(data, "Static URL");

@@ -41,10 +41,6 @@ const SectionCardContainer = ({
     }
   };
 
-  if (!sortedElements.length) {
-    return <div className={styles.cardContainer}>No elements to display</div>;
-  }
-
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
       <Droppable droppableId="sections">
