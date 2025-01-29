@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { tenant } from "src/config/APIConfig";
+import { toast } from "react-toastify"; // Import the toast function
 
 const useUpdateTenant = () => {
   const [loading, setLoading] = useState(false);
@@ -15,7 +16,6 @@ const useUpdateTenant = () => {
     try {
       const token = localStorage.getItem("token");
 
-      // Create FormData if there's a file to upload
       const formData = new FormData();
 
       // Handle file upload specially
@@ -37,12 +37,14 @@ const useUpdateTenant = () => {
       });
 
       setSuccess(true);
+      toast.success("Tenant updated successfully!");
       return response.data;
     } catch (err) {
       setError(
         err.response?.data?.message ||
           "An error occurred while updating tenant information"
       );
+      toast.error(error || "Error updating tenant!");
       throw err;
     } finally {
       setLoading(false);

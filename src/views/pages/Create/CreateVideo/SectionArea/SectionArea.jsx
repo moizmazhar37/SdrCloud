@@ -15,13 +15,11 @@ const SectionArea = ({
 
   useEffect(() => {
     if (templateId && elementsList?.length > 0) {
-      // Create a new section map from the updated elementsList
       const sectionMap = elementsList.reduce((acc, element) => {
         acc[element.sequence] = element;
         return acc;
       }, {});
 
-      // Update both states in one go to ensure consistency
       const sortedSequences = Object.keys(sectionMap)
         .map(Number)
         .sort((a, b) => a - b);
@@ -43,7 +41,6 @@ const SectionArea = ({
   };
 
   const renderSection = (sequence) => {
-    // Get the current section data
     const currentSectionData = sectionData[sequence];
 
     if (elementsList?.length > 0 && currentSectionData) {
