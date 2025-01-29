@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import CategoryDropdown from "../CategoryDropdown/CategoryDropdown";
 import SectionView from "./SectionView/SectionView";
+import usePreviewVideo from "../hooks/usePreviewVideo";
 import styles from "./SectionArea.module.scss";
 
 const SectionArea = ({
@@ -12,6 +13,7 @@ const SectionArea = ({
 }) => {
   const [sections, setSections] = useState([]);
   const [sectionData, setSectionData] = useState({});
+  const { previewVideo, loading: previewLoading } = usePreviewVideo();
 
   useEffect(() => {
     if (templateId && elementsList?.length > 0) {
@@ -61,6 +63,15 @@ const SectionArea = ({
     );
   };
 
+  const handleProgressOverview = async () => {
+    if (templateId) {
+      const response = await previewVideo(templateId);
+      if (response) {
+        console.log("Preview successful:", response);
+      }
+    }
+  };
+
   return (
     <div className={styles.sectionAreaContainer}>
       <div className={styles.sectionsWrapper}>
@@ -77,10 +88,11 @@ const SectionArea = ({
           + Add New Section
         </button>
         <button
-          onClick={() => console.log("Progress Overview clicked")}
+          onClick={handleProgressOverview}
           className={styles.progressButton}
+          disabled={previewLoading}
         >
-          Progress Overview
+          {previewLoading ? "Loading..." : "Progress Overview"}
         </button>
       </div>
     </div>
