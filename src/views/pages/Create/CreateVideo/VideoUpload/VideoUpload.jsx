@@ -20,6 +20,7 @@ const VideoUpload = ({
   const [videoURL, setVideoURL] = useState("");
   const [videoPreview, setVideoPreview] = useState("");
   const [audioFile, setAudioFile] = useState(null);
+  const [audioFileName, setAudioFileName] = useState("");
   const [duration, setDuration] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [audioDescription, setAudioDescription] = useState("");
@@ -78,6 +79,7 @@ const VideoUpload = ({
     const file = e.target.files[0];
     if (file) {
       setAudioFile(file);
+      setAudioFileName(file.name);
     }
   };
 
@@ -270,7 +272,11 @@ const VideoUpload = ({
               </div>
             </div>
           </div>
-
+          {audioFileName && (
+            <div className={styles.audioFileName}>
+              <span>{audioFileName}</span>
+            </div>
+          )}
           <div className={styles.actionButtons}>
             <button
               className={`${styles.saveButton} ${

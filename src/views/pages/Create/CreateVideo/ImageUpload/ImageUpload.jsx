@@ -3,15 +3,8 @@ import styles from "./ImageUpload.module.scss";
 import CategoryDropdown from "../CategoryDropdown/CategoryDropdown";
 import useCreateVideoSection from "../../Hooks/useCreateVideoSection";
 import useUpdateVideoSection from "../hooks/useUpdateVideoSection";
+import { toast } from "react-toastify";
 import AudioDescModal from "src/Common/AudioDescModal/AudioDescModal";
-import {
-  initializeEditData,
-  resetForm,
-  handleImageUpload,
-  handleAudioUpload,
-  handleSave,
-  isFormValid,
-} from "./helpers";
 
 const ImageUpload = ({
   categories,
@@ -29,6 +22,7 @@ const ImageUpload = ({
   const [duration, setDuration] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [audioDescription, setAudioDescription] = useState("");
+  const [audioFileName, setAudioFileName] = useState("");
   const [scroll, setScroll] = useState(null);
   const [dropdownKey, setDropdownKey] = useState(0);
   const [showAudioDescModal, setShowAudioDescModal] = useState(false);
@@ -37,38 +31,159 @@ const ImageUpload = ({
   const { createVideoSection, loading: createLoading } =
     useCreateVideoSection();
   const { updateVideoSection, loading: updateLoading } =
-    useUpdateVideoSection();
+    useUpdateVideoSection(); // Loading state for update
   const imageInputRef = useRef(null);
   const audioInputRef = useRef(null);
 
+  // Initialize form with edit data if available
   useEffect(() => {
-    initializeEditData(editData, {
-      setImageURL,
-      setImagePreview,
-      setSelectedCategory,
-      setDuration,
-      setScroll,
-      setAudioDescription,
-      setCurrentEditData,
-    });
+    if (editData) {
+      // If there's a value property, it's a category URL
+      if (editData.value) {
+        setImageURL(editData.value);
+        setImagePreview(editData.value);
+        setSelectedCategory(editData.section_name);
+      } else {
+        // If no value property, it was a direct file upload
+        setImagePreview(editData.previewContent);
+      }
+
+      setDuration(editData.duration || "");
+      setScroll(editData.scroll || false);
+      setAudioDescription(editData.audioDescription || "");
+      setCurrentEditData(editData);
+    } else {
+      // Reset form when not in edit mode
+      setImageFile(null);
+      setImageURL("");
+      setImagePreview("");
+      setAudioFile(null);
+      setDuration("");
+      setSelectedCategory(null);
+      setAudioDescription("");
+      setScroll(null);
+      setCurrentEditData(null);
+    }
   }, [editData]);
 
+  // Reset edit data if header shows "Upload Image"
   useEffect(() => {
     if (!editData && currentEditData) {
-      resetForm({
-        setImageFile,
-        setImageURL,
-        setImagePreview,
-        setAudioFile,
-        setDuration,
-        setSelectedCategory,
-        setAudioDescription,
-        setScroll,
-        setCurrentEditData,
-        setDropdownKey,
-      });
+      setCurrentEditData(null);
+      setImageFile(null);
+      setImageURL("");
+      setImagePreview("");
+      setAudioFile(null);
+      setDuration("");
+      setSelectedCategory(null);
+      setAudioDescription("");
+      setScroll(null);
+      setDropdownKey((prev) => prev + 1);
     }
   }, [editData, currentEditData]);
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file);
+      setImageURL("");
+      setImagePreview(URL.createObjectURL(file));
+      setSelectedCategory(null);
+      setDropdownKey((prev) => prev + 1);
+    }
+  };
+
+  const handleAudioUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setAudioFile(file);
+      setAudioFileName(file.name);
+    }
+  };
+
+  const handleCategorySelect = (value, label) => {
+    setImageURL(value);
+    setImageFile(null);
+    setImagePreview(value);
+    setSelectedCategory(label);
+  };
+
+  const handleImageURLChange = (e) => {
+    const url = e.target.value;
+    setImageURL(url);
+    setImageFile(null);
+    setImagePreview(url);
+    setSelectedCategory(null);
+    setDropdownKey((prev) => prev + 1);
+  };
+
+  const handleUploadAudio = () => {
+    audioInputRef.current?.click();
+  };
+
+  const handleAddDescription = () => {
+    setShowAudioDescModal(true);
+  };
+
+  const handleAudioDescriptionSave = (description) => {
+    setAudioDescription(description);
+    setShowAudioDescModal(false);
+  };
+
+  const handleSave = async () => {
+    if (!isFormValid()) return;
+
+    const videoSectionData = {
+      hvoTemplateId: templateId,
+      sectionName: selectedCategory || "IMAGE URL",
+      sectionNumber: 3,
+      sequence: sectionNumber,
+      duration: duration,
+      audioEmbedded: !!audioFile,
+      scroll: scroll,
+      audioDescription: audioDescription,
+      firstRowValue: null,
+      isDynamic: !!selectedCategory,
+      file: imageFile,
+      value: selectedCategory ? imageURL : null,
+      audio: audioFile,
+    };
+
+    // If we're editing, include the section ID
+    if (currentEditData) {
+      videoSectionData.id = currentEditData.id;
+    }
+
+    try {
+      let response;
+      if (currentEditData) {
+        response = await updateVideoSection(
+          currentEditData.id,
+          videoSectionData
+        );
+      } else {
+        response = await createVideoSection(videoSectionData);
+      }
+
+      if (response) {
+        onSaveSuccess();
+        toast.success(
+          `Image section ${currentEditData ? "updated" : "saved"} successfully`
+        );
+        onClose();
+      }
+    } catch (error) {
+      toast.error(
+        `Failed to ${currentEditData ? "update" : "save"} image section`
+      );
+    }
+  };
+
+  const isFormValid = () => {
+    return (
+      (imageFile || imageURL.trim() !== "") && String(duration).trim() !== ""
+    );
+  };
 
   return (
     <div className={styles.wrapper}>
@@ -79,6 +194,7 @@ const ImageUpload = ({
             {sectionNumber}
           </span>
         </div>
+
         <div className={styles.uploadSection}>
           <div className={styles.row}>
             <div className={styles.imageUploadContainer}>
@@ -88,9 +204,7 @@ const ImageUpload = ({
                   type="text"
                   readOnly={!!imageFile}
                   value={imageFile?.name || imageURL}
-                  onChange={
-                    !imageFile ? (e) => setImageURL(e.target.value) : undefined
-                  }
+                  onChange={!imageFile ? handleImageURLChange : undefined}
                   placeholder="Upload image or enter URL"
                   className={styles.uploadInput}
                 />
@@ -105,15 +219,7 @@ const ImageUpload = ({
                 ref={imageInputRef}
                 type="file"
                 accept="image/*"
-                onChange={(e) =>
-                  handleImageUpload(e, {
-                    setImageFile,
-                    setImagePreview,
-                    setImageURL,
-                    setSelectedCategory,
-                    setDropdownKey,
-                  })
-                }
+                onChange={handleImageUpload}
                 className={styles.hiddenInput}
               />
             </div>
@@ -124,12 +230,7 @@ const ImageUpload = ({
                 key={dropdownKey}
                 options={categories}
                 buttonText="Select Image URL"
-                onSelect={(value, label) => {
-                  setImageURL(value);
-                  setImageFile(null);
-                  setImagePreview(value);
-                  setSelectedCategory(label);
-                }}
+                onSelect={(value, label) => handleCategorySelect(value, label)}
                 allowAddNew={false}
                 initialValue={currentEditData?.value}
               />
@@ -163,63 +264,44 @@ const ImageUpload = ({
                 ref={audioInputRef}
                 type="file"
                 accept="audio/*"
-                onChange={(e) => handleAudioUpload(e, setAudioFile)}
+                onChange={handleAudioUpload}
                 className={styles.hiddenInput}
               />
               <div className={styles.audioButtons}>
-                <button
-                  className={styles.uploadButton}
-                  onClick={() => audioInputRef.current?.click()}
-                >
-                  Upload Audio
-                </button>
-                <button
-                  className={`${styles.descriptionButton} ${
-                    audioDescription ? styles.active : ""
-                  }`}
-                  onClick={() => setShowAudioDescModal(true)}
-                >
-                  Add Audio Description
-                </button>
+                <div className={styles.audioActions}>
+                  <button
+                    className={styles.uploadButton}
+                    onClick={handleUploadAudio}
+                  >
+                    Upload Audio
+                  </button>
+                  <button
+                    className={`${styles.descriptionButton} ${
+                      audioDescription ? styles.active : ""
+                    }`}
+                    onClick={handleAddDescription}
+                  >
+                    Add Audio Description
+                  </button>
+                </div>
               </div>
             </div>
           </div>
+          {audioFileName && (
+            <div className={styles.audioFileName}>
+              <span>{audioFileName}</span>
+            </div>
+          )}
 
           <div className={styles.actionButtons}>
             <button
               className={`${styles.saveButton} ${
-                !isFormValid(imageFile, imageURL, duration) ||
-                createLoading ||
-                updateLoading
+                !isFormValid() || createLoading || updateLoading
                   ? styles.disabled
                   : ""
               }`}
-              disabled={
-                !isFormValid(imageFile, imageURL, duration) ||
-                createLoading ||
-                updateLoading
-              }
-              onClick={() =>
-                handleSave(
-                  () => isFormValid(imageFile, imageURL, duration),
-                  {
-                    templateId,
-                    sectionNumber,
-                    imageFile,
-                    imageURL,
-                    selectedCategory,
-                    duration,
-                    audioFile,
-                    scroll,
-                    audioDescription,
-                  },
-                  currentEditData,
-                  createVideoSection,
-                  updateVideoSection,
-                  onSaveSuccess,
-                  onClose
-                )
-              }
+              disabled={!isFormValid() || createLoading || updateLoading}
+              onClick={handleSave}
             >
               {createLoading || updateLoading
                 ? "Saving..."
@@ -233,15 +315,12 @@ const ImageUpload = ({
           </div>
         </div>
       </div>
-
+      <div className={styles.audioModal}></div>
       {showAudioDescModal && (
         <AudioDescModal
           dynamicFields={audioCategories}
           initialValue={audioDescription}
-          onSave={(description) => {
-            setAudioDescription(description);
-            setShowAudioDescModal(false);
-          }}
+          onSave={handleAudioDescriptionSave}
           onClose={() => setShowAudioDescModal(false)}
         />
       )}

@@ -108,6 +108,11 @@
     gap: 10px;
   }
 }
+.audioFileName {
+  font-size: 14px;
+  color: #333;
+  margin-top: 8px;
+}
 
 .previewContainer {
   width: 100%;
@@ -115,8 +120,8 @@
   margin: 0;
 
   .imagePreview {
-    min-width: 340px;
-    width: 100%;
+    max-width: 300px;
+    max-height: 200px;
     height: auto;
     border-radius: 4px;
     object-fit: contain;
