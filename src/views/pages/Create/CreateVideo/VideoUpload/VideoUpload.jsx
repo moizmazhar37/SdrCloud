@@ -128,10 +128,9 @@ const VideoUpload = ({
       isDynamic: !!selectedCategory,
       file: videoFile,
       value: selectedCategory ? videoURL : null,
+      link: !selectedCategory ? videoURL : null,
       audio: audioFile,
     };
-
-    // If we're editing, include the section ID
     if (editData) {
       videoSectionData.id = editData.id;
     }
