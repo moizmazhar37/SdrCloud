@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import ApiConfig from "src/config/APIConfig";
 
-const useGetSheets = () => {
+const useGetSheets = (sheetType = "VIDEO") => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -12,7 +12,7 @@ const useGetSheets = () => {
     setError(null);
     try {
       const response = await axios({
-        url: `${ApiConfig.connectedSheetVideo}?isSheetConnected=false&sheetType=VIDEO`,
+        url: `${ApiConfig.connectedSheetVideo}?isSheetConnected=false&sheetType=${sheetType}`,
         method: "GET",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -32,11 +32,11 @@ const useGetSheets = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [sheetType]); // Added sheetType to dependencies
 
   useEffect(() => {
     fetchSheets();
-  }, []);
+  }, [fetchSheets]); // This will re-run when sheetType changes
 
   return { data, loading, error, refetch: fetchSheets };
 };

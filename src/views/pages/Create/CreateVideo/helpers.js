@@ -20,6 +20,16 @@ export const initialOptions = [
   { label: "VIDEO CLIPS", value: "video" },
 ];
 
+export const hvoInitialOptions = [
+  { label: "Header", value: "Header" },
+  { label: "Hero", value: "Hero" },
+  { label: "Highlight Banner", value: "Highlight Banner" },
+  { label: "Right Text | Left Image", value: "Right Text | Left Image" },
+  { label: "Highlight Banner 2", value: "Highlight Banner 2" },
+  { label: "Left Text | Right Image", value: "Left Text | Right Image" },
+  { label: "Footer", value: "Footer" },
+];
+
 export const getAudioCategories = (data) => {
   const validDataTypes = [
     "First name (Required)",
@@ -41,3 +51,10 @@ export const getAudioCategories = (data) => {
 
   return filteredValues;
 };
+
+//------------------------------HVO---------------------------------------------//
+
+export const hvoNavigationItems = [
+  { text: "Template", route: "/CreateTemplate" },
+  { text: "New HVO Template", route: "/createtemplate&Video" },
+];

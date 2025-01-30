@@ -1,12 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import styles from "./ImageUpload.module.scss";
 import CategoryDropdown from "../CategoryDropdown/CategoryDropdown";
-<<<<<<< HEAD
 import useCreateVideoSection from "../hooks/useCreateVideoSection";
-=======
-import useCreateVideoSection from "../../Hooks/useCreateVideoSection";
 import useUpdateVideoSection from "../hooks/useUpdateVideoSection";
->>>>>>> ffe6a40c943bb72ad3eeb2d560fd647d15992a17
 import { toast } from "react-toastify";
 import AudioDescModal from "src/Common/AudioDescModal/AudioDescModal";
 

@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from "react";
 import styles from "./HVOCategoryForm.module.scss";
-import CategoryDropdown from "../../CreateVideo/CategoryDropdown/CategoryDropdown";
-import useGetCategoreis from "../../Hooks/useGetCategories";
+import CategoryDropdown from "src/views/pages/Create/CreateVideo/CategoryDropdown/CategoryDropdown";
+import useGetCategories from "../../Hooks/useGetCategories";
 import { useCreateTemplate } from "../../CreateVideo/hooks/useCreateTemplate";
 import { useConnectSheet } from "../../CreateVideo/hooks/useConnectSheet";
 import useDeleteCategory from "../../CreateVideo/hooks/useDeleteCategory";
@@ -13,7 +13,7 @@ const HVOCategoryForm = ({
   onTemplateSave,
   onSheetConnectSuccess,
   sectionData,
-  template_id, //required for view mode and null in create mode
+  template_id,
   isViewMode,
 }) => {
   const [category, setCategory] = useState(null);
@@ -32,13 +32,14 @@ const HVOCategoryForm = ({
     data: categoryData,
     loading: categoriesLoading,
     refetch: refetchCategories,
-  } = useGetCategoreis();
+  } = useGetCategories();
 
   const { createTemplate, loading: createLoading } = useCreateTemplate();
   const { connectSheet, loading: connectLoading } = useConnectSheet();
   const { deleteCategory, loading: deleteLoading } =
     useDeleteCategory(refetchCategories);
   const { editCategory, loading: editLoading } = useEditCategory();
+
   const categories = useMemo(
     () =>
       categoryData?.map((item) => ({
@@ -64,12 +65,13 @@ const HVOCategoryForm = ({
 
   useEffect(() => {
     if (sectionData && isViewMode) {
-      setTemplateName(sectionData.getHVO?.hvoTemplateName || "");
-      setCategory(sectionData.getHVO?.categoryName || null);
-      setCategoryId(sectionData.getHVO?.categoryId || null);
+      setTemplateName(sectionData.getVideo?.hvoTemplateName || "");
+      setCategory(sectionData.getVideo?.categoryName || null);
+      setCategoryId(sectionData.getVideo?.categoryId || null);
       setIngestionSource(sectionData.sheet?.title || null);
+      setTemplateId(template_id);
     }
-  }, [sectionData, isViewMode]);
+  }, [sectionData, isViewMode, template_id]);
 
   const handleSave = async () => {
     if (!templateName.trim()) {
@@ -88,7 +90,12 @@ const HVOCategoryForm = ({
       }
     } else {
       try {
-        const response = await createTemplate({ templateName, categoryId });
+        const response = await createTemplate({
+          templateName,
+          categoryId,
+          templateType: "HVO",
+        });
+
         if (response?.id) {
           setTemplateId(response.id);
           onTemplateSave(response.id);
@@ -141,6 +148,9 @@ const HVOCategoryForm = ({
       setIsEditingCategory(false);
     }
   };
+
+  const showIngestionControls =
+    !isViewMode || (isViewMode && !sectionData?.sheet?.googleSheetsId);
 
   return (
     <div className={styles.formWrapper}>
@@ -243,7 +253,7 @@ const HVOCategoryForm = ({
         <div className={styles.ingestionSection}>
           <h2 className={styles.sectionTitle}>Ingestion</h2>
           <div className={styles.ingestionWrapper}>
-            {!isViewMode && !sheetsLoading && (
+            {showIngestionControls && !sheetsLoading && (
               <>
                 <CategoryDropdown
                   options={sheets}
@@ -260,7 +270,7 @@ const HVOCategoryForm = ({
                 </button>
               </>
             )}
-            {isViewMode && ingestionSource && (
+            {isViewMode && sectionData?.sheet?.googleSheetsId && (
               <div className={styles.viewModeContainer}>
                 <span>{ingestionSource}</span>
                 <div className={styles.actionButtons}>
