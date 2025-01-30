@@ -20,7 +20,7 @@ const CreateUser = ({ isOpen, onClose, onSuccess, userId, viewState }) => {
   const { createUser, loading: createLoading, error: createError } = useCreateUser();
   const { updateUser, loading: updateLoading, error: updateError } = useUpdateUser();
   const { data: userData, loadingUserData, refetch } = useFetchUser(userId);
-  
+
   const loading = viewState === "edit" ? updateLoading : createLoading;
   const apiError = viewState === "edit" ? updateError : createError;
 
@@ -35,7 +35,7 @@ const CreateUser = ({ isOpen, onClose, onSuccess, userId, viewState }) => {
     meetingLink: "",
     tokens: "",
   });
-  
+
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
 
@@ -48,13 +48,13 @@ const CreateUser = ({ isOpen, onClose, onSuccess, userId, viewState }) => {
 
     if (viewState === "edit" && userData) {
       setFormData({
-        firstName: userData.firstName || "",
-        lastName: userData.lastName || "",
+        firstName: userData.first_name || "",
+        lastName: userData.last_name || "",
         email: userData.email || "",
         phone: userData.phoneNo || "",
         password: userData.password || "",
         title: userData.title || "",
-        linkedinUrl: userData.linkedinUrl || "",
+        linkedinUrl: userData.linkedin_url || "",
         meetingLink: userData.meetLink || "",
         tokens: userData.tokens || 0,
       });
@@ -87,7 +87,7 @@ const CreateUser = ({ isOpen, onClose, onSuccess, userId, viewState }) => {
         await createUser(formData);
         toast.success("User created successfully!");
       }
-      
+
       handleClose();
       onSuccess();
     } catch (error) {
@@ -163,7 +163,7 @@ const CreateUser = ({ isOpen, onClose, onSuccess, userId, viewState }) => {
                 value={formData.email}
                 onChange={(e) => handleChange(e, setFormData, setErrors)}
                 onBlur={(e) => handleBlur(e, setErrors)}
-                disabled={loading }
+                disabled={loading}
               />
               {errors.email && (
                 <span className={styles.error}>{errors.email}</span>
@@ -251,21 +251,24 @@ const CreateUser = ({ isOpen, onClose, onSuccess, userId, viewState }) => {
               )}
             </div>
 
-            <div className={styles.formGroup}>
-              <label>Meeting Link</label>
-              <input
-                type="text"
-                name="meetingLink"
-                placeholder="Enter Meeting Link"
-                value={formData.meetingLink}
-                onChange={(e) => handleChange(e, setFormData, setErrors)}
-                onBlur={(e) => handleBlur(e, setErrors)}
-                disabled={loading}
-              />
-              {errors.meetingLink && (
-                <span className={styles.error}>{errors.meetingLink}</span>
-              )}
-            </div>
+
+            {viewState !== "edit" && (
+              <div className={styles.formGroup}>
+                <label>Meeting Link</label>
+                <input
+                  type="text"
+                  name="meetingLink"
+                  placeholder="Enter Meeting Link"
+                  value={formData.meetingLink}
+                  onChange={(e) => handleChange(e, setFormData, setErrors)}
+                  onBlur={(e) => handleBlur(e, setErrors)}
+                  disabled={loading}
+                />
+                {errors.meetingLink && (
+                  <span className={styles.error}>{errors.meetingLink}</span>
+                )}
+              </div>
+            )}
 
             <div className={styles.formGroup}>
               <label>Tokens*</label>
@@ -301,8 +304,8 @@ const CreateUser = ({ isOpen, onClose, onSuccess, userId, viewState }) => {
                     ? "Updating..."
                     : "Creating..."
                   : viewState === "edit"
-                  ? "Update & Save"
-                  : "Add & Send Invite"}
+                    ? "Update & Save"
+                    : "Add & Send Invite"}
               </button>
             </div>
           </div>

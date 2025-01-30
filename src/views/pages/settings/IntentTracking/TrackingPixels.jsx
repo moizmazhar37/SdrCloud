@@ -74,10 +74,10 @@ const TrackingPixels = () => {
     const updatedFields = fields.map((field) =>
       field.id === id
         ? {
-            ...field,
-            selectedOption: option,
-            placeholder: `Enter ${field.label.includes(option) ? option : "Other"} Tracking Pixels`,
-          }
+          ...field,
+          selectedOption: option,
+          placeholder: `Enter ${field.label.includes(option) ? option : "Other"} Tracking Pixels`,
+        }
         : field
     );
     setFields(updatedFields);
@@ -104,6 +104,9 @@ const TrackingPixels = () => {
     <div className={styles.container}>
       <div className={styles.header}>
         <span className={styles.heading}>Tracking Pixels</span>
+        <button className={styles.saveButton} onClick={handleSave}>
+          Save All
+        </button>
       </div>
       <div className={styles.scrollable}>
         <div className={styles.content}>
@@ -113,9 +116,8 @@ const TrackingPixels = () => {
                 {field.label.map((option, idx) => (
                   <span
                     key={option}
-                    className={`${styles.label} ${
-                      field.selectedOption === option ? styles.selected : ""
-                    }`}
+                    className={`${styles.label} ${field.selectedOption === option ? styles.selected : ""
+                      }`}
                     onClick={() => handleOptionChange(field.id, option)}
                   >
                     {option}
@@ -139,9 +141,6 @@ const TrackingPixels = () => {
               />
             </div>
           ))}
-          <button className={styles.saveButton} onClick={handleSave}>
-            Save All
-          </button>
         </div>
       </div>
     </div>

@@ -15,7 +15,7 @@ export const tableHeaders = {
   account_details: [
     { key: "accountName", label: "Account Name", editable: true },
     { key: "accountPhone", label: "Account Phone", editable: true },
-    { key: "personaProAdmin", label: "PersonaPro Admin", editable: false },
+    { key: "personaProAdmin", label: "SDRCloud Admin", editable: false },
   ],
   contract_term: [
     { key: "contractDate", label: "Contract Date", editable: false },

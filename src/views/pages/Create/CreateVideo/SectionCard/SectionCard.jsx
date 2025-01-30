@@ -11,15 +11,12 @@ const SectionCard = ({
   scroll,
   previewContent,
   onDeleteSuccess,
+  onEdit,
 }) => {
   const { deleteSection, loading } = useDeleteSection(onDeleteSuccess);
 
   const handleDelete = () => {
     deleteSection(id);
-  };
-
-  const handleEdit = () => {
-    console.log("OPEN");
   };
 
   const renderPreview = () => {
@@ -63,7 +60,7 @@ const SectionCard = ({
           <p className={styles.sectionName}>{sectionName}</p>
         </div>
         <div>
-          <button onClick={handleEdit} className={styles.deleteButton}>
+          <button onClick={onEdit} className={styles.editButton}>
             <FaEdit />
           </button>
           <button
