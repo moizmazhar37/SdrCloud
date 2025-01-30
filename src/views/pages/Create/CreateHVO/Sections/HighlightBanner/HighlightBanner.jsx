@@ -1,0 +1,99 @@
+import React, { useState } from "react";
+import Dropdown from "src/Common/Dropdown/Dropdown";
+import ColorInput from "src/Common/ColorInput/ColorInput";
+import CopyText from "src/Common/CopyText/CopyText";
+import InputField from "src/Common/InputField/InputField";
+import { ArrowLeft } from "lucide-react";
+import styles from "./HighlightBanner.module.scss";
+
+const HighlightBanner = () => {
+  const [bannerText, setBannerText] = useState("");
+  const [bannerColor, setBannerColor] = useState("");
+  const [textColor, setTextColor] = useState("");
+  const [size, setSize] = useState("00");
+
+  const scrollOptions = [
+    { label: "Yes", value: "yes" },
+    { label: "No", value: "no" },
+  ];
+
+  const dynamicFields = [
+    "CUSTOMER_ORGANIZAT",
+    "LAST_NAME",
+    "HERO_HEADING2",
+    "HERO_BODYTEXT",
+    "HERO_CTA_BUTTON",
+  ];
+
+  return (
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <button className={styles.backButton}>
+          <ArrowLeft size={16} />
+          Banner | Section 1
+        </button>
+      </div>
+
+      <div className={styles.content}>
+        <div className={styles.mainSection}>
+          <div className={styles.topControls}>
+            <div className={styles.inputGroup}>
+              <label>Horizontal Scroll</label>
+              <Dropdown
+                options={scrollOptions}
+                onChange={(option) => console.log(option)}
+                placeholder="Actions"
+                className={styles.fullWidthDropdown}
+              />
+            </div>
+
+            <div className={styles.banner}>
+              <label>Banner Text</label>
+              <InputField
+                value={bannerText}
+                onChange={(e) => setBannerText(e.target.value)}
+                placeholder="Enter Your Banner Text Here"
+              />
+            </div>
+
+            <div className={styles.inputGroup}>
+              <label>
+                Size <span className={styles.sizeHint}>(Max 32 px.)</span>
+              </label>
+              <div className={styles.sizeWrapper}>
+                <InputField
+                  value={size}
+                  onChange={(e) => setSize(e.target.value)}
+                  className={styles.sizeInput}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className={styles.colorControls}>
+            <div className={styles.inputGroup}>
+              <label>Choose Banner Color</label>
+              <ColorInput value={bannerColor} onChange={setBannerColor} />
+            </div>
+
+            <div className={styles.inputGroup}>
+              <label>Choose Banner Text Color</label>
+              <ColorInput value={textColor} onChange={setTextColor} />
+            </div>
+          </div>
+        </div>
+
+        <div className={styles.copySection}>
+          <CopyText fields={dynamicFields} />
+        </div>
+      </div>
+
+      <div className={styles.footer}>
+        <button className={styles.saveButton}>Save</button>
+        <button className={styles.nextButton}>Next</button>
+      </div>
+    </div>
+  );
+};
+
+export default HighlightBanner;
