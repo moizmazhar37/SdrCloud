@@ -17,6 +17,7 @@ const useCreateVideoSection = () => {
     audioDescription = null,
     firstRowValue = null,
     value = null,
+    link = null,
     isDynamic = null,
     file = null,
     audio = null,
@@ -36,6 +37,7 @@ const useCreateVideoSection = () => {
     formData.append("scroll", scroll ? "true" : "false");
     formData.append("first_row_value", firstRowValue || "");
     formData.append("value", value || "");
+    formData.append("link", link || "");
     if (file) {
       formData.append("file", file);
     }

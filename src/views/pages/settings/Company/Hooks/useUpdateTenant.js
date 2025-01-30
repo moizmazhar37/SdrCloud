@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { tenant } from "src/config/APIConfig";
+import { toast } from "react-toastify";
 
 const useUpdateTenant = () => {
   const [loading, setLoading] = useState(false);
@@ -15,16 +16,11 @@ const useUpdateTenant = () => {
     try {
       const token = localStorage.getItem("token");
 
-      // Create FormData if there's a file to upload
       const formData = new FormData();
-
-      // Handle file upload specially
       if (updatedFields.uploadLogo instanceof File) {
         formData.append("uploadLogo", updatedFields.uploadLogo);
         delete updatedFields.uploadLogo;
       }
-
-      // Add other fields to FormData
       Object.keys(updatedFields).forEach((key) => {
         formData.append(key, updatedFields[key]);
       });
@@ -37,13 +33,14 @@ const useUpdateTenant = () => {
       });
 
       setSuccess(true);
+      toast.success("Tenant updated successfully!");
       return response.data;
     } catch (err) {
       setError(
         err.response?.data?.message ||
           "An error occurred while updating tenant information"
       );
-      throw err;
+      toast.error(error || "Error updating tenant!");
     } finally {
       setLoading(false);
     }

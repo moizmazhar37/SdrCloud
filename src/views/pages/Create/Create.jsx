@@ -35,13 +35,13 @@ const Create = () => {
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toISOString().split("T")[0];
+    return date.toISOString().split("T")[0]; // Returns in YYYY-MM-DD format
   };
 
   const tableData =
     data[activeTab]?.map((row) => ({
       ...row,
-      created_at: formatDate(row.created_at),
+      created_at: formatDate(row.created_at), // Format the creation date
       category_name: (
         <div className={styles.categoryContainer}>
           {row.category_name.split(",").map((category, index) => (

@@ -22,6 +22,7 @@ const ImageUpload = ({
   const [duration, setDuration] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [audioDescription, setAudioDescription] = useState("");
+  const [audioFileName, setAudioFileName] = useState("");
   const [scroll, setScroll] = useState(null);
   const [dropdownKey, setDropdownKey] = useState(0);
   const [showAudioDescModal, setShowAudioDescModal] = useState(false);
@@ -37,13 +38,11 @@ const ImageUpload = ({
   // Initialize form with edit data if available
   useEffect(() => {
     if (editData) {
-      // If there's a value property, it's a category URL
       if (editData.value) {
         setImageURL(editData.value);
         setImagePreview(editData.value);
         setSelectedCategory(editData.section_name);
       } else {
-        // If no value property, it was a direct file upload
         setImagePreview(editData.previewContent);
       }
 
@@ -52,7 +51,6 @@ const ImageUpload = ({
       setAudioDescription(editData.audioDescription || "");
       setCurrentEditData(editData);
     } else {
-      // Reset form when not in edit mode
       setImageFile(null);
       setImageURL("");
       setImagePreview("");
@@ -65,7 +63,6 @@ const ImageUpload = ({
     }
   }, [editData]);
 
-  // Reset edit data if header shows "Upload Image"
   useEffect(() => {
     if (!editData && currentEditData) {
       setCurrentEditData(null);
@@ -96,6 +93,7 @@ const ImageUpload = ({
     const file = e.target.files[0];
     if (file) {
       setAudioFile(file);
+      setAudioFileName(file.name);
     }
   };
 
@@ -141,13 +139,13 @@ const ImageUpload = ({
       scroll: scroll,
       audioDescription: audioDescription,
       firstRowValue: null,
-      isDynamic: !!selectedCategory,
+      isDynamic: !!selectedCategory, // True if category selected, false if URL or file
       file: imageFile,
-      value: selectedCategory ? imageURL : null,
+      value: selectedCategory ? imageURL : null, // URL for dynamic categories
+      link: imageURL && !selectedCategory ? imageURL : null, // Only URL if no category is selected
       audio: audioFile,
     };
 
-    // If we're editing, include the section ID
     if (currentEditData) {
       videoSectionData.id = currentEditData.id;
     }
@@ -285,6 +283,11 @@ const ImageUpload = ({
               </div>
             </div>
           </div>
+          {audioFileName && (
+            <div className={styles.audioFileName}>
+              <span>{audioFileName}</span>
+            </div>
+          )}
 
           <div className={styles.actionButtons}>
             <button
