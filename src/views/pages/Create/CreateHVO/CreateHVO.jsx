@@ -14,6 +14,7 @@ import {
   getAudioCategories,
 } from "../CreateVideo/helpers";
 
+import Header from "./Sections/Header";
 const CreateHVO = () => {
   // State management
   const [templateId, setTemplateId] = useState(null);
@@ -53,7 +54,7 @@ const CreateHVO = () => {
   }, [templateId]);
 
   const elementsList = sectionData?.elementsList;
-
+  console.log("HVO ELEMENT LIST", elementsList);
   // Extract categories from data
   const imageCategories = extractCategories(data, "Image URL");
   const staticUrlCategories = extractCategories(data, "Static URL");

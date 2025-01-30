@@ -144,7 +144,8 @@ const CategoryForm = ({
     }
   };
 
-  const showIngestionControls = !isViewMode || (isViewMode && !sectionData?.sheet?.googleSheetsId);
+  const showIngestionControls =
+    !isViewMode || (isViewMode && !sectionData?.sheet?.googleSheetsId);
 
   return (
     <div className={styles.formWrapper}>

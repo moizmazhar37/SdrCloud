@@ -1,0 +1,79 @@
+.headerContainer {
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.headerSection {
+  width: 100%;
+}
+
+.sectionTitle {
+  font-size: 16px;
+  color: #0066cc;
+  margin-bottom: 24px;
+  font-weight: 500;
+}
+
+.logoSection {
+  display: flex;
+  justify-content: space-between;
+  gap: 40px;
+  margin-bottom: 24px;
+}
+
+.logoUpload,
+.dynamicLogo {
+  flex: 1;
+}
+
+.logoTitle {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 12px;
+  font-weight: normal;
+}
+
+.logoPlaceholder {
+  width: 120px;
+  height: 120px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.saveButton,
+.nextButton {
+  padding: 8px 24px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.saveButton {
+  background-color: #0066cc;
+  color: white;
+  border: none;
+
+  &:hover {
+    background-color: #0052a3;
+  }
+}
+
+.nextButton {
+  background-color: #f5f5f5;
+  color: #333;
+  border: 1px solid #ddd;
+
+  &:hover {
+    background-color: #e8e8e8;
+  }
+}

@@ -53,6 +53,7 @@ const HVOCategoryForm = ({
   useEffect(() => {
     setLocalCategories(categories);
   }, [categories]);
+  console.log("LOCAL==", localCategories);
 
   const sheets = useMemo(
     () =>
