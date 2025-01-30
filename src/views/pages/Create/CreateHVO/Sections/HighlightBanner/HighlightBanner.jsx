@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Dropdown from "src/Common/Dropdown/Dropdown";
+import CategoryDropdown from "../../../CreateVideo/CategoryDropdown/CategoryDropdown";
 import ColorInput from "src/Common/ColorInput/ColorInput";
 import CopyText from "src/Common/CopyText/CopyText";
 import InputField from "src/Common/InputField/InputField";
@@ -11,7 +11,8 @@ const HighlightBanner = () => {
   const [bannerColor, setBannerColor] = useState("");
   const [textColor, setTextColor] = useState("");
   const [size, setSize] = useState("00");
-
+  const [selectedScroll, setSelectedScroll] = useState(null);
+  const [dropdownKey, setDropdownKey] = useState(0);
   const scrollOptions = [
     { label: "Yes", value: "yes" },
     { label: "No", value: "no" },
@@ -39,11 +40,13 @@ const HighlightBanner = () => {
           <div className={styles.topControls}>
             <div className={styles.inputGroup}>
               <label>Horizontal Scroll</label>
-              <Dropdown
+              <CategoryDropdown
+                key={dropdownKey}
                 options={scrollOptions}
-                onChange={(option) => console.log(option)}
-                placeholder="Actions"
-                className={styles.fullWidthDropdown}
+                buttonText="Select Scroll"
+                onSelect={(value) => setSelectedScroll(value)}
+                allowAddNew={false}
+                initialValue={selectedScroll}
               />
             </div>
 
