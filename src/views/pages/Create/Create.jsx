@@ -33,11 +33,6 @@ const Create = () => {
     await deleteTemplate(id);
   };
 
-<<<<<<< Updated upstream
-  const tableData =
-    data[activeTab]?.map((row) => ({
-      ...row,
-=======
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toISOString().split("T")[0];
@@ -47,7 +42,6 @@ const Create = () => {
     data[activeTab]?.map((row) => ({
       ...row,
       created_at: formatDate(row.created_at),
->>>>>>> Stashed changes
       category_name: (
         <div className={styles.categoryContainer}>
           {row.category_name.split(",").map((category, index) => (
