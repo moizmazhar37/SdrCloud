@@ -30,6 +30,42 @@ export const hvoInitialOptions = [
   { label: "Footer", value: "Footer" },
 ];
 
+export const extractHvoCategories = (data, types) => {
+  if (!data || !Array.isArray(data)) {
+    return [];
+  }
+
+  if (!Array.isArray(types) || types.length === 0) {
+    return [];
+  }
+
+  return data
+    .filter((item) => types.includes(item.dataType))
+    .map((item) => ({ label: item.value, value: item.value }));
+};
+export const HighlightBannerTypes = [
+  "Text",
+  "First name",
+  "Last name",
+  "Customer organization",
+];
+
+export const extractKeywordList = (data, types) => {
+  if (!data || !Array.isArray(data)) {
+    console.warn("Data is null or not an array");
+    return [];
+  }
+
+  if (!Array.isArray(types) || types.length === 0) {
+    console.warn("Types should be a non-empty array");
+    return [];
+  }
+
+  return data
+    .filter((item) => types.includes(item.dataType))
+    .map((item) => item.value);
+};
+
 export const getAudioCategories = (data) => {
   const validDataTypes = [
     "First name (Required)",

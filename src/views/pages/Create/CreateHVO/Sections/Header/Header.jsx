@@ -1,8 +1,40 @@
-import React from "react";
+import React, { useState, useCallback } from "react";
 import styles from "./Header.module.scss";
 import CategoryDropdown from "src/views/pages/Create/CreateVideo/CategoryDropdown/CategoryDropdown";
+import useSaveHeader from "../../Hooks/useSaveHeader";
+import useHvoSections from "../../Hooks/useGetHvoSections";
 
-const Header = ({ dynamicOptions, handleCategorySelect }) => {
+const Header = ({
+  dynamicOptions,
+  handleCategorySelect,
+  templateId,
+  sequence,
+  logo,
+}) => {
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [refetchTrigger, setRefetchTrigger] = useState(false);
+
+  const triggerRefetch = useCallback(() => {
+    setRefetchTrigger((prev) => !prev);
+  }, []);
+
+  const { saveHeader, loading } = useSaveHeader(triggerRefetch);
+  const { data: sectionData } = useHvoSections(templateId, refetchTrigger);
+
+  const handleDropdownSelect = (option) => {
+    setSelectedOption(option);
+    handleCategorySelect(option);
+  };
+
+  const handleSave = async () => {
+    await saveHeader({
+      hvoTemplateId: templateId,
+      sequence: sequence,
+      headerLogo: selectedOption?.value || "",
+      companyLogo: logo || "",
+    });
+  };
+
   return (
     <div className={styles.headerContainer}>
       <div className={styles.headerSection}>
@@ -11,7 +43,17 @@ const Header = ({ dynamicOptions, handleCategorySelect }) => {
         <div className={styles.logoSection}>
           <div className={styles.logoUpload}>
             <h3 className={styles.logoTitle}>Your Logo (Top Left)</h3>
-            <div className={styles.logoPlaceholder}></div>
+            <div className={styles.logoPlaceholder}>
+              {logo ? (
+                <img
+                  src={logo}
+                  alt="Uploaded Logo"
+                  className={styles.logoPreview}
+                />
+              ) : (
+                <p>No Logo Uploaded</p>
+              )}
+            </div>
           </div>
 
           <div className={styles.dynamicLogo}>
@@ -19,14 +61,20 @@ const Header = ({ dynamicOptions, handleCategorySelect }) => {
             <CategoryDropdown
               options={dynamicOptions}
               buttonText="Select None"
-              onSelect={handleCategorySelect}
+              onSelect={handleDropdownSelect}
               allowAddNew={false}
             />
           </div>
         </div>
 
         <div className={styles.buttonGroup}>
-          <button className={styles.saveButton}>Save</button>
+          <button
+            className={styles.saveButton}
+            onClick={handleSave}
+            disabled={loading}
+          >
+            {loading ? "Saving..." : "Save"}
+          </button>
           <button className={styles.nextButton}>Next</button>
         </div>
       </div>

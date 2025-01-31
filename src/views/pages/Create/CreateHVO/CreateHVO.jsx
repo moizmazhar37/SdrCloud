@@ -1,40 +1,32 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import SectionArea from "../CreateVideo/SectionArea/SectionArea";
 import useGetSheetData from "../Hooks/useGetSheetData";
 import useGetSheets from "../Hooks/useGetSheets";
 import useHvoSections from "./Hooks/useGetHvoSections";
+import useCompanyTenant from "../../settings/Company/Hooks/useCompanyTenant";
 import styles from "./CreateHVO.module.scss";
 import HVOCategoryForm from "./HVOCategoryForm/HVOCategoryForm";
 import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
 import SectionCardContainer from "../CreateVideo/SectionCard/SectionCardContainer";
 import {
-  extractCategories,
+  extractHvoCategories,
   hvoNavigationItems,
   hvoInitialOptions,
+  extractKeywordList,
   getAudioCategories,
+  HighlightBannerTypes,
 } from "../CreateVideo/helpers";
 import Header from "./Sections/Header/Header";
 import HighlightBanner from "./Sections/HighlightBanner/HighlightBanner";
 import TextImage from "./Sections/TextAndImage/TextAndImage";
 import Footer from "./Sections/Footer/Footer";
-const dynamicOptions = [
-  {
-    label: "ENT",
-    value: "e04ac2ac-ae39-4cd7-bc30-e0a55818e09d",
-    id: "e04ac2ac-ae39-4cd7-bc30-e0a55818e09d",
-  },
-  {
-    label: "Startup",
-    value: "93cd91e5-6abb-4535-94d9-d0401a225e03",
-    id: "93cd91e5-6abb-4535-94d9-d0401a225e03",
-  },
-];
 
 const CreateHVO = () => {
   const [templateId, setTemplateId] = useState(null);
   const [isSheetConnected, setIsSheetConnected] = useState(false);
   const [isViewMode, setIsViewMode] = useState(false);
   const [saveTriggered, setSaveTriggered] = useState(false);
+  const [sectionUpdateTrigger, setSectionUpdateTrigger] = useState(false);
   const [activeForm, setActiveForm] = useState(null);
   const [sectionNum, setSectionNum] = useState(null);
   const [editingSection, setEditingSection] = useState(null);
@@ -43,11 +35,13 @@ const CreateHVO = () => {
 
   const { data: sheetData, loading: sheetsLoading } = useGetSheets("HVO");
   const { data, loading, error } = useGetSheetData(templateId, saveTriggered);
+  const { data: tenantData, loading: tenantLoading } = useCompanyTenant();
   const {
     data: sectionData,
     loading: sectionLoading,
     error: sectionError,
-  } = useHvoSections(templateId);
+    refetch: refetchSections,
+  } = useHvoSections(templateId, sectionUpdateTrigger);
 
   useEffect(() => {
     const url = new URL(window.location.href);
@@ -65,15 +59,16 @@ const CreateHVO = () => {
     }
   }, [templateId]);
 
-  // Extract elements list from the new sectionData structure
   const elementsList = Array.isArray(sectionData?.elementsList)
     ? sectionData.elementsList
     : [];
-  const imageCategories = extractCategories(data, "Image URL");
-  const staticUrlCategories = extractCategories(data, "Static URL");
-  const dynamicUrlCategories = extractCategories(data, "Dynamic URL");
-  const videoCategories = extractCategories(data, "Video URL");
-  const audioCategories = getAudioCategories(data);
+
+  const dynamicField = extractKeywordList(data, HighlightBannerTypes);
+  const HeaderTypes = extractHvoCategories(data, ["Logo"]);
+  const ImageDropdownTypes = extractHvoCategories(data, [
+    "Screenshot from URL",
+    "Image URL",
+  ]);
 
   const resetAllStates = () => {
     setActiveForm(null);
@@ -97,6 +92,10 @@ const CreateHVO = () => {
     setSaveTriggered((prev) => !prev);
     resetAllStates();
   };
+
+  const handleSectionSave = useCallback(() => {
+    setSectionUpdateTrigger((prev) => !prev);
+  }, []);
 
   const handleEdit = (section) => {
     setIsEditMode(true);
@@ -125,20 +124,30 @@ const CreateHVO = () => {
         return (
           <div className={styles.leftComponent}>
             <Header
-              dynamicOptions={dynamicOptions}
+              dynamicOptions={HeaderTypes}
               handleCategorySelect={handleCategorySelect}
+              templateId={templateId}
+              sequence={sectionNum}
+              logo={tenantData?.account_logo?.uploadLogo}
+              onSectionSave={handleSectionSave}
             />
           </div>
         );
       case "Highlight Banner":
-        return <HighlightBanner dynamicFields={dynamicFields} />;
+        return (
+          <HighlightBanner
+            dynamicFields={dynamicField}
+            onSectionSave={handleSectionSave}
+          />
+        );
       case "Right Text | Left Image":
         return (
           <div className={styles.leftComponent}>
             <TextImage
-              dynamicImageOptions={imageCategories}
-              dynamicFields={dynamicFields}
+              dynamicImageOptions={ImageDropdownTypes}
+              dynamicFields={dynamicField}
               isRightText={true}
+              onSectionSave={handleSectionSave}
             />
           </div>
         );
@@ -146,16 +155,17 @@ const CreateHVO = () => {
         return (
           <div className={styles.leftComponent}>
             <TextImage
-              dynamicImageOptions={imageCategories}
-              dynamicFields={dynamicFields}
+              dynamicImageOptions={ImageDropdownTypes}
+              dynamicFields={dynamicField}
               isRightText={false}
+              onSectionSave={handleSectionSave}
             />
           </div>
         );
       case "Footer":
         return (
           <div className={styles.leftComponent}>
-            <Footer />
+            <Footer onSectionSave={handleSectionSave} />
           </div>
         );
       default:

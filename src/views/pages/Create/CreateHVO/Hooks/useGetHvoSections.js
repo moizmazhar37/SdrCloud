@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import ApiConfig from "src/config/APIConfig";
 
-const useHvoSections = (templateId) => {
+const useHvoSections = (templateId, trigger = false) => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
@@ -10,7 +10,7 @@ const useHvoSections = (templateId) => {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      setError(null); // Reset error state before fetching
+      setError(null);
 
       try {
         const res = await axios({
@@ -22,7 +22,7 @@ const useHvoSections = (templateId) => {
         });
 
         if (res?.status === 200) {
-          setData(res.data); // Store the successful response data
+          setData(res.data);
         } else {
           setError("Unexpected response from the server.");
         }
@@ -36,7 +36,7 @@ const useHvoSections = (templateId) => {
     if (templateId) {
       fetchData();
     }
-  }, [templateId]);
+  }, [templateId, trigger]);
 
   return { data, error, loading };
 };
