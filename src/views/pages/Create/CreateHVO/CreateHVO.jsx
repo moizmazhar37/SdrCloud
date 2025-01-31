@@ -7,13 +7,12 @@ import useCompanyTenant from "../../settings/Company/Hooks/useCompanyTenant";
 import styles from "./CreateHVO.module.scss";
 import HVOCategoryForm from "./HVOCategoryForm/HVOCategoryForm";
 import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
-import SectionCardContainer from "../CreateVideo/SectionCard/SectionCardContainer";
+import HvoSectionCardContainer from "./HvoSectionCard/HvoSectionCardContainer";
 import {
   extractHvoCategories,
   hvoNavigationItems,
   hvoInitialOptions,
   extractKeywordList,
-  getAudioCategories,
   HighlightBannerTypes,
 } from "../CreateVideo/helpers";
 import Header from "./Sections/Header/Header";
@@ -191,7 +190,7 @@ const CreateHVO = () => {
           {elementsList && (
             <div>
               <div className={styles.cardContainer}>
-                <SectionCardContainer
+                <HvoSectionCardContainer
                   elementsList={elementsList}
                   setSaveTriggered={setSaveTriggered}
                   handleEdit={handleEdit}
