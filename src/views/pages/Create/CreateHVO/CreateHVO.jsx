@@ -16,7 +16,7 @@ import {
 import Header from "./Sections/Header/Header";
 import HighlightBanner from "./Sections/HighlightBanner/HighlightBanner";
 import TextImage from "./Sections/TextAndImage/TextAndImage";
-
+import Footer from "./Sections/Footer/Footer";
 const dynamicOptions = [
   {
     label: "ENT",
@@ -124,29 +124,43 @@ const CreateHVO = () => {
     switch (selectedSection) {
       case "Header":
         return (
-          <Header
-            dynamicOptions={dynamicOptions}
-            handleCategorySelect={handleCategorySelect}
-          />
+          <div className={styles.leftComponent}>
+            {" "}
+            <Header
+              dynamicOptions={dynamicOptions}
+              handleCategorySelect={handleCategorySelect}
+            />
+          </div>
         );
       case "Highlight Banner":
         return <HighlightBanner dynamicFields={dynamicFields} />;
       case "Right Text | Left Image":
         return (
-          <TextImage
-            dynamicImageOptions={imageCategories}
-            dynamicFields={dynamicFields}
-            isRightText={true}
-          />
+          <div className={styles.leftComponent}>
+            <TextImage
+              dynamicImageOptions={imageCategories}
+              dynamicFields={dynamicFields}
+              isRightText={true}
+            />
+          </div>
         );
       case "Left Text | Right Image":
         return (
-          <TextImage
-            dynamicImageOptions={imageCategories}
-            dynamicFields={dynamicFields}
-            isRightText={false}
-          />
+          <div className={styles.leftComponent}>
+            <TextImage
+              dynamicImageOptions={imageCategories}
+              dynamicFields={dynamicFields}
+              isRightText={false}
+            />
+          </div>
         );
+      case "Footer":
+        return (
+          <div className={styles.leftComponent}>
+            <Footer />
+          </div>
+        );
+
       default:
         return null;
     }
