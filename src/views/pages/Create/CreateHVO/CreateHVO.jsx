@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import SectionArea from "../CreateVideo/SectionArea/SectionArea";
 import useGetSheetData from "../Hooks/useGetSheetData";
 import useGetSheets from "../Hooks/useGetSheets";
-import useGetSections from "../Hooks/useGetSection";
+import useHvoSections from "./Hooks/useGetHvoSections";
 import styles from "./CreateHVO.module.scss";
 import HVOCategoryForm from "./HVOCategoryForm/HVOCategoryForm";
 import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
@@ -47,7 +47,7 @@ const CreateHVO = () => {
     data: sectionData,
     loading: sectionLoading,
     error: sectionError,
-  } = useGetSections(templateId, saveTriggered);
+  } = useHvoSections(templateId);
 
   useEffect(() => {
     const url = new URL(window.location.href);
@@ -65,7 +65,10 @@ const CreateHVO = () => {
     }
   }, [templateId]);
 
-  const elementsList = sectionData?.elementsList;
+  // Extract elements list from the new sectionData structure
+  const elementsList = Array.isArray(sectionData?.elementsList)
+    ? sectionData.elementsList
+    : [];
   const imageCategories = extractCategories(data, "Image URL");
   const staticUrlCategories = extractCategories(data, "Static URL");
   const dynamicUrlCategories = extractCategories(data, "Dynamic URL");
@@ -111,13 +114,9 @@ const CreateHVO = () => {
 
   const handleCategorySelect = (category) => {
     console.log("Selected category:", category);
-    // Handle category selection logic here
   };
 
   const isEditable = Boolean(isViewMode || isSheetConnected);
-
-  // In the renderSelectedSection function, add these cases:
-
   const dynamicFields = ["CUSTOMER_ORGANIZATION", "LAST_NAME"];
 
   const renderSelectedSection = () => {
@@ -125,7 +124,6 @@ const CreateHVO = () => {
       case "Header":
         return (
           <div className={styles.leftComponent}>
-            {" "}
             <Header
               dynamicOptions={dynamicOptions}
               handleCategorySelect={handleCategorySelect}
@@ -160,7 +158,6 @@ const CreateHVO = () => {
             <Footer />
           </div>
         );
-
       default:
         return null;
     }

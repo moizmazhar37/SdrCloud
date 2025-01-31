@@ -43,7 +43,7 @@ const HVOCategoryForm = ({
   const categories = useMemo(
     () =>
       categoryData?.map((item) => ({
-        label: item.category_name,
+        label: item.categoryName,
         value: item.id,
         id: item.id,
       })) || [],
@@ -53,7 +53,6 @@ const HVOCategoryForm = ({
   useEffect(() => {
     setLocalCategories(categories);
   }, [categories]);
-  console.log("LOCAL==", localCategories);
 
   const sheets = useMemo(
     () =>
@@ -66,9 +65,9 @@ const HVOCategoryForm = ({
 
   useEffect(() => {
     if (sectionData && isViewMode) {
-      setTemplateName(sectionData.getVideo?.hvoTemplateName || "");
-      setCategory(sectionData.getVideo?.categoryName || null);
-      setCategoryId(sectionData.getVideo?.categoryId || null);
+      setTemplateName(sectionData.templateData?.hvoTemplateName || "");
+      setCategory(sectionData.templateData?.categoryName || null);
+      setCategoryId(sectionData.templateData?.categoryId || null);
       setIngestionSource(sectionData.sheet?.title || null);
       setTemplateId(template_id);
     }
