@@ -6,7 +6,7 @@ import InputField from "src/Common/InputField/InputField";
 import { ArrowLeft } from "lucide-react";
 import styles from "./HighlightBanner.module.scss";
 
-const HighlightBanner = () => {
+const HighlightBanner = ({ dynamicFields = [] }) => {
   const [bannerText, setBannerText] = useState("");
   const [bannerColor, setBannerColor] = useState("");
   const [textColor, setTextColor] = useState("");
@@ -16,14 +16,6 @@ const HighlightBanner = () => {
   const scrollOptions = [
     { label: "Yes", value: "yes" },
     { label: "No", value: "no" },
-  ];
-
-  const dynamicFields = [
-    "CUSTOMER_ORGANIZAT",
-    "LAST_NAME",
-    "HERO_HEADING2",
-    "HERO_BODYTEXT",
-    "HERO_CTA_BUTTON",
   ];
 
   return (

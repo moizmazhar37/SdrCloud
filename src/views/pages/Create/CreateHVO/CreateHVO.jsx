@@ -15,6 +15,7 @@ import {
 } from "../CreateVideo/helpers";
 import Header from "./Sections/Header/Header";
 import HighlightBanner from "./Sections/HighlightBanner/HighlightBanner";
+import TextImage from "./Sections/TextAndImage/TextAndImage";
 
 const dynamicOptions = [
   {
@@ -115,6 +116,10 @@ const CreateHVO = () => {
 
   const isEditable = Boolean(isViewMode || isSheetConnected);
 
+  // In the renderSelectedSection function, add these cases:
+
+  const dynamicFields = ["CUSTOMER_ORGANIZATION", "LAST_NAME"];
+
   const renderSelectedSection = () => {
     switch (selectedSection) {
       case "Header":
@@ -125,8 +130,23 @@ const CreateHVO = () => {
           />
         );
       case "Highlight Banner":
-        return <HighlightBanner />;
-      // Add other cases for different sections
+        return <HighlightBanner dynamicFields={dynamicFields} />;
+      case "Right Text | Left Image":
+        return (
+          <TextImage
+            dynamicImageOptions={imageCategories}
+            dynamicFields={dynamicFields}
+            isRightText={true}
+          />
+        );
+      case "Left Text | Right Image":
+        return (
+          <TextImage
+            dynamicImageOptions={imageCategories}
+            dynamicFields={dynamicFields}
+            isRightText={false}
+          />
+        );
       default:
         return null;
     }
