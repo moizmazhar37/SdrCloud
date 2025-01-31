@@ -15,7 +15,6 @@ const HvoSectionCard = ({
   sectionNumber,
 }) => {
   const { deleteSection, loading } = useDeleteHvoSection(onDeleteSuccess);
-  console.log("==sectionSequnece=", sectionSequnece, "id=", id);
   const handleDelete = () => {
     deleteSection(id, sectionNumber);
   };

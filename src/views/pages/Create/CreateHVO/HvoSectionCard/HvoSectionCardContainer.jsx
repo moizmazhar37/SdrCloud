@@ -2,14 +2,14 @@ import React, { useMemo } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import HvoSectionCard from "./HvoSectionCard";
 import styles from "./container.module.scss";
-import useSwapSequence from "../../CreateVideo/hooks/useSwapSequence";
+import useSwapHvoSequence from "../Hooks/useSwapHvoSequence";
 
 const HvoSectionCardContainer = ({
   elementsList = [],
   setSaveTriggered,
   handleEdit,
 }) => {
-  const { swapSequence } = useSwapSequence();
+  const { swapSequence } = useSwapHvoSequence();
 
   const sortedElements = useMemo(() => {
     if (!elementsList) return [];
@@ -29,8 +29,9 @@ const HvoSectionCardContainer = ({
     items.splice(destinationIndex, 0, movedItem);
 
     const updatedSequences = items.map((item, index) => ({
-      elementId: item.id,
+      element_id: item.id,
       sequence: index + 1,
+      section_number: item.section_number,
     }));
 
     try {

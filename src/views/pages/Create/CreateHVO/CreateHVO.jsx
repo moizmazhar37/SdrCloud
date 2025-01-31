@@ -129,6 +129,7 @@ const CreateHVO = () => {
               sequence={sectionNum}
               logo={tenantData?.account_logo?.uploadLogo}
               onSectionSave={handleSectionSave}
+              initialData={editingSection}
             />
           </div>
         );
