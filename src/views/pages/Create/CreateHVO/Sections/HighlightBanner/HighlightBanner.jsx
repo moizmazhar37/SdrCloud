@@ -1,27 +1,71 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CategoryDropdown from "../../../CreateVideo/CategoryDropdown/CategoryDropdown";
 import ColorInput from "src/Common/ColorInput/ColorInput";
 import CopyText from "src/Common/CopyText/CopyText";
 import InputField from "src/Common/InputField/InputField";
 import { ArrowLeft } from "lucide-react";
 import styles from "./HighlightBanner.module.scss";
+import useSaveHighlightBanner from "../../Hooks/HighlightBanner/useSaveHighlightBanner";
 
-const HighlightBanner = ({ dynamicFields = [] }) => {
+const HighlightBanner = ({
+  dynamicFields = [],
+  onSectionSave,
+  onClose,
+  templateId,
+  sequence,
+  initialData,
+}) => {
   const [bannerText, setBannerText] = useState("");
   const [bannerColor, setBannerColor] = useState("");
   const [textColor, setTextColor] = useState("");
   const [size, setSize] = useState("00");
   const [selectedScroll, setSelectedScroll] = useState(null);
   const [dropdownKey, setDropdownKey] = useState(0);
+  const { saveHighlightBanner, loading } = useSaveHighlightBanner();
+
   const scrollOptions = [
     { label: "Yes", value: "yes" },
     { label: "No", value: "no" },
   ];
 
+  useEffect(() => {
+    if (initialData) {
+      setBannerText(initialData.bannerText || "");
+      setBannerColor(initialData.bannerColor || "");
+      setTextColor(initialData.bannerTextColor || "");
+      setSize(initialData.bannerTextSize?.toString() || "00");
+      setSelectedScroll(initialData.scroll ? "yes" : "no");
+    }
+  }, [initialData]);
+
+  const handleSave = async () => {
+    try {
+      await saveHighlightBanner({
+        templateId,
+        sequence,
+        bannerText,
+        bannerColor,
+        bannerTextColor: textColor,
+        bannerTextSize: size,
+        scroll: selectedScroll,
+      });
+
+      if (onSectionSave) {
+        onSectionSave();
+      }
+
+      if (onClose) {
+        onClose();
+      }
+    } catch (error) {
+      console.error("Failed to save banner:", error);
+    }
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <button className={styles.backButton}>
+        <button className={styles.backButton} onClick={onClose}>
           <ArrowLeft size={16} />
           Banner | Section 1
         </button>
@@ -84,7 +128,13 @@ const HighlightBanner = ({ dynamicFields = [] }) => {
       </div>
 
       <div className={styles.footer}>
-        <button className={styles.saveButton}>Save</button>
+        <button
+          className={styles.saveButton}
+          onClick={handleSave}
+          disabled={loading}
+        >
+          {loading ? "Saving..." : "Save"}
+        </button>
         <button className={styles.nextButton}>Next</button>
       </div>
     </div>

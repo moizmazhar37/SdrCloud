@@ -106,6 +106,10 @@ const CreateHVO = () => {
     console.log("Selected category:", category);
   };
 
+  const handleCloseSection = () => {
+    resetAllStates();
+  };
+
   const isEditable = Boolean(isViewMode || isSheetConnected);
 
   const renderSelectedSection = () => {
@@ -120,6 +124,7 @@ const CreateHVO = () => {
               sequence={sectionNum}
               logo={tenantData?.account_logo?.uploadLogo}
               onSectionSave={handleSectionUpdate}
+              onClose={handleCloseSection}
               initialData={editingSection}
             />
           </div>
@@ -129,6 +134,10 @@ const CreateHVO = () => {
           <HighlightBanner
             dynamicFields={dynamicField}
             onSectionSave={handleSectionUpdate}
+            onClose={handleCloseSection}
+            templateId={templateId}
+            sequence={sectionNum}
+            initialData={editingSection}
           />
         );
       case "Right Text | Left Image":
@@ -139,6 +148,10 @@ const CreateHVO = () => {
               dynamicFields={dynamicField}
               isRightText={true}
               onSectionSave={handleSectionUpdate}
+              onClose={handleCloseSection}
+              templateId={templateId}
+              sequence={sectionNum}
+              initialData={editingSection}
             />
           </div>
         );
@@ -150,13 +163,23 @@ const CreateHVO = () => {
               dynamicFields={dynamicField}
               isRightText={false}
               onSectionSave={handleSectionUpdate}
+              onClose={handleCloseSection}
+              templateId={templateId}
+              sequence={sectionNum}
+              initialData={editingSection}
             />
           </div>
         );
       case "Footer":
         return (
           <div className={styles.leftComponent}>
-            <Footer onSectionSave={handleSectionUpdate} />
+            <Footer
+              onSectionSave={handleSectionUpdate}
+              onClose={handleCloseSection}
+              templateId={templateId}
+              sequence={sectionNum}
+              initialData={editingSection}
+            />
           </div>
         );
       default:
