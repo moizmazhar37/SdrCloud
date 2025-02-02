@@ -21,11 +21,12 @@ import TextImage from "./Sections/TextAndImage/TextAndImage";
 import Footer from "./Sections/Footer/Footer";
 
 const CreateHVO = () => {
+  const [sectionUpdateTrigger, setSectionUpdateTrigger] = useState(false);
+
   const [templateId, setTemplateId] = useState(null);
   const [isSheetConnected, setIsSheetConnected] = useState(false);
   const [isViewMode, setIsViewMode] = useState(false);
   const [saveTriggered, setSaveTriggered] = useState(false);
-  const [sectionUpdateTrigger, setSectionUpdateTrigger] = useState(false);
   const [activeForm, setActiveForm] = useState(null);
   const [sectionNum, setSectionNum] = useState(null);
   const [editingSection, setEditingSection] = useState(null);

@@ -2,7 +2,6 @@ import React, { useState, useCallback } from "react";
 import styles from "./Header.module.scss";
 import CategoryDropdown from "src/views/pages/Create/CreateVideo/CategoryDropdown/CategoryDropdown";
 import useSaveHeader from "../../Hooks/useSaveHeader";
-import useHvoSections from "../../Hooks/useGetHvoSections";
 
 const Header = ({
   dynamicOptions,
@@ -10,16 +9,17 @@ const Header = ({
   templateId,
   sequence,
   logo,
+  onSectionSave,
 }) => {
   const [selectedOption, setSelectedOption] = useState(null);
-  const [refetchTrigger, setRefetchTrigger] = useState(false);
 
-  const triggerRefetch = useCallback(() => {
-    setRefetchTrigger((prev) => !prev);
-  }, []);
+  const handleSaveSuccess = useCallback(() => {
+    if (onSectionSave) {
+      onSectionSave();
+    }
+  }, [onSectionSave]);
 
-  const { saveHeader, loading } = useSaveHeader(triggerRefetch);
-  const { data: sectionData } = useHvoSections(templateId, refetchTrigger);
+  const { saveHeader, loading } = useSaveHeader(handleSaveSuccess);
 
   const handleDropdownSelect = (option) => {
     setSelectedOption(option);
