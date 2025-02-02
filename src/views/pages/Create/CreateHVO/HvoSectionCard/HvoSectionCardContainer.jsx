@@ -6,7 +6,7 @@ import useSwapHvoSequence from "../Hooks/useSwapHvoSequence";
 
 const HvoSectionCardContainer = ({
   elementsList = [],
-  setSaveTriggered,
+  onSectionUpdate,
   handleEdit,
 }) => {
   const { swapSequence } = useSwapHvoSequence();
@@ -36,11 +36,19 @@ const HvoSectionCardContainer = ({
 
     try {
       await swapSequence(updatedSequences);
-      setSaveTriggered((prev) => !prev);
+      onSectionUpdate();
     } catch (error) {
       console.error("Error updating sequences:", error);
     }
   };
+
+  if (!elementsList.length) {
+    return (
+      <div className={styles.emptyContainer}>
+        <p>No sections available</p>
+      </div>
+    );
+  }
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
@@ -77,7 +85,7 @@ const HvoSectionCardContainer = ({
                       duration={element.duration}
                       scroll={element.scroll}
                       previewContent={element.value}
-                      onDeleteSuccess={() => setSaveTriggered((prev) => !prev)}
+                      onDeleteSuccess={onSectionUpdate}
                       onEdit={() => handleEdit(element)}
                     />
                   </div>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { FaTrash, FaSpinner, FaEdit } from "react-icons/fa";
 import styles from "./section-card.module.scss";
 import useDeleteHvoSection from "../Hooks/UseDeleteHvoSection";
@@ -14,9 +14,16 @@ const HvoSectionCard = ({
   onEdit,
   sectionNumber,
 }) => {
-  const { deleteSection, loading } = useDeleteHvoSection(onDeleteSuccess);
-  const handleDelete = () => {
-    deleteSection(id, sectionNumber);
+  const handleSuccess = useCallback(() => {
+    if (onDeleteSuccess) {
+      onDeleteSuccess();
+    }
+  }, [onDeleteSuccess]);
+
+  const { deleteSection, loading } = useDeleteHvoSection(handleSuccess);
+
+  const handleDelete = async () => {
+    await deleteSection(id, sectionNumber);
   };
 
   const renderPreview = () => {
@@ -24,7 +31,6 @@ const HvoSectionCard = ({
       return "No Preview Available";
     }
 
-    // If it is a video
     if (previewContent.endsWith(".mp4")) {
       return (
         <video controls>
@@ -34,7 +40,6 @@ const HvoSectionCard = ({
       );
     }
 
-    // If image
     if (
       previewContent.endsWith(".jpg") ||
       previewContent.endsWith(".png") ||
@@ -46,7 +51,6 @@ const HvoSectionCard = ({
       );
     }
 
-    // Assume it's a link and render an iframe
     return (
       <iframe
         src={previewContent}

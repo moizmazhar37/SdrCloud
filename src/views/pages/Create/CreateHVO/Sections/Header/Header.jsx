@@ -10,6 +10,7 @@ const Header = ({
   sequence,
   logo,
   onSectionSave,
+  initialData,
 }) => {
   const [selectedOption, setSelectedOption] = useState(null);
 
@@ -75,7 +76,6 @@ const Header = ({
           >
             {loading ? "Saving..." : "Save"}
           </button>
-          <button className={styles.nextButton}>Next</button>
         </div>
       </div>
     </div>

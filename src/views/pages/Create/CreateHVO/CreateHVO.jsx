@@ -21,12 +21,10 @@ import TextImage from "./Sections/TextAndImage/TextAndImage";
 import Footer from "./Sections/Footer/Footer";
 
 const CreateHVO = () => {
-  const [sectionUpdateTrigger, setSectionUpdateTrigger] = useState(false);
-
   const [templateId, setTemplateId] = useState(null);
   const [isSheetConnected, setIsSheetConnected] = useState(false);
   const [isViewMode, setIsViewMode] = useState(false);
-  const [saveTriggered, setSaveTriggered] = useState(false);
+  const [sectionUpdateTrigger, setSectionUpdateTrigger] = useState(false);
   const [activeForm, setActiveForm] = useState(null);
   const [sectionNum, setSectionNum] = useState(null);
   const [editingSection, setEditingSection] = useState(null);
@@ -34,13 +32,12 @@ const CreateHVO = () => {
   const [selectedSection, setSelectedSection] = useState(null);
 
   const { data: sheetData, loading: sheetsLoading } = useGetSheets("HVO");
-  const { data, loading, error } = useGetSheetData(templateId, saveTriggered);
+  const { data, loading, error } = useGetSheetData(templateId);
   const { data: tenantData, loading: tenantLoading } = useCompanyTenant();
   const {
     data: sectionData,
     loading: sectionLoading,
     error: sectionError,
-    refetch: refetchSections,
   } = useHvoSections(templateId, sectionUpdateTrigger);
 
   useEffect(() => {
@@ -58,6 +55,10 @@ const CreateHVO = () => {
       if (isSheetConnected) window.history.pushState({}, "", newUrl);
     }
   }, [templateId]);
+
+  const handleSectionUpdate = useCallback(() => {
+    setSectionUpdateTrigger((prev) => !prev);
+  }, []);
 
   const elementsList = Array.isArray(sectionData?.elementsList)
     ? sectionData.elementsList
@@ -85,17 +86,7 @@ const CreateHVO = () => {
   const handleSheetConnectSuccess = () => {
     setIsSheetConnected(true);
     setIsViewMode(true);
-    setSaveTriggered((prev) => !prev);
   };
-
-  const handleSaveSuccess = () => {
-    setSaveTriggered((prev) => !prev);
-    resetAllStates();
-  };
-
-  const handleSectionSave = useCallback(() => {
-    setSectionUpdateTrigger((prev) => !prev);
-  }, []);
 
   const handleEdit = (section) => {
     setIsEditMode(true);
@@ -116,7 +107,6 @@ const CreateHVO = () => {
   };
 
   const isEditable = Boolean(isViewMode || isSheetConnected);
-  const dynamicFields = ["CUSTOMER_ORGANIZATION", "LAST_NAME"];
 
   const renderSelectedSection = () => {
     switch (selectedSection) {
@@ -129,7 +119,7 @@ const CreateHVO = () => {
               templateId={templateId}
               sequence={sectionNum}
               logo={tenantData?.account_logo?.uploadLogo}
-              onSectionSave={handleSectionSave}
+              onSectionSave={handleSectionUpdate}
               initialData={editingSection}
             />
           </div>
@@ -138,7 +128,7 @@ const CreateHVO = () => {
         return (
           <HighlightBanner
             dynamicFields={dynamicField}
-            onSectionSave={handleSectionSave}
+            onSectionSave={handleSectionUpdate}
           />
         );
       case "Right Text | Left Image":
@@ -148,7 +138,7 @@ const CreateHVO = () => {
               dynamicImageOptions={ImageDropdownTypes}
               dynamicFields={dynamicField}
               isRightText={true}
-              onSectionSave={handleSectionSave}
+              onSectionSave={handleSectionUpdate}
             />
           </div>
         );
@@ -159,14 +149,14 @@ const CreateHVO = () => {
               dynamicImageOptions={ImageDropdownTypes}
               dynamicFields={dynamicField}
               isRightText={false}
-              onSectionSave={handleSectionSave}
+              onSectionSave={handleSectionUpdate}
             />
           </div>
         );
       case "Footer":
         return (
           <div className={styles.leftComponent}>
-            <Footer onSectionSave={handleSectionSave} />
+            <Footer onSectionSave={handleSectionUpdate} />
           </div>
         );
       default:
@@ -194,7 +184,7 @@ const CreateHVO = () => {
               <div className={styles.cardContainer}>
                 <HvoSectionCardContainer
                   elementsList={elementsList}
-                  setSaveTriggered={setSaveTriggered}
+                  onSectionUpdate={handleSectionUpdate}
                   handleEdit={handleEdit}
                 />
               </div>
