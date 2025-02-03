@@ -37,7 +37,7 @@ const useSaveTextImage = () => {
       formData.append("leftImageRightText", null);
     } else if (typeof data.image === "string") {
       formData.append("leftImageRightText", data.image);
-      formData.append("file", null);
+      // formData.append("file", null);
     }
 
     // Always append empty static_image
