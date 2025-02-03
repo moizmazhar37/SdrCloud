@@ -182,7 +182,7 @@ const HighlightBanner2 = ({
                             }))}
                             buttonText="Select Dynamic URL"
                             onSelect={(value) => {
-                                setDynamicUrl(value);
+                                setDynamicUrl(`[${value}]`);
                                 setStaticUrl(""); // Clear static URL if dynamic URL is selected
                             }}
                             allowAddNew={false}

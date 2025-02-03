@@ -23,7 +23,7 @@ const Header = ({
   const { saveHeader, loading } = useSaveHeader(handleSaveSuccess);
 
   const handleDropdownSelect = (option) => {
-    setSelectedOption(option);
+    setSelectedOption(`[${option}]`);
     handleCategorySelect(option);
   };
 

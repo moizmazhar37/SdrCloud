@@ -222,7 +222,7 @@ const HeroSection = ({
                 key={heroImg}
                 options={dynamicImage}
                 buttonText="Select Dynamic URL to fetch image"
-                onSelect={(value) => setHeroImg(value)}
+                onSelect={(value) => setHeroImg(`[${value}]`)}
                 allowAddNew={false}
               />
             </div>
@@ -330,8 +330,8 @@ const HeroSection = ({
                 key={ctaUrl}
                 buttonText="Select Dynamic URL for CTA"
                 onSelect={(value) => {
-                  setCtaUrl(value);
-                  resetUrlFields("cta");
+                  setCtaUrl(`[${value}]`);
+                  // resetUrlFields("cta");
                 }}
                 allowAddNew={false}
               />
@@ -370,8 +370,8 @@ const HeroSection = ({
                 key={demoUrl}
                 buttonText="Select Dynamic URL for Demo"
                 onSelect={(value) => {
-                  setDemoUrl(value); // Set the dynamic URL
-                  resetUrlFields("demo"); // Reset static URL input when dynamic URL is selected
+                  setDemoUrl(`[${value}]`); // Set the dynamic URL
+                  // resetUrlFields("demo"); // Reset static URL input when dynamic URL is selected
                 }}
                 allowAddNew={false}
               />
