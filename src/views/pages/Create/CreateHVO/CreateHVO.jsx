@@ -94,6 +94,7 @@ const CreateHVO = () => {
     setEditingSection(section);
     setSectionNum(section.sequence);
     setSelectedSection(section.section_name);
+    console.log("selectedValue======", selectedSection);
   };
 
   const handleSectionTypeChange = (selectedValue, sectionNumber) => {

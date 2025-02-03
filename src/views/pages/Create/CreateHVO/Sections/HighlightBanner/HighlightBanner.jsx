@@ -30,14 +30,14 @@ const HighlightBanner = ({
 
   useEffect(() => {
     if (initialData) {
-      setBannerText(initialData.bannerText || "");
-      setBannerColor(initialData.bannerColor || "");
-      setTextColor(initialData.bannerTextColor || "");
-      setSize(initialData.bannerTextSize?.toString() || "00");
+      setBannerText(initialData.banner_text || "");
+      setBannerColor(initialData.banner_color || "");
+      setTextColor(initialData.banner_text_color || "");
+      setSize(initialData.banner_text_size?.toString() || "00");
       setSelectedScroll(initialData.scroll ? "yes" : "no");
     }
   }, [initialData]);
-
+  console.log("======", initialData);
   const handleSave = async () => {
     try {
       await saveHighlightBanner({
