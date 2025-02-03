@@ -14,7 +14,7 @@ const useSaveHighlightBanner2 = () => {
     try {
       const response = await axios({
         method: "POST",
-        url: ApiConfig.highlightBanner2Section,  // Endpoint for HighlightBanner2
+        url: ApiConfig.highlightBanner2Section, // Endpoint for HighlightBanner2
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "application/json",
@@ -27,8 +27,8 @@ const useSaveHighlightBanner2 = () => {
           bannerColor: data.bannerColor || "",
           bannerTextColor: data.bannerTextColor || "",
           banner2TextSize: parseInt(data.bannerTextSize) || 0,
-          staticUrl: data.staticUrl || "",  // Static URL or dynamic URL
-          bannerButtonColor: data.bannerButtonColor || "",
+          staticUrl: data.staticUrl || "",
+          bannerButtonColor: "",
           bannerButtonTextColor: data.bannerButtonTextColor || "",
           ctaButtonColor: data.ctaButtonColor || "",
         },
