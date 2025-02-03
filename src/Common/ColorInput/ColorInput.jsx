@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import { Pen } from "lucide-react";
 import styles from "./ColorInput.module.scss";
 
-const ColorInput = ({ value, onChange }) => {
+const ColorInput = ({ value, onChange, placeholder }) => {
   const pickerRef = useRef(null);
 
   const handleInputChange = (e) => {
@@ -30,7 +30,7 @@ const ColorInput = ({ value, onChange }) => {
           type="text"
           value={value}
           onChange={handleInputChange}
-          placeholder="Choose Color"
+          placeholder={placeholder? placeholder : "Choose Color"}
           className={`${styles.input} ${value ? styles.hasValue : ""}`}
         />
         <button className={styles.penButton} onClick={handlePickerClick}>

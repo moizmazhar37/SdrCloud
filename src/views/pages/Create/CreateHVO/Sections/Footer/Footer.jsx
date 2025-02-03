@@ -1,10 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ArrowLeft } from "lucide-react";
 import ColorInput from "src/Common/ColorInput/ColorInput";
 import InputField from "src/Common/InputField/InputField";
 import styles from "./Footer.module.scss";
+import useSaveFooter from "../../Hooks/Footer/useSaveFooter";
 
-const Footer = () => {
+const Footer = ({
+  onSectionSave,
+  onClose,
+  templateId,
+  sequence,
+  initialData,
+}) => {
   // State management for all fields
   const [footerBgColor, setFooterBgColor] = useState("");
   const [footerHeadingColor, setFooterHeadingColor] = useState("");
@@ -20,6 +27,8 @@ const Footer = () => {
   const [facebookLink, setFacebookLink] = useState("");
   const [linkedInLink, setLinkedInLink] = useState("");
 
+  const { saveFooter, loading } = useSaveFooter();
+
   // Handler for size inputs with max value validation
   const handleSizeChange = (setter, maxSize) => (e) => {
     const value = e.target.value.replace(/\D/g, "");
@@ -27,6 +36,57 @@ const Footer = () => {
       setter(value);
     }
   };
+
+  useEffect(() => {
+    if (initialData) {
+      setFooterBgColor(initialData.footerBgColor || "");
+      setFooterHeadingColor(initialData.footerHeadingColor || "");
+      setHeadingSize(initialData.headingSize?.toString() || "0");
+      setFooterTextColor(initialData.footerTextColor || "");
+      setFooterTextColor(initialData.footerTextColor || "");
+      setFooterHoverColor(initialData.footerHoverColor?.toString() || "0");
+      setIconBgColor(initialData.iconBgColor || "");
+      setIconColor(initialData.iconColor || "");
+      setBenchmarkColor(initialData.benchmarkColor || "");
+      setBenchmarkSize(initialData.benchmarkSize?.toString() || "0");
+      setInstagramLink(initialData.instagramLink || "");
+      setFacebookLink(initialData.facebookLink || "");
+      setLinkedInLink(initialData.linkedInLink || "");
+    }
+  }, [initialData]);
+  
+  const handleSave = async () => {
+    try {
+      await saveFooter({
+        templateId,
+        sequence,
+        footerBackgroundColor: footerBgColor,
+        footerTextHeadingColor: footerHeadingColor,
+        footerHeadingSize: headingSize,
+        footerTextColor: footerTextColor,
+        footerTextHoverColor: footerHoverColor,
+        footerTextSize: textSize,
+        socialIconBackgroundColor: iconBgColor,
+        socialIconColor: iconColor,
+        benchmarkColor: benchmarkColor,
+        benchmarkSize: benchmarkSize,
+        instagramLink: instagramLink,
+        facebookLink: facebookLink,
+        linkedinLink: linkedInLink,
+      });
+  
+      if (onSectionSave) {
+        onSectionSave();
+      }
+  
+      if (onClose) {
+        onClose();
+      }
+    } catch (error) {
+      console.error("Failed to save footer:", error);
+    }
+  };
+  
 
   return (
     <div className={styles.wrapper}>
@@ -144,9 +204,15 @@ const Footer = () => {
         </div>
 
         <div className={styles.footer}>
-          <button className={styles.saveButton}>Save</button>
-          <button className={styles.nextButton}>Next</button>
-        </div>
+        <button
+          className={styles.saveButton}
+          onClick={handleSave}
+          disabled={loading}
+        >
+          {loading ? "Saving..." : "Save"}
+        </button>
+        <button className={styles.nextButton}>Next</button>
+      </div>
       </div>
     </div>
   );
