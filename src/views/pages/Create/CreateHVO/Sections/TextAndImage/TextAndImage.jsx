@@ -1,12 +1,22 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import CategoryDropdown from "../../../CreateVideo/CategoryDropdown/CategoryDropdown";
 import ColorInput from "src/Common/ColorInput/ColorInput";
 import CopyText from "src/Common/CopyText/CopyText";
 import InputField from "src/Common/InputField/InputField";
 import { ArrowLeft } from "lucide-react";
 import styles from "./TextImage.module.scss";
+import useSaveTextImage from "../../Hooks/TextImage/useSaveRightTextLeftImage";
 
-const TextImage = ({ dynamicImageOptions = [], dynamicFields = [] }) => {
+const TextImage = ({
+  dynamicImageOptions = [],
+  dynamicFields = [],
+  isRightText = false,
+  templateId,
+  sequence,
+  onSectionSave,
+  onClose,
+  initialData,
+}) => {
   const [headline1, setHeadline1] = useState("");
   const [headline2, setHeadline2] = useState("");
   const [bodyText, setBodyText] = useState("");
@@ -18,40 +28,122 @@ const TextImage = ({ dynamicImageOptions = [], dynamicFields = [] }) => {
   const [size1, setSize1] = useState("");
   const [size2, setSize2] = useState("");
   const [bodySize, setBodySize] = useState("");
+  const [selectedFile, setSelectedFile] = useState(null);
   const fileInputRef = useRef(null);
 
-  const handleImageChange = (e) => {
+  const { saveTextImage, loading } = useSaveTextImage();
+
+  useEffect(() => {
+    if (initialData) {
+      setHeadline1(initialData.headline1 || "");
+      setHeadline2(initialData.headline2 || "");
+      setBodyText(initialData.body_text || "");
+      setHeadline1Color(initialData.headline1_color || "");
+      setHeadline2Color(initialData.headline2_color || "");
+      setBodyTextColor(initialData.body_text_color || "");
+      setSize1(initialData.headline1_size?.toString() || "");
+      setSize2(initialData.headline2_size?.toString() || "");
+      setBodySize(initialData.body_text_size?.toString() || "");
+      if (initialData.left_image_right_text) {
+        setImageUrl(initialData.left_image_right_text);
+        setPreviewUrl(initialData.left_image_right_text);
+      }
+    }
+  }, [initialData]);
+
+  const handleImageChange = useCallback((e) => {
     const file = e.target.files?.[0];
     if (file) {
+      setSelectedFile(file);
       setImageUrl(file.name);
       setPreviewUrl(URL.createObjectURL(file));
     }
-  };
+  }, []);
 
-  const handleUrlChange = (e) => {
+  const handleUrlChange = useCallback((e) => {
     const url = e.target.value;
+    setSelectedFile(null);
     setImageUrl(url);
     setPreviewUrl(url);
-  };
+  }, []);
 
-  const handleChooseClick = () => {
+  const handleChooseClick = useCallback(() => {
     fileInputRef.current?.click();
-  };
+  }, []);
 
-  const handleSizeChange = (setter, maxSize) => (e) => {
-    const value = e.target.value.replace(/\D/g, "");
-    if (value === "" || Number(value) <= maxSize) {
-      setter(value);
+  const handleSizeChange = useCallback(
+    (setter, maxSize) => (e) => {
+      const value = e.target.value.replace(/\D/g, "");
+      if (value === "" || Number(value) <= maxSize) {
+        setter(value);
+      }
+    },
+    []
+  );
+
+  const handleDynamicSelect = useCallback((value) => {
+    setSelectedFile(null);
+    setImageUrl(value);
+    setPreviewUrl(value);
+  }, []);
+
+  const handleSave = useCallback(async () => {
+    try {
+      await saveTextImage({
+        templateId,
+        sequence,
+        bodyText,
+        headline1,
+        headline2,
+        bodyTextColor,
+        bodyTextSize: parseInt(bodySize) || null,
+        headline1Color,
+        headline1Size: parseInt(size1) || null,
+        headline2Color,
+        headline2Size: parseInt(size2) || null,
+        image: selectedFile || imageUrl || null,
+      });
+
+      if (onSectionSave) {
+        onSectionSave();
+      }
+
+      if (onClose) {
+        onClose();
+      }
+    } catch (error) {
+      console.error("Failed to save section:", error);
     }
-  };
+  }, [
+    templateId,
+    sequence,
+    bodyText,
+    headline1,
+    headline2,
+    bodyTextColor,
+    bodySize,
+    headline1Color,
+    size1,
+    headline2Color,
+    size2,
+    selectedFile,
+    imageUrl,
+    saveTextImage,
+    onSectionSave,
+    onClose,
+  ]);
+
+  const sectionTitle = isRightText
+    ? "Right Text | Left Image"
+    : "Left Text | Right Image";
 
   return (
     <div className={styles.wrapper}>
       <div className={styles.container}>
         <div className={styles.header}>
-          <button className={styles.backButton}>
+          <button className={styles.backButton} onClick={onClose}>
             <ArrowLeft size={16} />
-            Left Text | Right Image | Section 1
+            {sectionTitle} | Section {sequence}
           </button>
         </div>
 
@@ -95,7 +187,7 @@ const TextImage = ({ dynamicImageOptions = [], dynamicFields = [] }) => {
               <CategoryDropdown
                 options={dynamicImageOptions}
                 buttonText="Select Dynamic URL to fetch image"
-                onSelect={(value) => setPreviewUrl(value)}
+                onSelect={handleDynamicSelect}
                 allowAddNew={false}
               />
             </div>
@@ -185,7 +277,13 @@ const TextImage = ({ dynamicImageOptions = [], dynamicFields = [] }) => {
         </div>
 
         <div className={styles.footer}>
-          <button className={styles.saveButton}>Save</button>
+          <button
+            className={styles.saveButton}
+            onClick={handleSave}
+            disabled={loading}
+          >
+            {loading ? "Saving..." : "Save"}
+          </button>
           <button className={styles.nextButton}>Next</button>
         </div>
       </div>
