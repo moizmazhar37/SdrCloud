@@ -4,6 +4,7 @@ import ColorInput from "src/Common/ColorInput/ColorInput";
 import InputField from "src/Common/InputField/InputField";
 import styles from "./Footer.module.scss";
 import useSaveFooter from "../../Hooks/Footer/useSaveFooter";
+import useUpdateFooter from "../../Hooks/Footer/useUpdateFooter";
 
 const Footer = ({
   onSectionSave,
@@ -27,7 +28,8 @@ const Footer = ({
   const [facebookLink, setFacebookLink] = useState("");
   const [linkedInLink, setLinkedInLink] = useState("");
 
-  const { saveFooter, loading } = useSaveFooter();
+  const { saveFooter, loading: saveLoading } = useSaveFooter();
+  const { updateFooter, loading: updateLoading } = useUpdateFooter();
 
   // Handler for size inputs with max value validation
   const handleSizeChange = (setter, maxSize) => (e) => {
@@ -39,54 +41,65 @@ const Footer = ({
 
   useEffect(() => {
     if (initialData) {
-      setFooterBgColor(initialData.footerBgColor || "");
-      setFooterHeadingColor(initialData.footerHeadingColor || "");
+      setFooterBgColor(initialData.footer_background_color || "");
+      setFooterHeadingColor(initialData.footer_text_heading_color || "");
       setHeadingSize(initialData.headingSize?.toString() || "0");
-      setFooterTextColor(initialData.footerTextColor || "");
-      setFooterTextColor(initialData.footerTextColor || "");
-      setFooterHoverColor(initialData.footerHoverColor?.toString() || "0");
+      setFooterTextColor(initialData.footer_text_heading_color || "");
+      setFooterHoverColor(
+        initialData.footer_text_hover_color?.toString() || ""
+      );
       setIconBgColor(initialData.iconBgColor || "");
       setIconColor(initialData.iconColor || "");
-      setBenchmarkColor(initialData.benchmarkColor || "");
-      setBenchmarkSize(initialData.benchmarkSize?.toString() || "0");
-      setInstagramLink(initialData.instagramLink || "");
-      setFacebookLink(initialData.facebookLink || "");
-      setLinkedInLink(initialData.linkedInLink || "");
+      setBenchmarkColor(initialData.benchmark_color || "");
+      setBenchmarkSize(initialData.benchmar_size?.toString() || "0");
+      setInstagramLink(initialData.instagram_link || "");
+      setFacebookLink(initialData.facebook_link || "");
+      setLinkedInLink(initialData.linkedin_link || "");
+      setTextSize(initialData.footer_text_size || "");
+      setIconBgColor(initialData.social_icon_background_color || "");
+      setIconColor(initialData.social_icon_color || "");
     }
   }, [initialData]);
-  
+
   const handleSave = async () => {
+    const footerData = {
+      templateId,
+      sequence,
+      footerBackgroundColor: footerBgColor,
+      footerTextHeadingColor: footerHeadingColor,
+      footerHeadingSize: headingSize,
+      footerTextColor: footerTextColor,
+      footerTextHoverColor: footerHoverColor,
+      footerTextSize: textSize,
+      socialIconBackgroundColor: iconBgColor,
+      socialIconColor: iconColor,
+      benchmarkColor: benchmarkColor,
+      benchmarkSize: benchmarkSize,
+      instagramLink: instagramLink,
+      facebookLink: facebookLink,
+      linkedinLink: linkedInLink,
+    };
+
     try {
-      await saveFooter({
-        templateId,
-        sequence,
-        footerBackgroundColor: footerBgColor,
-        footerTextHeadingColor: footerHeadingColor,
-        footerHeadingSize: headingSize,
-        footerTextColor: footerTextColor,
-        footerTextHoverColor: footerHoverColor,
-        footerTextSize: textSize,
-        socialIconBackgroundColor: iconBgColor,
-        socialIconColor: iconColor,
-        benchmarkColor: benchmarkColor,
-        benchmarkSize: benchmarkSize,
-        instagramLink: instagramLink,
-        facebookLink: facebookLink,
-        linkedinLink: linkedInLink,
-      });
-  
+      if (initialData?.id) {
+        await updateFooter(initialData.id, footerData);
+      } else {
+        await saveFooter(footerData);
+      }
+
       if (onSectionSave) {
         onSectionSave();
       }
-  
+
       if (onClose) {
         onClose();
       }
     } catch (error) {
-      console.error("Failed to save footer:", error);
+      console.error("Failed to save/update footer:", error);
     }
   };
-  
+
+  const loading = saveLoading || updateLoading;
 
   return (
     <div className={styles.wrapper}>
@@ -204,15 +217,15 @@ const Footer = ({
         </div>
 
         <div className={styles.footer}>
-        <button
-          className={styles.saveButton}
-          onClick={handleSave}
-          disabled={loading}
-        >
-          {loading ? "Saving..." : "Save"}
-        </button>
-        <button className={styles.nextButton}>Next</button>
-      </div>
+          <button
+            className={styles.saveButton}
+            onClick={handleSave}
+            disabled={loading}
+          >
+            {loading ? "Saving..." : "Save"}
+          </button>
+          <button className={styles.nextButton}>Next</button>
+        </div>
       </div>
     </div>
   );

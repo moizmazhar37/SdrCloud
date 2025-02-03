@@ -24,9 +24,9 @@ export const hvoInitialOptions = [
   { label: "Header", value: "Header" },
   { label: "Hero", value: "Hero" },
   { label: "Highlight Banner", value: "Highlight Banner" },
-  { label: "Right Text | Left Image", value: "Right Text | Left Image" },
+  { label: "Right Text Left Image", value: "Right Text Left Image" },
   { label: "Highlight Banner 2", value: "Highlight Banner 2" },
-  { label: "Left Text | Right Image", value: "Left Text | Right Image" },
+  { label: "Left Text Right Image", value: "Left Text Right Image" },
   { label: "Footer", value: "Footer" },
 ];
 

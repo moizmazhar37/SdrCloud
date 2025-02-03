@@ -1,3 +1,4 @@
+// HighlightBanner.jsx
 import React, { useState, useEffect } from "react";
 import CategoryDropdown from "../../../CreateVideo/CategoryDropdown/CategoryDropdown";
 import ColorInput from "src/Common/ColorInput/ColorInput";
@@ -6,6 +7,7 @@ import InputField from "src/Common/InputField/InputField";
 import { ArrowLeft } from "lucide-react";
 import styles from "./HighlightBanner.module.scss";
 import useSaveHighlightBanner from "../../Hooks/HighlightBanner/useSaveHighlightBanner";
+import useUpdateHighlightBanner from "../../Hooks/HighlightBanner/useUpdateHighlightBanner";
 
 const HighlightBanner = ({
   dynamicFields = [],
@@ -21,7 +23,11 @@ const HighlightBanner = ({
   const [size, setSize] = useState("00");
   const [selectedScroll, setSelectedScroll] = useState(null);
   const [dropdownKey, setDropdownKey] = useState(0);
-  const { saveHighlightBanner, loading } = useSaveHighlightBanner();
+
+  const { saveHighlightBanner, loading: saveLoading } =
+    useSaveHighlightBanner();
+  const { updateHighlightBanner, loading: updateLoading } =
+    useUpdateHighlightBanner();
 
   const scrollOptions = [
     { label: "Yes", value: "yes" },
@@ -30,17 +36,19 @@ const HighlightBanner = ({
 
   useEffect(() => {
     if (initialData) {
-      setBannerText(initialData.bannerText || "");
-      setBannerColor(initialData.bannerColor || "");
-      setTextColor(initialData.bannerTextColor || "");
-      setSize(initialData.bannerTextSize?.toString() || "00");
+      setBannerText(initialData.banner_text || "");
+      setBannerColor(initialData.banner_color || "");
+      setTextColor(initialData.banner_text_color || "");
+      setSize(initialData.banner_text_size?.toString() || "00");
       setSelectedScroll(initialData.scroll ? "yes" : "no");
+      // Force dropdown to re-render with initial value
+      setDropdownKey((prev) => prev + 1);
     }
   }, [initialData]);
 
   const handleSave = async () => {
     try {
-      await saveHighlightBanner({
+      const data = {
         templateId,
         sequence,
         bannerText,
@@ -48,7 +56,13 @@ const HighlightBanner = ({
         bannerTextColor: textColor,
         bannerTextSize: size,
         scroll: selectedScroll,
-      });
+      };
+
+      if (initialData) {
+        await updateHighlightBanner(data, initialData.id);
+      } else {
+        await saveHighlightBanner(data);
+      }
 
       if (onSectionSave) {
         onSectionSave();
@@ -58,16 +72,25 @@ const HighlightBanner = ({
         onClose();
       }
     } catch (error) {
-      console.error("Failed to save banner:", error);
+      console.error("Failed to save/update banner:", error);
     }
   };
+
+  const handleSizeChange = (e) => {
+    const value = e.target.value.replace(/\D/g, "");
+    if (value === "" || Number(value) <= 32) {
+      setSize(value);
+    }
+  };
+
+  const loading = initialData ? updateLoading : saveLoading;
 
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         <button className={styles.backButton} onClick={onClose}>
           <ArrowLeft size={16} />
-          Banner | Section 1
+          Banner | Section {sequence}
         </button>
       </div>
 
@@ -102,7 +125,7 @@ const HighlightBanner = ({
               <div className={styles.sizeWrapper}>
                 <InputField
                   value={size}
-                  onChange={(e) => setSize(e.target.value)}
+                  onChange={handleSizeChange}
                   className={styles.sizeInput}
                 />
               </div>
@@ -133,9 +156,8 @@ const HighlightBanner = ({
           onClick={handleSave}
           disabled={loading}
         >
-          {loading ? "Saving..." : "Save"}
+          {loading ? "Saving..." : initialData ? "Update" : "Save"}
         </button>
-        <button className={styles.nextButton}>Next</button>
       </div>
     </div>
   );

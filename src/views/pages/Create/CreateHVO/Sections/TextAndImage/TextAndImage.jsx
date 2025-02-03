@@ -5,7 +5,10 @@ import CopyText from "src/Common/CopyText/CopyText";
 import InputField from "src/Common/InputField/InputField";
 import { ArrowLeft } from "lucide-react";
 import styles from "./TextImage.module.scss";
-import useSaveTextImage from "../../Hooks/TextImage/useSaveRightTextLeftImage";
+import useSaveRightTextLeftImage from "../../Hooks/TextImage/useSaveRightTextLeftImage";
+import useUpdateRightTextLeftImage from "../../Hooks/TextImage/useUpdateRightTextLeftImage";
+import useSaveLeftTextRightImage from "../../Hooks/TextImage/useSaveLeftTextRightImage";
+import useUpdateLeftTextRightImage from "../../Hooks/TextImage/useUpdateLeftTextRightImage";
 
 const TextImage = ({
   dynamicImageOptions = [],
@@ -29,9 +32,22 @@ const TextImage = ({
   const [size2, setSize2] = useState("");
   const [bodySize, setBodySize] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedDynamicOption, setSelectedDynamicOption] = useState(null);
   const fileInputRef = useRef(null);
 
-  const { saveTextImage, loading } = useSaveTextImage();
+  // Save hooks
+  const {
+    saveTextImage: saveRightTextLeftImage,
+    loading: saveRightTextLoading,
+  } = useSaveRightTextLeftImage();
+  const { saveLeftTextRightImage, loading: saveLeftTextLoading } =
+    useSaveLeftTextRightImage();
+
+  // Update hooks
+  const { updateRightTextLeftImage, loading: updateRightTextLoading } =
+    useUpdateRightTextLeftImage();
+  const { updateLeftTextRightImage, loading: updateLeftTextLoading } =
+    useUpdateLeftTextRightImage();
 
   useEffect(() => {
     if (initialData) {
@@ -44,12 +60,18 @@ const TextImage = ({
       setSize1(initialData.headline1_size?.toString() || "");
       setSize2(initialData.headline2_size?.toString() || "");
       setBodySize(initialData.body_text_size?.toString() || "");
-      if (initialData.left_image_right_text) {
+
+      if (isRightText && initialData.left_image_right_text) {
         setImageUrl(initialData.left_image_right_text);
         setPreviewUrl(initialData.left_image_right_text);
+        setSelectedDynamicOption(initialData.left_image_right_text);
+      } else if (!isRightText && initialData.left_text_right_image_url) {
+        setImageUrl(initialData.left_text_right_image_url);
+        setPreviewUrl(initialData.left_text_right_image_url);
+        setSelectedDynamicOption(initialData.left_text_right_image_url);
       }
     }
-  }, [initialData]);
+  }, [initialData, isRightText]);
 
   const handleImageChange = useCallback((e) => {
     const file = e.target.files?.[0];
@@ -57,6 +79,7 @@ const TextImage = ({
       setSelectedFile(file);
       setImageUrl(file.name);
       setPreviewUrl(URL.createObjectURL(file));
+      setSelectedDynamicOption(null);
     }
   }, []);
 
@@ -65,6 +88,7 @@ const TextImage = ({
     setSelectedFile(null);
     setImageUrl(url);
     setPreviewUrl(url);
+    setSelectedDynamicOption(null);
   }, []);
 
   const handleChooseClick = useCallback(() => {
@@ -85,24 +109,41 @@ const TextImage = ({
     setSelectedFile(null);
     setImageUrl(`[${value}]`);
     setPreviewUrl(value);
+    setSelectedDynamicOption(value);
   }, []);
 
   const handleSave = useCallback(async () => {
+    const data = {
+      templateId,
+      sequence,
+      bodyText,
+      headline1,
+      headline2,
+      bodyTextColor,
+      bodyTextSize: parseInt(bodySize) || null,
+      headline1Color,
+      headline1Size: parseInt(size1) || null,
+      headline2Color,
+      headline2Size: parseInt(size2) || null,
+      image: selectedFile || selectedDynamicOption || imageUrl || null,
+    };
+
     try {
-      await saveTextImage({
-        templateId,
-        sequence,
-        bodyText,
-        headline1,
-        headline2,
-        bodyTextColor,
-        bodyTextSize: parseInt(bodySize) || null,
-        headline1Color,
-        headline1Size: parseInt(size1) || null,
-        headline2Color,
-        headline2Size: parseInt(size2) || null,
-        image: selectedFile || imageUrl || null,
-      });
+      if (initialData) {
+        // Update existing section
+        if (isRightText) {
+          await updateRightTextLeftImage(data, initialData.id);
+        } else {
+          await updateLeftTextRightImage(data, initialData.id);
+        }
+      } else {
+        // Create new section
+        if (isRightText) {
+          await saveRightTextLeftImage(data);
+        } else {
+          await saveLeftTextRightImage(data);
+        }
+      }
 
       if (onSectionSave) {
         onSectionSave();
@@ -115,6 +156,8 @@ const TextImage = ({
       console.error("Failed to save section:", error);
     }
   }, [
+    initialData,
+    isRightText,
     templateId,
     sequence,
     bodyText,
@@ -127,8 +170,12 @@ const TextImage = ({
     headline2Color,
     size2,
     selectedFile,
+    selectedDynamicOption,
     imageUrl,
-    saveTextImage,
+    updateRightTextLeftImage,
+    updateLeftTextRightImage,
+    saveRightTextLeftImage,
+    saveLeftTextRightImage,
     onSectionSave,
     onClose,
   ]);
@@ -136,6 +183,14 @@ const TextImage = ({
   const sectionTitle = isRightText
     ? "Right Text | Left Image"
     : "Left Text | Right Image";
+
+  const loading = initialData
+    ? isRightText
+      ? updateRightTextLoading
+      : updateLeftTextLoading
+    : isRightText
+    ? saveRightTextLoading
+    : saveLeftTextLoading;
 
   return (
     <div className={styles.wrapper}>
@@ -189,6 +244,7 @@ const TextImage = ({
                 buttonText="Select Dynamic URL to fetch image"
                 onSelect={handleDynamicSelect}
                 allowAddNew={false}
+                value={selectedDynamicOption}
               />
             </div>
 
@@ -282,7 +338,7 @@ const TextImage = ({
             onClick={handleSave}
             disabled={loading}
           >
-            {loading ? "Saving..." : "Save"}
+            {loading ? "Saving..." : initialData ? "Update" : "Save"}
           </button>
           <button className={styles.nextButton}>Next</button>
         </div>

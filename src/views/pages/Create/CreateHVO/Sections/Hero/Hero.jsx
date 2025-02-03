@@ -6,6 +6,7 @@ import InputField from "src/Common/InputField/InputField";
 import { ArrowLeft } from "lucide-react";
 import styles from "./Hero.module.scss";
 import useSaveHeroSection from "../../Hooks/Hero/useSaveHero";
+import useUpdateHeroSection from "../../Hooks/Hero/useUpdateHero";
 
 const HeroSection = ({
   dynamicFields = [],
@@ -39,8 +40,10 @@ const HeroSection = ({
   const [demoUrl, setDemoUrl] = useState("");
 
   const fileInputRef = useRef(null);
-  const { saveHeroSection, loading } = useSaveHeroSection();
+  const { saveHeroSection, loading: saveLoading } = useSaveHeroSection();
+  const { updateHeroSection, loading: updateLoading } = useUpdateHeroSection();
 
+  const loading = saveLoading || updateLoading;
   useEffect(() => {
     if (initialData) {
       setHeroImg(initialData.hero_img || "");
@@ -67,6 +70,8 @@ const HeroSection = ({
       }
     }
   }, [initialData]);
+
+  console.log("HEROooo===-=---=-=", initialData);
 
   const handleImageChange = useCallback((e) => {
     const file = e.target.files?.[0];
@@ -107,30 +112,36 @@ const HeroSection = ({
   };
 
   const handleSave = useCallback(async () => {
+    const heroSectionData = {
+      templateId,
+      sequence,
+      hero_img: file ? "" : heroImg, // If file selected, send in 'file', else send URL
+      file: file || null, // Send file if selected
+      headline1,
+      headline1_size: parseInt(headline1Size) || null,
+      headline1_color: headline1Color,
+      headline2,
+      headline2_size: parseInt(headline2Size) || null,
+      headline2_color: headline2Color,
+      body_text: bodyText,
+      body_text_size: parseInt(bodyTextSize) || null,
+      body_text_color: bodyTextColor,
+      cta_button_text: ctaButtonText,
+      cta_button_color: ctaButtonColor,
+      cta_button_text_color: ctaButtonTextColor,
+      dynamic_url: ctaUrl, // CTA Button URL
+      demo_button_text: demoButtonText,
+      demo_button_color: demoButtonColor,
+      demo_button_text_color: demoButtonTextColor,
+      dynamic_url_demo: demoUrl, // Demo Button URL
+    };
+
     try {
-      await saveHeroSection({
-        templateId,
-        sequence,
-        hero_img: file ? "" : heroImg,  // If file selected, send in 'file', else send URL
-        file: file || null, // Send file if selected
-        headline1,
-        headline1_size: parseInt(headline1Size) || null,
-        headline1_color: headline1Color,
-        headline2,
-        headline2_size: parseInt(headline2Size) || null,
-        headline2_color: headline2Color,
-        body_text: bodyText,
-        body_text_size: parseInt(bodyTextSize) || null,
-        body_text_color: bodyTextColor,
-        cta_button_text: ctaButtonText,
-        cta_button_color: ctaButtonColor,
-        cta_button_text_color: ctaButtonTextColor,
-        dynamic_url: ctaUrl,  // CTA Button URL
-        demo_button_text: demoButtonText,
-        demo_button_color: demoButtonColor,
-        demo_button_text_color: demoButtonTextColor,
-        dynamic_url_demo: demoUrl,  // Demo Button URL
-      });
+      if (initialData?.id) {
+        await updateHeroSection(initialData.id, heroSectionData);
+      } else {
+        await saveHeroSection(heroSectionData);
+      }
 
       if (onSectionSave) {
         onSectionSave();
@@ -140,7 +151,7 @@ const HeroSection = ({
         onClose();
       }
     } catch (error) {
-      console.error("Failed to save section:", error);
+      console.error("Failed to save/update section:", error);
     }
   }, [
     templateId,
@@ -164,7 +175,9 @@ const HeroSection = ({
     demoButtonColor,
     demoButtonTextColor,
     demoUrl,
+    initialData?.id,
     saveHeroSection,
+    updateHeroSection,
     onSectionSave,
     onClose,
   ]);
@@ -335,7 +348,6 @@ const HeroSection = ({
                 }}
                 allowAddNew={false}
               />
-
             </div>
 
             <div className={styles.inputGroup}>
@@ -375,7 +387,6 @@ const HeroSection = ({
                 }}
                 allowAddNew={false}
               />
-
             </div>
           </div>
 

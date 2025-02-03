@@ -5,7 +5,7 @@ import styles from "./CopyText.module.scss";
 const CopyText = ({ fields = [] }) => {
   const handleCopy = async (text) => {
     try {
-      await navigator.clipboard.writeText(text);
+      await navigator.clipboard.writeText(`[${text}]`);
     } catch (err) {
       console.error("Failed to copy text:", err);
     }
