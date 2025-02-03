@@ -109,7 +109,7 @@ const TextImage = ({
     setSelectedFile(null);
     setImageUrl(`[${value}]`);
     setPreviewUrl(value);
-    setSelectedDynamicOption(value);
+    setSelectedDynamicOption(`[${value}]`);
   }, []);
 
   const handleSave = useCallback(async () => {

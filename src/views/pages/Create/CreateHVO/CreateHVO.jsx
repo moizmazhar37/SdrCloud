@@ -4,6 +4,7 @@ import useGetSheetData from "../Hooks/useGetSheetData";
 import useGetSheets from "../Hooks/useGetSheets";
 import useHvoSections from "./Hooks/useGetHvoSections";
 import useCompanyTenant from "../../settings/Company/Hooks/useCompanyTenant";
+import useCreateHVO from "./Hooks/useCreateHVO";
 import styles from "./CreateHVO.module.scss";
 import HVOCategoryForm from "./HVOCategoryForm/HVOCategoryForm";
 import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
@@ -23,6 +24,7 @@ import TextImage from "./Sections/TextAndImage/TextAndImage";
 import Footer from "./Sections/Footer/Footer";
 import HighlightBanner2 from "./Sections/HighlightBanner2/HighlightBanner2";
 import HeroSection from "./Sections/Hero/Hero";
+import { toast } from "react-hot-toast";
 
 const SECTION_TYPES = {
   RIGHT_TEXT_LEFT_IMAGE: "Right Text Left Image",
@@ -53,6 +55,8 @@ const CreateHVO = () => {
     loading: sectionLoading,
     error: sectionError,
   } = useHvoSections(templateId, sectionUpdateTrigger);
+
+  const { handleCreateVideo, isLoading: isCreatingHVO } = useCreateHVO();
 
   useEffect(() => {
     const url = new URL(window.location.href);
@@ -123,6 +127,14 @@ const CreateHVO = () => {
 
   const handleCloseSection = () => {
     resetAllStates();
+  };
+
+  const handleCreateHVO = () => {
+    if (templateId) {
+      handleCreateVideo(templateId);
+    } else {
+      toast.error("Please create a template first");
+    }
   };
 
   const isEditable = Boolean(isViewMode || isSheetConnected);
@@ -257,6 +269,13 @@ const CreateHVO = () => {
               </div>
             </div>
           )}
+          <button
+            className={styles.CreatButton}
+            onClick={handleCreateHVO}
+            disabled={!templateId || isCreatingHVO}
+          >
+            {isCreatingHVO ? "Creating..." : "Create HVO"}
+          </button>
         </div>
         <div className={styles.rightComponent}>
           <SectionArea
