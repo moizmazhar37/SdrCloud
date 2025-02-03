@@ -14,12 +14,25 @@ import {
   hvoInitialOptions,
   extractKeywordList,
   HighlightBannerTypes,
+  URLTypes,
 } from "../CreateVideo/helpers";
 
 import Header from "./Sections/Header/Header";
 import HighlightBanner from "./Sections/HighlightBanner/HighlightBanner";
 import TextImage from "./Sections/TextAndImage/TextAndImage";
 import Footer from "./Sections/Footer/Footer";
+import HighlightBanner2 from "./Sections/HighlightBanner2/HighlightBanner2";
+import HeroSection from "./Sections/Hero/Hero";
+
+const SECTION_TYPES = {
+  RIGHT_TEXT_LEFT_IMAGE: "Right Text Left Image",
+  LEFT_TEXT_RIGHT_IMAGE: "Left Text Right Image",
+  HEADER: "Header",
+  HIGHLIGHT_BANNER: "Highlight Banner",
+  HIGHLIGHT_BANNER_2: "Highlight Banner 2",
+  FOOTER: "Footer",
+  HERO: "Hero",
+};
 
 const CreateHVO = () => {
   const [templateId, setTemplateId] = useState(null);
@@ -66,6 +79,7 @@ const CreateHVO = () => {
     : [];
 
   const dynamicField = extractKeywordList(data, HighlightBannerTypes);
+  const dynamicURL = extractKeywordList(data, URLTypes);
   const HeaderTypes = extractHvoCategories(data, ["Logo"]);
   const ImageDropdownTypes = extractHvoCategories(data, [
     "Screenshot from URL",
@@ -182,6 +196,35 @@ const CreateHVO = () => {
               initialData={editingSection}
             />
           </div>
+        );
+
+      case SECTION_TYPES.HERO:
+        return (
+          <div className={styles.leftComponent}>
+            <HeroSection
+              dynamicFields={dynamicField}
+              dynamicURL={dynamicURL}
+              dynamicImage={ImageDropdownTypes}
+              onSectionSave={handleSectionUpdate}
+              onClose={handleCloseSection}
+              templateId={templateId}
+              sequence={sectionNum}
+              initialData={editingSection}
+            />
+          </div>
+        );
+
+      case SECTION_TYPES.HIGHLIGHT_BANNER_2:
+        return (
+          <HighlightBanner2
+            dynamicFields={dynamicField}
+            dynamicURL={dynamicURL}
+            onSectionSave={handleSectionUpdate}
+            onClose={handleCloseSection}
+            templateId={templateId}
+            sequence={sectionNum}
+            initialData={editingSection}
+          />
         );
       default:
         return null;

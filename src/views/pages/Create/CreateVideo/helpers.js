@@ -50,6 +50,10 @@ export const HighlightBannerTypes = [
   "Customer organization",
 ];
 
+export const URLTypes = [
+  "URL"
+]
+
 export const extractKeywordList = (data, types) => {
   if (!data || !Array.isArray(data)) {
     console.warn("Data is null or not an array");
