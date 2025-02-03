@@ -9,7 +9,8 @@ import useSaveHeroSection from "../../Hooks/Hero/useSaveHero";
 
 const HeroSection = ({
   dynamicFields = [],
-  dynamicImageOptions = [],
+  dynamicURL = [],
+  dynamicImage = [],
   templateId,
   sequence,
   onSectionSave,
@@ -97,12 +98,21 @@ const HeroSection = ({
     []
   );
 
+  const resetUrlFields = (type) => {
+    if (type === "cta") {
+      setCtaUrl("");
+    } else if (type === "demo") {
+      setDemoUrl("");
+    }
+  };
+
   const handleSave = useCallback(async () => {
     try {
       await saveHeroSection({
         templateId,
         sequence,
-        hero_img: file ? file : heroImg,  // If file selected, send in 'file', else send URL
+        hero_img: file ? "" : heroImg,  // If file selected, send in 'file', else send URL
+        file: file || null, // Send file if selected
         headline1,
         headline1_size: parseInt(headline1Size) || null,
         headline1_color: headline1Color,
@@ -172,7 +182,7 @@ const HeroSection = ({
         <div className={styles.content}>
           <div className={styles.mainSection}>
             <div className={styles.uploadSection}>
-              <label>Upload Static Image</label>
+              <label>Upload Static Image or Select Dynamic Image</label>
               <div className={styles.uploadGroup}>
                 <InputField
                   value={heroImg}
@@ -208,9 +218,9 @@ const HeroSection = ({
             </div>
 
             <div className={styles.selectSection}>
-              <label>Select Dynamic Image</label>
               <CategoryDropdown
-                options={dynamicImageOptions}
+                key={heroImg}
+                options={dynamicImage}
                 buttonText="Select Dynamic URL to fetch image"
                 onSelect={(value) => setHeroImg(value)}
                 allowAddNew={false}
@@ -296,21 +306,36 @@ const HeroSection = ({
                 placeholder="Enter CTA Button Text"
               />
               <ColorInput
-                label="CTA Button Color"
+                placeholder="CTA Button Color"
                 value={ctaButtonColor}
                 onChange={setCtaButtonColor}
               />
               <ColorInput
-                label="CTA Button Text Color"
+                placeholder="CTA Button Text Color"
                 value={ctaButtonTextColor}
                 onChange={setCtaButtonTextColor}
               />
+              <InputField
+                placeholder="Enter Static URL"
+                value={ctaUrl}
+                onChange={(e) => {
+                  setCtaUrl(e.target.value);
+                }}
+              />
               <CategoryDropdown
-                options={dynamicFields}
+                options={dynamicURL.map((field) => ({
+                  label: field,
+                  value: field,
+                }))}
+                key={ctaUrl}
                 buttonText="Select Dynamic URL for CTA"
-                onSelect={(value) => setCtaUrl(value)}
+                onSelect={(value) => {
+                  setCtaUrl(value);
+                  resetUrlFields("cta");
+                }}
                 allowAddNew={false}
               />
+
             </div>
 
             <div className={styles.inputGroup}>
@@ -321,21 +346,36 @@ const HeroSection = ({
                 placeholder="Enter Demo Button Text"
               />
               <ColorInput
-                label="Demo Button Color"
+                placeholder="Demo Button Color"
                 value={demoButtonColor}
                 onChange={setDemoButtonColor}
               />
               <ColorInput
-                label="Demo Button Text Color"
+                placeholder="Demo Button Text Color"
                 value={demoButtonTextColor}
                 onChange={setDemoButtonTextColor}
               />
+              <InputField
+                placeholder="Enter Static URL"
+                value={demoUrl}
+                onChange={(e) => {
+                  setDemoUrl(e.target.value);
+                }}
+              />
               <CategoryDropdown
-                options={dynamicFields}
+                options={dynamicURL.map((field) => ({
+                  label: field,
+                  value: field,
+                }))}
+                key={demoUrl}
                 buttonText="Select Dynamic URL for Demo"
-                onSelect={(value) => setDemoUrl(value)}
+                onSelect={(value) => {
+                  setDemoUrl(value); // Set the dynamic URL
+                  resetUrlFields("demo"); // Reset static URL input when dynamic URL is selected
+                }}
                 allowAddNew={false}
               />
+
             </div>
           </div>
 

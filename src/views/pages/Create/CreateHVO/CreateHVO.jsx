@@ -203,7 +203,9 @@ const CreateHVO = () => {
         return (
           <div className={styles.leftComponent}>
             <HeroSection
-            dynamicFields={dynamicField}
+              dynamicFields={dynamicField}
+              dynamicURL={dynamicURL}
+              dynamicImage={ImageDropdownTypes}
               onSectionSave={handleSectionUpdate}
               onClose={handleCloseSection}
               templateId={templateId}
