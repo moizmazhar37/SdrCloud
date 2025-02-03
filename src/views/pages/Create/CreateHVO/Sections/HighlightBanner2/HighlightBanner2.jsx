@@ -5,10 +5,11 @@ import CopyText from "src/Common/CopyText/CopyText";
 import InputField from "src/Common/InputField/InputField";
 import { ArrowLeft } from "lucide-react";
 import styles from "./HighlightBanner2.module.scss";
-import useSaveHighlightBanner from "../../Hooks/HighlightBanner/useSaveHighlightBanner";
+import useSaveHighlightBanner2 from "../../Hooks/HighlightBanner2/useSaveHighlightBanner2";
 
 const HighlightBanner2 = ({
     dynamicFields = [],
+    dynamicURL = [],
     onSectionSave,
     onClose,
     templateId,
@@ -19,18 +20,14 @@ const HighlightBanner2 = ({
     const [bannerColor, setBannerColor] = useState("");
     const [textColor, setTextColor] = useState("");
     const [size, setSize] = useState("00");
-    const [selectedScroll, setSelectedScroll] = useState(null);
     const [ctaButtonText, setCtaButtonText] = useState("");
     const [ctaButtonColor, setCtaButtonColor] = useState("");
     const [ctaButtonTextColor, setCtaButtonTextColor] = useState("");
     const [staticUrl, setStaticUrl] = useState("");
     const [dynamicUrl, setDynamicUrl] = useState("");
-    const { saveHighlightBanner, loading } = useSaveHighlightBanner();
+    const { saveHighlightBanner2, loading } = useSaveHighlightBanner2();
 
-    const scrollOptions = [
-        { label: "Yes", value: "yes" },
-        { label: "No", value: "no" },
-    ];
+    console.log(templateId, "fkslaskofuiouiowruo78907fsfjkl")
 
     useEffect(() => {
         if (initialData) {
@@ -38,7 +35,6 @@ const HighlightBanner2 = ({
             setBannerColor(initialData.bannerColor || "");
             setTextColor(initialData.bannerTextColor || "");
             setSize(initialData.bannerTextSize?.toString() || "00");
-            setSelectedScroll(initialData.scroll ? "yes" : "no");
             setCtaButtonText(initialData.ctaButtonText || "");
             setCtaButtonColor(initialData.ctaButtonColor || "");
             setCtaButtonTextColor(initialData.ctaButtonTextColor || "");
@@ -52,18 +48,18 @@ const HighlightBanner2 = ({
             // Determine the staticUrl to use based on selection
             const urlToSave = staticUrl || dynamicUrl;
 
-            await saveHighlightBanner({
+            await saveHighlightBanner2({
                 hvoTemplateId: templateId,
                 sequence,
                 ctaButtonText,
                 bannerText,
-                staticUrl: urlToSave, // Store either static or dynamic URL
+                staticUrl: urlToSave,  // Store either static or dynamic URL
                 ctaButtonColor,
                 bannerColor,
-                bannerButtonColor: ctaButtonColor, // Assuming CTA button and banner share color
+                bannerButtonColor: ctaButtonColor,  // Assuming CTA button and banner share color
                 bannerTextColor: textColor,
                 bannerButtonTextColor: ctaButtonTextColor,
-                banner2TextSize: parseInt(size) || 0, // Ensure text size is a number
+                bannerTextSize: parseInt(size) || 0, // Ensure text size is a number
             });
 
             if (onSectionSave) {
@@ -179,19 +175,19 @@ const HighlightBanner2 = ({
                     <div className={styles.inputGroup}>
                         <label>If Dynamic URL Select Here</label>
                         <CategoryDropdown
-  key={0}
-  options={dynamicFields.map((field) => ({
-    label: field,   // Use the string as the label
-    value: field,   // Use the same string as the value
-  }))}
-  buttonText="Select Dynamic URL"
-  onSelect={(value) => {
-    setDynamicUrl(value);
-    setStaticUrl(""); // Clear static URL if dynamic URL is selected
-  }}
-  allowAddNew={false}
-  initialValue={dynamicUrl}
-/>
+                            key={dynamicUrl}
+                            options={dynamicURL.map((field) => ({
+                                label: field,
+                                value: field,
+                            }))}
+                            buttonText="Select Dynamic URL"
+                            onSelect={(value) => {
+                                setDynamicUrl(value);
+                                setStaticUrl(""); // Clear static URL if dynamic URL is selected
+                            }}
+                            allowAddNew={false}
+                            initialValue={dynamicUrl}
+                        />
                     </div>
                 </div>
 

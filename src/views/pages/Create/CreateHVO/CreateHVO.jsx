@@ -14,6 +14,7 @@ import {
   hvoInitialOptions,
   extractKeywordList,
   HighlightBannerTypes,
+  URLTypes,
 } from "../CreateVideo/helpers";
 import Header from "./Sections/Header/Header";
 import HighlightBanner from "./Sections/HighlightBanner/HighlightBanner";
@@ -75,7 +76,7 @@ const CreateHVO = () => {
     : [];
 
   const dynamicField = extractKeywordList(data, HighlightBannerTypes);
-  console.log(dynamicField, "++++++++fsdfsdfsd8943")
+  const dynamicURL = extractKeywordList(data, URLTypes);
   const HeaderTypes = extractHvoCategories(data, ["Logo"]);
   const ImageDropdownTypes = extractHvoCategories(data, [
     "Screenshot from URL",
@@ -200,6 +201,7 @@ const CreateHVO = () => {
         return (
           <HighlightBanner2
             dynamicFields={dynamicField}
+            dynamicURL={dynamicURL}
             onSectionSave={handleSectionUpdate}
             onClose={handleCloseSection}
             templateId={templateId}
