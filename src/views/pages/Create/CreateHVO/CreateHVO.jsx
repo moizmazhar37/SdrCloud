@@ -15,6 +15,7 @@ import {
   extractKeywordList,
   HighlightBannerTypes,
 } from "../CreateVideo/helpers";
+
 import Header from "./Sections/Header/Header";
 import HighlightBanner from "./Sections/HighlightBanner/HighlightBanner";
 import TextImage from "./Sections/TextAndImage/TextAndImage";
