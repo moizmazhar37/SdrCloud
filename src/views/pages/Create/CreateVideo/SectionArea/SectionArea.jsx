@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import CategoryDropdown from "../CategoryDropdown/CategoryDropdown";
 import SectionView from "./SectionView/SectionView";
+import usePreviewVideo from "../hooks/usePreviewVideo";
 import styles from "./SectionArea.module.scss";
 
 const SectionArea = ({
@@ -10,65 +11,42 @@ const SectionArea = ({
   templateId = null,
   elementsList = [],
 }) => {
-  const [sections, setSections] = useState([1, 2, 3, 4]);
+  const [sections, setSections] = useState([]);
   const [sectionData, setSectionData] = useState({});
+  const { previewVideo, loading: previewLoading } = usePreviewVideo();
 
-  // Manage sections and section data based on the templateId and elementsList
   useEffect(() => {
     if (templateId && elementsList?.length > 0) {
-      const sectionMap = {};
-      elementsList.forEach((element) => {
-        sectionMap[element.sequence] = element;
-      });
+      const sectionMap = elementsList.reduce((acc, element) => {
+        acc[element.sequence] = element;
+        return acc;
+      }, {});
 
-      // Only update sectionData if it has changed
-      setSectionData((prev) => {
-        const prevKeys = Object.keys(prev || {}).join();
-        const currentKeys = Object.keys(sectionMap || {}).join();
-        return prevKeys === currentKeys ? prev : sectionMap;
-      });
-
-      let sortedSequences = Object.keys(sectionMap)
+      const sortedSequences = Object.keys(sectionMap)
         .map(Number)
         .sort((a, b) => a - b);
 
-      // Ensure at least 4 sections
-      while (sortedSequences.length < 4) {
-        sortedSequences.push(sortedSequences.length + 1);
-      }
-
-      // Only update sections if they have changed
-      setSections((prev) =>
-        JSON.stringify(prev) === JSON.stringify(sortedSequences)
-          ? prev
-          : sortedSequences
-      );
+      setSections(sortedSequences);
+      setSectionData(sectionMap);
     } else {
-      // Default to 4 sections if no elements are present
-      setSections((prev) =>
-        JSON.stringify(prev) === JSON.stringify([1, 2, 3, 4])
-          ? prev
-          : [1, 2, 3, 4]
-      );
+      setSections([]);
+      setSectionData({});
     }
   }, [templateId, elementsList]);
 
-  // Add a new section
   const addNewSection = () => {
-    setSections((prev) => [...prev, prev.length + 1]);
+    setSections((prev) => [...prev, Math.max(...prev, 0) + 1]);
   };
 
-  // Handle selecting a type for a section
   const handleSelect = (value, sectionNum) => {
     onSectionTypeChange(value, sectionNum);
   };
 
-  // Render a single section
   const renderSection = (sequence) => {
-    const hasData = sectionData[sequence];
+    const currentSectionData = sectionData[sequence];
 
-    if (hasData) {
-      return <SectionView sectionData={sectionData[sequence]} />;
+    if (elementsList?.length > 0 && currentSectionData) {
+      return <SectionView sectionData={currentSectionData} />;
     }
 
     return (
@@ -85,11 +63,20 @@ const SectionArea = ({
     );
   };
 
+  const handleProgressOverview = async () => {
+    if (templateId) {
+      const response = await previewVideo(templateId);
+      if (response) {
+        console.log("Preview successful:", response);
+      }
+    }
+  };
+
   return (
     <div className={styles.sectionAreaContainer}>
       <div className={styles.sectionsWrapper}>
         {sections.map((sequence) => (
-          <div key={sequence} className={styles.sectionWrapper}>
+          <div key={`section-${sequence}`} className={styles.sectionWrapper}>
             <div className={styles.sectionNumber}>{sequence}</div>
             <div className={styles.sectionMain}>{renderSection(sequence)}</div>
           </div>
@@ -100,12 +87,12 @@ const SectionArea = ({
         <button onClick={addNewSection} className={styles.addSectionButton}>
           + Add New Section
         </button>
-
         <button
-          onClick={() => console.log("Progress Overview clicked")}
+          onClick={handleProgressOverview}
           className={styles.progressButton}
+          disabled={previewLoading}
         >
-          Progress Overview
+          {previewLoading ? "Loading..." : "Progress Overview"}
         </button>
       </div>
     </div>

@@ -61,6 +61,7 @@ function EditGoogleSheet() {
   const navs = [
     { text: "Settings", route: "/settings" },
     { text: "Integration", route: "/integrations" },
+    { text: "Google Sheet", route: "/googlesheets" }
   ];
 
   return (

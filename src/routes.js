@@ -144,7 +144,9 @@ export const routes = [
     path: "/createtemplate&Video",
     guard: true,
     layout: DashboardLayout,
-    component: lazy(() => import("src/views/pages/Create/CreateVideo/CreateVideo")),
+    component: lazy(() =>
+      import("src/views/pages/Create/CreateVideo/CreateVideo")
+    ),
   },
   {
     exact: true,
@@ -196,14 +198,23 @@ export const routes = [
     ),
   },
 
+  // {
+  //   exact: true,
+  //   path: "/Create-hvo-template",
+  //   guard: true,
+  //   layout: DashboardLayout,
+  //   component: lazy(() =>
+  //     import("src/views/pages/HVOTemplate/CreateHVOTemplate")
+  //   ),
+  // },
+
+  //DummyRoute
   {
     exact: true,
     path: "/Create-hvo-template",
     guard: true,
     layout: DashboardLayout,
-    component: lazy(() =>
-      import("src/views/pages/HVOTemplate/CreateHVOTemplate")
-    ),
+    component: lazy(() => import("src/views/pages/Create/CreateHVO/CreateHVO")),
   },
 
   {
