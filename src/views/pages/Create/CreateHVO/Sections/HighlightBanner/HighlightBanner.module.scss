@@ -104,23 +104,9 @@
   justify-content: flex-end;
   gap: 16px;
   padding: 16px 24px;
-  border-top: 1px solid #e2e8f0;
 
   @media (max-width: 480px) {
     flex-direction: column;
-  }
-}
-
-.saveButton,
-.nextButton {
-  padding: 8px 24px;
-  border-radius: 4px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-
-  @media (max-width: 480px) {
-    width: 100%;
   }
 }
 
@@ -137,18 +123,16 @@
   background: #0066cc;
   color: white;
   border: none;
+  padding: 12px 36px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
 
+  @media (max-width: 480px) {
+    width: 100%;
+  }
   &:hover {
     background: #0052a3;
-  }
-}
-
-.nextButton {
-  background: white;
-  color: #1a202c;
-  border: 1px solid #e2e8f0;
-
-  &:hover {
-    background: #f7fafc;
   }
 }

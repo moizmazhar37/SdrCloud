@@ -135,7 +135,6 @@ const HighlightBanner = ({
         >
           {loading ? "Saving..." : "Save"}
         </button>
-        <button className={styles.nextButton}>Next</button>
       </div>
     </div>
   );

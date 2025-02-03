@@ -61,6 +61,7 @@ const TextImage = ({
       }
     }
   }, [initialData, isRightText]);
+  console.log("Text Image=---", initialData);
 
   const handleImageChange = useCallback((e) => {
     const file = e.target.files?.[0];

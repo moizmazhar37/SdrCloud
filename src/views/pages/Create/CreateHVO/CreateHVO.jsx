@@ -94,7 +94,7 @@ const CreateHVO = () => {
     setEditingSection(section);
     setSectionNum(section.sequence);
     setSelectedSection(section.section_name);
-    console.log("selectedValue======", selectedSection);
+    console.log("selectedValue name======", section.section_name);
   };
 
   const handleSectionTypeChange = (selectedValue, sectionNumber) => {
@@ -142,7 +142,7 @@ const CreateHVO = () => {
             initialData={editingSection}
           />
         );
-      case "Right Text | Left Image":
+      case "Right Text Left Image":
         return (
           <div className={styles.leftComponent}>
             <TextImage
@@ -157,7 +157,7 @@ const CreateHVO = () => {
             />
           </div>
         );
-      case "Left Text | Right Image":
+      case "Left Text Right Image":
         return (
           <div className={styles.leftComponent}>
             <TextImage
