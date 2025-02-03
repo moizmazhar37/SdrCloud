@@ -6,7 +6,9 @@ import InputField from "src/Common/InputField/InputField";
 import { ArrowLeft } from "lucide-react";
 import styles from "./TextImage.module.scss";
 import useSaveRightTextLeftImage from "../../Hooks/TextImage/useSaveRightTextLeftImage";
-import useLeftTextRightImage from "../../Hooks/TextImage/useSaveLeftTextRightImage";
+import useUpdateRightTextLeftImage from "../../Hooks/TextImage/useUpdateRightTextLeftImage";
+import useSaveLeftTextRightImage from "../../Hooks/TextImage/useSaveLeftTextRightImage";
+import useUpdateLeftTextRightImage from "../../Hooks/TextImage/useUpdateLeftTextRightImage";
 
 const TextImage = ({
   dynamicImageOptions = [],
@@ -33,10 +35,19 @@ const TextImage = ({
   const [selectedDynamicOption, setSelectedDynamicOption] = useState(null);
   const fileInputRef = useRef(null);
 
-  const { saveTextImage: saveRightTextLeftImage, loading: rightTextLoading } =
-    useSaveRightTextLeftImage();
-  const { saveLeftTextRightImage, loading: leftTextLoading } =
-    useLeftTextRightImage();
+  // Save hooks
+  const {
+    saveTextImage: saveRightTextLeftImage,
+    loading: saveRightTextLoading,
+  } = useSaveRightTextLeftImage();
+  const { saveLeftTextRightImage, loading: saveLeftTextLoading } =
+    useSaveLeftTextRightImage();
+
+  // Update hooks
+  const { updateRightTextLeftImage, loading: updateRightTextLoading } =
+    useUpdateRightTextLeftImage();
+  const { updateLeftTextRightImage, loading: updateLeftTextLoading } =
+    useUpdateLeftTextRightImage();
 
   useEffect(() => {
     if (initialData) {
@@ -61,7 +72,6 @@ const TextImage = ({
       }
     }
   }, [initialData, isRightText]);
-  console.log("Text Image=---", initialData);
 
   const handleImageChange = useCallback((e) => {
     const file = e.target.files?.[0];
@@ -103,39 +113,36 @@ const TextImage = ({
   }, []);
 
   const handleSave = useCallback(async () => {
+    const data = {
+      templateId,
+      sequence,
+      bodyText,
+      headline1,
+      headline2,
+      bodyTextColor,
+      bodyTextSize: parseInt(bodySize) || null,
+      headline1Color,
+      headline1Size: parseInt(size1) || null,
+      headline2Color,
+      headline2Size: parseInt(size2) || null,
+      image: selectedFile || selectedDynamicOption || imageUrl || null,
+    };
+
     try {
-      if (isRightText) {
-        // Handle right text left image case
-        await saveRightTextLeftImage({
-          templateId,
-          sequence,
-          bodyText,
-          headline1,
-          headline2,
-          bodyTextColor,
-          bodyTextSize: parseInt(bodySize) || null,
-          headline1Color,
-          headline1Size: parseInt(size1) || null,
-          headline2Color,
-          headline2Size: parseInt(size2) || null,
-          image: selectedFile || selectedDynamicOption || imageUrl || null,
-        });
+      if (initialData) {
+        // Update existing section
+        if (isRightText) {
+          await updateRightTextLeftImage(data, initialData.id);
+        } else {
+          await updateLeftTextRightImage(data, initialData.id);
+        }
       } else {
-        // Handle left text right image case
-        await saveLeftTextRightImage({
-          templateId,
-          sequence,
-          bodyText,
-          headline1,
-          headline2,
-          bodyTextColor,
-          bodyTextSize: parseInt(bodySize) || null,
-          headline1Color,
-          headline1Size: parseInt(size1) || null,
-          headline2Color,
-          headline2Size: parseInt(size2) || null,
-          image: selectedFile || selectedDynamicOption || imageUrl || null,
-        });
+        // Create new section
+        if (isRightText) {
+          await saveRightTextLeftImage(data);
+        } else {
+          await saveLeftTextRightImage(data);
+        }
       }
 
       if (onSectionSave) {
@@ -149,6 +156,7 @@ const TextImage = ({
       console.error("Failed to save section:", error);
     }
   }, [
+    initialData,
     isRightText,
     templateId,
     sequence,
@@ -164,6 +172,8 @@ const TextImage = ({
     selectedFile,
     selectedDynamicOption,
     imageUrl,
+    updateRightTextLeftImage,
+    updateLeftTextRightImage,
     saveRightTextLeftImage,
     saveLeftTextRightImage,
     onSectionSave,
@@ -174,7 +184,13 @@ const TextImage = ({
     ? "Right Text | Left Image"
     : "Left Text | Right Image";
 
-  const loading = isRightText ? rightTextLoading : leftTextLoading;
+  const loading = initialData
+    ? isRightText
+      ? updateRightTextLoading
+      : updateLeftTextLoading
+    : isRightText
+    ? saveRightTextLoading
+    : saveLeftTextLoading;
 
   return (
     <div className={styles.wrapper}>
@@ -228,6 +244,7 @@ const TextImage = ({
                 buttonText="Select Dynamic URL to fetch image"
                 onSelect={handleDynamicSelect}
                 allowAddNew={false}
+                value={selectedDynamicOption}
               />
             </div>
 
@@ -321,7 +338,7 @@ const TextImage = ({
             onClick={handleSave}
             disabled={loading}
           >
-            {loading ? "Saving..." : "Save"}
+            {loading ? "Saving..." : initialData ? "Update" : "Save"}
           </button>
           <button className={styles.nextButton}>Next</button>
         </div>
