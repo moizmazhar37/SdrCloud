@@ -21,6 +21,7 @@ import HighlightBanner from "./Sections/HighlightBanner/HighlightBanner";
 import TextImage from "./Sections/TextAndImage/TextAndImage";
 import Footer from "./Sections/Footer/Footer";
 import HighlightBanner2 from "./Sections/HighlightBanner2/HighlightBanner2";
+import HeroSection from "./Sections/Hero/Hero";
 
 const SECTION_TYPES = {
   RIGHT_TEXT_LEFT_IMAGE: "Right Text | Left Image",
@@ -29,6 +30,7 @@ const SECTION_TYPES = {
   HIGHLIGHT_BANNER: "Highlight Banner",
   HIGHLIGHT_BANNER_2: "Highlight Banner 2",
   FOOTER: "Footer",
+  HERO: "Hero",
 };
 
 const CreateHVO = () => {
@@ -188,6 +190,20 @@ const CreateHVO = () => {
         return (
           <div className={styles.leftComponent}>
             <Footer
+              onSectionSave={handleSectionUpdate}
+              onClose={handleCloseSection}
+              templateId={templateId}
+              sequence={sectionNum}
+              initialData={editingSection}
+            />
+          </div>
+        );
+
+      case SECTION_TYPES.HERO:
+        return (
+          <div className={styles.leftComponent}>
+            <HeroSection
+            dynamicFields={dynamicField}
               onSectionSave={handleSectionUpdate}
               onClose={handleCloseSection}
               templateId={templateId}
