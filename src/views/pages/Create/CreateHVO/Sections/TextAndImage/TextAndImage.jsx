@@ -107,7 +107,7 @@ const TextImage = ({
 
   const handleDynamicSelect = useCallback((value) => {
     setSelectedFile(null);
-    setImageUrl(value);
+    setImageUrl(`[${value}]`);
     setPreviewUrl(value);
     setSelectedDynamicOption(value);
   }, []);

@@ -46,10 +46,8 @@ const Header = ({
     useUpdateHeader(handleSaveSuccess);
 
   const handleDropdownSelect = (option) => {
-    setSelectedOption(option);
-    if (handleCategorySelect) {
-      handleCategorySelect(option);
-    }
+    setSelectedOption(`[${option}]`);
+    handleCategorySelect(option);
   };
 
   const handleSave = async () => {

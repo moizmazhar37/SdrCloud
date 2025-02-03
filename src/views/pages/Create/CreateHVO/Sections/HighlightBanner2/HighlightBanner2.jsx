@@ -194,7 +194,7 @@ const HighlightBanner2 = ({
               }))}
               buttonText="Select Dynamic URL"
               onSelect={(value) => {
-                setDynamicUrl(value);
+                setDynamicUrl(`[${value}]`);
                 setStaticUrl("");
               }}
               allowAddNew={false}
