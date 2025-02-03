@@ -20,14 +20,6 @@ import HighlightBanner from "./Sections/HighlightBanner/HighlightBanner";
 import TextImage from "./Sections/TextAndImage/TextAndImage";
 import Footer from "./Sections/Footer/Footer";
 
-const SECTION_TYPES = {
-  RIGHT_TEXT_LEFT_IMAGE: "Right Text | Left Image",
-  LEFT_TEXT_RIGHT_IMAGE: "Left Text | Right Image",
-  HEADER: "Header",
-  HIGHLIGHT_BANNER: "Highlight Banner",
-  FOOTER: "Footer",
-};
-
 const CreateHVO = () => {
   const [templateId, setTemplateId] = useState(null);
   const [isSheetConnected, setIsSheetConnected] = useState(false);
@@ -122,7 +114,7 @@ const CreateHVO = () => {
 
   const renderSelectedSection = () => {
     switch (selectedSection) {
-      case SECTION_TYPES.HEADER:
+      case "Header":
         return (
           <div className={styles.leftComponent}>
             <Header
@@ -137,7 +129,7 @@ const CreateHVO = () => {
             />
           </div>
         );
-      case SECTION_TYPES.HIGHLIGHT_BANNER:
+      case "Highlight Banner":
         return (
           <HighlightBanner
             dynamicFields={dynamicField}
@@ -148,7 +140,7 @@ const CreateHVO = () => {
             initialData={editingSection}
           />
         );
-      case SECTION_TYPES.RIGHT_TEXT_LEFT_IMAGE:
+      case "Right Text | Left Image":
         return (
           <div className={styles.leftComponent}>
             <TextImage
@@ -160,11 +152,10 @@ const CreateHVO = () => {
               templateId={templateId}
               sequence={sectionNum}
               initialData={editingSection}
-              typeIdentifier="rightTextLeftImage"
             />
           </div>
         );
-      case SECTION_TYPES.LEFT_TEXT_RIGHT_IMAGE:
+      case "Left Text | Right Image":
         return (
           <div className={styles.leftComponent}>
             <TextImage
@@ -176,11 +167,10 @@ const CreateHVO = () => {
               templateId={templateId}
               sequence={sectionNum}
               initialData={editingSection}
-              typeIdentifier="leftTextRightImage"
             />
           </div>
         );
-      case SECTION_TYPES.FOOTER:
+      case "Footer":
         return (
           <div className={styles.leftComponent}>
             <Footer
@@ -196,16 +186,6 @@ const CreateHVO = () => {
         return null;
     }
   };
-
-  if (loading || sheetsLoading || tenantLoading || sectionLoading) {
-    return <div className={styles.loading}>Loading...</div>;
-  }
-
-  if (error || sectionError) {
-    return (
-      <div className={styles.error}>Error loading data. Please try again.</div>
-    );
-  }
 
   return (
     <div className={styles.wrapper}>
