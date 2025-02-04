@@ -2,17 +2,17 @@ import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import ApiConfig from "src/config/APIConfig";
 
-const useGetCategoreis = () => {
+const useGetSheets = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const fetchCategories = useCallback(async () => {
+  const fetchSheets = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
       const response = await axios({
-        url: `${ApiConfig.getAllCategories}`,
+        url: `${ApiConfig.connectedSheetVideo}?isSheetConnected=false&sheetType=VIDEO`,
         method: "GET",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -35,10 +35,10 @@ const useGetCategoreis = () => {
   }, []);
 
   useEffect(() => {
-    fetchCategories();
-  }, [fetchCategories]);
+    fetchSheets();
+  }, []);
 
-  return { data, loading, error, refetch: fetchCategories };
+  return { data, loading, error, refetch: fetchSheets };
 };
 
-export default useGetCategoreis;
+export default useGetSheets;

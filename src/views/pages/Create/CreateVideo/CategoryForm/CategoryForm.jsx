@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from "react";
 import styles from "./CategoryForm.module.scss";
 import CategoryDropdown from "src/views/pages/Create/CreateVideo/CategoryDropdown/CategoryDropdown";
-import useGetCategories from "../../Hooks/useGetCategories";
+import useGetCategories from "../hooks/useGetCategories";
 import { useCreateTemplate } from "../hooks/useCreateTemplate";
 import { useConnectSheet } from "../hooks/useConnectSheet";
 import useDeleteCategory from "../hooks/useDeleteCategory";
@@ -13,7 +13,7 @@ const CategoryForm = ({
   onTemplateSave,
   onSheetConnectSuccess,
   sectionData,
-  template_id,
+  template_id, //required for view mode and null in create mode
   isViewMode,
 }) => {
   const [category, setCategory] = useState(null);
@@ -39,7 +39,6 @@ const CategoryForm = ({
   const { deleteCategory, loading: deleteLoading } =
     useDeleteCategory(refetchCategories);
   const { editCategory, loading: editLoading } = useEditCategory();
-
   const categories = useMemo(
     () =>
       categoryData?.map((item) => ({
@@ -69,9 +68,8 @@ const CategoryForm = ({
       setCategory(sectionData.getVideo?.categoryName || null);
       setCategoryId(sectionData.getVideo?.categoryId || null);
       setIngestionSource(sectionData.sheet?.title || null);
-      setTemplateId(template_id);
     }
-  }, [sectionData, isViewMode, template_id]);
+  }, [sectionData, isViewMode]);
 
   const handleSave = async () => {
     if (!templateName.trim()) {
@@ -143,9 +141,6 @@ const CategoryForm = ({
       setIsEditingCategory(false);
     }
   };
-
-  const showIngestionControls =
-    !isViewMode || (isViewMode && !sectionData?.sheet?.googleSheetsId);
 
   return (
     <div className={styles.formWrapper}>
@@ -248,7 +243,7 @@ const CategoryForm = ({
         <div className={styles.ingestionSection}>
           <h2 className={styles.sectionTitle}>Ingestion</h2>
           <div className={styles.ingestionWrapper}>
-            {showIngestionControls && !sheetsLoading && (
+            {!isViewMode && !sheetsLoading && (
               <>
                 <CategoryDropdown
                   options={sheets}
@@ -265,7 +260,7 @@ const CategoryForm = ({
                 </button>
               </>
             )}
-            {isViewMode && sectionData?.sheet?.googleSheetsId && (
+            {isViewMode && ingestionSource && (
               <div className={styles.viewModeContainer}>
                 <span>{ingestionSource}</span>
                 <div className={styles.actionButtons}>

@@ -19,7 +19,9 @@ const useSwapSequence = () => {
       }
 
       if (!Array.isArray(sections) || sections.length === 0) {
-        toast.error("Invalid payload..");
+        throw new Error(
+          "Invalid payload. Expected an array of section objects."
+        );
       }
       const isValidSections = sections.every(
         (section) => section.elementId && typeof section.sequence === "number"
