@@ -8,6 +8,7 @@ import video from "src/images/video.png";
 import useTemplateList from "./Hooks/useTemplateList";
 import useDeleteTemplate from "./Hooks/useDeleteTemplate";
 import WarningModal from "src/Common/Modal/Modal";
+import Loader from "src/Common/Loader/Loader";
 import styles from "./Create.module.scss";
 
 const Create = () => {
@@ -28,7 +29,7 @@ const Create = () => {
   ];
 
   const handleDelete = async (id) => {
-    setModalData({ isOpen: false, id: null }); // Close the modal
+    setModalData({ isOpen: false, id: null });
     await deleteTemplate(id);
   };
 
@@ -122,13 +123,14 @@ const Create = () => {
         </button>
       </div>
 
-      {!loading && (
-        <div className={styles.tableContainer}>
+      <div className={styles.tableContainer}>
+        {loading ? (
+          <div className={styles.loaderWrapper}>{<Loader size={160} />}</div>
+        ) : (
           <Table headers={headers} data={tableData} />
-        </div>
-      )}
+        )}
+      </div>
 
-      {/* Warning Modal */}
       <WarningModal
         isOpen={modalData.isOpen}
         message="Please be aware that this action is irreversible. By clicking the 'Delete' button below, you will permanently delete this tempelate from the system. Note that you will not be able to retrieve or restore it in the future."

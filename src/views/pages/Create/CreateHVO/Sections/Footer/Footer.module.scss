@@ -1,0 +1,138 @@
+.wrapper {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+  padding: 20px;
+  position: relative;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.header {
+  padding-top: 6px;
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #0358ac;
+  font-size: 14px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.colorRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 24px;
+  align-items: start;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr; // Stack on mobile
+  }
+}
+
+.colorField {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  label {
+    color: #374151;
+    font-size: 14px;
+    font-weight: 500;
+  }
+}
+
+.sizeField {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 100px;
+
+  label {
+    color: #374151;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  input {
+    width: 60px;
+    text-align: center;
+  }
+
+  .maxSize {
+    color: #6b7280;
+    font-size: 12px;
+  }
+}
+
+.socialLinks {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.linkField {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  label {
+    color: #374151;
+    font-size: 14px;
+    font-weight: 500;
+  }
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  padding-top: 24px;
+}
+
+.saveButton {
+  padding: 8px 16px;
+  background-color: #0066cc;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+
+  &:hover {
+    background-color: darken(#0066cc, 5%);
+  }
+}
+
+.nextButton {
+  padding: 8px 16px;
+  background-color: #f3f4f6;
+  color: #374151;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+
+  &:hover {
+    background-color: darken(#f3f4f6, 5%);
+  }
+}
