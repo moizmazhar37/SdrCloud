@@ -1,7 +1,7 @@
 import React from "react";
 import { FaTrash, FaSpinner, FaEdit } from "react-icons/fa";
 import styles from "./section-card.module.scss";
-import useDeleteSection from "../../Hooks/useDeleteSection";
+import useDeleteSection from "../hooks/useDeleteSection";
 
 const SectionCard = ({
   id,
