@@ -49,6 +49,7 @@ const Header = ({
     setSelectedOption(`[${option}]`);
     handleCategorySelect(option);
   };
+  console.log(selectedOption);
 
   const handleSave = async () => {
     if (isEditMode && initialData) {
@@ -61,7 +62,7 @@ const Header = ({
       await saveHeader({
         hvoTemplateId: templateId,
         sequence: sequence,
-        headerLogo: selectedOption?.value || "",
+        headerLogo: selectedOption || "",
         companyLogo: logo || "",
       });
     }
