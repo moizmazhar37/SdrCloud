@@ -1,0 +1,61 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.container {
+  display: flex;
+  width: 100%;
+  gap: 20px;
+
+  @media (max-width: 1168px) {
+    flex-direction: column;
+    gap: 16px;
+  }
+}
+
+.leftComponent {
+  flex: 0 0 65%;
+  padding: 8px 0;
+
+  @media (max-width: 768px) {
+    flex: 1;
+  }
+  & > :not(:last-child) {
+    margin-bottom: 16px;
+  }
+}
+
+.rightComponent {
+  flex: 0 0 35%;
+  padding: 8px 0;
+
+  @media (max-width: 768px) {
+    flex: 1;
+  }
+}
+
+.createVideo {
+  margin-top: 20px;
+  background-color: #0358ac;
+  color: #fff;
+  font-weight: 500;
+  font-size: 16px;
+  border: none;
+  padding: 14px 30px;
+  border-radius: 6px;
+  cursor: pointer;
+  &:hover {
+    background-color: #064788;
+  }
+}
+
+.CreatButton {
+  background-color: #0358ac;
+  padding: 12px 36px;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+}

@@ -11,11 +11,14 @@ export const useCreateTemplate = () => {
     setLoading(true);
     setError(null);
     try {
+      console.log("Payload received:", payload); // Debugging log
       const transformedPayload = {
         hvoTemplateName: payload.templateName,
         categoryId: payload.categoryId,
-        templateType: "VIDEO",
+        templateType: payload?.templateType ?? "VIDEO", // Ensure correct assignment
       };
+      console.log("Transformed Payload:", transformedPayload); // Debugging log
+
       const response = await Axios({
         url: `${ApiConfig.createVdoTemplate}`,
         method: "POST",

@@ -8,6 +8,7 @@ import Dropdown from "src/Common/Dropdown/Dropdown";
 import WarningModal from "src/Common/Modal/Modal";
 import CreateUser from "./CreateUser/CreateUser";
 import styles from "./Users.module.scss";
+import Loader from "src/Common/Loader/Loader";
 
 const Users = () => {
   const [isDeleteOpen, setDeleteOpen] = useState(false);
@@ -85,7 +86,9 @@ const Users = () => {
       />
       <div>
         {loading ? (
-          <div>Loading...</div>
+          <div>
+            .<Loader />
+          </div>
         ) : error ? (
           <div>Error loading users</div>
         ) : (
