@@ -1,33 +1,45 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { FaTrash, FaSpinner, FaEdit } from "react-icons/fa";
 import styles from "./section-card.module.scss";
-import useDeleteSection from "../hooks/useDeleteSection";
+import useDeleteHvoSection from "../Hooks/UseDeleteHvoSection";
 
-const SectionCard = ({
+const HvoSectionCard = ({
   id,
-  sectionNumber,
+  sectionSequnece,
   sectionName,
   duration,
   scroll,
   previewContent,
   onDeleteSuccess,
   onEdit,
+  sectionNumber,
 }) => {
-  const { deleteSection, loading } = useDeleteSection(onDeleteSuccess);
+  const handleSuccess = useCallback(() => {
+    if (onDeleteSuccess) {
+      onDeleteSuccess();
+    }
+  }, [onDeleteSuccess]);
 
-  const handleDelete = () => {
-    deleteSection(id);
+  const { deleteSection, loading } = useDeleteHvoSection(handleSuccess);
+
+  const handleDelete = async () => {
+    await deleteSection(id, sectionNumber);
   };
 
   const renderPreview = () => {
     if (!previewContent) {
-      return <p className={styles.noPreview}>No Preview Available</p>;
+      return "No Preview Available";
     }
-    // If it is a video
+
     if (previewContent.endsWith(".mp4")) {
-      return <video src={previewContent} controls className={styles.video} />;
+      return (
+        <video controls>
+          <source src={previewContent} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      );
     }
-    // If image
+
     if (
       previewContent.endsWith(".jpg") ||
       previewContent.endsWith(".png") ||
@@ -35,31 +47,23 @@ const SectionCard = ({
       previewContent.endsWith(".jpeg")
     ) {
       return (
-        <img src={previewContent} alt="Preview" className={styles.image} />
+        <img src={previewContent} alt={`Section ${sectionSequnece} preview`} />
       );
     }
 
-    // Assume it's a link and render an iframe
     return (
       <iframe
         src={previewContent}
-        className={styles.iframe}
-        width="100%"
-        height="300px"
-        allowFullScreen
-        title="Preview"
+        title={`Section ${sectionSequnece} preview`}
       />
     );
   };
 
   return (
     <div className={styles.sectionCard}>
-      <header className={styles.header}>
-        <div>
-          <h3 className={styles.sectionTitle}>Section {sectionNumber}</h3>
-          <p className={styles.sectionName}>{sectionName}</p>
-        </div>
-        <div>
+      <div className={styles.header}>
+        <h3>Section {sectionSequnece}</h3>
+        <div className={styles.actions}>
           <button onClick={onEdit} className={styles.editButton}>
             <FaEdit />
           </button>
@@ -71,14 +75,15 @@ const SectionCard = ({
             {loading ? <FaSpinner className={styles.spinner} /> : <FaTrash />}
           </button>
         </div>
-      </header>
+      </div>
+      <h4>{sectionName}</h4>
       <div className={styles.preview}>{renderPreview()}</div>
-      <footer className={styles.footer}>
+      <div className={styles.footer}>
         <span>{duration} sec</span>
         <span>Scroll - {scroll ? "Yes" : "No"}</span>
-      </footer>
+      </div>
     </div>
   );
 };
 
-export default SectionCard;
+export default HvoSectionCard;

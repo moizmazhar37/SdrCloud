@@ -1,13 +1,13 @@
 import React, { useState, useMemo, useEffect } from "react";
-import styles from "./CategoryForm.module.scss";
+import styles from "./HVOCategoryForm.module.scss";
 import CategoryDropdown from "src/views/pages/Create/CreateVideo/CategoryDropdown/CategoryDropdown";
 import useGetCategories from "../../Hooks/useGetCategories";
-import { useCreateTemplate } from "../hooks/useCreateTemplate";
-import { useConnectSheet } from "../hooks/useConnectSheet";
-import useDeleteCategory from "../hooks/useDeleteCategory";
+import { useCreateTemplate } from "../../CreateVideo/hooks/useCreateTemplate";
+import { useConnectSheet } from "../../CreateVideo/hooks/useConnectSheet";
+import useDeleteCategory from "../../CreateVideo/hooks/useDeleteCategory";
 import useEditCategory from "../../Hooks/useEditCategoey";
 
-const CategoryForm = ({
+const HVOCategoryForm = ({
   sheetData,
   sheetsLoading,
   onTemplateSave,
@@ -43,7 +43,7 @@ const CategoryForm = ({
   const categories = useMemo(
     () =>
       categoryData?.map((item) => ({
-        label: item.category_name,
+        label: item.categoryName,
         value: item.id,
         id: item.id,
       })) || [],
@@ -65,9 +65,9 @@ const CategoryForm = ({
 
   useEffect(() => {
     if (sectionData && isViewMode) {
-      setTemplateName(sectionData.getVideo?.hvoTemplateName || "");
-      setCategory(sectionData.getVideo?.categoryName || null);
-      setCategoryId(sectionData.getVideo?.categoryId || null);
+      setTemplateName(sectionData.templateData?.hvoTemplateName || "");
+      setCategory(sectionData.templateData?.categoryName || null);
+      setCategoryId(sectionData.templateData?.categoryId || null);
       setIngestionSource(sectionData.sheet?.title || null);
       setTemplateId(template_id);
     }
@@ -90,7 +90,12 @@ const CategoryForm = ({
       }
     } else {
       try {
-        const response = await createTemplate({ templateName, categoryId });
+        const response = await createTemplate({
+          templateName,
+          categoryId,
+          templateType: "HVO",
+        });
+
         if (response?.id) {
           setTemplateId(response.id);
           onTemplateSave(response.id);
@@ -288,4 +293,4 @@ const CategoryForm = ({
   );
 };
 
-export default CategoryForm;
+export default HVOCategoryForm;
