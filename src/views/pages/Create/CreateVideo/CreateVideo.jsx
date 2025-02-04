@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import CategoryForm from "./CategoryForm/CategoryForm";
 import SectionArea from "./SectionArea/SectionArea";
 import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
-import useGetSheets from "../Hooks/useGetSheets";
+import useGetSheets from "./hooks/useGetSheets";
 import styles from "./CreateVideo.module.scss";
 import ImageUpload from "./ImageUpload/ImageUpload";
 import VideoUpload from "./VideoUpload/VideoUpload";
