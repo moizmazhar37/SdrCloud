@@ -284,6 +284,7 @@ const CreateHVO = () => {
             editable={isEditable}
             templateId={templateId}
             elementsList={elementsList}
+            type="hvo"
           />
         </div>
       </div>

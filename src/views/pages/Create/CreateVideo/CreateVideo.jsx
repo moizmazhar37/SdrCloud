@@ -234,6 +234,7 @@ const CreateVideo = () => {
             editable={isEditable}
             templateId={templateId}
             elementsList={elementsList}
+            type="video"
           />
         </div>
       </div>
