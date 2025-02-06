@@ -15,5 +15,5 @@ async function getIPAddress() {
     let ip = await getIPAddress();
     let uuid = crypto.randomUUID();  // Official way to generate a UUID (v4)
     console.log(`Visitor IP: ${ip}`);
-    console.log(`Generated new UUID: ${uuid}`);
+    console.log(`Generated UUID: ${uuid}`);
 })();
