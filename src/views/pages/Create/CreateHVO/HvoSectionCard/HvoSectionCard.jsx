@@ -27,13 +27,22 @@ const HvoSectionCard = ({
   };
 
   const renderPreview = () => {
+    // previewContent is now directly the URL
     if (!previewContent) {
-      return "No Preview Available";
+      return (
+        <div className={styles.noPreview}>
+          {sectionName === "Highlight Banner" ||
+          sectionName === "Highlight Banner 2" ||
+          sectionName === "Footer"
+            ? `No preview available for ${sectionName}`
+            : "No Preview Available"}
+        </div>
+      );
     }
 
     if (previewContent.endsWith(".mp4")) {
       return (
-        <video controls>
+        <video controls className={styles.previewMedia}>
           <source src={previewContent} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
@@ -47,7 +56,11 @@ const HvoSectionCard = ({
       previewContent.endsWith(".jpeg")
     ) {
       return (
-        <img src={previewContent} alt={`Section ${sectionSequnece} preview`} />
+        <img
+          src={previewContent}
+          alt={`Section ${sectionSequnece} preview`}
+          className={styles.previewMedia}
+        />
       );
     }
 
@@ -55,6 +68,7 @@ const HvoSectionCard = ({
       <iframe
         src={previewContent}
         title={`Section ${sectionSequnece} preview`}
+        className={styles.previewMedia}
       />
     );
   };
