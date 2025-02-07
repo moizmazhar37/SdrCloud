@@ -1,12 +1,10 @@
 .searchleads-container {
   font-family: Arial, sans-serif;
   border: 1px solid #ddd;
-  border-radius: 15px;
+  border-radius: 8px;
   width: 95%;
   margin: 12px auto;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding-top: 20px;
-  height: 553px;
+max-height: 700px;
   display: flex;
   justify-content: center;
 }
