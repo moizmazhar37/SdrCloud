@@ -1,14 +1,14 @@
+// SearchLeads.jsx
 import React, { useState } from "react";
 import useLeads from "./useLeads";
 import Table from "src/Common/Table/Table";
 import SearchFilters from "../SearchFilters/SearchFilters";
-import "./SearchLeads.css";
 import Pagination from "src/Common/Pagination/Pagination";
+import styles from "./SearchLeads.module.scss";
 
 export default function SearchLeads() {
   const { leads, loading, error } = useLeads();
   const [selectedRows, setSelectedRows] = useState([]);
-
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = 4;
 
@@ -27,7 +27,6 @@ export default function SearchLeads() {
     { label: "Actions", key: "actions" },
   ];
 
-  // Transform the leads data into the required format expected by table
   const transformedData = leads.map((lead) => ({
     full_name: `${lead.first_name} ${lead.last_name}`,
     email: lead.personal_email,
@@ -42,15 +41,29 @@ export default function SearchLeads() {
     actions: "View Details",
   }));
 
+  if (loading) return <div className={styles.loading}>Loading...</div>;
+  if (error) return <div className={styles.error}>{error}</div>;
+
   return (
-    <div className="searchleads-container">
-      <div className="sub-container">
-        <SearchFilters />
-        <Table
-          headers={headers}
-          data={transformedData}
-          onRowSelect={(selectedRows) => setSelectedRows(selectedRows)}
-          selectedRows={selectedRows}
+    <div className={styles.container}>
+      <div className={styles.contentWrapper}>
+        <div className={styles.filterSection}>
+          <SearchFilters />
+        </div>
+        <div className={styles.tableSection}>
+          <Table
+            headers={headers}
+            data={transformedData}
+            onRowSelect={(selectedRows) => setSelectedRows(selectedRows)}
+            selectedRows={selectedRows}
+          />
+        </div>
+      </div>
+      <div className={styles.paginationWrapper}>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
         />
       </div>
     </div>
