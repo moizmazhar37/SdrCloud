@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import styles from "./SearchFilters.module.scss";
 import PersonalCriteriaDropdown from "./PersonalCriteriaDropdown/PersonalCriteriaDropdown";
 import LocationCriteria from "./LocationCriteria/LocationCriteria";
-// import FinancialCriteria from "./FinancialCriteria/FinancialCriteria";
-// import MarketingCriteria from "./MarketingCriteria/MarketingCriteria";
+import FinancialCriteria from "./FinancialCriteria/FinancialCriteria";
+import MarketingCriteria from "./MarketingCriteria/MarketingCriteria";
 
 const SearchFilters = () => {
   // Dropdown state management
@@ -12,34 +12,37 @@ const SearchFilters = () => {
   const [isFinancialCriteriaOpen, setIsFinancialCriteriaOpen] = useState(false);
   const [isMarketingCriteriaOpen, setIsMarketingCriteriaOpen] = useState(false);
 
-  // Main filters state
+  // Initial filters state with simplified data structure
   const [filters, setFilters] = useState({
     dateRange: {
-      start: "02/03/2025",
-      end: "02/10/2025",
+      start: "",
+      end: "",
     },
     personalCriteria: {
-      name: { checked: false, value: { first: "", last: "" } },
-      email: { checked: false, value: "" },
-      gender: { checked: false, value: "" },
-      ageRange: { checked: false, value: "" },
-      married: { checked: false, value: false },
-      hasChildren: { checked: false, value: false },
+      name: {
+        first: "",
+        last: "",
+      },
+      email: "",
+      gender: "",
+      ageRange: "",
+      married: "",
+      hasChildren: "",
     },
     locationCriteria: {
-      state: { checked: false, value: "" },
-      city: { checked: false, value: "" },
-      zipCode: { checked: false, value: "" },
+      state: "",
+      city: "",
+      zipCode: "",
     },
     financialCriteria: {
-      income: { checked: false, value: "" },
-      creditScore: { checked: false, value: "" },
-      investment: { checked: false, value: "" },
+      netWorth: "",
+      income: "",
+      ownHouse: "",
     },
     marketingCriteria: {
-      campaign: { checked: false, value: "" },
-      source: { checked: false, value: "" },
-      preference: { checked: false, value: "" },
+      source: "",
+      preference: "",
+      domains: "",
     },
   });
 
@@ -94,27 +97,30 @@ const SearchFilters = () => {
         end: "",
       },
       personalCriteria: {
-        name: { checked: false, value: { first: "", last: "" } },
-        email: { checked: false, value: "" },
-        gender: { checked: false, value: "" },
-        ageRange: { checked: false, value: "" },
-        married: { checked: false, value: false },
-        hasChildren: { checked: false, value: false },
+        name: {
+          first: "",
+          last: "",
+        },
+        email: "",
+        gender: "",
+        ageRange: "",
+        married: "",
+        hasChildren: "",
       },
       locationCriteria: {
-        state: { checked: false, value: "" },
-        city: { checked: false, value: "" },
-        zipCode: { checked: false, value: "" },
+        state: "",
+        city: "",
+        zipCode: "",
       },
       financialCriteria: {
-        income: { checked: false, value: "" },
-        creditScore: { checked: false, value: "" },
-        investment: { checked: false, value: "" },
+        netWorth: "",
+        income: "",
+        ownHouse: "",
       },
       marketingCriteria: {
-        campaign: { checked: false, value: "" },
-        source: { checked: false, value: "" },
-        preference: { checked: false, value: "" },
+        source: "",
+        preference: "",
+        domains: "",
       },
     });
 
@@ -194,8 +200,29 @@ const SearchFilters = () => {
             Financial Criteria
             <span className={styles.arrow}>▼</span>
           </div>
+          {isFinancialCriteriaOpen && (
+            <FinancialCriteria
+              values={filters.financialCriteria}
+              onChange={handleFinancialCriteriaChange}
+            />
+          )}
 
           {/* Marketing Criteria Dropdown */}
+          <div
+            className={`${styles.dropdownTrigger} ${
+              isMarketingCriteriaOpen ? styles.open : ""
+            }`}
+            onClick={() => setIsMarketingCriteriaOpen(!isMarketingCriteriaOpen)}
+          >
+            Marketing Criteria
+            <span className={styles.arrow}>▼</span>
+          </div>
+          {isMarketingCriteriaOpen && (
+            <MarketingCriteria
+              values={filters.marketingCriteria}
+              onChange={handleMarketingCriteriaChange}
+            />
+          )}
         </div>
 
         <div className={styles.buttonSection}>

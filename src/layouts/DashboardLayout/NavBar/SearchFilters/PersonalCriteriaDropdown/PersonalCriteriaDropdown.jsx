@@ -1,22 +1,45 @@
 import React from "react";
+import PropTypes from "prop-types";
 import styles from "./PersonalCriteriaDropdown.module.scss";
 
-const PersonalCriteriaDropdown = ({ values, onChange }) => {
+const PersonalCriteriaDropdown = ({ values = {}, onChange }) => {
+  const defaultValues = {
+    name: { checked: false, value: { first: "", last: "" } },
+    email: { checked: false, value: "" },
+    gender: { checked: false, value: "" },
+    ageRange: { checked: false, value: "" },
+    married: { checked: false, value: false },
+    hasChildren: { checked: false, value: false },
+  };
+
+  const mergedValues = {
+    ...defaultValues,
+    ...values,
+    name: {
+      ...defaultValues.name,
+      ...values.name,
+      value: {
+        ...defaultValues.name.value,
+        ...(values.name?.value || {}),
+      },
+    },
+  };
+
   const handleCheckboxChange = (field) => {
-    onChange({
-      ...values,
+    onChange?.({
+      ...mergedValues,
       [field]: {
-        ...values[field],
-        checked: !values[field].checked,
+        ...mergedValues[field],
+        checked: !mergedValues[field].checked,
       },
     });
   };
 
   const handleInputChange = (field, value) => {
-    onChange({
-      ...values,
+    onChange?.({
+      ...mergedValues,
       [field]: {
-        ...values[field],
+        ...mergedValues[field],
         value,
       },
     });
@@ -24,26 +47,27 @@ const PersonalCriteriaDropdown = ({ values, onChange }) => {
 
   return (
     <div className={styles.criteriaContent}>
+      {/* Rest of the JSX remains exactly the same as your original code */}
       <div className={styles.criteriaField}>
         <label className={styles.checkboxLabel}>
           <input
             type="checkbox"
             className={styles.checkbox}
-            checked={values.name.checked}
+            checked={mergedValues.name.checked}
             onChange={() => handleCheckboxChange("name")}
           />
           <span>Name</span>
         </label>
-        {values.name.checked && (
+        {mergedValues.name.checked && (
           <div className={styles.nameInputs}>
             <input
               type="text"
               className={styles.input}
               placeholder="Enter first name"
-              value={values.name.value.first}
+              value={mergedValues.name.value.first}
               onChange={(e) =>
                 handleInputChange("name", {
-                  ...values.name.value,
+                  ...mergedValues.name.value,
                   first: e.target.value,
                 })
               }
@@ -52,10 +76,10 @@ const PersonalCriteriaDropdown = ({ values, onChange }) => {
               type="text"
               className={styles.input}
               placeholder="Enter last name"
-              value={values.name.value.last}
+              value={mergedValues.name.value.last}
               onChange={(e) =>
                 handleInputChange("name", {
-                  ...values.name.value,
+                  ...mergedValues.name.value,
                   last: e.target.value,
                 })
               }
@@ -69,17 +93,17 @@ const PersonalCriteriaDropdown = ({ values, onChange }) => {
           <input
             type="checkbox"
             className={styles.checkbox}
-            checked={values.email.checked}
+            checked={mergedValues.email.checked}
             onChange={() => handleCheckboxChange("email")}
           />
           <span>Email address</span>
         </label>
-        {values.email.checked && (
+        {mergedValues.email.checked && (
           <input
             type="email"
             className={styles.input}
             placeholder="Type Email address"
-            value={values.email.value}
+            value={mergedValues.email.value}
             onChange={(e) => handleInputChange("email", e.target.value)}
           />
         )}
@@ -90,15 +114,15 @@ const PersonalCriteriaDropdown = ({ values, onChange }) => {
           <input
             type="checkbox"
             className={styles.checkbox}
-            checked={values.gender.checked}
+            checked={mergedValues.gender.checked}
             onChange={() => handleCheckboxChange("gender")}
           />
           <span>Gender</span>
         </label>
-        {values.gender.checked && (
+        {mergedValues.gender.checked && (
           <select
             className={styles.select}
-            value={values.gender.value}
+            value={mergedValues.gender.value}
             onChange={(e) => handleInputChange("gender", e.target.value)}
           >
             <option value="">Select gender</option>
@@ -113,15 +137,15 @@ const PersonalCriteriaDropdown = ({ values, onChange }) => {
           <input
             type="checkbox"
             className={styles.checkbox}
-            checked={values.ageRange.checked}
+            checked={mergedValues.ageRange.checked}
             onChange={() => handleCheckboxChange("ageRange")}
           />
           <span>Age Range</span>
         </label>
-        {values.ageRange.checked && (
+        {mergedValues.ageRange.checked && (
           <select
             className={styles.select}
-            value={values.ageRange.value}
+            value={mergedValues.ageRange.value}
             onChange={(e) => handleInputChange("ageRange", e.target.value)}
           >
             <option value="">Select age range</option>
@@ -140,7 +164,7 @@ const PersonalCriteriaDropdown = ({ values, onChange }) => {
           <input
             type="checkbox"
             className={styles.checkbox}
-            checked={values.married.checked}
+            checked={mergedValues.married.checked}
             onChange={() => handleCheckboxChange("married")}
           />
           <span>Married</span>
@@ -152,7 +176,7 @@ const PersonalCriteriaDropdown = ({ values, onChange }) => {
           <input
             type="checkbox"
             className={styles.checkbox}
-            checked={values.hasChildren.checked}
+            checked={mergedValues.hasChildren.checked}
             onChange={() => handleCheckboxChange("hasChildren")}
           />
           <span>Has Children</span>
@@ -160,6 +184,39 @@ const PersonalCriteriaDropdown = ({ values, onChange }) => {
       </div>
     </div>
   );
+};
+
+PersonalCriteriaDropdown.propTypes = {
+  values: PropTypes.shape({
+    name: PropTypes.shape({
+      checked: PropTypes.bool,
+      value: PropTypes.shape({
+        first: PropTypes.string,
+        last: PropTypes.string,
+      }),
+    }),
+    email: PropTypes.shape({
+      checked: PropTypes.bool,
+      value: PropTypes.string,
+    }),
+    gender: PropTypes.shape({
+      checked: PropTypes.bool,
+      value: PropTypes.string,
+    }),
+    ageRange: PropTypes.shape({
+      checked: PropTypes.bool,
+      value: PropTypes.string,
+    }),
+    married: PropTypes.shape({
+      checked: PropTypes.bool,
+      value: PropTypes.bool,
+    }),
+    hasChildren: PropTypes.shape({
+      checked: PropTypes.bool,
+      value: PropTypes.bool,
+    }),
+  }),
+  onChange: PropTypes.func,
 };
 
 export default PersonalCriteriaDropdown;
