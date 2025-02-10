@@ -294,6 +294,18 @@ function CustomerPreview(location) {
   //   offset: 100,
   // });
 
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://storage.googleapis.com/static-data-for-sdrc/scripts/tracker.js";
+    script.async = true;
+    document.body.appendChild(script);
+
+    // Cleanup: remove the script when the component unmounts
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
   const settings = {
     infinite: true,
     speed: 40000,
