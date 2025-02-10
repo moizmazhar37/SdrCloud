@@ -1,0 +1,107 @@
+.searchContainer {
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 600px;
+  border: 1px solid #ddd;
+}
+
+.searchCriteria {
+  h3 {
+    color: #333;
+    margin-bottom: 20px;
+    font-weight: 500;
+  }
+}
+
+.dateSection {
+  margin-bottom: 20px;
+
+  label {
+    display: block;
+    margin-bottom: 8px;
+    color: #666;
+  }
+}
+
+.dateInputs {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  input {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    flex: 1;
+
+    &:focus {
+      outline: none;
+      border-color: #032e61;
+    }
+  }
+
+  span {
+    color: #666;
+  }
+}
+
+.dropdownSection {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+
+  select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+
+    &:focus {
+      outline: none;
+      border-color: #032e61;
+    }
+
+    option {
+      padding: 8px;
+    }
+  }
+}
+
+.buttonSection {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-start;
+
+  button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+}
+
+.searchButton {
+  background-color: #032e61;
+  color: white;
+}
+
+.resetButton {
+  background-color: white;
+  color: #032e61;
+  border: 1px solid #032e61;
+}

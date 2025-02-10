@@ -1,38 +1,13 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import ApiConfig from "src/config/APIConfig";
+import React, { useState } from "react";
+import useLeads from "./useLeads";
 import Table from "src/Common/Table/Table";
+import SearchFilters from "../SearchFilters/SearchFilters";
 import "./SearchLeads.css";
 
 export default function SearchLeads() {
-  const [leads, setLeads] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [statusMessage, setStatusMessage] = useState("");
+  const { leads, loading, error } = useLeads();
   const [selectedRows, setSelectedRows] = useState([]);
 
-  useEffect(() => {
-    const fetchLeads = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get(`${ApiConfig.getUrls}/leads`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-        if (response?.status === 200) {
-          setLeads(response.data);
-        }
-      } catch (error) {
-        console.error("Error fetching leads:", error);
-        setStatusMessage("Failed to load leads.");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchLeads();
-  }, []);
-
-  // Define headers for the new Table component format
   const headers = [
     { label: "Full Name", key: "full_name" },
     { label: "Email", key: "email" },
@@ -43,7 +18,7 @@ export default function SearchLeads() {
     { label: "Actions", key: "actions" },
   ];
 
-  // Transform the leads data into the required format
+  // Transform the leads data into the required format expected by table
   const transformedData = leads.map((lead) => ({
     full_name: `${lead.first_name} ${lead.last_name}`,
     email: lead.personal_email,
@@ -63,14 +38,17 @@ export default function SearchLeads() {
       {loading ? (
         <p>Loading...</p>
       ) : (
-        <Table
-          headers={headers}
-          data={transformedData}
-          onRowSelect={(selectedRows) => setSelectedRows(selectedRows)}
-          selectedRows={selectedRows}
-        />
+        <div className="sub-container">
+          <SearchFilters />
+          <Table
+            headers={headers}
+            data={transformedData}
+            onRowSelect={(selectedRows) => setSelectedRows(selectedRows)}
+            selectedRows={selectedRows}
+          />
+        </div>
       )}
-      {statusMessage && <p>{statusMessage}</p>}
+      {error && <p>{error}</p>}
     </div>
   );
 }
