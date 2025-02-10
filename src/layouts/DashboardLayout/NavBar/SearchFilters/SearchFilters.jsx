@@ -1,14 +1,22 @@
 import React, { useState } from "react";
 import styles from "./SearchFilters.module.scss";
-import Dropdown from "src/Common/Dropdown/Dropdown";
+import PersonalCriteriaDropdown from "./PersonalCriteriaDropdown/PersonalCriteriaDropdown";
 
 const SearchFilters = () => {
+  const [isPersonalCriteriaOpen, setIsPersonalCriteriaOpen] = useState(false);
   const [filters, setFilters] = useState({
     dateRange: {
-      start: "11/06/2024",
-      end: "11/13/2024",
+      start: "02/03/2025",
+      end: "02/10/2025",
     },
-    personalCriteria: "",
+    personalCriteria: {
+      name: { checked: false, value: { first: "", last: "" } },
+      email: { checked: false, value: "" },
+      gender: { checked: false, value: "" },
+      ageRange: { checked: false, value: "" },
+      married: { checked: false, value: false },
+      hasChildren: { checked: false, value: false },
+    },
     locationCriteria: "",
     financialCriteria: "",
     marketingCriteria: "",
@@ -24,10 +32,10 @@ const SearchFilters = () => {
     });
   };
 
-  const handleDropdownChange = (key, value) => {
+  const handlePersonalCriteriaChange = (newValues) => {
     setFilters({
       ...filters,
-      [key]: value,
+      personalCriteria: newValues,
     });
   };
 
@@ -41,72 +49,19 @@ const SearchFilters = () => {
         start: "",
         end: "",
       },
-      personalCriteria: "",
+      personalCriteria: {
+        name: { checked: false, value: { first: "", last: "" } },
+        email: { checked: false, value: "" },
+        gender: { checked: false, value: "" },
+        ageRange: { checked: false, value: "" },
+        married: { checked: false, value: false },
+        hasChildren: { checked: false, value: false },
+      },
       locationCriteria: "",
       financialCriteria: "",
       marketingCriteria: "",
     });
   };
-
-  const personalCriteriaOptions = [
-    {
-      label: "Personal Criteria",
-      onClick: () => handleDropdownChange("personalCriteria", ""),
-    },
-    {
-      label: "Option 1",
-      onClick: () => handleDropdownChange("personalCriteria", "option1"),
-    },
-    {
-      label: "Option 2",
-      onClick: () => handleDropdownChange("personalCriteria", "option2"),
-    },
-  ];
-
-  const locationCriteriaOptions = [
-    {
-      label: "Location Criteria",
-      onClick: () => handleDropdownChange("locationCriteria", ""),
-    },
-    {
-      label: "Option 1",
-      onClick: () => handleDropdownChange("locationCriteria", "option1"),
-    },
-    {
-      label: "Option 2",
-      onClick: () => handleDropdownChange("locationCriteria", "option2"),
-    },
-  ];
-
-  const financialCriteriaOptions = [
-    {
-      label: "Financial Criteria",
-      onClick: () => handleDropdownChange("financialCriteria", ""),
-    },
-    {
-      label: "Option 1",
-      onClick: () => handleDropdownChange("financialCriteria", "option1"),
-    },
-    {
-      label: "Option 2",
-      onClick: () => handleDropdownChange("financialCriteria", "option2"),
-    },
-  ];
-
-  const marketingCriteriaOptions = [
-    {
-      label: "Marketing Criteria",
-      onClick: () => handleDropdownChange("marketingCriteria", ""),
-    },
-    {
-      label: "Option 1",
-      onClick: () => handleDropdownChange("marketingCriteria", "option1"),
-    },
-    {
-      label: "Option 2",
-      onClick: () => handleDropdownChange("marketingCriteria", "option2"),
-    },
-  ];
 
   return (
     <div className={styles.searchContainer}>
@@ -133,25 +88,37 @@ const SearchFilters = () => {
         </div>
 
         <div className={styles.dropdownSection}>
-          <Dropdown
-            options={personalCriteriaOptions}
-            buttonText={filters.personalCriteria || "Personal Criteria"}
-          />
+          <div
+            className={`${styles.dropdownTrigger} ${
+              isPersonalCriteriaOpen ? styles.open : ""
+            }`}
+            onClick={() => setIsPersonalCriteriaOpen(!isPersonalCriteriaOpen)}
+          >
+            Personal Criteria
+            <span className={styles.arrow}>▼</span>
+          </div>
 
-          <Dropdown
-            options={locationCriteriaOptions}
-            buttonText={filters.locationCriteria || "Location Criteria"}
-          />
+          {isPersonalCriteriaOpen && (
+            <PersonalCriteriaDropdown
+              values={filters.personalCriteria}
+              onChange={handlePersonalCriteriaChange}
+            />
+          )}
 
-          <Dropdown
-            options={financialCriteriaOptions}
-            buttonText={filters.financialCriteria || "Financial Criteria"}
-          />
+          <div className={styles.dropdownTrigger}>
+            Location Criteria
+            <span className={styles.arrow}>▼</span>
+          </div>
 
-          <Dropdown
-            options={marketingCriteriaOptions}
-            buttonText={filters.marketingCriteria || "Marketing Criteria"}
-          />
+          <div className={styles.dropdownTrigger}>
+            Financial Criteria
+            <span className={styles.arrow}>▼</span>
+          </div>
+
+          <div className={styles.dropdownTrigger}>
+            Marketing Criteria
+            <span className={styles.arrow}>▼</span>
+          </div>
         </div>
 
         <div className={styles.buttonSection}>

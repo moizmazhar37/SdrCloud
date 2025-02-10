@@ -36,6 +36,7 @@
     border-radius: 4px;
     font-size: 14px;
     flex: 1;
+    color: #666;
 
     &:focus {
       outline: none;
@@ -51,27 +52,36 @@
 .dropdownSection {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   gap: 15px;
   margin-bottom: 20px;
+  padding-top: 16px;
+  padding-bottom: 18px;
+}
 
-  select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background-color: white;
-    font-size: 14px;
-    color: #333;
-    cursor: pointer;
-
-    &:focus {
-      outline: none;
-      border-color: #032e61;
+.dropdownTrigger {
+  width: 100%;
+  padding: 14px;
+  padding-bottom: 6px;
+  padding-top: 20px;
+  background-color: #fff;
+  font-size: 14px;
+  color: #666;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #e7e7e7; /* Gray line on top */
+  &.open {
+    .arrow {
+      transform: rotate(180deg);
     }
+  }
 
-    option {
-      padding: 8px;
-    }
+  .arrow {
+    font-size: 12px;
+    transition: transform 0.2s ease;
   }
 }
 
@@ -79,28 +89,19 @@
   display: flex;
   gap: 10px;
   justify-content: flex-start;
-
-  button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: opacity 0.2s;
-
-    &:hover {
-      opacity: 0.9;
-    }
-  }
 }
 
-.searchButton {
+.searchButton,
+.resetButton {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: opacity 0.2s;
   background-color: #032e61;
   color: white;
-}
-
-.resetButton {
-  background-color: white;
-  color: #032e61;
-  border: 1px solid #032e61;
+  &:hover {
+    opacity: 0.9;
+  }
 }
