@@ -3,10 +3,19 @@ import useLeads from "./useLeads";
 import Table from "src/Common/Table/Table";
 import SearchFilters from "../SearchFilters/SearchFilters";
 import "./SearchLeads.css";
+import Pagination from "src/Common/Pagination/Pagination";
 
 export default function SearchLeads() {
   const { leads, loading, error } = useLeads();
   const [selectedRows, setSelectedRows] = useState([]);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = 4;
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+    // Add your logic here (e.g., fetching data for the new page)
+  };
 
   const headers = [
     { label: "Full Name", key: "full_name" },
@@ -35,20 +44,15 @@ export default function SearchLeads() {
 
   return (
     <div className="searchleads-container">
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        <div className="sub-container">
-          <SearchFilters />
-          <Table
-            headers={headers}
-            data={transformedData}
-            onRowSelect={(selectedRows) => setSelectedRows(selectedRows)}
-            selectedRows={selectedRows}
-          />
-        </div>
-      )}
-      {error && <p>{error}</p>}
+      <div className="sub-container">
+        <SearchFilters />
+        <Table
+          headers={headers}
+          data={transformedData}
+          onRowSelect={(selectedRows) => setSelectedRows(selectedRows)}
+          selectedRows={selectedRows}
+        />
+      </div>
     </div>
   );
 }
