@@ -1,9 +1,18 @@
 import React, { useState } from "react";
 import styles from "./SearchFilters.module.scss";
 import PersonalCriteriaDropdown from "./PersonalCriteriaDropdown/PersonalCriteriaDropdown";
+import LocationCriteria from "./LocationCriteria/LocationCriteria";
+// import FinancialCriteria from "./FinancialCriteria/FinancialCriteria";
+// import MarketingCriteria from "./MarketingCriteria/MarketingCriteria";
 
 const SearchFilters = () => {
+  // Dropdown state management
   const [isPersonalCriteriaOpen, setIsPersonalCriteriaOpen] = useState(false);
+  const [isLocationCriteriaOpen, setIsLocationCriteriaOpen] = useState(false);
+  const [isFinancialCriteriaOpen, setIsFinancialCriteriaOpen] = useState(false);
+  const [isMarketingCriteriaOpen, setIsMarketingCriteriaOpen] = useState(false);
+
+  // Main filters state
   const [filters, setFilters] = useState({
     dateRange: {
       start: "02/03/2025",
@@ -17,11 +26,24 @@ const SearchFilters = () => {
       married: { checked: false, value: false },
       hasChildren: { checked: false, value: false },
     },
-    locationCriteria: "",
-    financialCriteria: "",
-    marketingCriteria: "",
+    locationCriteria: {
+      state: { checked: false, value: "" },
+      city: { checked: false, value: "" },
+      zipCode: { checked: false, value: "" },
+    },
+    financialCriteria: {
+      income: { checked: false, value: "" },
+      creditScore: { checked: false, value: "" },
+      investment: { checked: false, value: "" },
+    },
+    marketingCriteria: {
+      campaign: { checked: false, value: "" },
+      source: { checked: false, value: "" },
+      preference: { checked: false, value: "" },
+    },
   });
 
+  // Event handlers
   const handleDateChange = (e) => {
     setFilters({
       ...filters,
@@ -39,8 +61,30 @@ const SearchFilters = () => {
     });
   };
 
+  const handleLocationCriteriaChange = (newValues) => {
+    setFilters({
+      ...filters,
+      locationCriteria: newValues,
+    });
+  };
+
+  const handleFinancialCriteriaChange = (newValues) => {
+    setFilters({
+      ...filters,
+      financialCriteria: newValues,
+    });
+  };
+
+  const handleMarketingCriteriaChange = (newValues) => {
+    setFilters({
+      ...filters,
+      marketingCriteria: newValues,
+    });
+  };
+
   const handleSearch = () => {
     console.log("Current filters:", filters);
+    // Add your search logic here
   };
 
   const handleReset = () => {
@@ -57,10 +101,28 @@ const SearchFilters = () => {
         married: { checked: false, value: false },
         hasChildren: { checked: false, value: false },
       },
-      locationCriteria: "",
-      financialCriteria: "",
-      marketingCriteria: "",
+      locationCriteria: {
+        state: { checked: false, value: "" },
+        city: { checked: false, value: "" },
+        zipCode: { checked: false, value: "" },
+      },
+      financialCriteria: {
+        income: { checked: false, value: "" },
+        creditScore: { checked: false, value: "" },
+        investment: { checked: false, value: "" },
+      },
+      marketingCriteria: {
+        campaign: { checked: false, value: "" },
+        source: { checked: false, value: "" },
+        preference: { checked: false, value: "" },
+      },
     });
+
+    // Reset all dropdowns to closed state
+    setIsPersonalCriteriaOpen(false);
+    setIsLocationCriteriaOpen(false);
+    setIsFinancialCriteriaOpen(false);
+    setIsMarketingCriteriaOpen(false);
   };
 
   return (
@@ -88,6 +150,7 @@ const SearchFilters = () => {
         </div>
 
         <div className={styles.dropdownSection}>
+          {/* Personal Criteria Dropdown */}
           <div
             className={`${styles.dropdownTrigger} ${
               isPersonalCriteriaOpen ? styles.open : ""
@@ -97,7 +160,6 @@ const SearchFilters = () => {
             Personal Criteria
             <span className={styles.arrow}>▼</span>
           </div>
-
           {isPersonalCriteriaOpen && (
             <PersonalCriteriaDropdown
               values={filters.personalCriteria}
@@ -105,20 +167,35 @@ const SearchFilters = () => {
             />
           )}
 
-          <div className={styles.dropdownTrigger}>
+          {/* Location Criteria Dropdown */}
+          <div
+            className={`${styles.dropdownTrigger} ${
+              isLocationCriteriaOpen ? styles.open : ""
+            }`}
+            onClick={() => setIsLocationCriteriaOpen(!isLocationCriteriaOpen)}
+          >
             Location Criteria
             <span className={styles.arrow}>▼</span>
           </div>
+          {isLocationCriteriaOpen && (
+            <LocationCriteria
+              values={filters.locationCriteria}
+              onChange={handleLocationCriteriaChange}
+            />
+          )}
 
-          <div className={styles.dropdownTrigger}>
+          {/* Financial Criteria Dropdown */}
+          <div
+            className={`${styles.dropdownTrigger} ${
+              isFinancialCriteriaOpen ? styles.open : ""
+            }`}
+            onClick={() => setIsFinancialCriteriaOpen(!isFinancialCriteriaOpen)}
+          >
             Financial Criteria
             <span className={styles.arrow}>▼</span>
           </div>
 
-          <div className={styles.dropdownTrigger}>
-            Marketing Criteria
-            <span className={styles.arrow}>▼</span>
-          </div>
+          {/* Marketing Criteria Dropdown */}
         </div>
 
         <div className={styles.buttonSection}>

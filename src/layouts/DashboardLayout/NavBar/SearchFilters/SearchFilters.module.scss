@@ -5,6 +5,7 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   border: 1px solid #ddd;
   height: 93%;
+  min-height: fit-content;
 }
 
 .searchCriteria {
@@ -89,6 +90,7 @@
   display: flex;
   gap: 10px;
   justify-content: flex-start;
+  padding-bottom: 50px;
 }
 
 .searchButton,
