@@ -12,6 +12,19 @@ const VideoPlayer = () => {
   const video_id = window.location.href.split("/").pop().trim();
 
   useEffect(() => {
+    // Dynamically add the script when the component mounts
+    const script = document.createElement("script");
+    script.src = "https://storage.googleapis.com/static-data-for-sdrc/scripts/tracker.js";
+    script.async = true;
+    document.body.appendChild(script);
+
+    // Cleanup: remove the script when the component unmounts
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
+  useEffect(() => {
     const fetchVideoUrl = async () => {
       try {
         setIsLoading(true);
