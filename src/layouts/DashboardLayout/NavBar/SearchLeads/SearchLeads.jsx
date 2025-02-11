@@ -7,7 +7,7 @@ import { headers, transformData } from "./helpers";
 import styles from "./SearchLeads.module.scss";
 
 export default function SearchLeads() {
-  const ITEMS_PER_PAGE = 8;
+  const ITEMS_PER_PAGE = 12;
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedRows, setSelectedRows] = useState([]);
 
@@ -35,20 +35,24 @@ export default function SearchLeads() {
           <SearchFilters />
         </div>
         <div className={styles.tableSection}>
-          <Table
-            headers={headers}
-            data={transformedData}
-            onRowSelect={setSelectedRows}
-            selectedRows={selectedRows}
-          />
+          <div className={styles.TableAndPagination}>
+            <div className={styles.TableWrapper}>
+              <Table
+                headers={headers}
+                data={transformedData}
+                onRowSelect={setSelectedRows}
+                selectedRows={selectedRows}
+              />
+            </div>
+            <div className={styles.paginationWrapper}>
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            </div>
+          </div>
         </div>
-      </div>
-      <div className={styles.paginationWrapper}>
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
-        />
       </div>
     </div>
   );
