@@ -13,6 +13,7 @@ export default function SearchLeads() {
   const [currentFilters, setCurrentFilters] = useState(null);
 
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+
   const { leads, loading, error, totalCount, refetch } = useLeads(
     offset,
     ITEMS_PER_PAGE,
@@ -28,12 +29,13 @@ export default function SearchLeads() {
   const handleSearch = (filters) => {
     setCurrentPage(1);
     setCurrentFilters(filters);
-    refetch(filters);
+    refetch();
   };
 
   const transformedData = transformData(leads);
 
   if (loading) return <div className={styles.loading}>Loading...</div>;
+  if (error) return <div className={styles.error}>{error}</div>;
 
   return (
     <div className={styles.container}>

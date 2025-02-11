@@ -3,7 +3,7 @@ export const transformFilters = (filters) => {
 
   const transformed = {
     startDate: filters.dateRange.start || null,
-    endDate: filters.dateRange.end || today,
+    endDate: filters.dateRange.end || null,
 
     firstName: filters.personalCriteria.name?.checked
       ? filters.personalCriteria.name.value.first
