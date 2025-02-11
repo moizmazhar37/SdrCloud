@@ -6,7 +6,7 @@ import FinancialCriteria from "./FinancialCriteria/FinancialCriteria";
 import MarketingCriteria from "./MarketingCriteria/MarketingCriteria";
 import { transformFilters, resetFiltersState } from "./helpers";
 
-const SearchFilters = () => {
+const SearchFilters = ({ onSearch }) => {
   const [isPersonalCriteriaOpen, setIsPersonalCriteriaOpen] = useState(false);
   const [isLocationCriteriaOpen, setIsLocationCriteriaOpen] = useState(false);
   const [isFinancialCriteriaOpen, setIsFinancialCriteriaOpen] = useState(false);
@@ -53,10 +53,10 @@ const SearchFilters = () => {
   };
 
   const handleSearch = () => {
-    console.log("Original filters:", filters);
     const transformedFilters = transformFilters(filters);
-    console.log("Transformed filters:", transformedFilters);
-    // Add your search logic here
+    if (onSearch) {
+      onSearch(transformedFilters);
+    }
   };
 
   const handleReset = () => {

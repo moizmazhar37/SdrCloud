@@ -10,18 +10,25 @@ export default function SearchLeads() {
   const ITEMS_PER_PAGE = 12;
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedRows, setSelectedRows] = useState([]);
+  const [currentFilters, setCurrentFilters] = useState(null);
 
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
-  const { leads, loading, error, totalCount } = useLeads(
+  const { leads, loading, error, totalCount, refetch } = useLeads(
     offset,
-    ITEMS_PER_PAGE
+    ITEMS_PER_PAGE,
+    currentFilters
   );
-  console.log("Total Count==", totalCount);
+
   const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
-    // No need to fetch data here as useLeads will handle it via dependencies
+  };
+
+  const handleSearch = (filters) => {
+    setCurrentPage(1);
+    setCurrentFilters(filters);
+    refetch(filters);
   };
 
   const transformedData = transformData(leads);
@@ -32,7 +39,7 @@ export default function SearchLeads() {
     <div className={styles.container}>
       <div className={styles.contentWrapper}>
         <div className={styles.filterSection}>
-          <SearchFilters />
+          <SearchFilters onSearch={handleSearch} />
         </div>
         <div className={styles.tableSection}>
           <div className={styles.TableAndPagination}>
