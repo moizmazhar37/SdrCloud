@@ -4,6 +4,7 @@ import IdentifiedByMonth from "./TopCards/IdentifiedByMonth/IdentifiedByMonth";
 import MonthlySpend from "./TopCards/MonthlySpend/MonthlySpend";
 import LatestVisitors from "./TopCards/LatestVisitors/LatestVisitors";
 import PieChart from "./TopCards/PieChart/PieChart";
+import Map from "./MidSection/Map/Map";
 const LeadsDashboard = () => {
   const referralData = {
     Direct: 69.2,
@@ -16,6 +17,13 @@ const LeadsDashboard = () => {
     "Category B": 54.5,
   };
 
+  const locations = [
+    { lat: 40.7128, lng: -74.006, visits: 3 }, // New York
+    { lat: 34.0522, lng: -118.2437, visits: 3 }, // Los Angeles
+    { lat: 41.8781, lng: -87.6298, visits: 2 }, // Chicago
+    { lat: 42.3601, lng: -71.0589, visits: 2 }, // Boston
+  ];
+
   return (
     <div className={styles.dashboardContainer}>
       <div className={styles.TopContainer}>
@@ -24,7 +32,9 @@ const LeadsDashboard = () => {
         <LatestVisitors />
         <PieChart title="Direct Vs. Referral" data={referralData} />
       </div>
-      <div className={styles.midContainer}>{""}</div>
+      <div className={styles.midContainer}>
+        <Map locations={locations} />;
+      </div>
     </div>
   );
 };
