@@ -5,6 +5,7 @@ import MonthlySpend from "./TopCards/MonthlySpend/MonthlySpend";
 import LatestVisitors from "./TopCards/LatestVisitors/LatestVisitors";
 import PieChart from "./TopCards/PieChart/PieChart";
 import Map from "./MidSection/Map/Map";
+import VisitorsChart from "./MidSection/VisitorsChart/VisitorsChart";
 const LeadsDashboard = () => {
   const referralData = {
     Direct: 69.2,
@@ -33,7 +34,8 @@ const LeadsDashboard = () => {
         <PieChart title="Direct Vs. Referral" data={referralData} />
       </div>
       <div className={styles.midContainer}>
-        <Map locations={locations} />;
+        <Map locations={locations} />
+        <VisitorsChart />
       </div>
     </div>
   );
