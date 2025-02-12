@@ -81,6 +81,15 @@ export const routes = [
   },
   {
     exact: true,
+    path: "/leads-dashboard",
+    guard: true,
+    layout: DashboardLayout,
+    component: lazy(() =>
+      import("src/layouts/DashboardLayout/NavBar/LeadsDashboard/LeadsDashboard")
+    ),
+  },
+  {
+    exact: true,
     path: "/leads-search",
     guard: true,
     layout: DashboardLayout,

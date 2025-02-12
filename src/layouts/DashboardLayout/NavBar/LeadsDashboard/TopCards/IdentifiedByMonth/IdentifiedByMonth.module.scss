@@ -1,0 +1,149 @@
+.wrapper {
+  width: 100%;
+  height: 100%;
+  padding: 16px;
+  box-sizing: border-box;
+  display: flex;
+
+  @media (min-width: 768px) {
+    padding: 24px;
+  }
+}
+
+.container {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+
+  @media (min-width: 768px) {
+    padding: 24px;
+  }
+}
+.header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.icon {
+  color: #1e40af;
+  min-width: 20px;
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e40af;
+  word-break: break-word;
+
+  @media (min-width: 768px) {
+    font-size: 18px;
+  }
+}
+
+.count {
+  font-size: 28px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 20px;
+
+  @media (min-width: 768px) {
+    font-size: 36px;
+    margin-bottom: 24px;
+  }
+}
+
+.chartContainer {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+
+  @media (min-width: 768px) {
+    margin-bottom: 24px;
+  }
+}
+
+.progressCircle {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  @media (min-width: 480px) {
+    width: 120px;
+    height: 120px;
+  }
+
+  @media (min-width: 768px) {
+    width: 150px;
+    height: 150px;
+  }
+}
+
+.circularChart {
+  transform: rotate(-90deg);
+  width: 100%;
+  height: 100%;
+}
+
+.percentage {
+  position: absolute;
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+
+  @media (min-width: 768px) {
+    font-size: 24px;
+  }
+}
+
+.infoContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.previousPeriod {
+  color: #4b5563;
+  font-size: 13px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e5e7eb;
+  word-break: break-word;
+
+  @media (min-width: 768px) {
+    font-size: 14px;
+  }
+}
+
+.budgeted {
+  color: #0ea5e9;
+  font-size: 13px;
+  word-break: break-word;
+
+  @media (min-width: 768px) {
+    font-size: 14px;
+  }
+}
+
+.note {
+  color: #ef4444;
+  font-size: 13px;
+  word-break: break-word;
+
+  span {
+    color: #6b7280;
+  }
+
+  @media (min-width: 768px) {
+    font-size: 14px;
+  }
+}

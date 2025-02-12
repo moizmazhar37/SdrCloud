@@ -72,7 +72,7 @@ const getNavSections = (userType) => {
             items: [
               {
                 title: "Dashboard",
-                href: "/leads-search",
+                href: "/leads-dashboard",
               },
               {
                 title: "Search Leads",
