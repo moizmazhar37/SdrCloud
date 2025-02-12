@@ -4,13 +4,13 @@ import {
   Bar,
   XAxis,
   YAxis,
-  CartesianGrid,
+  Tooltip,
   ResponsiveContainer,
-} from "recharts";
-import styles from "./VisitorsChart.module.scss";
+  CartesianGrid,
+} from "recharts"; // Ensure recharts is installed and the version supports these components
+import styles from "./VisitorsChart.module.scss"; // Ensure this file exists and is valid
 
 const VisitorsChart = () => {
-  // Hardcoded data for now - will be replaced with hook data later
   const data = [
     { date: "11/6", visitors: 3 },
     { date: "11/7", visitors: 3 },
@@ -22,48 +22,17 @@ const VisitorsChart = () => {
   ];
 
   return (
-    <div className={styles.container}>
-      <h2 className={styles.title}>Visitors Identified</h2>
-      <div className={styles.chartWrapper}>
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart
-            data={data}
-            margin={{
-              top: 20,
-              right: 30,
-              left: 20,
-              bottom: 20,
-            }}
-          >
-            <CartesianGrid
-              strokeDasharray="3 3"
-              vertical={false}
-              stroke="#E5E7EB"
-            />
-            <XAxis
-              dataKey="date"
-              axisLine={false}
-              tickLine={false}
-              tick={{ fill: "#6B7280", fontSize: 12 }}
-              dy={10}
-            />
-            <YAxis
-              axisLine={false}
-              tickLine={false}
-              tick={{ fill: "#6B7280", fontSize: 12 }}
-              dx={-10}
-              domain={[0, 5]}
-              ticks={[0, 1, 2, 3, 4, 5]}
-            />
-            <Bar
-              dataKey="visitors"
-              fill="#00B5FF"
-              radius={[4, 4, 0, 0]}
-              barSize={40}
-            />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
+    <div className={styles?.chartContainer || ""}>
+      <h3 className={styles?.title || ""}>Visitors Identified</h3>
+      <ResponsiveContainer width="100%" height={300}>
+        <BarChart data={data} barSize={30}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="date" tick={{ fill: "#666" }} />
+          <YAxis />
+          <Tooltip />
+          <Bar dataKey="visitors" fill="#0096FF" />
+        </BarChart>
+      </ResponsiveContainer>
     </div>
   );
 };

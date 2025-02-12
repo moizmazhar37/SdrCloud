@@ -35,7 +35,7 @@ const LeadsDashboard = () => {
       </div>
       <div className={styles.midContainer}>
         <Map locations={locations} />
-        {/* <VisitorsChart /> */}
+        <VisitorsChart />
       </div>
     </div>
   );
