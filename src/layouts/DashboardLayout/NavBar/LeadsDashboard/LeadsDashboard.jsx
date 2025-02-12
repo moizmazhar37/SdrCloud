@@ -4,7 +4,6 @@ import IdentifiedByMonth from "./TopCards/IdentifiedByMonth/IdentifiedByMonth";
 import MonthlySpend from "./TopCards/MonthlySpend/MonthlySpend";
 import LatestVisitors from "./TopCards/LatestVisitors/LatestVisitors";
 import PieChart from "./TopCards/PieChart/PieChart";
-
 const LeadsDashboard = () => {
   const referralData = {
     Direct: 69.2,
@@ -19,10 +18,13 @@ const LeadsDashboard = () => {
 
   return (
     <div className={styles.dashboardContainer}>
-      <IdentifiedByMonth />
-      <MonthlySpend />
-      <LatestVisitors />
-      <PieChart title="Direct Vs. Referral" data={referralData} />
+      <div className={styles.TopContainer}>
+        <IdentifiedByMonth />
+        <MonthlySpend />
+        <LatestVisitors />
+        <PieChart title="Direct Vs. Referral" data={referralData} />
+      </div>
+      <div className={styles.midContainer}>{""}</div>
     </div>
   );
 };
