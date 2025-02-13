@@ -17,13 +17,13 @@ export const transformFilters = (filters) => {
       : null,
     age: filters.personalCriteria.ageRange?.checked
       ? filters.personalCriteria.ageRange.value
-      : null, // Fixed ageRange handling
+      : null,
     hasChildren: filters.personalCriteria.hasChildren?.checked
       ? filters.personalCriteria.hasChildren.value
       : null, // Fixed hasChildren handling
     married: filters.personalCriteria.married?.checked
       ? filters.personalCriteria.married.value
-      : null, // Fixed married handling
+      : null, // Fixed married handlingf
 
     // Location Criteria
     state: filters.locationCriteria.state?.checked
