@@ -149,12 +149,11 @@ const PersonalCriteriaDropdown = ({ values = {}, onChange }) => {
             onChange={(e) => handleInputChange("ageRange", e.target.value)}
           >
             <option value="">Select age range</option>
-            <option value="1-25">1-25</option>
-            <option value="25-35">25-35</option>
-            <option value="35-45">35-45</option>
-            <option value="45-55">45-55</option>
-            <option value="55-65">55-65</option>
-            <option value="65+">65-Older</option>
+            <option value="25-34">25-34</option>
+            <option value="35-44">35-44</option>
+            <option value="45-54">45-54</option>
+            <option value="55-64">55-64</option>
+            <option value="65 and Older">65-Older</option>
           </select>
         )}
       </div>

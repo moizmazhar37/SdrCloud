@@ -53,7 +53,10 @@ const SearchFilters = ({ onSearch }) => {
   };
 
   const handleSearch = () => {
+    console.log("Raw Filters==", filters);
+
     const transformedFilters = transformFilters(filters);
+    console.log("TRANSformed Filters==", transformedFilters);
     if (onSearch) {
       onSearch(transformedFilters);
     }

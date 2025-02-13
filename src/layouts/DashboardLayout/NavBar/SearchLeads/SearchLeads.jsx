@@ -1,3 +1,4 @@
+// SearchLeads.jsx
 import React, { useState } from "react";
 import useLeads from "./useLeads";
 import Table from "src/Common/Table/Table";
@@ -14,7 +15,7 @@ export default function SearchLeads() {
 
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
-  const { leads, loading, error, totalCount, refetch } = useLeads(
+  const { leads, loading, error, totalCount } = useLeads(
     offset,
     ITEMS_PER_PAGE,
     currentFilters
@@ -29,7 +30,7 @@ export default function SearchLeads() {
   const handleSearch = (filters) => {
     setCurrentPage(1);
     setCurrentFilters(filters);
-    refetch();
+    // Removed refetch() call since useEffect will handle it
   };
 
   const transformedData = transformData(leads);

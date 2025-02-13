@@ -1,6 +1,4 @@
 export const transformFilters = (filters) => {
-  const today = new Date().toISOString().split("T")[0];
-
   const transformed = {
     startDate: filters.dateRange.start || null,
     endDate: filters.dateRange.end || null,
@@ -17,6 +15,9 @@ export const transformFilters = (filters) => {
     gender: filters.personalCriteria.gender?.checked
       ? filters.personalCriteria.gender.value
       : null,
+    age: filters.personalCriteria.ageRange?.checked
+      ? filters.personalCriteria.ageRange.value
+      : null, // Added this
     hasChildren: filters.personalCriteria.hasChildren?.checked || null,
     married: filters.personalCriteria.married?.checked || null,
 
@@ -60,28 +61,28 @@ export const transformFilters = (filters) => {
 
 export const resetFiltersState = () => ({
   dateRange: {
-    start: "",
-    end: "",
+    start: null,
+    end: null,
   },
   personalCriteria: {
     name: {
       checked: false,
       value: {
-        first: "",
-        last: "",
+        first: null,
+        last: null,
       },
     },
     email: {
       checked: false,
-      value: "",
+      value: null,
     },
     gender: {
       checked: false,
-      value: "",
+      value: null,
     },
     ageRange: {
       checked: false,
-      value: "",
+      value: null,
     },
     married: {
       checked: false,
@@ -93,25 +94,25 @@ export const resetFiltersState = () => ({
   locationCriteria: {
     state: {
       checked: false,
-      value: "",
+      value: null,
     },
     city: {
       checked: false,
-      value: "",
+      value: null,
     },
     zipCode: {
       checked: false,
-      value: "",
+      value: null,
     },
   },
   financialCriteria: {
     netWorth: {
       checked: false,
-      value: "",
+      value: null,
     },
     income: {
       checked: false,
-      value: "",
+      value: null,
     },
     ownHouse: {
       checked: false,
@@ -120,19 +121,19 @@ export const resetFiltersState = () => ({
   marketingCriteria: {
     domains: {
       checked: false,
-      value: "",
+      value: null,
     },
     referralSource: {
       checked: false,
-      value: "",
+      value: null,
     },
     keyword: {
       checked: false,
-      value: "",
+      value: null,
     },
     pageViewed: {
       checked: false,
-      value: "",
+      value: null,
     },
   },
 });
