@@ -127,6 +127,7 @@ const HVOCategoryForm = ({
   };
 
   const handleCategoryDelete = async (categoryId) => {
+    console.log("-----hit no");
     try {
       await deleteCategory(categoryId);
       setLocalCategories((prev) => prev.filter((cat) => cat.id !== categoryId));

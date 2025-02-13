@@ -100,22 +100,6 @@ const HvoSectionCardContainer = ({
     }
   };
 
-  if (loading) {
-    return (
-      <div className={styles.loadingContainer}>
-        <p>Loading...</p>
-      </div>
-    );
-  }
-
-  if (!elementsList.length) {
-    return (
-      <div className={styles.emptyContainer}>
-        <p>No sections available</p>
-      </div>
-    );
-  }
-
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
       <Droppable droppableId="sections">
