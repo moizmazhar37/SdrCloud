@@ -17,9 +17,13 @@ export const transformFilters = (filters) => {
       : null,
     age: filters.personalCriteria.ageRange?.checked
       ? filters.personalCriteria.ageRange.value
-      : null, // Added this
-    hasChildren: filters.personalCriteria.hasChildren?.checked || null,
-    married: filters.personalCriteria.married?.checked || null,
+      : null, // Fixed ageRange handling
+    hasChildren: filters.personalCriteria.hasChildren?.checked
+      ? filters.personalCriteria.hasChildren.value
+      : null, // Fixed hasChildren handling
+    married: filters.personalCriteria.married?.checked
+      ? filters.personalCriteria.married.value
+      : null, // Fixed married handling
 
     // Location Criteria
     state: filters.locationCriteria.state?.checked
@@ -53,7 +57,9 @@ export const transformFilters = (filters) => {
     annualIncome: filters.financialCriteria.income?.checked
       ? filters.financialCriteria.income.value
       : null,
-    ownHouse: filters.financialCriteria.ownHouse?.checked || null,
+    ownHouse: filters.financialCriteria.ownHouse?.checked
+      ? filters.financialCriteria.ownHouse.value
+      : null, // Fixed ownHouse handling
   };
 
   return transformed;

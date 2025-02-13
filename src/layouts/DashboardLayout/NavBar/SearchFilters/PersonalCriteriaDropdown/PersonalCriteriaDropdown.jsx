@@ -8,8 +8,8 @@ const PersonalCriteriaDropdown = ({ values = {}, onChange }) => {
     email: { checked: false, value: "" },
     gender: { checked: false, value: "" },
     ageRange: { checked: false, value: "" },
-    married: { checked: false, value: false },
-    hasChildren: { checked: false, value: false },
+    married: { checked: false, value: null },
+    hasChildren: { checked: false, value: null },
   };
 
   const mergedValues = {
@@ -47,7 +47,6 @@ const PersonalCriteriaDropdown = ({ values = {}, onChange }) => {
 
   return (
     <div className={styles.criteriaContent}>
-      {/* Rest of the JSX remains exactly the same as your original code */}
       <div className={styles.criteriaField}>
         <label className={styles.checkboxLabel}>
           <input
@@ -153,33 +152,51 @@ const PersonalCriteriaDropdown = ({ values = {}, onChange }) => {
             <option value="35-44">35-44</option>
             <option value="45-54">45-54</option>
             <option value="55-64">55-64</option>
-            <option value="65 and Older">65-Older</option>
+            <option value="65 and Older">65 and Older</option>
           </select>
         )}
       </div>
 
       <div className={styles.criteriaField}>
         <label className={styles.checkboxLabel}>
-          <input
-            type="checkbox"
-            className={styles.checkbox}
-            checked={mergedValues.married.checked}
-            onChange={() => handleCheckboxChange("married")}
-          />
-          <span>Married</span>
+          <span>Marital Status</span>
         </label>
+        <select
+          className={`${styles.select} ${
+            !mergedValues.married.value && styles.placeholder
+          }`}
+          value={mergedValues.married.value ?? ""}
+          onChange={(e) =>
+            handleInputChange("married", e.target.value === "true")
+          }
+        >
+          <option value="" disabled hidden>
+            Marital Status
+          </option>
+          <option value="true">Married</option>
+          <option value="false">Unmarried</option>
+        </select>
       </div>
 
       <div className={styles.criteriaField}>
         <label className={styles.checkboxLabel}>
-          <input
-            type="checkbox"
-            className={styles.checkbox}
-            checked={mergedValues.hasChildren.checked}
-            onChange={() => handleCheckboxChange("hasChildren")}
-          />
           <span>Has Children</span>
         </label>
+        <select
+          className={`${styles.select} ${
+            !mergedValues.hasChildren.value && styles.placeholder
+          }`}
+          value={mergedValues.hasChildren.value ?? ""}
+          onChange={(e) =>
+            handleInputChange("hasChildren", e.target.value === "true")
+          }
+        >
+          <option value="" disabled hidden>
+            Has Children
+          </option>
+          <option value="true">Yes</option>
+          <option value="false">No</option>
+        </select>
       </div>
     </div>
   );
