@@ -1,0 +1,57 @@
+.container {
+  width: 100%;
+  max-width: 1440px;
+}
+
+.contentWrapper {
+  display: flex;
+  margin-bottom: 2rem;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+}
+
+.filterSection {
+  border-radius: 8px;
+  padding: 1.5rem;
+  padding-bottom: 0.2rem;
+  padding-right: 0.05rem;
+
+  @media (max-width: 768px) {
+    flex: 1;
+    min-height: auto;
+    padding-right: 1.5rem;
+  }
+}
+
+.tableSection {
+  flex: 1;
+  min-height: 500px;
+  border-radius: 8px;
+  padding: 1.5rem;
+  overflow-x: hidden;
+  padding-bottom: 0;
+}
+
+.paginationWrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.loading,
+.error {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.1rem;
+}
+
+.error {
+  color: #dc3545;
+}
+.TableAndPagination {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}

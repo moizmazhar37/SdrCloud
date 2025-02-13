@@ -1,89 +1,68 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import ApiConfig from "../../../../config/APIConfig";
-
-import "./SearchLeads.css";
-import LeadsTable from "./LeadsTable";
+// SearchLeads.jsx
+import React, { useState } from "react";
+import useLeads from "./useLeads";
+import Table from "src/Common/Table/Table";
+import SearchFilters from "../SearchFilters/SearchFilters";
+import Pagination from "src/Common/Pagination/Pagination";
+import { headers, transformData } from "./helpers";
+import styles from "./SearchLeads.module.scss";
 
 export default function SearchLeads() {
-  const [leads, setLeads] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [statusMessage, setStatusMessage] = useState("");
-  const [isSuccess, setIsSuccess] = useState(false);
+  const ITEMS_PER_PAGE = 12;
+  const [currentPage, setCurrentPage] = useState(1);
   const [selectedRows, setSelectedRows] = useState([]);
+  const [currentFilters, setCurrentFilters] = useState(null);
 
-  useEffect(() => {
-    const fetchLeads = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get(`${ApiConfig.getUrls}/leads`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
-        if (response?.status === 200) {
-          setLeads(response.data);
-        }
-      } catch (error) {
-        console.error("Error fetching leads:", error);
-        setStatusMessage("Failed to load leads.");
-      } finally {
-        setLoading(false);
-      }
-    };
+  const { leads, loading, error, totalCount } = useLeads(
+    offset,
+    ITEMS_PER_PAGE,
+    currentFilters
+  );
 
-    fetchLeads();
-  }, []);
+  const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
-  const columns = [
-    { Header: "First Name", accessor: "first_name" },
-    { Header: "Last Name", accessor: "last_name" },
-    { Header: "Personal Email", accessor: "personal_email" },
-    { Header: "Address", accessor: "contact_address" },
-    { Header: "Metro City", accessor: "contact_metro_city" },
-    { Header: "State", accessor: "contact_state" },
-    { Header: "Zip", accessor: "contact_zip" },
-    { Header: "Zip-4", accessor: "contact_zip4" },
-    { Header: "Gender", accessor: "gender" },
-    { Header: "Age Range", accessor: "age_range" },
-    { Header: "Income Range", accessor: "income_range" },
-    { Header: "Net Worth", accessor: "net_worth" },
-  ];
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+  };
 
-  const data = leads.map((lead) => ({
-    first_name: lead.first_name,
-    last_name: lead.last_name,
-    personal_email: lead.personal_email,
-    contact_address: lead.contact_address,
-    contact_address_2: lead.contact_address_2,
-    contact_metro_city: lead.contact_metro_city,
-    contact_state: lead.contact_state,
-    contact_zip: lead.contact_zip,
-    contact_zip4: lead.contact_zip4,
-    gender: lead.gender,
-    age_range: lead.age_range,
-    income_range: lead.income_range,
-    net_worth: lead.net_worth,
-  }));
+  const handleSearch = (filters) => {
+    setCurrentPage(1);
+    setCurrentFilters(filters);
+    // Removed refetch() call since useEffect will handle it
+  };
+
+  const transformedData = transformData(leads);
+
+  if (loading) return <div className={styles.loading}>Loading...</div>;
+  if (error) return <div className={styles.error}>{error}</div>;
 
   return (
-    <div className="searchleads-container">
-      <div className="sub-container">
-        <div className="header-box">
-          <h1>Search Your Visitors</h1>
+    <div className={styles.container}>
+      <div className={styles.contentWrapper}>
+        <div className={styles.filterSection}>
+          <SearchFilters onSearch={handleSearch} />
         </div>
-        {loading ? (
-          <p>Loading...</p>
-        ) : (
-          <LeadsTable
-            data={data}
-            columns={columns}
-            selectedRows={selectedRows}
-            setSelectedRows={setSelectedRows}
-          />
-        )}
-        {statusMessage && <p>{statusMessage}</p>}
+        <div className={styles.tableSection}>
+          <div className={styles.TableAndPagination}>
+            <div className={styles.TableWrapper}>
+              <Table
+                headers={headers}
+                data={transformedData}
+                onRowSelect={setSelectedRows}
+                selectedRows={selectedRows}
+              />
+            </div>
+            <div className={styles.paginationWrapper}>
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
