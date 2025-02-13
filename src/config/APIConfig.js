@@ -41,6 +41,8 @@ const ApiConfig = {
   getTemplatebyID: `${video}/template`,
   previewVideo: `${video}/preview-video-with-sheet-data`,
   getFirstRowData: `${googlesheets}/first-row-data`,
+  getFirstRowbyTemplateId: `${googlesheets}/first-row`,
+
   UploadFile: `${upload}/upload-file`,
   headers: `${googlesheets}/sheet-data-types`,
   createVideo: `${video}/create-video`,

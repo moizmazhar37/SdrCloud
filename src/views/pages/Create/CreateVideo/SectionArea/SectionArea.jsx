@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import CategoryDropdown from "../CategoryDropdown/CategoryDropdown";
 import SectionView from "./SectionView/SectionView";
 import usePreviewVideo from "../hooks/usePreviewVideo";
@@ -10,7 +11,9 @@ const SectionArea = ({
   editable = true,
   templateId = null,
   elementsList = [],
+  type = "video",
 }) => {
+  const history = useHistory();
   const [sections, setSections] = useState([]);
   const [sectionData, setSectionData] = useState({});
   const { previewVideo, loading: previewLoading } = usePreviewVideo();
@@ -64,10 +67,15 @@ const SectionArea = ({
   };
 
   const handleProgressOverview = async () => {
-    if (templateId) {
-      const response = await previewVideo(templateId);
-      if (response) {
-        console.log("Preview successful:", response);
+    if (type === "hvo") {
+      localStorage.setItem("templateId", templateId);
+      history.push("/preview-hvo");
+    } else {
+      if (templateId) {
+        const response = await previewVideo(templateId);
+        if (response) {
+          console.log("Preview successful:", response);
+        }
       }
     }
   };
@@ -92,7 +100,11 @@ const SectionArea = ({
           className={styles.progressButton}
           disabled={previewLoading}
         >
-          {previewLoading ? "Loading..." : "Progress Overview"}
+          {previewLoading
+            ? "Loading..."
+            : type === "hvo"
+            ? "Preview HVO"
+            : "Progress Overview"}
         </button>
       </div>
     </div>
