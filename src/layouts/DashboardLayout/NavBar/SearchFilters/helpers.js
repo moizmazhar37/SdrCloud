@@ -20,10 +20,10 @@ export const transformFilters = (filters) => {
       : null,
     hasChildren: filters.personalCriteria.hasChildren?.checked
       ? filters.personalCriteria.hasChildren.value
-      : null, // Fixed hasChildren handling
+      : null,
     married: filters.personalCriteria.married?.checked
       ? filters.personalCriteria.married.value
-      : null, // Fixed married handlingf
+      : null,
 
     // Location Criteria
     state: filters.locationCriteria.state?.checked
