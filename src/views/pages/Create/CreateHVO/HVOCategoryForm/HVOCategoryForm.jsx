@@ -39,11 +39,11 @@ const HVOCategoryForm = ({
   const { deleteCategory, loading: deleteLoading } =
     useDeleteCategory(refetchCategories);
   const { editCategory, loading: editLoading } = useEditCategory();
-
+  console.log("----", categoryData);
   const categories = useMemo(
     () =>
       categoryData?.map((item) => ({
-        label: item.categoryName,
+        label: item.category_name,
         value: item.id,
         id: item.id,
       })) || [],
@@ -53,7 +53,7 @@ const HVOCategoryForm = ({
   useEffect(() => {
     setLocalCategories(categories);
   }, [categories]);
-
+  console.log("Final==", categories);
   const sheets = useMemo(
     () =>
       sheetData?.map((item) => ({
