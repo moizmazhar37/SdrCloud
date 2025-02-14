@@ -265,6 +265,7 @@ const CreateHVO = () => {
                   elementsList={elementsList}
                   onSectionUpdate={handleSectionUpdate}
                   handleEdit={handleEdit}
+                  templateId={templateId}
                 />
               </div>
             </div>
@@ -284,6 +285,7 @@ const CreateHVO = () => {
             editable={isEditable}
             templateId={templateId}
             elementsList={elementsList}
+            type="hvo"
           />
         </div>
       </div>

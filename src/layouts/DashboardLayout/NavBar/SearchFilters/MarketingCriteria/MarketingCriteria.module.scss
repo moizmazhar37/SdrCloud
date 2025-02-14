@@ -1,0 +1,57 @@
+.criteriaContent {
+  padding: 16px;
+  padding-top: 0px;
+  border-top: none;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  background: #fff;
+  width: 100%;
+}
+
+.criteriaField {
+  margin-bottom: 16px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  cursor: pointer;
+
+  span {
+    color: #333;
+    font-size: 14px;
+  }
+}
+
+.checkbox {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: #666;
+  cursor: pointer;
+}
+
+.input {
+  height: 24px;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 16px;
+  font-size: 14px;
+  color: #333;
+  // width: 100%;
+
+  &::placeholder {
+    color: #999;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: #032e61;
+  }
+}

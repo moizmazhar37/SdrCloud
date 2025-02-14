@@ -1,15 +1,73 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import HvoSectionCard from "./HvoSectionCard";
 import styles from "./container.module.scss";
 import useSwapHvoSequence from "../Hooks/useSwapHvoSequence";
+import useGetFirstRowData from "../Hooks/useGetFirstRowData";
+
+const isValidUrl = (url) => {
+  if (!url) return false;
+  return url.startsWith("http://") || url.startsWith("https://");
+};
+
+const getPreviewContent = (element, apiData) => {
+  let previewUrl;
+
+  switch (element.section_name) {
+    case "Header":
+      previewUrl = element.company_logo;
+      if (!isValidUrl(previewUrl) && apiData) {
+        previewUrl = apiData.LOGO;
+      }
+      return previewUrl;
+
+    case "Hero":
+      previewUrl = element.hero_img;
+      if (!isValidUrl(previewUrl) && apiData) {
+        previewUrl = apiData["Hero Image"];
+      }
+      return previewUrl;
+
+    case "Right Text Left Image":
+      previewUrl = element.left_image_right_text;
+      if (!isValidUrl(previewUrl) && apiData) {
+        previewUrl = apiData.RIGHT_TEXT_LEFT_IMAGE;
+      }
+      return previewUrl;
+
+    case "Left Text Right Image":
+      previewUrl = element.left_text_right_image_url;
+      if (!isValidUrl(previewUrl) && apiData) {
+        previewUrl = apiData["LEFT TEXT RIGHT IMAGE"];
+      }
+      return previewUrl;
+
+    case "Highlight Banner":
+      return null;
+
+    case "Highlight Banner 2":
+      previewUrl = element.static_url;
+      if (!isValidUrl(previewUrl) && apiData) {
+        previewUrl = apiData.BANNER_CTA_URL2;
+      }
+      return previewUrl;
+
+    case "Footer":
+      return null;
+
+    default:
+      return null;
+  }
+};
 
 const HvoSectionCardContainer = ({
   elementsList = [],
   onSectionUpdate,
   handleEdit,
+  templateId,
 }) => {
   const { swapSequence } = useSwapHvoSequence();
+  const { data: apiData, error, loading } = useGetFirstRowData(templateId);
 
   const sortedElements = useMemo(() => {
     if (!elementsList) return [];
@@ -41,14 +99,6 @@ const HvoSectionCardContainer = ({
       console.error("Error updating sequences:", error);
     }
   };
-
-  if (!elementsList.length) {
-    return (
-      <div className={styles.emptyContainer}>
-        <p>No sections available</p>
-      </div>
-    );
-  }
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
@@ -84,7 +134,7 @@ const HvoSectionCardContainer = ({
                       sectionName={element.section_name}
                       duration={element.duration}
                       scroll={element.scroll}
-                      previewContent={element.value}
+                      previewContent={getPreviewContent(element, apiData)}
                       onDeleteSuccess={onSectionUpdate}
                       onEdit={() => handleEdit(element)}
                     />

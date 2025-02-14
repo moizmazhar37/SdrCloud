@@ -24,7 +24,6 @@ const Prospects = () => {
 
   const handleFieldClick = (fieldName, rowData) => {
     if (fieldName === "action" && rowData?.templateId) {
-      console.log(fieldName, "==>", rowData.templateId);
       setSelectedRowData({
         templateId: rowData.templateId,
         tempType: activeView,
@@ -41,7 +40,7 @@ const Prospects = () => {
       />
     );
   }
-
+  console.log("Data===,", videoData);
   return (
     <div className={styles.name}>
       <div className={styles.toggleButtons}>

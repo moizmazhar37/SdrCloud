@@ -1,8 +1,32 @@
 .tableContainer {
   width: 100%;
-  overflow: hidden;
+  overflow: auto; /* Allows scrolling */
   border-radius: 0.5rem;
   border: 1px solid #e5e7eb;
+
+  /* Custom scrollbar styles */
+  scrollbar-width: thin; /* For Firefox */
+  scrollbar-color: #d1d5db #f9fafb;
+
+  /* For WebKit-based browsers */
+  &::-webkit-scrollbar {
+    height: 8px; /* Horizontal scrollbar height */
+    width: 8px; /* Vertical scrollbar width */
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f9fafb; /* Track color */
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #d1d5db; /* Thumb color */
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+  }
 }
 
 .tableWrapper {
@@ -25,7 +49,7 @@
   text-align: left;
   font-size: 1.09rem;
   font-weight: 600;
-  color: #181C3299;
+  color: #181c3299;
   border-bottom: 1px solid #e5e7eb;
   white-space: nowrap;
   letter-spacing: 0.025em;
@@ -34,8 +58,8 @@
 .tableCell {
   padding: 1rem 1.5rem;
   font-size: 1rem;
-  font-weight: 500;
-  color: #152F40;
+  // font-weight: 500;
+  color: #152f40;
   border-bottom: 1px solid #e5e7eb;
   white-space: nowrap;
 }

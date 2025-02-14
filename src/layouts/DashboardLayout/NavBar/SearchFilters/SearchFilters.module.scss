@@ -1,0 +1,133 @@
+.searchContainer {
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ddd;
+  height: 85%;
+  max-height: 690px;
+  overflow-y: auto; /* Enables vertical scrolling */
+
+  /* Custom scrollbar styles */
+  scrollbar-width: thin; /* For Firefox */
+  scrollbar-color: #c1c1c1 #f1f1f1;
+
+  /* For WebKit-based browsers */
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #888;
+  }
+}
+
+.searchCriteria {
+  h3 {
+    color: #333;
+    margin-bottom: 20px;
+    font-weight: 500;
+  }
+}
+
+.dateSection {
+  margin-bottom: 20px;
+
+  label {
+    display: block;
+    margin-bottom: 8px;
+    color: #666;
+  }
+}
+
+.dateInputs {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  input {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    flex: 1;
+    color: #666;
+
+    &:focus {
+      outline: none;
+      border-color: #032e61;
+    }
+  }
+
+  span {
+    color: #666;
+  }
+}
+
+.dropdownSection {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+  padding-top: 16px;
+  padding-bottom: 18px;
+}
+
+.dropdownTrigger {
+  width: 100%;
+  padding: 14px;
+  padding-bottom: 6px;
+  padding-top: 20px;
+  background-color: #fff;
+  font-size: 14px;
+  color: #666;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #e7e7e7; /* Gray line on top */
+  &.open {
+    .arrow {
+      transform: rotate(180deg);
+    }
+  }
+
+  .arrow {
+    font-size: 12px;
+    transition: transform 0.2s ease;
+  }
+}
+
+.buttonSection {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-start;
+  padding-bottom: 50px;
+}
+
+.searchButton,
+.resetButton {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  background-color: #032e61;
+  color: white;
+  &:hover {
+    opacity: 0.9;
+  }
+}
