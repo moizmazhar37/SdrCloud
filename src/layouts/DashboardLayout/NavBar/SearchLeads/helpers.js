@@ -9,9 +9,9 @@ export const headers = [
   { label: "Demographics", key: "demographics" },
   { label: "Family", key: "family" },
   { label: "Financial", key: "financial" },
-  { label: "Home", key: "home" },
+  { label: "House", key: "home" },
   { label: "Referral", key: "referral" },
-  { label: "Actions", key: "actions" },
+  // { label: "Actions", key: "actions" },
 ];
 
 export const transformData = (leads) => {
@@ -35,8 +35,8 @@ export const transformData = (leads) => {
     financial: `Income: ${lead.income_range || "N/A"} | Net Worth: ${
       lead.net_worth || "N/A"
     }`,
-    home: lead.homeowner ? "Homeowner" : "Non-Homeowner",
+    home: lead.homeowner ? "Owned" : "Not Owned",
     referral: lead.referrer || "Direct",
-    actions: "View Details",
+    // actions: "View Details",
   }));
 };
