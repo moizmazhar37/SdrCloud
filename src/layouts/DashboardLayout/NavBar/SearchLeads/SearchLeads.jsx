@@ -6,6 +6,7 @@ import SearchFilters from "../SearchFilters/SearchFilters";
 import Pagination from "src/Common/Pagination/Pagination";
 import { headers, transformData } from "./helpers";
 import styles from "./SearchLeads.module.scss";
+import Loader from "src/Common/Loader/Loader";
 
 export default function SearchLeads() {
   const ITEMS_PER_PAGE = 12;
@@ -35,7 +36,6 @@ export default function SearchLeads() {
 
   const transformedData = transformData(leads);
 
-  if (loading) return <div className={styles.loading}>Loading...</div>;
   if (error) return <div className={styles.error}>{error}</div>;
 
   return (
@@ -46,21 +46,30 @@ export default function SearchLeads() {
         </div>
         <div className={styles.tableSection}>
           <div className={styles.TableAndPagination}>
-            <div className={styles.TableWrapper}>
-              <Table
-                headers={headers}
-                data={transformedData}
-                onRowSelect={setSelectedRows}
-                selectedRows={selectedRows}
-              />
-            </div>
-            <div className={styles.paginationWrapper}>
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={handlePageChange}
-              />
-            </div>
+            {loading ? (
+              <div className={styles.loader}>
+                <Loader />
+              </div>
+            ) : (
+              <div className={styles.TableWrapper}>
+                <Table
+                  headers={headers}
+                  data={transformedData}
+                  onRowSelect={setSelectedRows}
+                  selectedRows={selectedRows}
+                />
+              </div>
+            )}
+
+            {!loading && (
+              <div className={styles.paginationWrapper}>
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={handlePageChange}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>
