@@ -5,6 +5,7 @@ import useCreateVideoSection from "../hooks/useCreateVideoSection";
 import useUpdateVideoSection from "../hooks/useUpdateVideoSection";
 import { toast } from "react-toastify";
 import AudioDescModal from "src/Common/AudioDescModal/AudioDescModal";
+import InfoBox from "src/Common/InfoBox/InfoBox";
 
 const ImageUpload = ({
   categories,
@@ -245,7 +246,14 @@ const ImageUpload = ({
 
           <div className={styles.row}>
             <div className={styles.durationContainer}>
-              <label>Duration (sec)</label>
+              <label>
+                Duration (sec){" "}
+                <InfoBox
+                  text={
+                    "Enter the duration of this section video to be generated"
+                  }
+                />
+              </label>
               <input
                 type="text"
                 value={duration}

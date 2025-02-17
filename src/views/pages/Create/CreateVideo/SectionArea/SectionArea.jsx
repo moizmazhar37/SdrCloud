@@ -4,6 +4,7 @@ import CategoryDropdown from "../CategoryDropdown/CategoryDropdown";
 import SectionView from "./SectionView/SectionView";
 import usePreviewVideo from "../hooks/usePreviewVideo";
 import styles from "./SectionArea.module.scss";
+import InfoBox from "src/Common/InfoBox/InfoBox";
 
 const SectionArea = ({
   initialOptions,
@@ -82,6 +83,10 @@ const SectionArea = ({
 
   return (
     <div className={styles.sectionAreaContainer}>
+      <InfoBox
+        text={"Enter the duration of this section video to be generated"}
+      />
+
       <div className={styles.sectionsWrapper}>
         {sections.map((sequence) => (
           <div key={`section-${sequence}`} className={styles.sectionWrapper}>
