@@ -1,7 +1,7 @@
 .infoBoxContainer {
   position: relative;
   display: inline-block;
-  padding: 0px 2px 0px 2px;
+  overflow: visible; // Ensures tooltip is not clipped
 }
 
 .infoIcon {
@@ -14,18 +14,21 @@
   justify-content: center;
   cursor: pointer;
   position: relative;
+  z-index: 10;
 }
 
 .infoCharacter {
   color: white;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: bold;
+  font-style: italic;
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
 }
 
 .tooltip {
-  position: absolute;
-  top: 30px;
-  left: 50%;
+  position: fixed; // Prevents clipping by parent containers
   transform: translateX(-50%);
   min-width: 200px;
   max-width: 300px;
@@ -33,18 +36,17 @@
   border-radius: 4px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   padding: 12px;
-  z-index: 1000;
+  z-index: 9999; // Ensures it stays above everything
 
   &:before {
     content: "";
     position: absolute;
-    top: -6px;
+    bottom: -6px; // Adjusted to correctly point at the icon
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-50%) rotate(45deg);
     width: 12px;
     height: 12px;
     background-color: white;
-    transform: translateX(-50%) rotate(45deg);
   }
 }
 

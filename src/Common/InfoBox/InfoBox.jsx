@@ -1,28 +1,39 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styles from "./InfoBox.module.scss";
 
 const InfoBox = ({ text }) => {
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
+  const [tooltipPosition, setTooltipPosition] = useState({ top: 0, left: 0 });
+  const containerRef = useRef(null);
 
-  const handleMouseEnter = () => {
-    setIsTooltipVisible(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsTooltipVisible(false);
-  };
+  useEffect(() => {
+    if (containerRef.current) {
+      const rect = containerRef.current.getBoundingClientRect();
+      setTooltipPosition({
+        top: rect.top - 40, // Adjusted to always place above
+        left: rect.left + rect.width / 2,
+      });
+    }
+  }, [isTooltipVisible]);
 
   return (
-    <div className={styles.infoBoxContainer}>
-      <div
-        className={styles.infoIcon}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      >
+    <div
+      className={styles.infoBoxContainer}
+      ref={containerRef}
+      onMouseEnter={() => setIsTooltipVisible(true)}
+      onMouseLeave={() => setIsTooltipVisible(false)}
+    >
+      <div className={styles.infoIcon}>
         <span className={styles.infoCharacter}>i</span>
       </div>
       {isTooltipVisible && (
-        <div className={styles.tooltip}>
+        <div
+          className={styles.tooltip}
+          style={{
+            top: `${tooltipPosition.top}px`,
+            left: `${tooltipPosition.left}px`,
+          }}
+        >
           <p className={styles.tooltipText}>{text}</p>
         </div>
       )}
