@@ -253,7 +253,10 @@ const HVOCategoryForm = ({
           </div>
         </div>
         <div className={styles.ingestionSection}>
-          <h2 className={styles.sectionTitle}>Ingestion</h2>
+          <h2 className={styles.sectionTitle}>
+            Ingestion{" "}
+            <InfoBox text={"Select Template Category from given list"} />
+          </h2>
           <div className={styles.ingestionWrapper}>
             {showIngestionControls && !sheetsLoading && (
               <>

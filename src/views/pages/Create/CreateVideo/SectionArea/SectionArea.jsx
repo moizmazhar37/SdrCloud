@@ -83,9 +83,11 @@ const SectionArea = ({
 
   return (
     <div className={styles.sectionAreaContainer}>
-      <InfoBox
-        text={"Enter the duration of this section video to be generated"}
-      />
+      <div className={styles.InfoBoxContainer}>
+        <InfoBox
+          text={"Enter the duration of this section video to be generated"}
+        />
+      </div>
 
       <div className={styles.sectionsWrapper}>
         {sections.map((sequence) => (
