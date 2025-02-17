@@ -16,7 +16,7 @@ const CopyText = ({ fields = [] }) => {
     <div className={styles.container}>
       <div className={styles.header}>
         Copy to Add Dynamic Fields{" "}
-        <InfoBox text={"Hi, I am Tooltip asdas aewsdasdas a asdsadContent"} />
+        <InfoBox text={"Click to copy dynamic fields"} />
       </div>
       <div className={styles.fieldList}>
         {fields.map((field, index) => (

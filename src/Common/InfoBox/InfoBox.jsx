@@ -10,8 +10,8 @@ const InfoBox = ({ text }) => {
     if (containerRef.current) {
       const rect = containerRef.current.getBoundingClientRect();
       setTooltipPosition({
-        top: rect.top - 95,
-        left: rect.left + (rect.width + 9) / 2,
+        top: rect.top - 55,
+        left: rect.left + rect.width / 2,
       });
     }
   }, [isTooltipVisible]);
