@@ -1,0 +1,56 @@
+.infoBoxContainer {
+  position: relative;
+  display: inline-block;
+  padding: 0px 2px 0px 2px;
+}
+
+.infoIcon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #a8a8a8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+}
+
+.infoCharacter {
+  color: white;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.tooltip {
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 200px;
+  max-width: 300px;
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  padding: 12px;
+  z-index: 1000;
+
+  &:before {
+    content: "";
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 12px;
+    height: 12px;
+    background-color: white;
+    transform: translateX(-50%) rotate(45deg);
+  }
+}
+
+.tooltipText {
+  margin: 0;
+  font-size: 14px;
+  color: #333;
+  line-height: 1.5;
+}

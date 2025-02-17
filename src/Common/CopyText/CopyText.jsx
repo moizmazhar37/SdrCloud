@@ -1,6 +1,7 @@
 import React from "react";
 import { Copy } from "lucide-react";
 import styles from "./CopyText.module.scss";
+import InfoBox from "../InfoBox/InfoBox";
 
 const CopyText = ({ fields = [] }) => {
   const handleCopy = async (text) => {
@@ -13,7 +14,10 @@ const CopyText = ({ fields = [] }) => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>Copy to Add Dynamic Fields</div>
+      <div className={styles.header}>
+        Copy to Add Dynamic Fields{" "}
+        <InfoBox text={"Hi, I am Tooltip asdas aewsdasdas a asdsadContent"} />
+      </div>
       <div className={styles.fieldList}>
         {fields.map((field, index) => (
           <div key={index} className={styles.fieldItem}>
