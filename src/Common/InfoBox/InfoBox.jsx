@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import styles from "./InfoBox.module.scss";
 
 const InfoBox = ({ text }) => {
-  const [isTooltipVisible, setIsTooltipVisible] = useState(false);
+  const [isTooltipVisible, setIsTooltipVisible] = useState(true);
   const [tooltipPosition, setTooltipPosition] = useState({ top: 0, left: 0 });
   const containerRef = useRef(null);
 
@@ -10,8 +10,8 @@ const InfoBox = ({ text }) => {
     if (containerRef.current) {
       const rect = containerRef.current.getBoundingClientRect();
       setTooltipPosition({
-        top: rect.top - 40, // Adjusted to always place above
-        left: rect.left + rect.width / 2,
+        top: rect.top - 95,
+        left: rect.left + (rect.width + 9) / 2,
       });
     }
   }, [isTooltipVisible]);
