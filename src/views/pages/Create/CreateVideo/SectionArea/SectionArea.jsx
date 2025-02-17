@@ -85,7 +85,9 @@ const SectionArea = ({
     <div className={styles.sectionAreaContainer}>
       <div className={styles.InfoBoxContainer}>
         <InfoBox
-          text={"Enter the duration of this section video to be generated"}
+          text={
+            "Sections will be available only if sheet is connected and template is created."
+          }
         />
       </div>
 
