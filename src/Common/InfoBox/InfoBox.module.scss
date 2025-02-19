@@ -9,7 +9,7 @@
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background-color: #a8a8a8;
+  border: 2px solid #a8a8a8;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -19,12 +19,13 @@
 }
 
 .infoCharacter {
-  color: white;
-  font-size: 13px;
+  color: #a8a8a8;
+  font-size: 12px;
   font-weight: bold;
   position: relative;
   display: inline-block;
   cursor: pointer;
+  font-style: italic;
 }
 
 .tooltip {
