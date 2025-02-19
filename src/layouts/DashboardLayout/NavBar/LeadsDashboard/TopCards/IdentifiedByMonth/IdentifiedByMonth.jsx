@@ -2,15 +2,7 @@ import React from "react";
 import styles from "./IdentifiedByMonth.module.scss";
 import { User } from "lucide-react";
 
-const IdentifiedByMonth = () => {
-  // Hardcoded data - later to be replaced with hook data
-  const data = {
-    identified: 41,
-    percentage: 9,
-    previousPeriod: 10,
-    budgetedIdentifications: 500,
-  };
-
+const IdentifiedByMonth = ({ data }) => {
   return (
     <div className={styles.wrapper}>
       <div className={styles.container}>

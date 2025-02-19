@@ -2,35 +2,8 @@ import React from "react";
 import styles from "./LatestVisitors.module.scss";
 import { Eye } from "lucide-react";
 
-const LatestVisitors = () => {
+const LatestVisitors = ({ visitors }) => {
   // Hardcoded data - later to be replaced with hook data
-  const visitors = [
-    {
-      id: 1,
-      name: "Roy Ericson",
-      timestamp: "11/12/2024 7:44:04 PM",
-    },
-    {
-      id: 2,
-      name: "Peggy Gan",
-      timestamp: "11/12/2024 1:40:08 PM",
-    },
-    {
-      id: 3,
-      name: "Kim Cochran",
-      timestamp: "11/12/2024 5:27:52 AM",
-    },
-    {
-      id: 4,
-      name: "Melvin Mathis",
-      timestamp: "11/12/2024 2:16:35 AM",
-    },
-    {
-      id: 5,
-      name: "Fernando Walker",
-      timestamp: "11/11/2024 8:59:56 PM",
-    },
-  ];
 
   return (
     <div className={styles.wrapper}>

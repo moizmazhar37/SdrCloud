@@ -19,6 +19,50 @@ const LeadsDashboard = () => {
     Female: 30.8,
   };
 
+  const monthly_data = {
+    spend: 0,
+    percentage: null,
+    budget: 0,
+  };
+
+  const visitors_data = [
+    { date: "11/6", visitors: 3 },
+    { date: "11/7", visitors: 3 },
+    { date: "11/8", visitors: 4 },
+    { date: "11/9", visitors: 3 },
+    { date: "11/10", visitors: 3 },
+    { date: "11/11", visitors: 5 },
+    { date: "11/12", visitors: 4 },
+  ];
+
+  const visitors = [
+    {
+      id: 1,
+      name: "Roy Ericson",
+      timestamp: "11/12/2024 7:44:04 PM",
+    },
+    {
+      id: 2,
+      name: "Peggy Gan",
+      timestamp: "11/12/2024 1:40:08 PM",
+    },
+    {
+      id: 3,
+      name: "Kim Cochran",
+      timestamp: "11/12/2024 5:27:52 AM",
+    },
+    {
+      id: 4,
+      name: "Melvin Mathis",
+      timestamp: "11/12/2024 2:16:35 AM",
+    },
+    {
+      id: 5,
+      name: "Fernando Walker",
+      timestamp: "11/11/2024 8:59:56 PM",
+    },
+  ];
+
   const incomeData = [
     { label: "$20,000 to $44,999", value: 5 },
     { label: "$45,000 to $59,999", value: 2 },
@@ -45,16 +89,22 @@ const LeadsDashboard = () => {
     { label: "Other", value: 11 },
   ];
 
+  const identified_by_month = {
+    identified: 41,
+    percentage: 9,
+    previousPeriod: 10,
+    budgetedIdentifications: 500,
+  };
   return (
     <div className={styles.dashboardContainer}>
       <div className={styles.TopContainer}>
-        <IdentifiedByMonth />
-        <MonthlySpend />
-        <LatestVisitors />
+        <IdentifiedByMonth data={identified_by_month} />
+        <MonthlySpend data={monthly_data} />
+        <LatestVisitors visitors={visitors} />
         <PieChart title="Direct Vs. Referral" data={referralData} />
       </div>
       <div className={styles.midContainer}>
-        <VisitorsChart />
+        <VisitorsChart data={visitors_data} />
       </div>
       <div className={styles.TopContainer}>
         <PieChart title="Gender" data={genderData} />

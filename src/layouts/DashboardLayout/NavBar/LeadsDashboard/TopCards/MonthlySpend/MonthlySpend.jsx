@@ -2,13 +2,8 @@ import React from "react";
 import styles from "./MonthlySpend.module.scss";
 import { DollarSign } from "lucide-react";
 
-const MonthlySpend = () => {
+const MonthlySpend = ({ data }) => {
   // Hardcoded data - later to be replaced with hook data
-  const data = {
-    spend: 0,
-    percentage: null, // null indicates no data
-    budget: 0,
-  };
 
   // Example of how it would look with data
   // const data = {

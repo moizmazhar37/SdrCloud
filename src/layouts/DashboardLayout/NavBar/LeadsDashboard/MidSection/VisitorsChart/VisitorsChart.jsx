@@ -10,17 +10,7 @@ import {
 } from "recharts"; // Ensure recharts is installed and the version supports these components
 import styles from "./VisitorsChart.module.scss"; // Ensure this file exists and is valid
 
-const VisitorsChart = () => {
-  const data = [
-    { date: "11/6", visitors: 3 },
-    { date: "11/7", visitors: 3 },
-    { date: "11/8", visitors: 4 },
-    { date: "11/9", visitors: 3 },
-    { date: "11/10", visitors: 3 },
-    { date: "11/11", visitors: 5 },
-    { date: "11/12", visitors: 4 },
-  ];
-
+const VisitorsChart = ({ data }) => {
   return (
     <div className={styles?.chartContainer || ""}>
       <h3 className={styles?.title || ""}>Visitors Identified</h3>
