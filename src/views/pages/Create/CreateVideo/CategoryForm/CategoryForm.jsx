@@ -6,6 +6,7 @@ import { useCreateTemplate } from "../hooks/useCreateTemplate";
 import { useConnectSheet } from "../hooks/useConnectSheet";
 import useDeleteCategory from "../hooks/useDeleteCategory";
 import useEditCategory from "../../Hooks/useEditCategoey";
+import InfoBox from "src/Common/InfoBox/InfoBox";
 
 const CategoryForm = ({
   sheetData,
@@ -152,7 +153,10 @@ const CategoryForm = ({
       <div className={styles.formContainer}>
         <div className={styles.topSection}>
           <div className={styles.categorySection}>
-            <h2 className={styles.sectionTitle}>Category</h2>
+            <h2 className={styles.sectionTitle}>
+              Category
+              <InfoBox text={"Select Template Category from given list"} />
+            </h2>
             {!categoriesLoading && !isViewMode && (
               <CategoryDropdown
                 options={localCategories}
@@ -246,7 +250,14 @@ const CategoryForm = ({
           </div>
         </div>
         <div className={styles.ingestionSection}>
-          <h2 className={styles.sectionTitle}>Ingestion</h2>
+          <h2 className={styles.sectionTitle}>
+            Ingestion{" "}
+            <InfoBox
+              text={
+                "Select from available google sheets and click connect to enable sections."
+              }
+            />
+          </h2>
           <div className={styles.ingestionWrapper}>
             {showIngestionControls && !sheetsLoading && (
               <>

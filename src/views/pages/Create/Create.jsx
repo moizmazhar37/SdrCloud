@@ -90,6 +90,9 @@ const Create = () => {
           onClick={() => {
             history.push("/createtemplate&Video");
           }}
+          infoText={
+            "Please go to Settings -> Integrations -> GoogleSheets to connect sheet before creating template."
+          }
         />
         <Card
           image={hvo}
@@ -97,6 +100,9 @@ const Create = () => {
           onClick={() => {
             history.push("/create-hvo-template");
           }}
+          infoText={
+            "Please go to Settings -> Integrations -> GoogleSheets to connect sheet before creating template."
+          }
         />
       </div>
 

@@ -5,6 +5,7 @@ import AudioDescModal from "src/Common/AudioDescModal/AudioDescModal";
 import useCreateVideoSection from "../hooks/useCreateVideoSection";
 import useUpdateVideoSection from "../hooks/useUpdateVideoSection";
 import { toast } from "react-toastify";
+import InfoBox from "src/Common/InfoBox/InfoBox";
 
 const StaticURL = ({
   categories = [],
@@ -202,7 +203,14 @@ const StaticURL = ({
 
           <div className={styles.controlRow}>
             <div className={styles.durationInput}>
-              <label>Duration (sec)</label>
+              <label>
+                Duration (sec){" "}
+                <InfoBox
+                  text={
+                    "Enter the duration of this section video to be generated"
+                  }
+                />
+              </label>
               <input
                 type="text"
                 value={duration}
