@@ -20,10 +20,11 @@
 }
 
 .midContainer {
-  display: flex;
-  gap: 24px;
+  // display: flex;
+  // gap: 24px;
 
-  @media (max-width: 1500px) {
-    flex-direction: column;
-  }
+  // @media (max-width: 1500px) {
+  //   flex-direction: column;
+  // }
+  padding: 16px;
 }
