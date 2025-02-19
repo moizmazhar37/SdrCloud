@@ -6,6 +6,7 @@ import { useCreateTemplate } from "../../CreateVideo/hooks/useCreateTemplate";
 import { useConnectSheet } from "../../CreateVideo/hooks/useConnectSheet";
 import useDeleteCategory from "../../CreateVideo/hooks/useDeleteCategory";
 import useEditCategory from "../../Hooks/useEditCategoey";
+import InfoBox from "src/Common/InfoBox/InfoBox";
 
 const HVOCategoryForm = ({
   sheetData,
@@ -252,7 +253,10 @@ const HVOCategoryForm = ({
           </div>
         </div>
         <div className={styles.ingestionSection}>
-          <h2 className={styles.sectionTitle}>Ingestion</h2>
+          <h2 className={styles.sectionTitle}>
+            Ingestion{" "}
+            <InfoBox text={"Select Template Category from given list"} />
+          </h2>
           <div className={styles.ingestionWrapper}>
             {showIngestionControls && !sheetsLoading && (
               <>

@@ -1,0 +1,30 @@
+.TopContainer {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  padding: 16px;
+  padding-left: 0;
+
+  @media (min-width: 800px) {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  @media (min-width: 800px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 1600px) {
+    /* Adjusted for larger screens */
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.midContainer {
+  // display: flex;
+  // gap: 24px;
+
+  // @media (max-width: 1500px) {
+  //   flex-direction: column;
+  // }
+  padding: 16px;
+}

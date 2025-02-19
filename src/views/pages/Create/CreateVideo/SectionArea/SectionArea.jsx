@@ -4,6 +4,7 @@ import CategoryDropdown from "../CategoryDropdown/CategoryDropdown";
 import SectionView from "./SectionView/SectionView";
 import usePreviewVideo from "../hooks/usePreviewVideo";
 import styles from "./SectionArea.module.scss";
+import InfoBox from "src/Common/InfoBox/InfoBox";
 
 const SectionArea = ({
   initialOptions,
@@ -82,6 +83,14 @@ const SectionArea = ({
 
   return (
     <div className={styles.sectionAreaContainer}>
+      <div className={styles.InfoBoxContainer}>
+        <InfoBox
+          text={
+            "Sections will be available only if sheet is connected and template is created."
+          }
+        />
+      </div>
+
       <div className={styles.sectionsWrapper}>
         {sections.map((sequence) => (
           <div key={`section-${sequence}`} className={styles.sectionWrapper}>
