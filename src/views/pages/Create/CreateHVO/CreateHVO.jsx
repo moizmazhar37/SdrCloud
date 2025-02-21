@@ -79,10 +79,10 @@ const CreateHVO = () => {
   const handleSectionUpdate = useCallback(() => {
     setSectionUpdateTrigger((prev) => !prev);
   }, []);
-
   const elementsList = Array.isArray(sectionData?.elementsList)
     ? sectionData.elementsList
     : [];
+  console.log("Element List in Create ==", elementsList);
 
   const dynamicField = extractKeywordList(data, HighlightBannerTypes);
   const dynamicURL = extractKeywordList(data, URLTypes);
