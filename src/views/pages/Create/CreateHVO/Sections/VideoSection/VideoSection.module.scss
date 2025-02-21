@@ -1,0 +1,131 @@
+.videoUploadContainer {
+  border: 1px solid #e0e0e0;
+  margin: 0;
+  border-radius: 6px;
+  padding: 30px;
+  background: #fff;
+  border: 1px rgb(240, 239, 239) solid;
+  box-shadow: 0px 8px 24px 0px rgba(0, 0, 0, 0.04);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+
+  h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #333;
+  }
+}
+
+.inputContainer {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  position: relative;
+  width: 100%;
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+  }
+}
+
+.urlInput {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  min-width: 0;
+
+  &:focus {
+    outline: none;
+    border-color: #0066cc;
+  }
+}
+
+.fileInput {
+  display: none;
+}
+
+.chooseButton {
+  padding: 10px 20px;
+  background-color: #0358ac;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #0052a3;
+  }
+
+  @media (max-width: 600px) {
+    width: 100%;
+  }
+}
+
+.previewContainer {
+  width: 100%;
+  max-width: 370px;
+  margin: 20px 0;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: #f5f5f5;
+}
+
+.videoPreview {
+  width: 100%;
+  max-height: 450px;
+  object-fit: contain;
+  border-radius: 10px;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.saveButton,
+.cancelButton {
+  padding: 10px 24px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.saveButton {
+  background-color: #0066cc;
+  color: white;
+  border: none;
+
+  &:hover {
+    background-color: #0052a3;
+  }
+
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+}
+
+.cancelButton {
+  background-color: white;
+  color: #333;
+  border: 1px solid #ccc;
+
+  &:hover {
+    background-color: #f5f5f5;
+  }
+}

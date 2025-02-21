@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap");
+
 .infoBoxContainer {
   position: relative;
   display: inline-block;
@@ -20,12 +22,13 @@
 
 .infoCharacter {
   color: #a8a8a8;
-  font-size: 12px;
-  font-weight: bold;
+  font-size: 15px;
   position: relative;
   display: inline-block;
+  margin-top: -2px;
   cursor: pointer;
-  font-style: italic;
+  font-weight: bolder;
+  font-family: "Dancing Script", cursive;
 }
 
 .tooltip {

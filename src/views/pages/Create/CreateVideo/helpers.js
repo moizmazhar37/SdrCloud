@@ -28,6 +28,7 @@ export const hvoInitialOptions = [
   { label: "Highlight Banner 2", value: "Highlight Banner 2" },
   { label: "Left Text Right Image", value: "Left Text Right Image" },
   { label: "Footer", value: "Footer" },
+  { label: "Video", value: "Video" },
 ];
 
 export const extractHvoCategories = (data, types) => {
@@ -50,9 +51,7 @@ export const HighlightBannerTypes = [
   "Customer organization",
 ];
 
-export const URLTypes = [
-  "URL"
-]
+export const URLTypes = ["URL"];
 
 export const extractKeywordList = (data, types) => {
   if (!data || !Array.isArray(data)) {

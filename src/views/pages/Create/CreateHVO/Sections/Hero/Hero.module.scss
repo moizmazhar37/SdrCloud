@@ -57,8 +57,11 @@
   width: 100%;
 }
 
-.chooseButton {
-  background-color: #0066cc;
+.chooseButton,
+.saveButton {
+  background-color: #0358ac;
+  font-weight: 600;
+  font-size: 14px;
   color: #fff;
   padding: 13.5px 24px;
   border: none;
@@ -112,25 +115,9 @@
   justify-content: flex-end;
   gap: 16px;
   padding: 16px 24px;
-  border-top: 1px solid #e2e8f0;
 
   @media (max-width: 480px) {
     flex-direction: column;
-  }
-}
-
-.saveButton {
-  padding: 8px 24px;
-  border-radius: 4px;
-  font-size: 14px;
-  font-weight: 500;
-  background: #0066cc;
-  color: white;
-  border: none;
-  cursor: pointer;
-
-  &:hover {
-    background: #0052a3;
   }
 }
 
