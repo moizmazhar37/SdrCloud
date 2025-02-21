@@ -548,7 +548,7 @@ function PreviewHVO(location) {
                   </Slider>
                 )}
 
-                {/* ADD VIDEO SECTION WITH INLINE STYLES */}
+                {/* ADD VIDEO SECTION WITH AUTOPLAY & LOOP */}
                 {pageData?.find(
                   (videoItem) => videoItem?.sectionName === "HVO_VIDEO"
                 ) && (
@@ -583,7 +583,10 @@ function PreviewHVO(location) {
                       <Grid item xs={12} md={6}>
                         <video
                           width="100%"
-                          controls
+                          autoPlay
+                          loop
+                          muted
+                          playsInline
                           style={{
                             borderRadius: "10px",
                             boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
@@ -598,7 +601,6 @@ function PreviewHVO(location) {
                             }
                             type="video/mp4"
                           />
-                          Your browser does not support the video tag.
                         </video>
                       </Grid>
                     </Grid>
