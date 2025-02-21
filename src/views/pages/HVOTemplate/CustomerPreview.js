@@ -296,7 +296,8 @@ function CustomerPreview(location) {
 
   useEffect(() => {
     const script = document.createElement("script");
-    script.src = "https://storage.googleapis.com/static-data-for-sdrc/scripts/tracker.js";
+    script.src =
+      "https://storage.googleapis.com/static-data-for-sdrc/scripts/tracker.js";
     script.async = true;
     document.body.appendChild(script);
 
@@ -519,7 +520,6 @@ function CustomerPreview(location) {
                     style={{ background: item?.values?.banner_color }}
                     className={classes.LandingSlider}
                   >
-                    {}
                     {Array.from({ length: 18 }).map((_, index) => (
                       <Box
                         sx={{
@@ -527,15 +527,12 @@ function CustomerPreview(location) {
                             item?.values?.banner_text_color || "#FFF"
                           } !important`,
                           fontSize: `${
-                            item?.values?.banner_text_color || "16"
+                            item?.values?.banner_text_size || "16"
                           }px !important`,
                           paddingTop: "30px",
                           paddingBottom: "30px",
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
                         }}
-                        // display="flex"
+                        display="flex"
                         key={index}
                       >
                         {item?.values?.banner_text}
@@ -548,7 +545,6 @@ function CustomerPreview(location) {
                     style={{ background: item?.values?.banner_color }}
                     className={classes.LandingSlider}
                   >
-                    {}
                     {Array.from({ length: 18 }).map((_, index) => (
                       <Box
                         sx={{
@@ -560,9 +556,6 @@ function CustomerPreview(location) {
                           }px !important`,
                           paddingTop: "30px",
                           paddingBottom: "30px",
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
                         }}
                         display="flex"
                         key={index}
@@ -571,6 +564,43 @@ function CustomerPreview(location) {
                       </Box>
                     ))}
                   </Slider>
+                )}
+
+                {/* ADD VIDEO SECTION WITH CENTERED VIDEO */}
+                {pageData?.find(
+                  (videoItem) => videoItem?.sectionName === "HVO_VIDEO"
+                ) && (
+                  <Container
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      padding: "40px 0",
+                    }}
+                  >
+                    <video
+                      width="60%" // Adjust size as needed
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      style={{
+                        borderRadius: "10px",
+                        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+                        display: "block",
+                      }}
+                    >
+                      <source
+                        src={
+                          pageData?.find(
+                            (videoItem) =>
+                              videoItem?.sectionName === "HVO_VIDEO"
+                          )?.values?.video
+                        }
+                        type="video/mp4"
+                      />
+                    </video>
+                  </Container>
                 )}
               </>
             )}
@@ -804,9 +834,7 @@ function CustomerPreview(location) {
                           <a
                             target="_blank"
                             rel="noopener noreferrer"
-                            href={
-                              item?.values?.facebook_link || "#"
-                            }
+                            href={item?.values?.facebook_link || "#"}
                             aria-label="Instagram"
                           >
                             <FaFacebookF
@@ -821,9 +849,7 @@ function CustomerPreview(location) {
                           <a
                             target="_blank"
                             rel="noopener noreferrer"
-                            href={
-                              item?.values?.linkedin_link || "#"
-                            }
+                            href={item?.values?.linkedin_link || "#"}
                             aria-label="Instagram"
                           >
                             <FaLinkedinIn
@@ -838,9 +864,7 @@ function CustomerPreview(location) {
                           <a
                             target="_blank"
                             rel="noopener noreferrer"
-                            href={
-                              item?.values?.instagram_link || "#"
-                            }
+                            href={item?.values?.instagram_link || "#"}
                             aria-label="Instagram"
                           >
                             <FaInstagram
