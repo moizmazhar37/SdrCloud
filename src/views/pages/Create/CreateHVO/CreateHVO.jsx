@@ -35,7 +35,7 @@ const SECTION_TYPES = {
   HIGHLIGHT_BANNER_2: "Highlight Banner 2",
   FOOTER: "Footer",
   HERO: "Hero",
-  VIDEO: "Video",
+  VIDEO: "HVO Video",
 };
 
 const CreateHVO = () => {
@@ -110,6 +110,7 @@ const CreateHVO = () => {
   };
 
   const handleEdit = (section) => {
+    console.log("Selecteed==,", section.section_name);
     setIsEditMode(true);
     setEditingSection(section);
     setSectionNum(section.sequence);

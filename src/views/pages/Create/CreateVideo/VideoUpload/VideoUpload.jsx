@@ -3,7 +3,7 @@ import styles from "./VideoUpload.module.scss";
 import CategoryDropdown from "../CategoryDropdown/CategoryDropdown";
 import AudioDescModal from "src/Common/AudioDescModal/AudioDescModal";
 import useCreateVideoSection from "../hooks/useCreateVideoSection";
-import useUpdateVideoSection from "../hooks/useUpdateVideoSection";
+import useUpdateVideoSection from "../hooks/useUpdateImageVideoSection";
 import { toast } from "react-toastify";
 
 const VideoUpload = ({

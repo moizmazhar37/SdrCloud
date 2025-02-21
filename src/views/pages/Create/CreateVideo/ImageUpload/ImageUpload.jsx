@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import styles from "./ImageUpload.module.scss";
 import CategoryDropdown from "../CategoryDropdown/CategoryDropdown";
 import useCreateVideoSection from "../hooks/useCreateVideoSection";
-import useUpdateVideoSection from "../hooks/useUpdateVideoSection";
+import useUpdateVideoSection from "../hooks/useUpdateImageVideoSection";
 import { toast } from "react-toastify";
 import AudioDescModal from "src/Common/AudioDescModal/AudioDescModal";
 import InfoBox from "src/Common/InfoBox/InfoBox";

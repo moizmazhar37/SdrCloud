@@ -1,5 +1,5 @@
-const url = "https://backend-283763506150.us-central1.run.app";
-// const url = "http://localhost:8000";
+// const url = "https://backend-283763506150.us-central1.run.app";
+const url = "http://localhost:8000";
 // const url = "http://192.168.18.91:8000";
 
 const auth = `${url}/auth`;
@@ -59,6 +59,7 @@ const ApiConfig = {
   headerSection: `${hvoelement}/header-section`,
   heroSection: `${hvoelement}/hero-section`,
   rightTextLeftImageSection: `${hvoelement}/right-text-left-image-section`,
+  hvoVideoSection: `${hvoelement}/video-section`,
   higlightBannerSection: `${hvoelement}/highlight-banner-section`,
   highlightBanner2Section: `${hvoelement}/highlight-banner2-section`,
   footerSection: `${hvoelement}/footer-section`,

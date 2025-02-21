@@ -52,6 +52,11 @@ const getPreviewContent = (element, apiData) => {
       }
       return previewUrl;
 
+    case "HVO Video":
+      previewUrl = element.video;
+      console.log("element====");
+      return previewUrl;
+
     case "Footer":
       return null;
 

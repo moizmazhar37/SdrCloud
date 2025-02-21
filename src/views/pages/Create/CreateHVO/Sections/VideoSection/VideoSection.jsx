@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import styles from "./VideoSection.module.scss";
+import { useSaveVideoSection } from "../../Hooks/VideoSection/useSaveVideoSection";
 
 const VideoUpload = ({
   onSectionSave,
@@ -11,12 +12,14 @@ const VideoUpload = ({
   const [videoUrl, setVideoUrl] = useState("");
   const [previewUrl, setPreviewUrl] = useState("");
   const [isEditing, setIsEditing] = useState(false);
+  const [videoFile, setVideoFile] = useState(null);
   const fileInputRef = useRef(null);
+  const { saveVideoSection, isLoading } = useSaveVideoSection();
 
   useEffect(() => {
-    if (initialData?.video_url) {
-      setVideoUrl(initialData.video_url);
-      setPreviewUrl(initialData.video_url);
+    if (initialData?.video) {
+      setVideoUrl(initialData.video);
+      setPreviewUrl(initialData.video);
       setIsEditing(true);
     }
   }, [initialData]);
@@ -25,6 +28,11 @@ const VideoUpload = ({
     const url = e.target.value;
     setVideoUrl(url);
     setPreviewUrl(url);
+    // Clear file selection when URL is entered
+    setVideoFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
   };
 
   const handleFileUpload = (e) => {
@@ -32,6 +40,8 @@ const VideoUpload = ({
     if (file) {
       const objectUrl = URL.createObjectURL(file);
       setPreviewUrl(objectUrl);
+      setVideoFile(file);
+      // Clear URL when file is selected
       setVideoUrl("");
     }
   };
@@ -40,27 +50,36 @@ const VideoUpload = ({
     fileInputRef.current?.click();
   };
 
-  const handleSave = () => {
-    if (!videoUrl && !previewUrl) {
+  const handleSave = async () => {
+    if (!videoUrl && !videoFile && !previewUrl) {
       return;
     }
 
-    const sectionData = {
-      template_id: templateId,
-      sequence: sequence,
-      section_name: "Video",
-      video_url: videoUrl || previewUrl,
-      is_active: true,
-    };
+    try {
+      const sectionData = {
+        template_id: templateId,
+        sequence: sequence,
+        section_name: "Video",
+        ...(videoFile ? { file: videoFile } : { video_url: videoUrl }),
+      };
 
-    onSectionSave(sectionData);
-    handleClose();
+      const result = await saveVideoSection(sectionData);
+      onSectionSave(result);
+      handleClose();
+    } catch (error) {
+      // Error is already handled by the hook with toast
+      console.error("Error saving video section:", error);
+    }
   };
 
   const handleClose = () => {
     setVideoUrl("");
     setPreviewUrl("");
+    setVideoFile(null);
     setIsEditing(false);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
     onClose();
   };
 
@@ -69,7 +88,6 @@ const VideoUpload = ({
       <div className={styles.header}>
         <h3>{isEditing ? "Edit Video" : "Add Video"}</h3>
       </div>
-
       <div className={styles.inputContainer}>
         <input
           type="text"
@@ -77,6 +95,7 @@ const VideoUpload = ({
           value={videoUrl}
           onChange={handleUrlChange}
           className={styles.urlInput}
+          disabled={isLoading}
         />
         <input
           type="file"
@@ -85,11 +104,14 @@ const VideoUpload = ({
           accept="video/*"
           className={styles.fileInput}
         />
-        <button onClick={handleChooseClick} className={styles.chooseButton}>
+        <button
+          onClick={handleChooseClick}
+          className={styles.chooseButton}
+          disabled={isLoading}
+        >
           Choose
         </button>
       </div>
-
       {previewUrl && (
         <div className={styles.previewContainer}>
           <video controls className={styles.videoPreview} key={previewUrl}>
@@ -98,16 +120,19 @@ const VideoUpload = ({
           </video>
         </div>
       )}
-
       <div className={styles.actionButtons}>
         <button
           onClick={handleSave}
           className={styles.saveButton}
-          disabled={!videoUrl && !previewUrl}
+          disabled={(!videoUrl && !videoFile && !previewUrl) || isLoading}
         >
-          {isEditing ? "Update" : "Save"}
+          {isLoading ? "Saving..." : isEditing ? "Update" : "Save"}
         </button>
-        <button onClick={handleClose} className={styles.cancelButton}>
+        <button
+          onClick={handleClose}
+          className={styles.cancelButton}
+          disabled={isLoading}
+        >
           Cancel
         </button>
       </div>
