@@ -548,62 +548,40 @@ function PreviewHVO(location) {
                   </Slider>
                 )}
 
-                {/* ADD VIDEO SECTION WITH AUTOPLAY & LOOP */}
+                {/* ADD VIDEO SECTION WITH CENTERED VIDEO */}
                 {pageData?.find(
                   (videoItem) => videoItem?.sectionName === "HVO_VIDEO"
                 ) && (
-                  <Container style={{ padding: "40px 0" }}>
-                    <Grid container spacing={4} alignItems="center">
-                      <Grid item xs={12} md={6}>
-                        <Typography
-                          variant="h2"
-                          style={{
-                            color: "#063E4B",
-                            fontWeight: 900,
-                            fontSize: "36px", // Bigger text
-                            lineHeight: "42px",
-                          }}
-                        >
-                          Discover the Future of Employee Experience!
-                        </Typography>
-                        <Typography
-                          variant="body1"
-                          style={{
-                            color: "#063A47",
-                            fontSize: "22px", // Bigger second paragraph
-                            marginTop: "10px",
-                            lineHeight: "30px",
-                          }}
-                        >
-                          Learn how our platform helps you create seamless,
-                          engaging, and effective employee journeys powered by
-                          data and technology.
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={12} md={6}>
-                        <video
-                          width="100%"
-                          autoPlay
-                          loop
-                          muted
-                          playsInline
-                          style={{
-                            borderRadius: "10px",
-                            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-                          }}
-                        >
-                          <source
-                            src={
-                              pageData?.find(
-                                (videoItem) =>
-                                  videoItem?.sectionName === "HVO_VIDEO"
-                              )?.values?.video
-                            }
-                            type="video/mp4"
-                          />
-                        </video>
-                      </Grid>
-                    </Grid>
+                  <Container
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      padding: "40px 0",
+                    }}
+                  >
+                    <video
+                      width="60%" // Adjust size as needed
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      style={{
+                        borderRadius: "10px",
+                        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+                        display: "block",
+                      }}
+                    >
+                      <source
+                        src={
+                          pageData?.find(
+                            (videoItem) =>
+                              videoItem?.sectionName === "HVO_VIDEO"
+                          )?.values?.video
+                        }
+                        type="video/mp4"
+                      />
+                    </video>
                   </Container>
                 )}
               </>
