@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import styles from "./VideoSection.module.scss";
 import { useSaveVideoSection } from "../../Hooks/VideoSection/useSaveVideoSection";
+import { useUpdateVideoSection } from "../../Hooks/VideoSection/useUpdateVideoSection";
 
 const VideoUpload = ({
   onSectionSave,
@@ -14,7 +15,10 @@ const VideoUpload = ({
   const [isEditing, setIsEditing] = useState(false);
   const [videoFile, setVideoFile] = useState(null);
   const fileInputRef = useRef(null);
-  const { saveVideoSection, isLoading } = useSaveVideoSection();
+
+  const { saveVideoSection, isLoading: isSaving } = useSaveVideoSection();
+  const { updateVideoSection, isLoading: isUpdating } = useUpdateVideoSection();
+  const isLoading = isSaving || isUpdating;
 
   useEffect(() => {
     if (initialData?.video) {
@@ -60,10 +64,17 @@ const VideoUpload = ({
         template_id: templateId,
         sequence: sequence,
         section_name: "Video",
+        is_active: true,
         ...(videoFile ? { file: videoFile } : { video_url: videoUrl }),
       };
 
-      const result = await saveVideoSection(sectionData);
+      let result;
+      if (isEditing && initialData?.id) {
+        result = await updateVideoSection(initialData.id, sectionData);
+      } else {
+        result = await saveVideoSection(sectionData);
+      }
+
       onSectionSave(result);
       handleClose();
     } catch (error) {
