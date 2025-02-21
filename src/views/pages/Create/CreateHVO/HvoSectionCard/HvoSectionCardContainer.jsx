@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from "react";
+import React, { useMemo } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import HvoSectionCard from "./HvoSectionCard";
 import styles from "./container.module.scss";
@@ -11,46 +11,39 @@ const isValidUrl = (url) => {
 };
 
 const getPreviewContent = (element, apiData) => {
-  let previewUrl;
+  if (!element) return null;
 
   switch (element.section_name) {
     case "Header":
-      previewUrl = element.company_logo;
-      if (!isValidUrl(previewUrl) && apiData) {
-        previewUrl = apiData.LOGO;
-      }
-      return previewUrl;
+      return isValidUrl(element.company_logo)
+        ? element.company_logo
+        : apiData?.LOGO || null;
 
     case "Hero":
-      previewUrl = element.hero_img;
-      if (!isValidUrl(previewUrl) && apiData) {
-        previewUrl = apiData["Hero Image"];
-      }
-      return previewUrl;
+      return isValidUrl(element.hero_img)
+        ? element.hero_img
+        : apiData?.["Hero Image"] || null;
 
     case "Right Text Left Image":
-      previewUrl = element.left_image_right_text;
-      if (!isValidUrl(previewUrl) && apiData) {
-        previewUrl = apiData.RIGHT_TEXT_LEFT_IMAGE;
-      }
-      return previewUrl;
+      return isValidUrl(element.left_image_right_text)
+        ? element.left_image_right_text
+        : apiData?.RIGHT_TEXT_LEFT_IMAGE || null;
 
     case "Left Text Right Image":
-      previewUrl = element.left_text_right_image_url;
-      if (!isValidUrl(previewUrl) && apiData) {
-        previewUrl = apiData["LEFT TEXT RIGHT IMAGE"];
-      }
-      return previewUrl;
+      return isValidUrl(element.left_text_right_image_url)
+        ? element.left_text_right_image_url
+        : apiData?.["LEFT TEXT RIGHT IMAGE"] || null;
 
     case "Highlight Banner":
       return null;
 
     case "Highlight Banner 2":
-      previewUrl = element.static_url;
-      if (!isValidUrl(previewUrl) && apiData) {
-        previewUrl = apiData.BANNER_CTA_URL2;
-      }
-      return previewUrl;
+      return isValidUrl(element.static_url)
+        ? element.static_url
+        : apiData?.BANNER_CTA_URL2 || null;
+
+    case "HVO Video":
+      return isValidUrl(element.video) ? element.video : null;
 
     case "Footer":
       return null;
@@ -67,10 +60,10 @@ const HvoSectionCardContainer = ({
   templateId,
 }) => {
   const { swapSequence } = useSwapHvoSequence();
-  const { data: apiData, error, loading } = useGetFirstRowData(templateId);
+  const { data: apiData } = useGetFirstRowData(templateId);
 
   const sortedElements = useMemo(() => {
-    if (!elementsList) return [];
+    if (!elementsList?.length) return [];
     return [...elementsList].sort((a, b) => a.sequence - b.sequence);
   }, [elementsList]);
 
@@ -111,37 +104,42 @@ const HvoSectionCardContainer = ({
             {...provided.droppableProps}
             ref={provided.innerRef}
           >
-            {sortedElements.map((element, index) => (
-              <Draggable
-                key={element.id}
-                draggableId={element.id.toString()}
-                index={index}
-              >
-                {(provided, snapshot) => (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.draggableProps}
-                    {...provided.dragHandleProps}
-                    className={`${styles.draggableCard} ${
-                      snapshot.isDragging ? styles.dragging : ""
-                    }`}
-                    style={provided.draggableProps.style}
-                  >
-                    <HvoSectionCard
-                      id={element.id}
-                      sectionSequnece={element.sequence}
-                      sectionNumber={element.section_number}
-                      sectionName={element.section_name}
-                      duration={element.duration}
-                      scroll={element.scroll}
-                      previewContent={getPreviewContent(element, apiData)}
-                      onDeleteSuccess={onSectionUpdate}
-                      onEdit={() => handleEdit(element)}
-                    />
-                  </div>
-                )}
-              </Draggable>
-            ))}
+            {sortedElements.map((element, index) => {
+              const previewUrl = getPreviewContent(element, apiData);
+
+              return (
+                <Draggable
+                  key={element.id}
+                  draggableId={element.id.toString()}
+                  index={index}
+                >
+                  {(provided, snapshot) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                      className={`${styles.draggableCard} ${
+                        snapshot.isDragging ? styles.dragging : ""
+                      }`}
+                      style={provided.draggableProps.style}
+                    >
+                      <HvoSectionCard
+                        key={`${element.id}-${element.sequence}-${previewUrl}`}
+                        id={element.id}
+                        sectionSequnece={element.sequence}
+                        sectionNumber={element.section_number}
+                        sectionName={element.section_name}
+                        duration={element.duration}
+                        scroll={element.scroll}
+                        previewContent={previewUrl}
+                        onDeleteSuccess={onSectionUpdate}
+                        onEdit={() => handleEdit(element)}
+                      />
+                    </div>
+                  )}
+                </Draggable>
+              );
+            })}
             {provided.placeholder}
           </div>
         )}

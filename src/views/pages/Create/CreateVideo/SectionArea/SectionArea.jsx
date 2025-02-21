@@ -70,7 +70,7 @@ const SectionArea = ({
   const handleProgressOverview = async () => {
     if (type === "hvo") {
       localStorage.setItem("templateId", templateId);
-      history.push("/preview-hvo");
+      window.open("/preview-hvo", "_blank");
     } else {
       if (templateId) {
         const response = await previewVideo(templateId);

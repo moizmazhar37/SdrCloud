@@ -191,13 +191,10 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   LandingSlider: {
-    // marginTop: "100px",
     "& .slick-track": {
       display: "flex",
       gap: "60px",
       alignItems: "center",
-      // height: "100px !important",
-      // background: "#0358AC",
       color: "white",
       whiteSpace: "nowrap",
       fontSize: "32px",
@@ -218,8 +215,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     gap: "60px",
     alignItems: "center",
-    // height: "100px !important",
-    // background: "#0358AC",
+
     color: "white",
     fontSize: "32px",
   },
@@ -244,33 +240,10 @@ function PreviewHVO(location) {
   console.log(pageData, "pageData");
   const [accountData, setAccountData] = useState("");
 
-  const iconMap = {
-    Facebook: FaFacebookF,
-    Linkedin: FaLinkedinIn,
-    Instagram: FaInstagram,
-    Twitter: FaTwitter,
-  };
-
-  // useEffect(() => {
-  //   if (location?.location?.state && location?.location?.state?.linkObject) {
-  //     console.log(location.location?.state.linkObject, "state linkObject");
-  //     setPageData(location?.location?.state?.linkObject);
-  //     const filteredFooter = location?.location?.state?.linkObject?.filter(
-  //       (item) => item?.sectionName == "FOOTER"
-  //     );
-  //     setFilteresdFooterSection(filteredFooter);
-  //   }
-  //   AOS.init();
-  //   // fetchPreviewData();
-  // }, [location]);
-  // AOS.init({
-  //   duration: 800, // Duration of the animation
-  //   offset: 100, // Offset (in pixels) from the top of the element when animation starts
-  // });
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
-      const storedTemplateId = localStorage.getItem("templateId"); // Get templateId from localStorage
+      const storedTemplateId = localStorage.getItem("templateId");
       console.log("storedTemplateId: ", storedTemplateId);
 
       if (storedTemplateId) {
@@ -322,15 +295,6 @@ function PreviewHVO(location) {
     nextArrow: <></>,
   };
   const settings2 = {
-    // infinite: true,
-    // speed: 10000,
-    // slidesToShow: 1,
-    // slidesToScroll: 1,
-    // autoplay: true,
-    // autoplaySpeed: 1000,
-    // cssEase: "linear",
-    // variableWidth: true,
-    // pauseOnHover: false,
     prevArrow: <></>,
     nextArrow: <></>,
   };
@@ -432,16 +396,7 @@ function PreviewHVO(location) {
                           fontSize: `${item?.values?.headline1_size}px`,
                         }}
                         variant="h3"
-                        // data-aos="fade-up"
                       >
-                        {/* <span
-                          style={{
-                            color: item?.values?.headline1Color,
-                            fontWeight: 300,
-                          }}
-                        >
-                          Welcome{" "}
-                        </span> */}
                         {item?.values?.headline1}
                       </Typography>
                       <Typography
@@ -454,7 +409,6 @@ function PreviewHVO(location) {
                           lineHeight: "35px",
                         }}
                         variant="h1"
-                        // data-aos="fade-up"
                       >
                         {item?.values?.headline2}
                       </Typography>
@@ -514,8 +468,6 @@ function PreviewHVO(location) {
                             onMouseLeave={handleMouseLeave}
                           >
                             {item?.values?.demo_button_text}
-                            {/* {"  "}
-                            <IoIosArrowForward /> */}
                           </Typography>
                         )}
                       </Box>
@@ -550,33 +502,6 @@ function PreviewHVO(location) {
                     style={{ background: item?.values?.banner_color }}
                     className={classes.LandingSlider}
                   >
-                    {}
-                    {Array.from({ length: 18 }).map((_, index) => (
-                      <Box
-                        sx={{
-                          color: `${
-                            item?.values?.banner_text_color || "#FFF"
-                          } !important`,
-                          fontSize: `${
-                            item?.values?.banner_text_color || "16"
-                          }px !important`,
-                          paddingTop: "30px",
-                          paddingBottom: "30px",
-                        }}
-                        display="flex"
-                        key={index}
-                      >
-                        {item?.values?.banner_text}
-                      </Box>
-                    ))}
-                  </Slider>
-                ) : (
-                  <Slider
-                    {...settings2}
-                    style={{ background: item?.values?.banner_color }}
-                    className={classes.LandingSlider}
-                  >
-                    {}
                     {Array.from({ length: 18 }).map((_, index) => (
                       <Box
                         sx={{
@@ -596,6 +521,68 @@ function PreviewHVO(location) {
                       </Box>
                     ))}
                   </Slider>
+                ) : (
+                  <Slider
+                    {...settings2}
+                    style={{ background: item?.values?.banner_color }}
+                    className={classes.LandingSlider}
+                  >
+                    {Array.from({ length: 18 }).map((_, index) => (
+                      <Box
+                        sx={{
+                          color: `${
+                            item?.values?.banner_text_color || "#FFF"
+                          } !important`,
+                          fontSize: `${
+                            item?.values?.banner_text_size || "16"
+                          }px !important`,
+                          paddingTop: "30px",
+                          paddingBottom: "30px",
+                        }}
+                        display="flex"
+                        key={index}
+                      >
+                        {item?.values?.banner_text}
+                      </Box>
+                    ))}
+                  </Slider>
+                )}
+
+                {/* ADD VIDEO SECTION WITH CENTERED VIDEO */}
+                {pageData?.find(
+                  (videoItem) => videoItem?.sectionName === "HVO_VIDEO"
+                ) && (
+                  <Container
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      padding: "40px 0",
+                    }}
+                  >
+                    <video
+                      width="60%" // Adjust size as needed
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      style={{
+                        borderRadius: "10px",
+                        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+                        display: "block",
+                      }}
+                    >
+                      <source
+                        src={
+                          pageData?.find(
+                            (videoItem) =>
+                              videoItem?.sectionName === "HVO_VIDEO"
+                          )?.values?.video
+                        }
+                        type="video/mp4"
+                      />
+                    </video>
+                  </Container>
                 )}
               </>
             )}
@@ -624,7 +611,6 @@ function PreviewHVO(location) {
                     >
                       <Typography
                         variant="h1"
-                        // data-aos="fade-up"
                         style={{
                           fontSize: `${item?.values?.headline1_size}px`,
                           color: item?.values?.headline1_color,
@@ -656,31 +642,6 @@ function PreviewHVO(location) {
                         {" "}
                         {item?.values?.body_text}
                       </Typography>
-
-                      {/* <Typography
-                      variant="body1"
-                      data-aos="fade-up"
-                      style={{ wordBreak: "break-word" }}
-                    >
-                      {item?.bodyText}
-                    </Typography> */}
-                      {/* <Button
-                      variant="contained"
-                      data-aos="fade-up"
-                      style={{
-                        backgroundColor: item?.values?.ctaButtonColor,
-                        color: item?.values?.ctaButtonTextColor,
-                      }}
-                      onClick={() =>
-                        window.open(
-                          item?.values?.staticUrl
-                            ? item?.values?.staticUrl
-                            : item?.values?.dynamcUrl
-                        )
-                      }
-                    >
-                      {item?.values?.ctaButtonText}
-                    </Button> */}
                     </Grid>
                   </Grid>
                 </Container>
@@ -707,7 +668,9 @@ function PreviewHVO(location) {
                       style={{
                         fontWeight: 700,
                         color: item?.values?.banner_text_color,
-                        fontSize: `${item?.values?.banner2_text_size || "30"}px`,
+                        fontSize: `${
+                          item?.values?.banner2_text_size || "30"
+                        }px`,
                       }}
                       display="flex"
                       key={index}
@@ -788,24 +751,6 @@ function PreviewHVO(location) {
                       >
                         {item?.values?.body_text}
                       </Typography>
-
-                      {/* <Button
-                      onClick={() =>
-                        window.open(
-                          item?.values?.staticUrl
-                            ? item?.values?.staticUrl
-                            : item?.values?.dynamicUrl
-                        )
-                      }
-                      style={{
-                        backgroundColor: item?.values?.ctaButtonColor,
-                        color: item?.values?.ctaButtonTextColor,
-                      }}
-                      variant="contained"
-                      data-aos="fade-up"
-                    >
-                      {item?.values?.ctaButtonText}
-                    </Button> */}
                     </Grid>
                     <Grid item sm={6} xs={12} align="center">
                       <img
@@ -833,7 +778,6 @@ function PreviewHVO(location) {
                   <Container>
                     <Grid
                       style={{
-                        // backgroundColor: "#173057",
                         marginTop: "40px",
                         marginBottom: "40px",
                       }}
@@ -866,44 +810,13 @@ function PreviewHVO(location) {
                         >
                           Sales: {item?.values?.footerLinks?.footerContact}
                         </span>
-                        {/* <Typography
-                        variant="body1"
-                        style={{
-                          color: item?.values?.leftFooterTextColor,
-                          marginTop: "12px",
-                          // fontSize:
-                          //   typeof item?.headline1Size === "number"
-                          //     ? `${item.headline1Size}px`
-                          //     : item?.headline1Size,
-                        }}
-                      >
-                        {item?.values?.leftFooterText2}
-                      </Typography>
-                      <Typography
-                        variant="body1"
-                        style={{
-                          color: item?.values?.leftFooterTextColor,
-                          marginTop: "12px",
-                          // fontSize:
-                          //   typeof item?.headline1Size === "number"
-                          //     ? `${item.headline1Size}px`
-                          //     : item?.headline1Size,
-                        }}
-                      >
-                        {item?.values?.leftFooterText3}
-                      </Typography> */}
 
                         <Box className="iconsContainer">
                           {" "}
-                          {/* {item?.values?.socialIcons?.map((data, index) => (
-                          {data?.socialMediaIcon1=="Instagram"?<FaInstagram className="icons" />:data?.socialMediaIcon1==?<FaLinkedinIn className="icons" />}
-                        ))} */}
                           <a
                             target="_blank"
                             rel="noopener noreferrer"
-                            href={
-                              item?.values?.facebook_link || "#"
-                            }
+                            href={item?.values?.facebook_link || "#"}
                             aria-label="Instagram"
                           >
                             <FaFacebookF
@@ -918,9 +831,7 @@ function PreviewHVO(location) {
                           <a
                             target="_blank"
                             rel="noopener noreferrer"
-                            href={
-                              item?.values?.linkedin_link || "#"
-                            }
+                            href={item?.values?.linkedin_link || "#"}
                             aria-label="Instagram"
                           >
                             <FaLinkedinIn
@@ -1009,7 +920,6 @@ function PreviewHVO(location) {
                       <Grid item sm={4} xs={12}>
                         <Hidden xsDown>
                           {" "}
-                          {/* This will hide the content on xs devices */}
                           <Box
                             style={{
                               display: "flex",

@@ -40,7 +40,6 @@ const HVOCategoryForm = ({
   const { deleteCategory, loading: deleteLoading } =
     useDeleteCategory(refetchCategories);
   const { editCategory, loading: editLoading } = useEditCategory();
-  console.log("----", categoryData);
   const categories = useMemo(
     () =>
       categoryData?.map((item) => ({
@@ -54,7 +53,6 @@ const HVOCategoryForm = ({
   useEffect(() => {
     setLocalCategories(categories);
   }, [categories]);
-  console.log("Final==", categories);
   const sheets = useMemo(
     () =>
       sheetData?.map((item) => ({
@@ -128,7 +126,6 @@ const HVOCategoryForm = ({
   };
 
   const handleCategoryDelete = async (categoryId) => {
-    console.log("-----hit no");
     try {
       await deleteCategory(categoryId);
       setLocalCategories((prev) => prev.filter((cat) => cat.id !== categoryId));

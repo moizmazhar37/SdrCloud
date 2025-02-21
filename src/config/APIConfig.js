@@ -59,6 +59,7 @@ const ApiConfig = {
   headerSection: `${hvoelement}/header-section`,
   heroSection: `${hvoelement}/hero-section`,
   rightTextLeftImageSection: `${hvoelement}/right-text-left-image-section`,
+  hvoVideoSection: `${hvoelement}/video-section`,
   higlightBannerSection: `${hvoelement}/highlight-banner-section`,
   highlightBanner2Section: `${hvoelement}/highlight-banner2-section`,
   footerSection: `${hvoelement}/footer-section`,

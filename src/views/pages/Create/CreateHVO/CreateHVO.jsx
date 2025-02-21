@@ -9,6 +9,7 @@ import styles from "./CreateHVO.module.scss";
 import HVOCategoryForm from "./HVOCategoryForm/HVOCategoryForm";
 import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
 import HvoSectionCardContainer from "./HvoSectionCard/HvoSectionCardContainer";
+import VideoUpload from "./Sections/VideoSection/VideoSection";
 import {
   extractHvoCategories,
   hvoNavigationItems,
@@ -34,6 +35,7 @@ const SECTION_TYPES = {
   HIGHLIGHT_BANNER_2: "Highlight Banner 2",
   FOOTER: "Footer",
   HERO: "Hero",
+  VIDEO: "HVO Video",
 };
 
 const CreateHVO = () => {
@@ -77,10 +79,10 @@ const CreateHVO = () => {
   const handleSectionUpdate = useCallback(() => {
     setSectionUpdateTrigger((prev) => !prev);
   }, []);
-
   const elementsList = Array.isArray(sectionData?.elementsList)
     ? sectionData.elementsList
     : [];
+  console.log("Element List in Create ==", elementsList);
 
   const dynamicField = extractKeywordList(data, HighlightBannerTypes);
   const dynamicURL = extractKeywordList(data, URLTypes);
@@ -108,6 +110,7 @@ const CreateHVO = () => {
   };
 
   const handleEdit = (section) => {
+    console.log("Selecteed==,", section.section_name);
     setIsEditMode(true);
     setEditingSection(section);
     setSectionNum(section.sequence);
@@ -217,6 +220,18 @@ const CreateHVO = () => {
               dynamicFields={dynamicField}
               dynamicURL={dynamicURL}
               dynamicImage={ImageDropdownTypes}
+              onSectionSave={handleSectionUpdate}
+              onClose={handleCloseSection}
+              templateId={templateId}
+              sequence={sectionNum}
+              initialData={editingSection}
+            />
+          </div>
+        );
+      case SECTION_TYPES.VIDEO:
+        return (
+          <div className={styles.leftComponent}>
+            <VideoUpload
               onSectionSave={handleSectionUpdate}
               onClose={handleCloseSection}
               templateId={templateId}
