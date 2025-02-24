@@ -271,6 +271,14 @@ export const routes = [
 
   {
     exact: true,
+    path: "/alerts",
+    guard: true,
+    layout: DashboardLayout,
+    component: lazy(() => import("src/views/pages/settings/Alerts/Alerts")),
+  },
+
+  {
+    exact: true,
     path: "/company-information",
     guard: true,
     layout: DashboardLayout,
