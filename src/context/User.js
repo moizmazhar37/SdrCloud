@@ -162,7 +162,7 @@ export default function AuthProvider(props) {
       if (res?.status === 200) {
         const data = res?.data;
 
-        localStorage.setItem("accountId", data?.accountId);
+        localStorage.setItem("tenant_id", data?.tenant_id);
 
         setProfileData(data);
       }
