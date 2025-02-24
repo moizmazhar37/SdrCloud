@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import AlertsCard from "./AlertsCard";
 import styles from "./Alerts.module.scss";
+import useSaveAlerts from "./Hooks/useSaveAlerts";
 
 const Alerts = () => {
+  const { saveAlerts, loading } = useSaveAlerts();
   const [alertsData, setAlertsData] = useState({
     emails: {
       active: false,
@@ -58,38 +60,28 @@ const Alerts = () => {
     }));
   };
 
-  const handleSave = () => {
-    // Create payload with only necessary data
-    const payload = Object.entries(alertsData).reduce((acc, [key, value]) => {
-      if (value.active) {
-        // If alerts are enabled, include all values
-        acc[key] = {
-          active: value.active,
-          type: value.type,
-          emailCount: parseInt(value.emailCount) || 0,
-          receiveAlerts: value.receiveAlerts,
-        };
-      } else {
-        // If alerts are disabled, only include active and type
-        acc[key] = {
-          active: false,
-          type: value.type,
-        };
-      }
-      return acc;
-    }, {});
-
-    console.log("Alerts Data:", payload);
+  const handleSave = async () => {
+    try {
+      await saveAlerts(alertsData);
+    } catch (err) {
+      // Error handling is managed by the hook
+      console.error("Failed to save alerts:", err);
+    }
   };
 
   return (
     <div className={styles.alertsContainer}>
       <div className={styles.header}>
         <h2>Alerts Configuration</h2>
-        <button onClick={handleSave} className={styles.saveButton}>
-          Save
+        <button
+          onClick={handleSave}
+          className={`${styles.saveButton} ${loading ? styles.loading : ""}`}
+          disabled={loading}
+        >
+          {loading ? "Saving..." : "Save"}
         </button>
       </div>
+
       <div className={styles.cardsGrid}>
         <AlertsCard
           title="Emails"

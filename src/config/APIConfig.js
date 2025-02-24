@@ -1,5 +1,5 @@
-const url = "https://backend-283763506150.us-central1.run.app";
-// const url = "http://localhost:8000";
+// const url = "https://backend-283763506150.us-central1.run.app";
+const url = "http://localhost:8000";
 // const url = "http://192.168.18.91:8000";
 
 const auth = `${url}/auth`;
@@ -19,7 +19,7 @@ const hvo = `${url}/hvo`;
 export const video = `${url}/video`;
 const footer = `${url}/footer-link`;
 export const leads = `${url}/leads/dashboard`;
-export const alerts = `${url}/alerts`;
+export const alerts = `${url}/user-alerts`;
 
 const ApiConfig = {
   getUrls: `${url}/url`,
