@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import AlertsCard from "./AlertsCard";
 import styles from "./Alerts.module.scss";
 import useSaveAlerts from "./Hooks/useSaveAlerts";
+import useGetAlerts from "./Hooks/useGetAlerts";
 
 const Alerts = () => {
-  const { saveAlerts, loading } = useSaveAlerts();
+  const { saveAlerts, loading: saving } = useSaveAlerts();
+  const { data: fetchedAlerts, loading: fetching, error } = useGetAlerts();
   const [alertsData, setAlertsData] = useState({
     emails: {
       active: false,
@@ -18,12 +20,7 @@ const Alerts = () => {
       emailCount: "",
       receiveAlerts: false,
     },
-    hvo: {
-      active: false,
-      type: "hvo",
-      emailCount: "",
-      receiveAlerts: false,
-    },
+    hvo: { active: false, type: "hvo", emailCount: "", receiveAlerts: false },
     video: {
       active: false,
       type: "video",
@@ -32,13 +29,22 @@ const Alerts = () => {
     },
   });
 
+  // Populate state when fetched data is available
+  useEffect(() => {
+    if (fetchedAlerts) {
+      console.log("Fetched Alerts:", fetchedAlerts); // Debugging fetched data
+
+      setAlertsData((prev) => ({
+        ...prev,
+        ...fetchedAlerts, // Assuming API returns data in a compatible format
+      }));
+    }
+  }, [fetchedAlerts]);
+
   const handleChange = (section, field, value) => {
-    // If the field is emailCount, ensure it's a positive number
     if (field === "emailCount") {
       const numValue = parseInt(value);
-      if (value !== "" && (isNaN(numValue) || numValue < 0)) {
-        return;
-      }
+      if (value !== "" && (isNaN(numValue) || numValue < 0)) return;
     }
 
     setAlertsData((prev) => ({
@@ -64,7 +70,6 @@ const Alerts = () => {
     try {
       await saveAlerts(alertsData);
     } catch (err) {
-      // Error handling is managed by the hook
       console.error("Failed to save alerts:", err);
     }
   };
@@ -75,10 +80,10 @@ const Alerts = () => {
         <h2>Alerts Configuration</h2>
         <button
           onClick={handleSave}
-          className={`${styles.saveButton} ${loading ? styles.loading : ""}`}
-          disabled={loading}
+          className={`${styles.saveButton} ${saving ? styles.loading : ""}`}
+          disabled={saving}
         >
-          {loading ? "Saving..." : "Save"}
+          {saving ? "Saving..." : "Save"}
         </button>
       </div>
 
