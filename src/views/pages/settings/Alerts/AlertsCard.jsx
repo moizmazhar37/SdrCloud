@@ -2,6 +2,22 @@ import React from "react";
 import styles from "./Alerts.module.scss";
 
 const AlertsCard = ({ title, onChange, data, onToggle }) => {
+  // Determine the appropriate label based on the data type
+  const getLabelText = () => {
+    switch (data.type) {
+      case "email":
+        return "Number of Emails Received";
+      case "budget":
+        return "Minimum Budget Figure";
+      case "hvo":
+        return "Minimum HVOs Viewed";
+      case "video":
+        return "Minimum Videos Viewed";
+      default:
+        return "Number of Items";
+    }
+  };
+
   return (
     <div className={styles.card}>
       <div className={styles.cardHeader}>
@@ -19,7 +35,7 @@ const AlertsCard = ({ title, onChange, data, onToggle }) => {
         }`}
       >
         <div className={styles.inputGroup}>
-          <label>Number of Emails Received</label>
+          <label>{getLabelText()}</label>
           <input
             type="number"
             min="0"
