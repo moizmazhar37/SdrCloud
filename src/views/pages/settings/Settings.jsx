@@ -34,6 +34,12 @@ const NewSettings = () => {
         text={"My Profile"}
         infoText={"View and edit personal information here."}
       />
+      <Card
+        image={add_archive_user}
+        route={"/alerts"}
+        text={"Alerts"}
+        infoText={"Manage custom alerts here."}
+      />
     </div>
   );
 };
