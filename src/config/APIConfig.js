@@ -19,6 +19,7 @@ const hvo = `${url}/hvo`;
 export const video = `${url}/video`;
 const footer = `${url}/footer-link`;
 export const leads = `${url}/leads/dashboard`;
+export const alerts = `${url}/alerts`;
 
 const ApiConfig = {
   getUrls: `${url}/url`,

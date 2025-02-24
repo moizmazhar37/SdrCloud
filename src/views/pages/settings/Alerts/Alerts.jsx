@@ -5,28 +5,40 @@ import styles from "./Alerts.module.scss";
 const Alerts = () => {
   const [alertsData, setAlertsData] = useState({
     emails: {
-      alertsStatus: false,
+      active: false,
+      type: "email",
       emailCount: "",
       receiveAlerts: false,
     },
     budget: {
-      alertsStatus: false,
+      active: false,
+      type: "budget",
       emailCount: "",
       receiveAlerts: false,
     },
     hvo: {
-      alertsStatus: false,
+      active: false,
+      type: "hvo",
       emailCount: "",
       receiveAlerts: false,
     },
     video: {
-      alertsStatus: false,
+      active: false,
+      type: "video",
       emailCount: "",
       receiveAlerts: false,
     },
   });
 
   const handleChange = (section, field, value) => {
+    // If the field is emailCount, ensure it's a positive number
+    if (field === "emailCount") {
+      const numValue = parseInt(value);
+      if (value !== "" && (isNaN(numValue) || numValue < 0)) {
+        return;
+      }
+    }
+
     setAlertsData((prev) => ({
       ...prev,
       [section]: {
@@ -41,7 +53,7 @@ const Alerts = () => {
       ...prev,
       [section]: {
         ...prev[section],
-        alertsStatus: value,
+        active: value,
       },
     }));
   };
@@ -49,12 +61,20 @@ const Alerts = () => {
   const handleSave = () => {
     // Create payload with only necessary data
     const payload = Object.entries(alertsData).reduce((acc, [key, value]) => {
-      if (value.alertsStatus) {
+      if (value.active) {
         // If alerts are enabled, include all values
-        acc[key] = value;
+        acc[key] = {
+          active: value.active,
+          type: value.type,
+          emailCount: parseInt(value.emailCount) || 0,
+          receiveAlerts: value.receiveAlerts,
+        };
       } else {
-        // If alerts are disabled, only include alertsStatus
-        acc[key] = { alertsStatus: false };
+        // If alerts are disabled, only include active and type
+        acc[key] = {
+          active: false,
+          type: value.type,
+        };
       }
       return acc;
     }, {});

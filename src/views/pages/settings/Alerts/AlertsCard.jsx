@@ -7,26 +7,25 @@ const AlertsCard = ({ title, onChange, data, onToggle }) => {
       <div className={styles.cardHeader}>
         <h3>{title}</h3>
         <div
-          className={`${styles.toggle} ${
-            data.alertsStatus ? styles.active : ""
-          }`}
-          onClick={() => onToggle(!data.alertsStatus)}
+          className={`${styles.toggle} ${data.active ? styles.active : ""}`}
+          onClick={() => onToggle(!data.active)}
         >
           <div className={styles.toggleCircle} />
         </div>
       </div>
       <div
         className={`${styles.cardContent} ${
-          !data.alertsStatus ? styles.disabled : ""
+          !data.active ? styles.disabled : ""
         }`}
       >
         <div className={styles.inputGroup}>
           <label>Number of Emails Received</label>
           <input
             type="number"
-            value={data.emailCount || ""}
+            min="0"
+            value={data.emailCount}
             onChange={(e) => onChange("emailCount", e.target.value)}
-            disabled={!data.alertsStatus}
+            disabled={!data.active}
           />
         </div>
         <div className={styles.checkboxGroup}>
@@ -35,7 +34,7 @@ const AlertsCard = ({ title, onChange, data, onToggle }) => {
               type="checkbox"
               checked={data.receiveAlerts || false}
               onChange={(e) => onChange("receiveAlerts", e.target.checked)}
-              disabled={!data.alertsStatus}
+              disabled={!data.active}
             />
             Receive Alerts on Email
           </label>
