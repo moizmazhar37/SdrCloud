@@ -27,18 +27,19 @@ async function sendPixelData() {
     localStorage.setItem("user_pixel_id", user_pixel_id); // Store user_id for future visits
 
     // Append user_id to the URL
-    appendUserIdToURL(user_pixel_id);
+    // appendUserIdToURL(user_pixel_id);
 
     let ip = await getIPAddress();
     
     let payload = {
         link: window.location.href,  // Get the current page URL (after updating with user_id)
         ip: ip,
-        user_id: user_pixel_id  // Use the stored user_id
+        user_id: user_pixel_id,  // Use the stored user_id
+        tenant_id: 'd26331ec-e390-4c61-afb9-56795bb856cf'
     };
 
     try {
-        let response = await fetch("https://backend-283763506150.us-central1.run.app/pixels/", {
+        let response = await fetch("http://backend-283763506150.us-central1.run.app/pixels/", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
