@@ -239,6 +239,7 @@ function CustomerPreview(location) {
   const [filteredFooterSection, setFilteredFooterSection] = useState();
   console.log(useParams, "useParams");
   console.log(location, "locationnnnn");
+  const [tenant, setTenant] = useState("");
   const [accountData, setAccountData] = useState("");
 
   const iconMap = {
@@ -270,6 +271,7 @@ function CustomerPreview(location) {
         console.log(res?.data);
         const elementsList = res?.data?.data_list;
         setPageData(elementsList);
+        setTenant(res?.data?.tenant_id);
         const filteredFooter = elementsList.filter(
           (item) => item?.sectionName === "FOOTER"
         );
