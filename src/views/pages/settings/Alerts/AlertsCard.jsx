@@ -23,7 +23,7 @@ const AlertsCard = ({ title, onChange, data, onToggle }) => {
           <input
             type="number"
             min="0"
-            value={data.emailCount}
+            value={data.emailCount || ""}
             onChange={(e) => onChange("emailCount", e.target.value)}
             disabled={!data.active}
           />
