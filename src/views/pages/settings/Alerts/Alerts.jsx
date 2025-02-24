@@ -7,6 +7,7 @@ import useGetAlerts from "./Hooks/useGetAlerts";
 const Alerts = () => {
   const { saveAlerts, loading: saving } = useSaveAlerts();
   const { data: fetchedAlerts, loading: fetching, error } = useGetAlerts();
+
   const [alertsData, setAlertsData] = useState({
     emails: {
       active: false,
@@ -20,7 +21,12 @@ const Alerts = () => {
       emailCount: "",
       receiveAlerts: false,
     },
-    hvo: { active: false, type: "hvo", emailCount: "", receiveAlerts: false },
+    hvo: {
+      active: false,
+      type: "hvo",
+      emailCount: "",
+      receiveAlerts: false,
+    },
     video: {
       active: false,
       type: "video",
@@ -31,13 +37,29 @@ const Alerts = () => {
 
   // Populate state when fetched data is available
   useEffect(() => {
-    if (fetchedAlerts) {
+    if (fetchedAlerts && Object.keys(fetchedAlerts).length > 0) {
       console.log("Fetched Alerts:", fetchedAlerts); // Debugging fetched data
 
-      setAlertsData((prev) => ({
-        ...prev,
-        ...fetchedAlerts, // Assuming API returns data in a compatible format
-      }));
+      // Create a copy of current state
+      const updatedAlertsData = { ...alertsData };
+
+      // Update each section with data from the API
+      Object.keys(fetchedAlerts).forEach((key) => {
+        if (updatedAlertsData[key]) {
+          updatedAlertsData[key] = {
+            ...updatedAlertsData[key],
+            active: fetchedAlerts[key].active,
+            emailCount:
+              fetchedAlerts[key].emailCount === null
+                ? ""
+                : fetchedAlerts[key].emailCount,
+            receiveAlerts: fetchedAlerts[key].receiveAlerts,
+          };
+        }
+      });
+
+      // Update state with the transformed data
+      setAlertsData(updatedAlertsData);
     }
   }, [fetchedAlerts]);
 
