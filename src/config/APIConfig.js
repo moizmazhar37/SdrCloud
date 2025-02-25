@@ -20,6 +20,7 @@ export const video = `${url}/video`;
 const footer = `${url}/footer-link`;
 export const leads = `${url}/leads/dashboard`;
 export const alerts = `${url}/user-alerts`;
+export const tenantEmail = `${url}/tenant-email/`;
 
 const ApiConfig = {
   getUrls: `${url}/url`,
