@@ -10,7 +10,7 @@ const Integration = () => {
 
   const sources = [
     { name: "Google Sheets", status: "Enabled", path: "/googlesheets" },
-    { name: "SFTP", status: "Disabled", path: "#" },
+    { name: "SendGrid", status: "Enabled", path: "/sendgrid" },
     { name: "API", status: "Disabled", path: "#" },
     { name: "Hubspot", status: "Disabled", path: "#" },
     { name: "Salesforce", status: "Disabled", path: "#" },

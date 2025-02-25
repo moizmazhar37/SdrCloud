@@ -325,6 +325,17 @@ export const routes = [
     ),
   },
 
+
+  {
+    exact: true,
+    path: "/sendgrid",
+    guard: true,
+    layout: DashboardLayout,
+    component: lazy(() =>
+      import("src/views/pages/settings/Integrations/SendGrid/SendGrid")
+    ),
+  },
+
   {
     exact: true,
     path: "/addsheet",
