@@ -60,7 +60,7 @@
   .expandButton {
     background: none;
     border: none;
-    color: blue;
+    color: #0358ac;
     cursor: pointer;
   }
   
@@ -81,11 +81,14 @@
   }
   
   .saveButton {
-    background: blue;
+    background: #0358ac;
     color: white;
     padding: 8px 12px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    &:hover {
+      background: #114883;
+    }
   }
   
