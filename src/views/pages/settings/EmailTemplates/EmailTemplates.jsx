@@ -81,10 +81,10 @@ const EmailTemplates = () => {
         ) : emailError ? (
           <div className={styles.error}>Failed to load Email Templates</div>
         ) : emailTemplatesList.length > 0 ? (
-          emailTemplatesList.map((template) => (
+          emailTemplatesList.map((emailTemplate) => (
             <EmailTemplateCard 
-              key={template.template_id} 
-              template={template} 
+              key={emailTemplate.id} 
+              emailTemplate={emailTemplate} 
               onDelete={deleteEmailTemplate} 
               deleting={deleting}
             />

@@ -1,23 +1,34 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import styles from "./NewEmailTemplate.module.scss";
-import { useDataTypes, useSaveEmailTemplate } from "./hooks"; // Importing new hook
+import { useDataTypes, useSaveEmailTemplate } from "./hooks";
 import CopyText from "../CopyText/CopyText";
 import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
 
 const NewEmailTemplate = () => {
   const location = useLocation();
   const templateId = location.state?.templateId;
+  const emailTemplate = location.state?.emailTemplate || null; // Get template if editing
 
   const { dataTypes, loading, error } = useDataTypes(templateId);
-  const { saveTemplate, saving, saveError, success } = useSaveEmailTemplate(); // Using the new hook
+  const { saveTemplate, saving, saveError, success } = useSaveEmailTemplate();
 
-  const [name, setName] = useState("");
-  const [subject, setSubject] = useState("");
-  const [body, setBody] = useState("");
+  // State with pre-filled values if editing
+  const [name, setName] = useState(emailTemplate?.name || "");
+  const [subject, setSubject] = useState(emailTemplate?.subject || "");
+  const [body, setBody] = useState(emailTemplate?.body || "");
   const activeInputRef = useRef(null);
 
-  // Fields allowed for insertion
+  const isEditing = !!emailTemplate; // True if editing
+
+  useEffect(() => {
+    if (emailTemplate) {
+      setName(emailTemplate.name);
+      setSubject(emailTemplate.subject);
+      setBody(emailTemplate.body);
+    }
+  }, [emailTemplate]);
+
   const allowedDataTypes = ["Text", "First name", "Last name", "Customer organization"];
   const filteredFields = dataTypes
     ? dataTypes.filter((item) => allowedDataTypes.includes(item.dataType)).map((item) => item.value)
@@ -42,27 +53,27 @@ const NewEmailTemplate = () => {
     }
   };
 
-  // Handle save button click
+  // Handle save or update
   const handleSave = () => {
     if (!name.trim() || !subject.trim() || !body.trim()) {
       alert("Please fill in all fields before saving.");
       return;
     }
 
-    saveTemplate({ name, subject, body, template_id: templateId });
+    saveTemplate({ name, subject, body, template_id: emailTemplate.id, isUpdate: isEditing });
   };
 
   const navigationItems = [
     { text: "Settings", route: "/settings" },
     { text: "Integration", route: "/integrations" },
     { text: "Email Templates", route: "/email-templates" },
-    { text: "Create Template", route: "/create-email-template" },
+    { text: isEditing ? "Edit Template" : "Create Template", route: "/create-email-template" },
   ];
 
   return (
     <div className={styles.container}>
       <DynamicNavigator items={navigationItems} />
-      <h2 className={styles.heading}>New Email Template</h2>
+      <h2 className={styles.heading}>{isEditing ? "Edit Email Template" : "New Email Template"}</h2>
 
       {loading ? (
         <div className={styles.loading}>Loading...</div>
@@ -104,7 +115,7 @@ const NewEmailTemplate = () => {
             <textarea
               className={styles.textarea}
               name="body"
-              placeholder="Hi [Recipient’s Name],&#10;&#10;I came across your profile and was impressed by..."
+              placeholder="Hi [Recipient’s Name],\n\nI came across your profile and was impressed by..."
               value={body}
               onChange={(e) => setBody(e.target.value)}
               onFocus={(e) => (activeInputRef.current = e.target)}
@@ -112,12 +123,12 @@ const NewEmailTemplate = () => {
 
             <div className={styles.bottomBar}>
               <button className={styles.saveButton} onClick={handleSave} disabled={saving}>
-                {saving ? "Saving..." : "Save"}
+                {saving ? "Saving..." : isEditing ? "Update" : "Save"}
               </button>
             </div>
 
             {saveError && <div className={styles.error}>Failed to save template. Try again.</div>}
-            {success && <div className={styles.success}>Template saved successfully!</div>}
+            {success && <div className={styles.success}>Template {isEditing ? "updated" : "saved"} successfully!</div>}
           </div>
         </div>
       )}
