@@ -1,9 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useHistory } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import styles from "./NewEmailTemplate.module.scss";
 import { useDataTypes, useSaveEmailTemplate } from "./hooks";
 import CopyText from "../CopyText/CopyText";
 import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
+import Loader from "src/Common/Loader/Loader";
 
 const NewEmailTemplate = () => {
   const location = useLocation();
@@ -11,13 +14,14 @@ const NewEmailTemplate = () => {
   const emailTemplate = location.state?.emailTemplate || null; // Get template if editing
 
   const { dataTypes, loading, error } = useDataTypes(templateId);
-  const { saveTemplate, saving, saveError, success } = useSaveEmailTemplate();
+  const { saveTemplate, saving } = useSaveEmailTemplate();
 
   // State with pre-filled values if editing
   const [name, setName] = useState(emailTemplate?.name || "");
   const [subject, setSubject] = useState(emailTemplate?.subject || "");
   const [body, setBody] = useState(emailTemplate?.body || "");
   const activeInputRef = useRef(null);
+  const history = useHistory();
 
   const isEditing = !!emailTemplate; // True if editing
 
@@ -53,14 +57,34 @@ const NewEmailTemplate = () => {
     }
   };
 
-  // Handle save or update
-  const handleSave = () => {
+  // Field validation
+  const validateFields = () => {
     if (!name.trim() || !subject.trim() || !body.trim()) {
-      alert("Please fill in all fields before saving.");
-      return;
+      toast.error("All fields are required.");
+      return false;
     }
+    return true;
+  };
 
-    saveTemplate({ name, subject, body, template_id: emailTemplate.id, isUpdate: isEditing });
+  // Handle save or update
+  const handleSave = async () => {
+    if (!validateFields()) return;
+
+    try {
+      await saveTemplate({
+        name,
+        subject,
+        body,
+        template_id: templateId,
+        emailTemplate_id: emailTemplate?.id,
+        isUpdate: isEditing,
+      });
+
+      toast.success(`Template ${isEditing ? "updated" : "saved"} successfully!`);
+      history.push('/email-templates')
+    } catch {
+      toast.error("Failed to save template. Try again.");
+    }
   };
 
   const navigationItems = [
@@ -76,7 +100,9 @@ const NewEmailTemplate = () => {
       <h2 className={styles.heading}>{isEditing ? "Edit Email Template" : "New Email Template"}</h2>
 
       {loading ? (
-        <div className={styles.loading}>Loading...</div>
+        <div className={styles.loaderWrapper}>
+          <Loader size={160} />
+        </div>
       ) : error ? (
         <div className={styles.error}>Failed to load template</div>
       ) : (
@@ -126,9 +152,6 @@ const NewEmailTemplate = () => {
                 {saving ? "Saving..." : isEditing ? "Update" : "Save"}
               </button>
             </div>
-
-            {saveError && <div className={styles.error}>Failed to save template. Try again.</div>}
-            {success && <div className={styles.success}>Template {isEditing ? "updated" : "saved"} successfully!</div>}
           </div>
         </div>
       )}

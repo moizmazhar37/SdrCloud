@@ -2,20 +2,22 @@ import React from "react";
 import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
 import styles from "./email-template-card.module.scss";
 import { useHistory } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const EmailTemplateCard = ({ emailTemplate, onDelete, deleting }) => {
     const history = useHistory();
 
+
     const handleDelete = () => {
-        if (window.confirm("Are you sure you want to delete this template?")) {
             onDelete(emailTemplate.id);
-        }
+            toast.success(emailTemplate.name + " deleted successfully");
     };
 
     const handleEdit = () => {
         history.push({
             pathname: "/create-email-template",
-            state: { emailTemplate, templateId: emailTemplate.template_id }, // Pass entire template data
+            state: { emailTemplate, templateId: emailTemplate.template_id }, 
         });
     };
 

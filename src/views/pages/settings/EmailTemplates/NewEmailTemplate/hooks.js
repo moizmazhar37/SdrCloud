@@ -38,15 +38,17 @@ export const useSaveEmailTemplate = () => {
   const [saveError, setSaveError] = useState(null);
   const [success, setSuccess] = useState(false);
 
-  const saveTemplate = async ({ name, body, subject, template_id, isUpdate }) => {
+  const saveTemplate = async ({ name, body, subject, template_id, emailTemplate_id, isUpdate }) => {
     setSaving(true);
     setSaveError(null);
     setSuccess(false);
 
     try {
-      const url = isUpdate ? `${emailTemplate}/${template_id}` : emailTemplate;
+      const url = isUpdate ? `${emailTemplate}/${emailTemplate_id}` : emailTemplate;
       const method = isUpdate ? "patch" : "post";
-      const requestData = { name, body, subject };
+      // if not update then extend templateId as well
+
+      const requestData = { name, body, subject, template_id };
 
       await axios({
         method,

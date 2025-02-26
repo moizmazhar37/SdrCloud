@@ -4,6 +4,7 @@ import styles from "./emailTemplates.module.scss";
 import EmailTemplateCard from "./EmailTemplateCard/EmailTemplateCard";
 import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
 import useTemplates from "./hooks";
+import Loader from "src/Common/Loader/Loader";
 
 const navigationItems = [
   { text: "Settings", route: "/settings" },
@@ -77,7 +78,7 @@ const EmailTemplates = () => {
       {/* Template Cards from API */}
       <div className={styles.templatesContainer}>
         {emailLoading ? (
-          <div className={styles.loading}>Loading Email Templates...</div>
+          <div className={styles.loaderWrapper}>{<Loader size={160} />}</div>
         ) : emailError ? (
           <div className={styles.error}>Failed to load Email Templates</div>
         ) : emailTemplatesList.length > 0 ? (
