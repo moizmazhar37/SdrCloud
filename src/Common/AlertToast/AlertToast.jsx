@@ -1,11 +1,10 @@
-// AlertToast.jsx
 import React, { useState, useEffect } from 'react';
 import styles from './AlertToast.module.scss';
 
-const AlertToast = ({ 
-  message, 
-  isVisible, 
-  onDismiss, 
+const AlertToast = ({
+  message,
+  isVisible,
+  onDismiss,
   duration = null, // Set to null for persistent toast
   warningText = '',
 }) => {
@@ -27,7 +26,7 @@ const AlertToast = ({
       return () => clearTimeout(timer);
     }
   }, [isShowing, duration]);
-  
+
   const handleDismiss = () => {
     setIsShowing(false);
     
@@ -36,21 +35,21 @@ const AlertToast = ({
       onDismiss();
     }
   };
-  
+
   if (!isVisible && !isShowing) return null;
   
   return (
     <div className={`${styles.toastContainer} ${isShowing ? styles.show : styles.hide}`}>
       <div className={styles.toast}>
         <div className={styles.iconContainer}>
-          <svg 
-            className={styles.warningIcon} 
-            xmlns="http://www.w3.org/2000/svg" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="currentColor" 
-            strokeWidth="2" 
-            strokeLinecap="round" 
+          <svg
+            className={styles.warningIcon}
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
             strokeLinejoin="round"
           >
             <circle cx="12" cy="12" r="10"></circle>
@@ -62,18 +61,18 @@ const AlertToast = ({
           <p className={styles.message}>{message}</p>
           {warningText && <p className={styles.warningText}>{warningText}</p>}
         </div>
-        <button 
-          className={styles.dismissButton} 
+        <button
+          className={styles.dismissButton}
           onClick={handleDismiss}
           aria-label="Dismiss alert"
         >
-          <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="currentColor" 
-            strokeWidth="2" 
-            strokeLinecap="round" 
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
             strokeLinejoin="round"
           >
             <line x1="18" y1="6" x2="6" y2="18"></line>

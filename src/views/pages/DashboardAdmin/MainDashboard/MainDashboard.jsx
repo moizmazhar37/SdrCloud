@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Card from "./CardBlock/Card";
 import TopUsers from "./TableCardBlock/TabularCard";
 import Graph from "./Graph/Graph";
+import ToastManager from "src/Common/AlertToast/ToastManager/ToastManager";// Import the ToastManager
 import useUserCounts from "./Hooks/useUserStats";
 import useGraphData from "./Hooks/useTemplateCounts";
 import useTopUsers from "./Hooks/useTopUsers";
@@ -24,8 +25,7 @@ import {
 
 const MainDashboard = () => {
   //Get Alerts for user
-  const { data, loading, error } = useGetRealTimeAlerts()
-
+  const { data: alerts = [], loading: alertsLoading, error: alertsError } = useGetRealTimeAlerts();
 
   // State management for various time-based filters
   const [selectedTimeStamp, setSelectedTimeStamp] = useState("Current Month");
@@ -37,6 +37,16 @@ const MainDashboard = () => {
   const [userTimePeriod, setUserTimePeriod] = useState("month");
   const [templateTimePeriod, setTemplateTimePeriod] = useState("month");
   const [graphTimePeriod, setGraphTimePeriod] = useState("month");
+
+  // Toast messages state
+  const [toastMessages, setToastMessages] = useState([]);
+  
+  // Update toasts when alerts change
+  useEffect(() => {
+    if (alerts && alerts.length > 0 && !alertsLoading) {
+      setToastMessages(alerts);
+    }
+  }, [alerts, alertsLoading]);
 
   const { statsData = {}, isStatsLoading, statsError } = useUserCounts();
   const { GraphData = [] } = useGraphData(graphTimePeriod);
@@ -131,6 +141,10 @@ const MainDashboard = () => {
           </div>
         )}
       </div>
+      
+      <ToastManager 
+        toastMessages={toastMessages} 
+      />
     </>
   );
 };
