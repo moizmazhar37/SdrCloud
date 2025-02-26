@@ -7,7 +7,6 @@ import useGetAlerts from "./Hooks/useGetAlerts";
 const Alerts = () => {
   const { saveAlerts, loading: saving } = useSaveAlerts();
   const { data: fetchedAlerts, loading: fetching, error } = useGetAlerts();
-  console.log("jofnasdjkfnal",fetchedAlerts)
   const [alertsData, setAlertsData] = useState({
     emails: {
       active: false,

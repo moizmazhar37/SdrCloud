@@ -7,7 +7,7 @@ import useGraphData from "./Hooks/useTemplateCounts";
 import useTopUsers from "./Hooks/useTopUsers";
 import useTopTemplates from "./Hooks/useTopTemplates";
 import useDownloadCSV from "./Hooks/useDownloadCSV";
-import useLeads from "./Hooks/useLeads";
+import useGetRealTimeAlerts from "./Hooks/Alerts/useGetAlerts";
 import useUrls from "./Hooks/useUrls";
 import useHvoVideoSent from "./Hooks/useHvoVideoSent";
 import styles from "./MainDashboard.module.scss";
@@ -23,6 +23,10 @@ import {
 } from "./helpers";
 
 const MainDashboard = () => {
+  //Get Alerts for user
+  const { data, loading, error } = useGetRealTimeAlerts()
+
+
   // State management for various time-based filters
   const [selectedTimeStamp, setSelectedTimeStamp] = useState("Current Month");
   const [selectedGraphTimeStamp, setSelectedGraphTimeStamp] = useState("Monthly");
