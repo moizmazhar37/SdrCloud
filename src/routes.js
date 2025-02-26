@@ -325,6 +325,26 @@ export const routes = [
     ),
   },
 
+  {
+    exact: true,
+    path: "/email-templates",
+    guard: true,
+    layout: DashboardLayout,
+    component: lazy(() =>
+      import("src/views/pages/settings/EmailTemplates/EmailTemplates")
+    ),
+  },
+
+  {
+    exact: true,
+    path: "/create-email-template",
+    guard: true,
+    layout: DashboardLayout,
+    component: lazy(() =>
+      import("src/views/pages/settings/EmailTemplates/NewEmailTemplate/NewEmailTemplate")
+    ),
+  },
+
 
   {
     exact: true,

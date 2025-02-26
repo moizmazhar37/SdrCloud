@@ -40,6 +40,12 @@ const NewSettings = () => {
         text={"Alerts"}
         infoText={"Manage custom alerts here."}
       />
+      <Card
+        image={add_archive_user}
+        route={"/email-templates"}
+        text={"Email Templates"}
+        infoText={"Create or edit email templates here"}
+      />
     </div>
   );
 };
