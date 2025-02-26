@@ -7,19 +7,13 @@
     gap: 16px;
     z-index: 9999;
     max-width: 350px;
-    
-    /* Ensure each toast item has proper spacing */
     & > div {
       margin-bottom: 16px;
     }
-    
-    /* Override any conflicting styles */
     & > div:not(:last-child) {
       margin-bottom: 16px !important;
     }
   }
-  
-  /* Responsive adjustments */
   @media (max-width: 768px) {
     .toastManagerContainer {
       left: 20px;

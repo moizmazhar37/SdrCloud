@@ -12,9 +12,7 @@ const ToastManager = ({
 }) => {
   const [toasts, setToasts] = useState([]);
   
-  // Update toasts when messages change
   useEffect(() => {
-    // Convert string messages to toast objects
     const newToasts = toastMessages.map(message => {
       // Check if this message already exists in our toasts
       const existingToast = toasts.find(toast => toast.message === message);
@@ -41,24 +39,20 @@ const ToastManager = ({
       )
     );
     
-    // Remove toast from array after animation completes
     setTimeout(() => {
       setToasts(prevToasts => prevToasts.filter(toast => toast.id !== id));
-    }, 300); // Match this with animation duration
+    }, 400); 
   };
-  
-  // If no toasts, don't render anything
   if (toasts.length === 0) return null;
   
   return (
-    <div className={styles.toastManagerContainer}>
+    <div >
       {toasts.map((toast, index) => (
-        <div key={toast.id} style={{ marginBottom: '10px' }}>
+        <div className={styles.toastManagerContainer} key={toast.id} style={{ marginBottom: '10px' }}>
           <AlertToast
             message={toast.message}
             warningText={toast.warningText}
             isVisible={toast.isVisible}
-            // duration={duration}
             onDismiss={() => handleDismiss(toast.id)}
           />
         </div>

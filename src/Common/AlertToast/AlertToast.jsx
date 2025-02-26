@@ -5,7 +5,7 @@ const AlertToast = ({
   message,
   isVisible,
   onDismiss,
-  duration = null, // Set to null for persistent toast
+  duration = null, 
   warningText = '',
 }) => {
   const [isShowing, setIsShowing] = useState(false);
