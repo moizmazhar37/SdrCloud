@@ -1,19 +1,23 @@
 import React, { useState, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import styles from "./NewEmailTemplate.module.scss";
-import { useDataTypes } from "./hooks";
+import { useDataTypes, useSaveEmailTemplate } from "./hooks"; // Importing new hook
 import CopyText from "../CopyText/CopyText";
 import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
 
 const NewEmailTemplate = () => {
   const location = useLocation();
   const templateId = location.state?.templateId;
+
   const { dataTypes, loading, error } = useDataTypes(templateId);
+  const { saveTemplate, saving, saveError, success } = useSaveEmailTemplate(); // Using the new hook
+
+  const [name, setName] = useState("");
   const [subject, setSubject] = useState("");
   const [body, setBody] = useState("");
   const activeInputRef = useRef(null);
 
-  // Filter fields with required data types
+  // Fields allowed for insertion
   const allowedDataTypes = ["Text", "First name", "Last name", "Customer organization"];
   const filteredFields = dataTypes
     ? dataTypes.filter((item) => allowedDataTypes.includes(item.dataType)).map((item) => item.value)
@@ -29,7 +33,6 @@ const NewEmailTemplate = () => {
       input.value = newText;
       input.setSelectionRange(start + text.length, start + text.length);
 
-      // Update state based on which input is active
       if (input.name === "subject") {
         setSubject(newText);
       } else {
@@ -37,6 +40,16 @@ const NewEmailTemplate = () => {
       }
       input.focus();
     }
+  };
+
+  // Handle save button click
+  const handleSave = () => {
+    if (!name.trim() || !subject.trim() || !body.trim()) {
+      alert("Please fill in all fields before saving.");
+      return;
+    }
+
+    saveTemplate({ name, subject, body, template_id: templateId });
   };
 
   const navigationItems = [
@@ -72,6 +85,15 @@ const NewEmailTemplate = () => {
             <input
               className={styles.input}
               type="text"
+              name="name"
+              placeholder="Template Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+
+            <input
+              className={styles.input}
+              type="text"
               name="subject"
               placeholder="[Subject]"
               value={subject}
@@ -89,8 +111,13 @@ const NewEmailTemplate = () => {
             ></textarea>
 
             <div className={styles.bottomBar}>
-              <button className={styles.saveButton}>Save</button>
+              <button className={styles.saveButton} onClick={handleSave} disabled={saving}>
+                {saving ? "Saving..." : "Save"}
+              </button>
             </div>
+
+            {saveError && <div className={styles.error}>Failed to save template. Try again.</div>}
+            {success && <div className={styles.success}>Template saved successfully!</div>}
           </div>
         </div>
       )}

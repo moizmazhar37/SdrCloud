@@ -13,13 +13,13 @@ const navigationItems = [
 
 const EmailTemplates = () => {
   const history = useHistory();
-  const { template, loading, error, emailTemplatesList, emailLoading, emailError } = useTemplates();
+  const { template, loading, error, emailTemplatesList, emailLoading, emailError, deleteEmailTemplate, deleting } = useTemplates();
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const handleTemplateSelect = (template) => {
     history.push({
       pathname: "/create-email-template",
-      state: { templateId: template.template_id }, // Using API response key
+      state: { templateId: template.id },
     });
   };
 
@@ -82,7 +82,12 @@ const EmailTemplates = () => {
           <div className={styles.error}>Failed to load Email Templates</div>
         ) : emailTemplatesList.length > 0 ? (
           emailTemplatesList.map((template) => (
-            <EmailTemplateCard key={template.template_id} template={template} />
+            <EmailTemplateCard 
+              key={template.template_id} 
+              template={template} 
+              onDelete={deleteEmailTemplate} 
+              deleting={deleting}
+            />
           ))
         ) : (
           <div className={styles.noTemplates}>No Email Templates Available</div>

@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import ApiConfig from "src/config/APIConfig";
+import ApiConfig, {emailTemplate} from "src/config/APIConfig";
 
+// Hook to fetch data types based on templateId
 export const useDataTypes = (templateId) => {
   const [dataTypes, setDataTypes] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -29,4 +30,38 @@ export const useDataTypes = (templateId) => {
   }, [templateId]);
 
   return { dataTypes, loading, error };
+};
+
+// Function to save a new email template
+export const useSaveEmailTemplate = () => {
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState(null);
+  const [success, setSuccess] = useState(false);
+
+  const saveTemplate = async ({ name, body, subject, template_id }) => {
+    setSaving(true);
+    setSaveError(null);
+    setSuccess(false);
+
+    try {
+      await axios.post(
+        ` ${emailTemplate}`,
+        { name, body, subject, template_id },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      setSuccess(true);
+    } catch (err) {
+      setSaveError(err);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return { saveTemplate, saving, saveError, success };
 };
