@@ -1,0 +1,101 @@
+.container {
+    padding: 20px;
+}
+
+/* Top Bar: Navigation & Create Button in One Line */
+.topBar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
+/* Heading */
+.heading {
+    font-size: 24px;
+    margin-bottom: 16px;
+}
+
+/* Create Button */
+.createButton {
+    background-color: #0358ac;
+    color: white;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    padding: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    &:hover {
+        background-color: #114883;
+    }
+}
+
+/* Template Cards Grid */
+.templatesContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: 16px;
+}
+
+
+.topBar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .dropdownContainer {
+    position: relative;
+  }
+  
+  .createButton {
+    background-color: #0358ac;
+    color: white;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 16px;
+    cursor: pointer;
+  
+    &:hover {
+      background-color: #114883;
+    }
+  }
+  
+  .dropdownMenu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    width: 250px;
+    z-index: 10;
+  }
+  
+  .dropdownHeader {
+    font-weight: bold;
+    padding: 8px;
+    background: #f4f4f4;
+    cursor: default;
+  }
+  
+  .dropdownItem {
+    padding: 10px;
+    cursor: pointer;
+    transition: background 0.2s;
+  
+    &:hover {
+      background: #eee;
+    }
+  }
+  
+  .noTemplates {
+    padding: 10px;
+    color: gray;
+  }
+  

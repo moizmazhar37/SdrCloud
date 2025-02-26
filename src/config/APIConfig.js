@@ -21,6 +21,7 @@ const footer = `${url}/footer-link`;
 export const leads = `${url}/leads/dashboard`;
 export const alerts = `${url}/user-alerts`;
 export const tenantEmail = `${url}/tenant-email/`;
+export const emailTemplate = `${url}/email-template`;
 
 const ApiConfig = {
   getUrls: `${url}/url`,
