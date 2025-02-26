@@ -34,13 +34,13 @@ const useGetAlerts = () => {
 
   useEffect(() => {
     getAlerts();
-  }, []); // Fetch alerts on component mount
+  }, []); 
 
   return {
     data,
     loading,
     error,
-    refresh: getAlerts, // Allow manual refresh
+    refresh: getAlerts, 
   };
 };
 
