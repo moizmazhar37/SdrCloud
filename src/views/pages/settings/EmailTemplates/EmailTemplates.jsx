@@ -1,15 +1,9 @@
 import React, { useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import styles from "./emailTemplates.module.scss";
 import EmailTemplateCard from "./EmailTemplateCard/EmailTemplateCard";
 import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
-import useEmailTemplates from "./hooks";
-
-const dummyTemplates = [
-  { id: 1, name: "Welcome Email", subject: "Welcome to Our Service", body: "Thank you for signing up!" },
-  { id: 2, name: "Promotion Email", subject: "Exclusive Discount for You!", body: "Enjoy 20% off on your next purchase." },
-  { id: 3, name: "Reminder Email", subject: "Don't Forget Your Appointment", body: "Your appointment is scheduled for tomorrow." },
-];
+import useTemplates from "./hooks";
 
 const navigationItems = [
   { text: "Settings", route: "/settings" },
@@ -19,13 +13,13 @@ const navigationItems = [
 
 const EmailTemplates = () => {
   const history = useHistory();
-  const { template, loading, error } = useEmailTemplates();
+  const { template, loading, error, emailTemplatesList, emailLoading, emailError } = useTemplates();
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const handleTemplateSelect = (template) => {
     history.push({
       pathname: "/create-email-template",
-      state: { templateId: template.id },
+      state: { templateId: template.template_id }, // Using API response key
     });
   };
 
@@ -80,11 +74,19 @@ const EmailTemplates = () => {
       {/* Heading */}
       <h2 className={styles.heading}>Email Templates</h2>
 
-      {/* Template Cards (Dummy Data) */}
+      {/* Template Cards from API */}
       <div className={styles.templatesContainer}>
-        {dummyTemplates.map((template) => (
-          <EmailTemplateCard key={template.id} template={template} />
-        ))}
+        {emailLoading ? (
+          <div className={styles.loading}>Loading Email Templates...</div>
+        ) : emailError ? (
+          <div className={styles.error}>Failed to load Email Templates</div>
+        ) : emailTemplatesList.length > 0 ? (
+          emailTemplatesList.map((template) => (
+            <EmailTemplateCard key={template.template_id} template={template} />
+          ))
+        ) : (
+          <div className={styles.noTemplates}>No Email Templates Available</div>
+        )}
       </div>
     </div>
   );
