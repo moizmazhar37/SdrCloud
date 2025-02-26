@@ -1,65 +1,55 @@
 import React, { useState, useEffect } from 'react';
 import AlertToast from '../AlertToast';
 import styles from './ToastManager.module.scss';
+import useMarkAlertViewed from '../useMarkAlertAsViewed';
 
-// Unique ID generator for toasts
-const generateId = () => `toast-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+const ToastManager = ({ toastMessages = [], duration = 5000, staggerDelay = 300 }) => {
+  const [visibleAlerts, setVisibleAlerts] = useState([]);
+  const warningText = "You can change the alert configurations from settings.";
+  const { markAlertViewed, loading } = useMarkAlertViewed();
 
-const ToastManager = ({ 
-  toastMessages = [], 
-  duration = 5000,
-  warningTexts = {}
-}) => {
-  const [toasts, setToasts] = useState([]);
-  const warningText="You can change the alert configurations from settings."
   useEffect(() => {
-    const newToasts = toastMessages.map(message => {
-      // Check if this message already exists in our toasts
-      const existingToast = toasts.find(toast => toast.message === message);
-      
-      if (existingToast) {
-        return existingToast;
-      }
-      
-      return {
-        id: generateId(),
-        message,
-        isVisible: true,
-        warningText: warningTexts[message] || ''
-      };
-    });
-    
-    setToasts(newToasts);
-  }, [toastMessages]);
-  
-  const handleDismiss = (id) => {
-    setToasts(prevToasts => 
-      prevToasts.map(toast => 
-        toast.id === id ? { ...toast, isVisible: false } : toast
-      )
+    const newAlerts = toastMessages.filter(
+      alert => !visibleAlerts.some(visible => visible.id === alert.id)
     );
+
+    if (newAlerts.length > 0) {
+      newAlerts.forEach((alert, index) => {
+        setTimeout(() => {
+          setVisibleAlerts(prev => [...prev, alert]);
+        }, index * staggerDelay);
+      });
+    }
     
-    setTimeout(() => {
-      setToasts(prevToasts => prevToasts.filter(toast => toast.id !== id));
-    }, 400); 
+    setVisibleAlerts(prev => 
+      prev.filter(visible => toastMessages.some(alert => alert.id === visible.id))
+    );
+  }, [toastMessages, staggerDelay]);
+
+  const handleDismiss = async (id) => {
+    try {
+      // Call the API to mark the alert as viewed
+      await markAlertViewed(id);
+      
+      // Remove the alert from visible alerts after API call succeeds
+      setVisibleAlerts(prev => prev.filter(alert => alert.id !== id));
+    } catch (error) {
+      // Even if the API fails, remove the alert from UI for better UX
+      // The error is already being handled in the hook with toast.error
+      setVisibleAlerts(prev => prev.filter(alert => alert.id !== id));
+    }
   };
-  
-  if (toasts.length === 0) return null;
-  
+
   return (
-    <div className={styles.toastManagerWrapper}>
-      {toasts.map((toast) => (
-        <div 
-          className={styles.toastManagerItem} 
-          key={toast.id}
-        >
-          <AlertToast
-            message={toast.message}
-            warningText={warningText}
-            isVisible={toast.isVisible}
-            onDismiss={() => handleDismiss(toast.id)}
-          />
-        </div>
+    <div className={styles.toastManager}>
+      {visibleAlerts.map((alert) => (
+        <AlertToast
+          key={alert.id}
+          message={alert.text}
+          isVisible={true}
+          onDismiss={() => handleDismiss(alert.id)}
+          warningText={warningText}
+        />
       ))}
     </div>
   );

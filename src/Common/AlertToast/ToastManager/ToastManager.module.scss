@@ -1,21 +1,17 @@
-.toastManagerWrapper {
+.toastManager {
     position: fixed;
     top: 20px;
     right: 20px;
-    z-index: 9999;
+    z-index: 1000;
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    max-width: 350px;
-  }
-  
-  .toastManagerItem {
+    gap: 10px;
+    max-width: 400px;
     width: 100%;
-  }
-  
-  .toastContainer {
-    /* This container can now be moved to the wrapper level */
-    position: relative;
-    z-index: 9999;
-    max-width: 100%;
+    pointer-events: none;
+    
+    // Allow individual toasts to have pointer events
+    & > div {
+      pointer-events: auto;
+    }
   }

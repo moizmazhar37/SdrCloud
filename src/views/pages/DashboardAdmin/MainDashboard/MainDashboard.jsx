@@ -26,7 +26,7 @@ import {
 const MainDashboard = () => {
   //Get Alerts for user
   const { data: alerts = [], loading: alertsLoading, error: alertsError } = useGetRealTimeAlerts();
-
+console.log("ppppp==",alerts)
   // State management for various time-based filters
   const [selectedTimeStamp, setSelectedTimeStamp] = useState("Current Month");
   const [selectedGraphTimeStamp, setSelectedGraphTimeStamp] = useState("Monthly");

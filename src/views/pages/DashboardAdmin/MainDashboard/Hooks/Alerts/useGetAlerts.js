@@ -20,7 +20,7 @@ const useGetRealTimeAlerts = () => {
         },
       });
 
-      setData(response.data.data);
+      setData(response.data);
     } catch (err) {
       const errorMessage =
         err.response?.data?.message ||
