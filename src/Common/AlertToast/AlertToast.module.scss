@@ -1,10 +1,8 @@
 .toastContainer {
-  position: fixed;
-  top: 20px; 
-  right: 20px;
+  position: relative; 
   z-index: 9999;
   transition: transform 0.4s ease-in-out, opacity 0.3s ease-in-out;
-  max-width: 350px;
+  width: 100%;
   transform: translateY(0);
   opacity: 0;
   

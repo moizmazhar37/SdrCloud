@@ -1,23 +1,21 @@
-.toastManagerContainer {
+.toastManagerWrapper {
     position: fixed;
     top: 20px;
     right: 20px;
+    z-index: 9999;
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    z-index: 9999;
+    gap: 12px;
     max-width: 350px;
-    & > div {
-      margin-bottom: 16px;
-    }
-    & > div:not(:last-child) {
-      margin-bottom: 16px !important;
-    }
   }
-  @media (max-width: 768px) {
-    .toastManagerContainer {
-      left: 20px;
-      right: 20px;
-      max-width: none;
-    }
+  
+  .toastManagerItem {
+    width: 100%;
+  }
+  
+  .toastContainer {
+    /* This container can now be moved to the wrapper level */
+    position: relative;
+    z-index: 9999;
+    max-width: 100%;
   }

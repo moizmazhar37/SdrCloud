@@ -11,7 +11,7 @@ const ToastManager = ({
   warningTexts = {}
 }) => {
   const [toasts, setToasts] = useState([]);
-  
+  const warningText="You can change the alert configurations from settings."
   useEffect(() => {
     const newToasts = toastMessages.map(message => {
       // Check if this message already exists in our toasts
@@ -43,15 +43,19 @@ const ToastManager = ({
       setToasts(prevToasts => prevToasts.filter(toast => toast.id !== id));
     }, 400); 
   };
+  
   if (toasts.length === 0) return null;
   
   return (
-    <div >
-      {toasts.map((toast, index) => (
-        <div className={styles.toastManagerContainer} key={toast.id} style={{ marginBottom: '10px' }}>
+    <div className={styles.toastManagerWrapper}>
+      {toasts.map((toast) => (
+        <div 
+          className={styles.toastManagerItem} 
+          key={toast.id}
+        >
           <AlertToast
             message={toast.message}
-            warningText={toast.warningText}
+            warningText={warningText}
             isVisible={toast.isVisible}
             onDismiss={() => handleDismiss(toast.id)}
           />
