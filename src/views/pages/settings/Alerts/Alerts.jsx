@@ -7,7 +7,6 @@ import useGetAlerts from "./Hooks/useGetAlerts";
 const Alerts = () => {
   const { saveAlerts, loading: saving } = useSaveAlerts();
   const { data: fetchedAlerts, loading: fetching, error } = useGetAlerts();
-
   const [alertsData, setAlertsData] = useState({
     emails: {
       active: false,
@@ -35,7 +34,6 @@ const Alerts = () => {
     },
   });
 
-  // Populate state when fetched data is available
   useEffect(() => {
     if (fetchedAlerts && Object.keys(fetchedAlerts).length > 0) {
       console.log("Fetched Alerts:", fetchedAlerts); // Debugging fetched data
