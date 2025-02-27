@@ -327,6 +327,37 @@ export const routes = [
 
   {
     exact: true,
+    path: "/email-templates",
+    guard: true,
+    layout: DashboardLayout,
+    component: lazy(() =>
+      import("src/views/pages/settings/EmailTemplates/EmailTemplates")
+    ),
+  },
+
+  {
+    exact: true,
+    path: "/create-email-template",
+    guard: true,
+    layout: DashboardLayout,
+    component: lazy(() =>
+      import("src/views/pages/settings/EmailTemplates/NewEmailTemplate/NewEmailTemplate")
+    ),
+  },
+
+
+  {
+    exact: true,
+    path: "/sendgrid",
+    guard: true,
+    layout: DashboardLayout,
+    component: lazy(() =>
+      import("src/views/pages/settings/Integrations/SendGrid/SendGrid")
+    ),
+  },
+
+  {
+    exact: true,
     path: "/addsheet",
     guard: true,
     layout: DashboardLayout,
