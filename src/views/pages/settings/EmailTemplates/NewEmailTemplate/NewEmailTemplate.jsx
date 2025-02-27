@@ -11,34 +11,28 @@ import Loader from "src/Common/Loader/Loader";
 const NewEmailTemplate = () => {
   const location = useLocation();
   const templateId = location.state?.templateId;
-  const emailTemplate = location.state?.emailTemplate || null; // Get template if editing
+  const emailTemplate = location.state?.emailTemplate || null;
 
   const { dataTypes, loading, error } = useDataTypes(templateId);
   const { saveTemplate, saving } = useSaveEmailTemplate();
 
-  // State with pre-filled values if editing
   const [name, setName] = useState(emailTemplate?.name || "");
   const [subject, setSubject] = useState(emailTemplate?.subject || "");
   const [body, setBody] = useState(emailTemplate?.body || "");
+  const [isHtml, setIsHtml] = useState(emailTemplate?.isHtml || false);
+
   const activeInputRef = useRef(null);
   const history = useHistory();
-
-  const isEditing = !!emailTemplate; // True if editing
 
   useEffect(() => {
     if (emailTemplate) {
       setName(emailTemplate.name);
       setSubject(emailTemplate.subject);
       setBody(emailTemplate.body);
+      setIsHtml(emailTemplate.isHtml || false);
     }
   }, [emailTemplate]);
 
-  const allowedDataTypes = ["Text", "First name", "Last name", "Customer organization"];
-  const filteredFields = dataTypes
-    ? dataTypes.filter((item) => allowedDataTypes.includes(item.dataType)).map((item) => item.value)
-    : [];
-
-  // Inserts text at cursor position
   const handleInsert = (text) => {
     if (activeInputRef.current) {
       const input = activeInputRef.current;
@@ -47,7 +41,6 @@ const NewEmailTemplate = () => {
       const newText = input.value.substring(0, start) + text + input.value.substring(end);
       input.value = newText;
       input.setSelectionRange(start + text.length, start + text.length);
-
       if (input.name === "subject") {
         setSubject(newText);
       } else {
@@ -57,7 +50,6 @@ const NewEmailTemplate = () => {
     }
   };
 
-  // Field validation
   const validateFields = () => {
     if (!name.trim() || !subject.trim() || !body.trim()) {
       toast.error("All fields are required.");
@@ -66,92 +58,45 @@ const NewEmailTemplate = () => {
     return true;
   };
 
-  // Handle save or update
   const handleSave = async () => {
     if (!validateFields()) return;
-
     try {
-      await saveTemplate({
-        name,
-        subject,
-        body,
-        template_id: templateId,
-        emailTemplate_id: emailTemplate?.id,
-        isUpdate: isEditing,
-      });
-
-      toast.success(`Template ${isEditing ? "updated" : "saved"} successfully!`);
-      history.push('/email-templates')
+      await saveTemplate({ name, subject, body, isHtml, template_id: templateId, emailTemplate_id: emailTemplate?.id, isUpdate: !!emailTemplate });
+      toast.success(`Template ${emailTemplate ? "updated" : "saved"} successfully!`);
+      history.push("/email-templates");
     } catch {
       toast.error("Failed to save template. Try again.");
     }
   };
 
-  const navigationItems = [
-    { text: "Settings", route: "/settings" },
-    { text: "Integration", route: "/integrations" },
-    { text: "Email Templates", route: "/email-templates" },
-    { text: isEditing ? "Edit Template" : "Create Template", route: "/create-email-template" },
-  ];
-
   return (
     <div className={styles.container}>
-      <DynamicNavigator items={navigationItems} />
-      <h2 className={styles.heading}>{isEditing ? "Edit Email Template" : "New Email Template"}</h2>
-
+      <DynamicNavigator items={[{ text: "Email Templates", route: "/email-templates" }, { text: emailTemplate ? "Edit Template" : "Create Template", route: "/create-email-template" }]} />
+      <h2 className={styles.heading}>{emailTemplate ? "Edit Email Template" : "New Email Template"}</h2>
       {loading ? (
-        <div className={styles.loaderWrapper}>
-          <Loader size={160} />
-        </div>
+        <Loader size={160} />
       ) : error ? (
         <div className={styles.error}>Failed to load template</div>
       ) : (
         <div className={styles.content}>
-          {/* Left Section - CopyText Fields */}
           <div className={styles.copySection}>
             <h3 className={styles.sectionTitle}>Available Fields</h3>
-            <CopyText fields={filteredFields} onInsert={handleInsert} />
+            <CopyText fields={["[First name]", "[Last name]", "[HVO URL]"]} onInsert={handleInsert} />
           </div>
-
-          {/* Right Section - Email Editor */}
-          <div className={`${styles.emailEditor}`}>
-            <div className={styles.header}>
-              <span>New Message</span>
-            </div>
-
-            <input
-              className={styles.input}
-              type="text"
-              name="name"
-              placeholder="Template Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-
-            <input
-              className={styles.input}
-              type="text"
-              name="subject"
-              placeholder="[Subject]"
-              value={subject}
-              onChange={(e) => setSubject(e.target.value)}
-              onFocus={(e) => (activeInputRef.current = e.target)}
-            />
-
-            <textarea
-              className={styles.textarea}
-              name="body"
-              placeholder="Hi [Recipient’s Name],\n\nI came across your profile and was impressed by..."
-              value={body}
-              onChange={(e) => setBody(e.target.value)}
-              onFocus={(e) => (activeInputRef.current = e.target)}
-            ></textarea>
-
-            <div className={styles.bottomBar}>
-              <button className={styles.saveButton} onClick={handleSave} disabled={saving}>
-                {saving ? "Saving..." : isEditing ? "Update" : "Save"}
-              </button>
-            </div>
+          <div className={styles.emailEditor}>
+            <input className={styles.input} type="text" name="name" placeholder="Template Name" value={name} onChange={(e) => setName(e.target.value)} />
+            <input className={styles.input} type="text" name="subject" placeholder="[Subject]" value={subject} onChange={(e) => setSubject(e.target.value)} onFocus={(e) => (activeInputRef.current = e.target)} />
+            <textarea className={styles.textarea} name="body" placeholder="Email body..." value={body} onChange={(e) => setBody(e.target.value)} onFocus={(e) => (activeInputRef.current = e.target)}></textarea>
+            <label className={styles.checkboxLabel}>
+              <input type="checkbox" checked={isHtml} onChange={() => setIsHtml(!isHtml)} /> Use HTML Template
+            </label>
+            {isHtml && (
+              <div className={styles.htmlPreview}>
+                <h4>Live Preview</h4>
+                <div className={styles.previewContent} dangerouslySetInnerHTML={{ __html: body }}></div>
+              </div>
+            )}
+            <button className={styles.saveButton} onClick={handleSave} disabled={saving}>{saving ? "Saving..." : emailTemplate ? "Update" : "Save"}</button>
           </div>
         </div>
       )}
