@@ -1,0 +1,17 @@
+.toastManager {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 400px;
+    width: 100%;
+    pointer-events: none;
+    
+    // Allow individual toasts to have pointer events
+    & > div {
+      pointer-events: auto;
+    }
+  }

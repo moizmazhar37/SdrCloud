@@ -4,7 +4,7 @@ import { alerts } from "src/config/APIConfig";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const useGetAlerts = () => {
+const useGetRealTimeAlerts = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -14,7 +14,7 @@ const useGetAlerts = () => {
     setError(null);
 
     try {
-      const response = await axios.get(`${alerts}/get-alerts`, {
+      const response = await axios.get(`${alerts}/get-user-alerts`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -44,4 +44,4 @@ const useGetAlerts = () => {
   };
 };
 
-export default useGetAlerts;
+export default useGetRealTimeAlerts;
