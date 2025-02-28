@@ -1,24 +1,28 @@
 import React from "react";
 import styles from "./SectionView.module.scss";
 
-const SectionView = ({ sectionData }) => {
+const SectionView = ({ sectionData, type }) => {
   const { duration, scroll, audio_embedded, sequence, section_name } =
     sectionData;
   return (
     <div className={styles.viewCard}>
       <div className={styles.cardHeader}>
         <span className={styles.sectionName}>
-          Section {sequence} | {section_name}{" "}
+          Section {sequence} | {section_name}
         </span>
         <button className={styles.viewButton}>View</button>
       </div>
       <div className={styles.metaInfo}>
-        <span className={styles.duration}>
-          <ClockIcon />
-          {duration}sec
-        </span>
         <span>Scroll - {scroll ? "Yes" : "No"}</span>
-        <span>Audio - {audio_embedded ? "Yes" : "No"}</span>
+        {type !== "hvo" && (
+          <>
+            <span className={styles.duration}>
+              <ClockIcon />
+              {duration}sec
+            </span>
+            <span>Audio - {audio_embedded ? "Yes" : "No"}</span>
+          </>
+        )}
       </div>
     </div>
   );
