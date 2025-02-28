@@ -71,6 +71,21 @@ const Create = () => {
               },
             },
             {
+              label: "Edit",
+              value: "Edit",
+              onClick: () => {
+                const route =
+                  activeTab === "HVO"
+                    ? "/create-hvo-template"
+                    : "/createtemplate&Video";
+                history.push({
+                  pathname: route,
+                  state: "summary",
+                  search: `templateId=${row.id}`,
+                });
+              },
+            },
+            {
               label: "Delete",
               value: "delete",
               onClick: () => setModalData({ isOpen: true, id: row.id }),
