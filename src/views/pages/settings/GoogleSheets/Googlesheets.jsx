@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { useHistory } from "react-router-dom";
 import Table from "../../../../Common/Table/Table";
-import FullScreenLoader from "../../../../component/FullScreenLoader";
+import Loader from "src/Common/Loader/Loader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Dropdown from "../../../../Common/Dropdown/Dropdown";
 import { faCircle } from "@fortawesome/free-solid-svg-icons";
 import styles from "./googlesheets.module.scss";
 import { useGoogleSheetsData, useDeleteGoogleSheet } from "./hooks";
 import WarningModal from "../../../../Common/Modal/Modal";
-import DynamicNavigator from "../../../../Common/DynamicNavigator/DynamicNavigator"; 
+import DynamicNavigator from "../../../../Common/DynamicNavigator/DynamicNavigator";
 
 function GoogleSheets() {
   const history = useHistory();
@@ -45,10 +45,6 @@ function GoogleSheets() {
   const handleNewSheet = () => {
     history.push("/addsheet");
   };
-
-  if (loading || isLoading) {
-    return <FullScreenLoader />;
-  }
 
   if (error) return <div>Error Fetching Data. Try reloading!</div>;
 
@@ -129,11 +125,18 @@ function GoogleSheets() {
         <DynamicNavigator items={navigationItems} />
         <button onClick={handleNewSheet}>Create New Google Sheet Connection</button>
       </div>
-      <Table
-        data={transformedData}
-        columns={columns}
-        onColumnClick={handleColumnClick}
-      />
+      
+      {loading || isLoading ? (
+        <div className={styles.loader}>
+          <Loader size={160} />
+        </div>
+      ) : (
+        <Table
+          data={transformedData}
+          columns={columns}
+          onColumnClick={handleColumnClick}
+        />
+      )}
       <WarningModal
         isOpen={isModalOpen}
         onCancel={handleCancel}
