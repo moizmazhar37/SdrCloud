@@ -3,6 +3,7 @@ import AlertsCard from "./AlertsCard";
 import styles from "./Alerts.module.scss";
 import useSaveAlerts from "./Hooks/useSaveAlerts";
 import useGetAlerts from "./Hooks/useGetAlerts";
+import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
 
 const Alerts = () => {
   const { saveAlerts, loading: saving } = useSaveAlerts();
@@ -33,7 +34,10 @@ const Alerts = () => {
       receiveAlerts: false,
     },
   });
-
+  const navigationItems = [
+    { text: "Settings", route: "/settings" },
+    { text: "Alerts", route: "/alerts" }
+  ];
   useEffect(() => {
     if (fetchedAlerts && Object.keys(fetchedAlerts).length > 0) {
       console.log("Fetched Alerts:", fetchedAlerts); // Debugging fetched data
@@ -96,6 +100,7 @@ const Alerts = () => {
 
   return (
     <div className={styles.alertsContainer}>
+        <DynamicNavigator items={navigationItems}/>
       <div className={styles.header}>
         <h2>Alerts Configuration</h2>
         <button
