@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import { Formik, Form } from "formik";
 import SheetDetails from "./SheetDetails";
 import styles from "./sheet-details.module.scss";
-import { useGoogleSheetTypes, useSaveGoogleSheetTypes } from "./hooks";
+import { useGoogleSheetTypes, useSaveGoogleSheetTypes } from "./useGetAllSheets";
 import FullScreenLoader from "src/component/FullScreenLoader";
 import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
 import { hvoTypes, videoTypes } from "./types";
@@ -83,7 +83,7 @@ function EditGoogleSheet() {
         <Form>
           <div className={styles.container}>
             <div className={styles.leftColumn}>
-              <SheetDetails viewData={viewData} />
+              <SheetDetails viewData={viewData} type={type} />
             </div>
             <div className={styles.rightColumn}>
               <table className={styles.table}>
