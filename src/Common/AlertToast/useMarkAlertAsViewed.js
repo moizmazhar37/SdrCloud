@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { toast } from 'react-toastify'; 
 import { alerts } from "src/config/APIConfig";
 const useMarkAlertViewed = () => {
   const [loading, setLoading] = useState(false);
@@ -21,10 +20,8 @@ const useMarkAlertViewed = () => {
 
 
 
-      toast.success('Alert marked as viewed');
       return response.data; 
     } catch (error) {
-      toast.error('Failed to mark alert as viewed');
       console.error('Error marking alert as viewed:', error);
       throw error; 
     } finally {
