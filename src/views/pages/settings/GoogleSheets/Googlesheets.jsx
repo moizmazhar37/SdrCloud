@@ -21,7 +21,7 @@ function GoogleSheets() {
   const navigationItems = [
     { text: "Settings", route: "/settings" },
     { text: "Integration", route: "/integrations" },
-    { text: "Google Sheet", route: "/googlesheets" }
+    { text: "Google Sheets", route: "/googlesheets" }
   ];
 
   const handleCancel = () => {
