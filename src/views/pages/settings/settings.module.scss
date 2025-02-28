@@ -12,6 +12,10 @@
     flex: 1 1 calc(33.33% - 2%);
     gap: 20px;
   }
+  @media (max-width: 1159px) and (min-width: 790px) {
+    flex: 1 1 calc(33.33% - 2%);
+    gap: 20px;
+  }
 
   @media (max-width: 870px) and (min-width: 525px) {
     flex: 1 1 calc(50% - 2%);
