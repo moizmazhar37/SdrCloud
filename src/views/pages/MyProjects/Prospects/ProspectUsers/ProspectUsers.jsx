@@ -2,6 +2,7 @@ import React from "react";
 import Table from "src/Common/Table/Table";
 import styles from "./Prospectusers.module.scss";
 import useProspectUserList from "../Hooks/useProspectUserList";
+import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
 
 const Prospectusers = ({ templateId, tempType }) => {
   const { data, loading, error } = useProspectUserList(templateId, tempType);
@@ -38,7 +39,10 @@ const Prospectusers = ({ templateId, tempType }) => {
       }
     }
   };
-
+  const navigationItems = [
+    { text: "Prospects", route: "/prospects" },
+    { text: "Prospect Users", route: "/Myprojects" }
+  ];
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error loading data: {error.message}</div>;
 
@@ -47,6 +51,8 @@ const Prospectusers = ({ templateId, tempType }) => {
 
   return (
     <div className={styles.container}>
+      <DynamicNavigator items={navigationItems}/>
+
       <h2>Prospect Users</h2>
       {transformedData && transformedData.length > 0 ? (
         <Table 
