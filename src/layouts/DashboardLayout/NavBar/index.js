@@ -66,7 +66,7 @@ const getNavSections = (userType) => {
             href: "/companyUsers-List",
           },
           {
-            title: "Leads",
+            title: "Visitors",
             icon: "images/Leads.svg",
             href: "/leads",
             items: [
@@ -75,7 +75,7 @@ const getNavSections = (userType) => {
                 href: "/leads-dashboard",
               },
               {
-                title: "Search Leads",
+                title: "Search Visitors",
                 href: "/leads-search",
               },
               {
@@ -165,7 +165,7 @@ const NavBar = ({ onMobileClose, openMobile, drawerOpen, onToggleDrawer }) => {
         const key = item.title + depth;
         const isActive = matchPath(pathname, { path: item.href, exact: true });
 
-        if (item.items && item.title === "Leads") {
+        if (item.items && item.title === "Visitors") {
           const open = Boolean(isActive || activeLeadsSection === item.title);
           return (
             <NavItem

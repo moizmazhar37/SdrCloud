@@ -282,7 +282,7 @@ const TopBar = ({ className, onMobileNavOpen, onDrawerAction, ...rest }) => {
             {localStorage.getItem("userType") === "ADMIN" ? (
               <Avatar src={user?.profileData?.profilePicture}></Avatar>
             ) : localStorage.getItem("userType") === "SUBADMIN" ? (
-              <Avatar src={user?.profileData?.adminProfileImage}></Avatar>
+              <Avatar src={user?.profileData?.profile_picture}></Avatar>
             ) : localStorage.getItem("userType") === "USER" ? (
               <Avatar src={user?.profileData?.profilePicture}></Avatar>
             ) : (
