@@ -26,7 +26,6 @@ const useGetAlerts = () => {
         err.response?.data?.message ||
         "An error occurred while fetching alerts";
       setError(errorMessage);
-      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
