@@ -62,6 +62,33 @@ const LeadsDashboard = () => {
     setShowSearchLeads(true);
   };
 
+  // Handler for HorizontalBarChart row clicks
+  const handleBarChartRowClick = (chartType, rowLabel) => {
+    let filterKey = "";
+    let filterValue = rowLabel;
+
+    switch (chartType) {
+      case "income":
+        filterKey = "netWorth";
+        break;
+      case "age":
+        filterKey = "age";
+        break;
+      case "location":
+        filterKey = "state";
+        break;
+      default:
+        return;
+    }
+
+    const initialFilters = {
+      [filterKey]: filterValue,
+    };
+
+    setSearchFilters(initialFilters);
+    setShowSearchLeads(true);
+  };
+
   // If SearchLeads is shown, render it
   if (showSearchLeads) {
     return (
@@ -96,9 +123,24 @@ const LeadsDashboard = () => {
             handlePieChartSegmentClick("Gender", segmentName)
           }
         />
-        <HorizantolBarChart data={incomeData} title="Income Level" />
-        <HorizantolBarChart data={ageData} title="Age Range" />
-        <HorizantolBarChart data={locationData} title="Location" />
+        <HorizantolBarChart
+          data={incomeData}
+          title="Income Level"
+          chartType="income"
+          onRowClick={handleBarChartRowClick}
+        />
+        <HorizantolBarChart
+          data={ageData}
+          title="Age Range"
+          chartType="age"
+          onRowClick={handleBarChartRowClick}
+        />
+        <HorizantolBarChart
+          data={locationData}
+          title="Location"
+          chartType="location"
+          onRowClick={handleBarChartRowClick}
+        />
       </div>
     </div>
   );
