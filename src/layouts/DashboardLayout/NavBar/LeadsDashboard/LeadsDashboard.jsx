@@ -6,12 +6,13 @@ import LatestVisitors from "./TopCards/LatestVisitors/LatestVisitors";
 import PieChart from "./TopCards/PieChart/PieChart";
 import VisitorsChart from "./MidSection/VisitorsChart/VisitorsChart";
 import HorizantolBarChart from "src/Common/HorizantolBarChart/HorizantolBarChart";
-import SearchLeads from "../SearchLeads/SearchLeads"; // Import SearchLeads
+import SearchLeads from "../SearchLeads/SearchLeads";
 import useLeadsDashboard from "./useLeadsDashboard";
 
 const LeadsDashboard = () => {
   const { data, loading } = useLeadsDashboard();
   const [showSearchLeads, setShowSearchLeads] = useState(false);
+  const [searchFilters, setSearchFilters] = useState(null);
 
   if (loading) {
     return <p>{""}</p>;
@@ -31,24 +32,40 @@ const LeadsDashboard = () => {
     Female: 30.8,
   };
 
-  // Create initial filters based on dashboard data
-  const initialFilters = {
-    dateRange: {
-      start: "", // You might want to set a default start date
-      end: "", // You might want to set a default end date
-    },
-    // Add other filter criteria if needed
+  // Handler for segment clicks on pie charts
+  const handlePieChartSegmentClick = (chartTitle, segmentName) => {
+    let filterKey = "";
+    let filterValue = segmentName;
+
+    switch (chartTitle) {
+      case "Gender":
+        filterKey = "gender";
+        break;
+      case "Direct Vs. Referral":
+        filterKey = "referralSource";
+        break;
+      default:
+        return;
+    }
+
+    const initialFilters = {
+      [filterKey]: filterValue,
+    };
+
+    setSearchFilters(initialFilters);
+    setShowSearchLeads(true);
   };
 
   // Handler for "View all" in LatestVisitors
   const handleViewAllVisitors = () => {
+    setSearchFilters(null);
     setShowSearchLeads(true);
   };
 
   // If SearchLeads is shown, render it
   if (showSearchLeads) {
     return (
-      <SearchLeads isFromDashboard={true} initialFilters={initialFilters} />
+      <SearchLeads isFromDashboard={true} initialFilters={searchFilters} />
     );
   }
 
@@ -57,17 +74,28 @@ const LeadsDashboard = () => {
       <div className={styles.TopContainer}>
         <IdentifiedByMonth data={identified_by_month} />
         <MonthlySpend data={monthly_data} />
-        <LatestVisitors
-          visitors={visitors}
-          onViewAll={handleViewAllVisitors} // Pass handler
+        <LatestVisitors visitors={visitors} onViewAll={handleViewAllVisitors} />
+        <PieChart
+          title="Direct Vs. Referral"
+          data={referralData}
+          clickable={true}
+          onSegmentClick={(segmentName) =>
+            handlePieChartSegmentClick("Direct Vs. Referral", segmentName)
+          }
         />
-        <PieChart title="Direct Vs. Referral" data={referralData} />
       </div>
       <div className={styles.midContainer}>
         <VisitorsChart data={visitors_data} />
       </div>
       <div className={styles.TopContainer}>
-        <PieChart title="Gender" data={genderData} />
+        <PieChart
+          title="Gender"
+          data={genderData}
+          clickable={true}
+          onSegmentClick={(segmentName) =>
+            handlePieChartSegmentClick("Gender", segmentName)
+          }
+        />
         <HorizantolBarChart data={incomeData} title="Income Level" />
         <HorizantolBarChart data={ageData} title="Age Range" />
         <HorizantolBarChart data={locationData} title="Location" />
