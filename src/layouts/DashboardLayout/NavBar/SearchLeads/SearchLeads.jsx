@@ -6,11 +6,17 @@ import Pagination from "src/Common/Pagination/Pagination";
 import { headers, transformData } from "./helpers";
 import styles from "./SearchLeads.module.scss";
 import Loader from "src/Common/Loader/Loader";
+import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
 
-export default function SearchLeads({ 
-  initialFilters = null, 
-  isFromDashboard = false 
+export default function SearchLeads({
+  initialFilters = null,
+  isFromDashboard = false,
 }) {
+  const navigationItems = [
+    { text: "Leads Dashboard", route: "/visitor-dashboard" },
+    { text: "Data Details", route: "/leads-dashboard" },
+  ];
+
   const ITEMS_PER_PAGE = 12;
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedRows, setSelectedRows] = useState([]);
@@ -20,9 +26,8 @@ export default function SearchLeads({
 
   // If dashboard mode is on and initial filters exist, use them
   // Otherwise, use currentFilters
-  const filtersToUse = isFromDashboard && initialFilters 
-    ? initialFilters 
-    : currentFilters;
+  const filtersToUse =
+    isFromDashboard && initialFilters ? initialFilters : currentFilters;
 
   const { leads, loading, error, totalCount } = useLeads(
     offset,
@@ -52,12 +57,13 @@ export default function SearchLeads({
 
   return (
     <div className={styles.container}>
+      {isFromDashboard && <DynamicNavigator items={navigationItems} />}
       <div className={styles.contentWrapper}>
         {/* Only show SearchFilters if not from dashboard or no initial filters */}
         {(!isFromDashboard || !initialFilters) && (
           <div className={styles.filterSection}>
-            <SearchFilters 
-              onSearch={handleSearch} 
+            <SearchFilters
+              onSearch={handleSearch}
               initialFilters={isFromDashboard ? initialFilters : null}
             />
           </div>

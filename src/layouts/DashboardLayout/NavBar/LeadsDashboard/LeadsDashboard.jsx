@@ -8,6 +8,11 @@ import VisitorsChart from "./MidSection/VisitorsChart/VisitorsChart";
 import HorizantolBarChart from "src/Common/HorizantolBarChart/HorizantolBarChart";
 import SearchLeads from "../SearchLeads/SearchLeads";
 import useLeadsDashboard from "./useLeadsDashboard";
+import {
+  handlePieChartSegmentClick,
+  handleViewAllVisitors,
+  handleBarChartRowClick,
+} from "./helpers";
 
 const LeadsDashboard = () => {
   const { data, loading } = useLeadsDashboard();
@@ -20,73 +25,26 @@ const LeadsDashboard = () => {
 
   const visitors_data = data.visitor_trends;
   const visitors = data.visitors;
-  const incomeData = data.income_data;
+
+  // Transform income data to remove commas from net worth values while preserving $ signs
+  const incomeData = data.income_data.map((item) => {
+    if (typeof item.label === "string" && item.label.includes(",")) {
+      return {
+        ...item,
+        label: item.label.replace(/(\$[0-9]*),([0-9]*)/g, "$1$2"),
+      };
+    }
+    return item;
+  });
+
   const ageData = data.age_data;
   const locationData = data.location_data;
   const identified_by_month = data?.identified_by_month || [];
   const monthly_data = data?.monthly_spend || [];
   const referralData = data.direct_vs_referral;
-
   const genderData = {
-    Male: 69.2,
-    Female: 30.8,
-  };
-
-  // Handler for segment clicks on pie charts
-  const handlePieChartSegmentClick = (chartTitle, segmentName) => {
-    let filterKey = "";
-    let filterValue = segmentName;
-
-    switch (chartTitle) {
-      case "Gender":
-        filterKey = "gender";
-        break;
-      case "Direct Vs. Referral":
-        filterKey = "referralSource";
-        break;
-      default:
-        return;
-    }
-
-    const initialFilters = {
-      [filterKey]: filterValue,
-    };
-
-    setSearchFilters(initialFilters);
-    setShowSearchLeads(true);
-  };
-
-  // Handler for "View all" in LatestVisitors
-  const handleViewAllVisitors = () => {
-    setSearchFilters(null);
-    setShowSearchLeads(true);
-  };
-
-  // Handler for HorizontalBarChart row clicks
-  const handleBarChartRowClick = (chartType, rowLabel) => {
-    let filterKey = "";
-    let filterValue = rowLabel;
-
-    switch (chartType) {
-      case "income":
-        filterKey = "netWorth";
-        break;
-      case "age":
-        filterKey = "age";
-        break;
-      case "location":
-        filterKey = "state";
-        break;
-      default:
-        return;
-    }
-
-    const initialFilters = {
-      [filterKey]: filterValue,
-    };
-
-    setSearchFilters(initialFilters);
-    setShowSearchLeads(true);
+    Male: data.gender_data.Male,
+    Female: data.gender_data.Female,
   };
 
   // If SearchLeads is shown, render it
@@ -101,13 +59,23 @@ const LeadsDashboard = () => {
       <div className={styles.TopContainer}>
         <IdentifiedByMonth data={identified_by_month} />
         <MonthlySpend data={monthly_data} />
-        <LatestVisitors visitors={visitors} onViewAll={handleViewAllVisitors} />
+        <LatestVisitors
+          visitors={visitors}
+          onViewAll={() =>
+            handleViewAllVisitors(setShowSearchLeads, setSearchFilters)
+          }
+        />
         <PieChart
           title="Direct Vs. Referral"
           data={referralData}
           clickable={true}
           onSegmentClick={(segmentName) =>
-            handlePieChartSegmentClick("Direct Vs. Referral", segmentName)
+            handlePieChartSegmentClick(
+              "Direct Vs. Referral",
+              segmentName,
+              setShowSearchLeads,
+              setSearchFilters
+            )
           }
         />
       </div>
@@ -120,26 +88,53 @@ const LeadsDashboard = () => {
           data={genderData}
           clickable={true}
           onSegmentClick={(segmentName) =>
-            handlePieChartSegmentClick("Gender", segmentName)
+            handlePieChartSegmentClick(
+              "Gender",
+              segmentName,
+              setShowSearchLeads,
+              setSearchFilters
+            )
           }
         />
         <HorizantolBarChart
           data={incomeData}
           title="Income Level"
           chartType="income"
-          onRowClick={handleBarChartRowClick}
+          onRowClick={(chartType, rowLabel) =>
+            handleBarChartRowClick(
+              chartType,
+              rowLabel,
+              setShowSearchLeads,
+              setSearchFilters
+            )
+          }
+          formatValues={false}
         />
         <HorizantolBarChart
           data={ageData}
           title="Age Range"
           chartType="age"
-          onRowClick={handleBarChartRowClick}
+          onRowClick={(chartType, rowLabel) =>
+            handleBarChartRowClick(
+              chartType,
+              rowLabel,
+              setShowSearchLeads,
+              setSearchFilters
+            )
+          }
         />
         <HorizantolBarChart
           data={locationData}
           title="Location"
           chartType="location"
-          onRowClick={handleBarChartRowClick}
+          onRowClick={(chartType, rowLabel) =>
+            handleBarChartRowClick(
+              chartType,
+              rowLabel,
+              setShowSearchLeads,
+              setSearchFilters
+            )
+          }
         />
       </div>
     </div>
