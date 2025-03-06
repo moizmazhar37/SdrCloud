@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./SearchFilters.module.scss";
 import PersonalCriteriaDropdown from "./PersonalCriteriaDropdown/PersonalCriteriaDropdown";
 import LocationCriteria from "./LocationCriteria/LocationCriteria";
@@ -6,13 +6,14 @@ import FinancialCriteria from "./FinancialCriteria/FinancialCriteria";
 import MarketingCriteria from "./MarketingCriteria/MarketingCriteria";
 import { transformFilters, resetFiltersState } from "./helpers";
 
-const SearchFilters = ({ onSearch }) => {
+const SearchFilters = ({ onSearch, initialFilters = null }) => {
   const [isPersonalCriteriaOpen, setIsPersonalCriteriaOpen] = useState(false);
   const [isLocationCriteriaOpen, setIsLocationCriteriaOpen] = useState(false);
   const [isFinancialCriteriaOpen, setIsFinancialCriteriaOpen] = useState(false);
   const [isMarketingCriteriaOpen, setIsMarketingCriteriaOpen] = useState(false);
 
-  const [filters, setFilters] = useState(resetFiltersState());
+  // Use initialFilters if provided, otherwise use default state
+  const [filters, setFilters] = useState(initialFilters || resetFiltersState());
 
   const handleDateChange = (e) => {
     setFilters({

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./LeadsDashboard.module.scss";
 import IdentifiedByMonth from "./TopCards/IdentifiedByMonth/IdentifiedByMonth";
 import MonthlySpend from "./TopCards/MonthlySpend/MonthlySpend";
@@ -6,54 +6,150 @@ import LatestVisitors from "./TopCards/LatestVisitors/LatestVisitors";
 import PieChart from "./TopCards/PieChart/PieChart";
 import VisitorsChart from "./MidSection/VisitorsChart/VisitorsChart";
 import HorizantolBarChart from "src/Common/HorizantolBarChart/HorizantolBarChart";
+import SearchLeads from "../SearchLeads/SearchLeads";
 import useLeadsDashboard from "./useLeadsDashboard";
+import {
+  handlePieChartSegmentClick,
+  handleViewAllVisitors,
+  handleBarChartRowClick,
+  getCurrentMonthDateRange,
+} from "./helpers";
 
 const LeadsDashboard = () => {
   const { data, loading } = useLeadsDashboard();
+  const [showSearchLeads, setShowSearchLeads] = useState(false);
+  const [searchFilters, setSearchFilters] = useState(null);
 
   if (loading) {
     return <p>{""}</p>;
   }
 
   const visitors_data = data.visitor_trends;
-
   const visitors = data.visitors;
 
-  const incomeData = data.income_data;
+  // Transform income data to remove commas from net worth values while preserving $ signs
+  const incomeData = data.income_data.map((item) => {
+    if (typeof item.label === "string" && item.label.includes(",")) {
+      return {
+        ...item,
+        label: item.label.replace(/(\$[0-9]*),([0-9]*)/g, "$1$2"),
+      };
+    }
+    return item;
+  });
 
   const ageData = data.age_data;
-
   const locationData = data.location_data;
-
   const identified_by_month = data?.identified_by_month || [];
   const monthly_data = data?.monthly_spend || [];
   const referralData = data.direct_vs_referral;
-
   const genderData = {
-    Male: 69.2,
-    Female: 30.8,
+    Male: data.gender_data.Male,
+    Female: data.gender_data.Female,
   };
+
+  // Handle click on the IdentifiedByMonth component
+  const handleIdentifiedByMonthClick = () => {
+    const dateRange = getCurrentMonthDateRange();
+    setSearchFilters(dateRange);
+    setShowSearchLeads(true);
+  };
+
+  // If SearchLeads is shown, render it
+  if (showSearchLeads) {
+    return (
+      <SearchLeads isFromDashboard={true} initialFilters={searchFilters} />
+    );
+  }
 
   return (
     <div className={styles.dashboardContainer}>
       <div className={styles.TopContainer}>
-        <IdentifiedByMonth data={identified_by_month} />
+        <IdentifiedByMonth
+          data={identified_by_month}
+          onClick={handleIdentifiedByMonthClick}
+        />
         <MonthlySpend data={monthly_data} />
-        <LatestVisitors visitors={visitors} />
-        <PieChart title="Direct Vs. Referral" data={referralData} />
+        <LatestVisitors
+          visitors={visitors}
+          onViewAll={() =>
+            handleViewAllVisitors(setShowSearchLeads, setSearchFilters)
+          }
+        />
+        <PieChart
+          title="Direct Vs. Referral"
+          data={referralData}
+          clickable={true}
+          onSegmentClick={(segmentName) =>
+            handlePieChartSegmentClick(
+              "Direct Vs. Referral",
+              segmentName,
+              setShowSearchLeads,
+              setSearchFilters
+            )
+          }
+        />
       </div>
       <div className={styles.midContainer}>
         <VisitorsChart data={visitors_data} />
       </div>
       <div className={styles.TopContainer}>
-        <PieChart title="Gender" data={genderData} />
-        <HorizantolBarChart data={incomeData} title="Income Level" />
-        <HorizantolBarChart data={ageData} title="Age Range" />
-        <HorizantolBarChart data={locationData} title="Location" />
+        <PieChart
+          title="Gender"
+          data={genderData}
+          clickable={true}
+          onSegmentClick={(segmentName) =>
+            handlePieChartSegmentClick(
+              "Gender",
+              segmentName,
+              setShowSearchLeads,
+              setSearchFilters
+            )
+          }
+        />
+        <HorizantolBarChart
+          data={incomeData}
+          title="Income Level"
+          chartType="income"
+          onRowClick={(chartType, rowLabel) =>
+            handleBarChartRowClick(
+              chartType,
+              rowLabel,
+              setShowSearchLeads,
+              setSearchFilters
+            )
+          }
+          formatValues={false}
+        />
+        <HorizantolBarChart
+          data={ageData}
+          title="Age Range"
+          chartType="age"
+          onRowClick={(chartType, rowLabel) =>
+            handleBarChartRowClick(
+              chartType,
+              rowLabel,
+              setShowSearchLeads,
+              setSearchFilters
+            )
+          }
+        />
+        <HorizantolBarChart
+          data={locationData}
+          title="Location"
+          chartType="location"
+          onRowClick={(chartType, rowLabel) =>
+            handleBarChartRowClick(
+              chartType,
+              rowLabel,
+              setShowSearchLeads,
+              setSearchFilters
+            )
+          }
+        />
       </div>
     </div>
   );
 };
 
 export default LeadsDashboard;
-  

@@ -1,8 +1,14 @@
 import React from "react";
 import styles from "./HorizantolBarChart.module.scss";
 
-const HorizantolBarChart = ({ title, data }) => {
+const HorizantolBarChart = ({ title, data, onRowClick, chartType }) => {
   const maxValue = Math.max(...data.map((item) => item.value));
+
+  const handleRowClick = (item) => {
+    if (onRowClick) {
+      onRowClick(chartType, item.label);
+    }
+  };
 
   return (
     <div className={styles.wrapper}>
@@ -10,7 +16,12 @@ const HorizantolBarChart = ({ title, data }) => {
         <h2 className={styles.title}>{title}</h2>
         <div className={styles.chartContainer}>
           {data.map((item, index) => (
-            <div key={index} className={styles.barRow}>
+            <div
+              key={index}
+              className={styles.barRow}
+              onClick={() => handleRowClick(item)}
+              style={{ cursor: "pointer" }}
+            >
               <div className={styles.label}>{item.label}</div>
               <div className={styles.barContainer}>
                 <div className={styles.barWrapper} style={{ flex: 1 }}>
@@ -30,4 +41,5 @@ const HorizantolBarChart = ({ title, data }) => {
     </div>
   );
 };
+
 export default HorizantolBarChart;
