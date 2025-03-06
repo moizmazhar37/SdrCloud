@@ -12,6 +12,7 @@ import {
   handlePieChartSegmentClick,
   handleViewAllVisitors,
   handleBarChartRowClick,
+  getCurrentMonthDateRange,
 } from "./helpers";
 
 const LeadsDashboard = () => {
@@ -47,6 +48,13 @@ const LeadsDashboard = () => {
     Female: data.gender_data.Female,
   };
 
+  // Handle click on the IdentifiedByMonth component
+  const handleIdentifiedByMonthClick = () => {
+    const dateRange = getCurrentMonthDateRange();
+    setSearchFilters(dateRange);
+    setShowSearchLeads(true);
+  };
+
   // If SearchLeads is shown, render it
   if (showSearchLeads) {
     return (
@@ -57,7 +65,10 @@ const LeadsDashboard = () => {
   return (
     <div className={styles.dashboardContainer}>
       <div className={styles.TopContainer}>
-        <IdentifiedByMonth data={identified_by_month} />
+        <IdentifiedByMonth
+          data={identified_by_month}
+          onClick={handleIdentifiedByMonthClick}
+        />
         <MonthlySpend data={monthly_data} />
         <LatestVisitors
           visitors={visitors}
