@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import logo from "./logo.png";
+import { toast } from "react-toastify";
 import "./VideoPlayer.css";
 import ApiConfig, { videoelement } from "./../../../../config/APIConfig";
 
@@ -29,11 +30,11 @@ const VideoPlayer = () => {
     fetchVideoUrl();
   }, [video_id]);
 
-
   useEffect(() => {
     // Dynamically add the script when the component mounts
     const script = document.createElement("script");
-    script.src = "https://storage.googleapis.com/static-data-for-sdrc/scripts/tracker_d26331ec-e390-4c61-afb9-56795bb856cf.js";
+    script.src =
+      "https://storage.googleapis.com/static-data-for-sdrc/scripts/tracker_d26331ec-e390-4c61-afb9-56795bb856cf.js";
     script.async = true;
     document.body.appendChild(script);
 
@@ -42,6 +43,14 @@ const VideoPlayer = () => {
       document.body.removeChild(script);
     };
   }, []);
+
+  const handleMeetButtonClick = () => {
+    if (videoData?.meet_link) {
+      window.location.href = videoData.meet_link;
+    } else {
+      toast.error("Couldn't find meeting link");
+    }
+  };
 
   if (isLoading) {
     return (
@@ -83,6 +92,10 @@ const VideoPlayer = () => {
           Your browser does not support the video tag.
         </video>
       )}
+
+      <button className="meet-button" onClick={handleMeetButtonClick}>
+        Meet
+      </button>
     </div>
   );
 };
