@@ -100,3 +100,9 @@
     border-color: #0066cc;
   }
 }
+
+.rangeWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
