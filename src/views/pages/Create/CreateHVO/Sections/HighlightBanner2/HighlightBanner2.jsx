@@ -91,6 +91,10 @@ const HighlightBanner2 = ({
     }
   };
 
+  const handleClose = () => {
+    onClose();
+  };
+
   const handleSizeChange = (e) => {
     let value = e.target.value.replace(/\D/g, "");
     if (value === "" || parseInt(value) <= 32) {
@@ -216,7 +220,13 @@ const HighlightBanner2 = ({
         >
           {loading ? "Saving..." : initialData ? "Update" : "Save"}
         </button>
-        <button className={styles.nextButton}>Next</button>
+        <button
+          onClick={handleClose}
+          className={styles.cancelButton}
+          disabled={loading}
+        >
+          Cancel
+        </button>
       </div>
     </div>
   );
