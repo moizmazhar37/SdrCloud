@@ -2,8 +2,10 @@ import React, { useState, useRef, useEffect } from "react";
 import styles from "./VideoSection.module.scss";
 import { useSaveVideoSection } from "../../Hooks/VideoSection/useSaveVideoSection";
 import { useUpdateVideoSection } from "../../Hooks/VideoSection/useUpdateVideoSection";
+import CategoryDropdown from "../../../CreateVideo/CategoryDropdown/CategoryDropdown";
 
 const VideoUpload = ({
+  dynamicVideos,
   onSectionSave,
   onClose,
   templateId,
@@ -14,26 +16,43 @@ const VideoUpload = ({
   const [previewUrl, setPreviewUrl] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [videoFile, setVideoFile] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const fileInputRef = useRef(null);
 
   const { saveVideoSection, isLoading: isSaving } = useSaveVideoSection();
   const { updateVideoSection, isLoading: isUpdating } = useUpdateVideoSection();
   const isLoading = isSaving || isUpdating;
 
+  // Transform dynamicVideos array to dropdown format
+  const transformedOptions =
+    dynamicVideos?.map((item) => ({
+      label: item,
+      value: item,
+    })) || [];
+
   useEffect(() => {
     if (initialData?.video) {
-      setVideoUrl(initialData.video);
-      setPreviewUrl(initialData.video);
+      // Check if the initial video is from a dynamic category
+      const isFromCategory = dynamicVideos?.includes(initialData.video);
+
+      if (isFromCategory) {
+        setSelectedCategory(initialData.video);
+        setPreviewUrl(""); // No preview for category selections
+      } else {
+        setVideoUrl(initialData.video);
+        setPreviewUrl(initialData.video);
+      }
       setIsEditing(true);
     }
-  }, [initialData]);
+  }, [initialData, dynamicVideos]);
 
   const handleUrlChange = (e) => {
     const url = e.target.value;
     setVideoUrl(url);
     setPreviewUrl(url);
-    // Clear file selection when URL is entered
+    // Clear file selection and category when URL is entered
     setVideoFile(null);
+    setSelectedCategory(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
@@ -45,8 +64,20 @@ const VideoUpload = ({
       const objectUrl = URL.createObjectURL(file);
       setPreviewUrl(objectUrl);
       setVideoFile(file);
-      // Clear URL when file is selected
+      // Clear URL and category when file is selected
       setVideoUrl("");
+      setSelectedCategory(null);
+    }
+  };
+
+  const handleCategorySelect = (value) => {
+    setSelectedCategory(value);
+    // Clear URL, preview, and file when category is selected
+    setVideoUrl("");
+    setPreviewUrl("");
+    setVideoFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
     }
   };
 
@@ -55,7 +86,8 @@ const VideoUpload = ({
   };
 
   const handleSave = async () => {
-    if (!videoUrl && !videoFile && !previewUrl) {
+    // Check if any input method is selected
+    if (!videoUrl && !videoFile && !selectedCategory) {
       return;
     }
 
@@ -65,8 +97,16 @@ const VideoUpload = ({
         sequence: sequence,
         section_name: "Video",
         is_active: true,
-        ...(videoFile ? { file: videoFile } : { video_url: videoUrl }),
       };
+
+      // Add appropriate data based on the input method
+      if (videoFile) {
+        sectionData.file = videoFile;
+      } else if (videoUrl) {
+        sectionData.video_url = videoUrl;
+      } else if (selectedCategory) {
+        sectionData.video_url = selectedCategory;
+      }
 
       let result;
       if (isEditing && initialData?.id) {
@@ -87,6 +127,7 @@ const VideoUpload = ({
     setVideoUrl("");
     setPreviewUrl("");
     setVideoFile(null);
+    setSelectedCategory(null);
     setIsEditing(false);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
@@ -106,7 +147,7 @@ const VideoUpload = ({
           value={videoUrl}
           onChange={handleUrlChange}
           className={styles.urlInput}
-          disabled={isLoading}
+          disabled={isLoading || selectedCategory}
         />
         <input
           type="file"
@@ -118,10 +159,19 @@ const VideoUpload = ({
         <button
           onClick={handleChooseClick}
           className={styles.chooseButton}
-          disabled={isLoading}
+          disabled={isLoading || selectedCategory}
         >
           Choose
         </button>
+      </div>
+      <div className={styles.categoryContainer}>
+        <CategoryDropdown
+          options={transformedOptions}
+          buttonText="Select Video Category"
+          onSelect={handleCategorySelect}
+          initialValue={selectedCategory}
+          disabled={isLoading || videoUrl || videoFile}
+        />
       </div>
       {previewUrl && (
         <div className={styles.previewContainer}>
@@ -131,11 +181,16 @@ const VideoUpload = ({
           </video>
         </div>
       )}
+      {selectedCategory && (
+        <div className={styles.categorySelectedIndicator}>
+          Selected video category: <strong>{selectedCategory}</strong>
+        </div>
+      )}
       <div className={styles.actionButtons}>
         <button
           onClick={handleSave}
           className={styles.saveButton}
-          disabled={(!videoUrl && !videoFile && !previewUrl) || isLoading}
+          disabled={(!videoUrl && !videoFile && !selectedCategory) || isLoading}
         >
           {isLoading ? "Saving..." : isEditing ? "Update" : "Save"}
         </button>

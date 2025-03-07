@@ -83,10 +83,10 @@ const StaticURL = ({
     }
   };
 
-  const handleCategorySelect = (value, label) => {
-    setUrl(value);
-    setSelectedCategory(label);
-  };
+  // const handleCategorySelect = (value, label) => {
+  //   setUrl(value);
+  //   setSelectedCategory(label);
+  // };
 
   const handleUploadAudio = () => {
     audioInputRef.current?.click();
@@ -188,7 +188,7 @@ const StaticURL = ({
               />
             </div>
 
-            <div className={styles.urlSelect}>
+            {/* <div className={styles.urlSelect}>
               <label>Select Static URL</label>
               <CategoryDropdown
                 key={dropdownKey}
@@ -198,7 +198,7 @@ const StaticURL = ({
                 allowAddNew={false}
                 initialValue={editData?.value}
               />
-            </div>
+            </div> */}
           </div>
 
           <div className={styles.controlRow}>

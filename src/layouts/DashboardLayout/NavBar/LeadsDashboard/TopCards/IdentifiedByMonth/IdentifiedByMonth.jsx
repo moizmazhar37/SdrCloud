@@ -2,7 +2,7 @@ import React from "react";
 import styles from "./IdentifiedByMonth.module.scss";
 import { User } from "lucide-react";
 
-const IdentifiedByMonth = ({ data }) => {
+const IdentifiedByMonth = ({ data, onClick }) => {
   return (
     <div className={styles.wrapper}>
       <div className={styles.container}>
@@ -11,9 +11,19 @@ const IdentifiedByMonth = ({ data }) => {
           <span className={styles.title}>Identified This Month</span>
         </div>
 
-        <div className={styles.count}>{data.identified}</div>
+        <div
+          className={styles.count}
+          onClick={onClick}
+          style={{ cursor: "pointer" }}
+        >
+          {data.identified}
+        </div>
 
-        <div className={styles.chartContainer}>
+        <div
+          className={styles.chartContainer}
+          onClick={onClick}
+          style={{ cursor: "pointer" }}
+        >
           <div className={styles.progressCircle}>
             <svg viewBox="0 0 36 36" className={styles.circularChart}>
               <path

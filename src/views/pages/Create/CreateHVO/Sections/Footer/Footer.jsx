@@ -39,6 +39,11 @@ const Footer = ({
     }
   };
 
+  const handleClose = () => {
+    onClose();
+  };
+
+
   useEffect(() => {
     if (initialData) {
       setFooterBgColor(initialData.footer_background_color || "");
@@ -224,7 +229,13 @@ const Footer = ({
           >
             {loading ? "Saving..." : "Save"}
           </button>
-          <button className={styles.nextButton}>Next</button>
+          <button
+          onClick={handleClose}
+          className={styles.cancelButton}
+          disabled={loading}
+        >
+          Cancel
+        </button>
         </div>
       </div>
     </div>

@@ -91,6 +91,11 @@ const TextImage = ({
     setSelectedDynamicOption(null);
   }, []);
 
+
+  const handleClose = () => {
+    onClose();
+  };
+
   const handleChooseClick = useCallback(() => {
     fileInputRef.current?.click();
   }, []);
@@ -340,7 +345,13 @@ const TextImage = ({
           >
             {loading ? "Saving..." : initialData ? "Update" : "Save"}
           </button>
-          <button className={styles.nextButton}>Next</button>
+          <button
+          onClick={handleClose}
+          className={styles.cancelButton}
+          disabled={loading}
+        >
+          Cancel
+        </button>
         </div>
       </div>
     </div>

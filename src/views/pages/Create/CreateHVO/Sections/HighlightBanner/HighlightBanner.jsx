@@ -34,6 +34,10 @@ const HighlightBanner = ({
     { label: "No", value: "no" },
   ];
 
+  const handleClose = () => {
+    onClose();
+  };
+
   useEffect(() => {
     if (initialData) {
       setBannerText(initialData.banner_text || "");
@@ -157,6 +161,14 @@ const HighlightBanner = ({
           disabled={loading}
         >
           {loading ? "Saving..." : initialData ? "Update" : "Save"}
+        </button>
+
+        <button
+          onClick={handleClose}
+          className={styles.cancelButton}
+          disabled={loading}
+        >
+          Cancel
         </button>
       </div>
     </div>
