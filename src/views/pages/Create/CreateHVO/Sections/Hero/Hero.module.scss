@@ -60,13 +60,27 @@
 .chooseButton,
 .saveButton {
   background-color: #0358ac;
-  font-weight: 600;
+  font-weight: 500;
   font-size: 14px;
   color: #fff;
   padding: 13.5px 24px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+}
+
+.cancelButton{
+  padding: 8px 16px;
+  background-color: #0066cc;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+
+  &:hover {
+    background-color: darken(#0066cc, 5%);
+  }
 }
 
 .previewContainer {
@@ -138,4 +152,14 @@
 
 .copySection {
   padding-top: 20px;
+}
+
+.cancelButton {
+  background-color: white;
+  color: #333;
+  border: 1px solid #ccc;
+
+  &:hover {
+    background-color: #f5f5f5;
+  }
 }

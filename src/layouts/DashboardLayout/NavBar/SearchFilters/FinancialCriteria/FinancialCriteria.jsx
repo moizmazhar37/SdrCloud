@@ -3,9 +3,19 @@ import styles from "./FinancialCriteria.module.scss";
 
 const FinancialCriteria = ({ values = {}, onChange }) => {
   const defaultValues = {
-    netWorth: { checked: false, value: "" },
-    income: { checked: false, value: "" },
-    ownHouse: { checked: false, value: null },
+    netWorth: {
+      checked: false,
+      minValue: "",
+      maxValue: "",
+    },
+    income: {
+      checked: false,
+      value: "",
+    },
+    ownHouse: {
+      checked: false,
+      value: null,
+    },
   };
 
   const mergedValues = {
@@ -24,15 +34,21 @@ const FinancialCriteria = ({ values = {}, onChange }) => {
     onChange(newValues);
   };
 
-  const handleInputChange = (field, value) => {
+  const handleInputChange = (field, property, value) => {
     const newValues = {
       ...mergedValues,
       [field]: {
         ...mergedValues[field],
-        value: value,
+        [property]: value,
       },
     };
     onChange(newValues);
+  };
+
+  // Format currency with commas
+  const formatCurrency = (value) => {
+    if (!value) return "";
+    return new Intl.NumberFormat("en-US").format(value);
   };
 
   return (
@@ -48,16 +64,33 @@ const FinancialCriteria = ({ values = {}, onChange }) => {
           <span>Net Worth</span>
         </label>
         {mergedValues.netWorth.checked && (
-          <div className={styles.inputWrapper}>
-            <span className={styles.currencySymbol}>$</span>
-            <input
-              type="number"
-              className={styles.input}
-              value={mergedValues.netWorth.value}
-              onChange={(e) => handleInputChange("netWorth", e.target.value)}
-              placeholder="Enter net worth"
-              min="0"
-            />
+          <div className={styles.rangeWrapper}>
+            <div className={styles.inputWrapper}>
+              <span className={styles.currencySymbol}>$</span>
+              <input
+                type="number"
+                className={styles.input}
+                value={mergedValues.netWorth.minValue}
+                onChange={(e) =>
+                  handleInputChange("netWorth", "minValue", e.target.value)
+                }
+                placeholder="Min"
+                min="0"
+              />
+            </div>
+            <div className={styles.inputWrapper}>
+              <span className={styles.currencySymbol}>$</span>
+              <input
+                type="number"
+                className={styles.input}
+                value={mergedValues.netWorth.maxValue}
+                onChange={(e) =>
+                  handleInputChange("netWorth", "maxValue", e.target.value)
+                }
+                placeholder="Max"
+                min="0"
+              />
+            </div>
           </div>
         )}
       </div>
@@ -79,7 +112,9 @@ const FinancialCriteria = ({ values = {}, onChange }) => {
               type="number"
               className={styles.input}
               value={mergedValues.income.value}
-              onChange={(e) => handleInputChange("income", e.target.value)}
+              onChange={(e) =>
+                handleInputChange("income", "value", e.target.value)
+              }
               placeholder="Enter annual income"
               min="0"
             />
@@ -104,7 +139,7 @@ const FinancialCriteria = ({ values = {}, onChange }) => {
             }`}
             value={mergedValues.ownHouse.value ?? ""}
             onChange={(e) =>
-              handleInputChange("ownHouse", e.target.value === "true")
+              handleInputChange("ownHouse", "value", e.target.value === "true")
             }
           >
             <option value="" disabled hidden>

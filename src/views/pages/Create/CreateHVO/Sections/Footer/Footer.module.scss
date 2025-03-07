@@ -109,7 +109,8 @@
   padding-top: 24px;
 }
 
-.saveButton {
+.saveButton,
+.cancelButton{
   padding: 8px 16px;
   background-color: #0066cc;
   color: white;
@@ -136,3 +137,14 @@
     background-color: darken(#f3f4f6, 5%);
   }
 }
+
+.cancelButton {
+  background-color: white;
+  color: #333;
+  border: 1px solid #ccc;
+
+  &:hover {
+    background-color: #f5f5f5;
+  }
+}
+

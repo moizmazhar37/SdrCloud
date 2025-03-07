@@ -28,6 +28,7 @@ const ApiConfig = {
   addUrl: `${url}/url`,
   mainDashboard: `${url}/dashboard`,
   login: `${auth}/signin`,
+  viewAsUser: `${auth}/view-as`,
   changePassword: `${auth}/change-password`,
   createNewAccount: `${admin}/subadmin`,
   getAllCategories: `${categories}/`,

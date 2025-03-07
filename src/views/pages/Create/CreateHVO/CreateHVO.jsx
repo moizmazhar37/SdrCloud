@@ -91,7 +91,7 @@ const CreateHVO = () => {
     "Screenshot from URL",
     "Image URL",
   ]);
-
+  const dynamicVideos = extractKeywordList(data, ["Video URL"]);
   const resetAllStates = () => {
     setActiveForm(null);
     setEditingSection(null);
@@ -229,9 +229,11 @@ const CreateHVO = () => {
           </div>
         );
       case SECTION_TYPES.VIDEO:
+        console.log("aasa", dynamicVideos);
         return (
           <div className={styles.leftComponent}>
             <VideoUpload
+              dynamicVideos={dynamicVideos}
               onSectionSave={handleSectionUpdate}
               onClose={handleCloseSection}
               templateId={templateId}

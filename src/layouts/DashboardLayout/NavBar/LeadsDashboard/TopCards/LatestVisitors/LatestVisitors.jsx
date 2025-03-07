@@ -2,15 +2,21 @@ import React from "react";
 import styles from "./LatestVisitors.module.scss";
 import { Eye } from "lucide-react";
 
-const LatestVisitors = ({ visitors }) => {
-  // Hardcoded data - later to be replaced with hook data
-
+const LatestVisitors = ({
+  visitors,
+  onViewAll, // New prop for view all handler
+}) => {
   return (
     <div className={styles.wrapper}>
       <div className={styles.container}>
         <div className={styles.header}>
           <h2 className={styles.title}>Latest Visitors</h2>
-          <button className={styles.viewAll}>View all</button>
+          <button
+            className={styles.viewAll}
+            onClick={onViewAll} // Add onClick handler
+          >
+            View all
+          </button>
         </div>
 
         <div className={styles.visitorsList}>

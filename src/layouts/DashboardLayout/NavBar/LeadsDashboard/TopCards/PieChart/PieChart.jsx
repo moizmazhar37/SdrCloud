@@ -7,7 +7,7 @@ import {
 } from "recharts";
 import styles from "./PieChart.module.scss";
 
-const PieChart = ({ title, data }) => {
+const PieChart = ({ title, data, onSegmentClick, clickable = false }) => {
   const chartData = Object.entries(data).map(([name, value]) => ({
     name,
     value,
@@ -26,9 +26,7 @@ const PieChart = ({ title, data }) => {
     index,
   }) => {
     const RADIAN = Math.PI / 180;
-    // Adjust the radius to position labels more centrally in their segments
     const radius = (innerRadius + outerRadius) * 0.5;
-    // Calculate position based on the segment's midpoint
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
     const y = cy + radius * Math.sin(-midAngle * RADIAN);
 
@@ -44,6 +42,12 @@ const PieChart = ({ title, data }) => {
         {`${(percent * 100).toFixed(1)}%`}
       </text>
     );
+  };
+
+  const handleSegmentClick = (data) => {
+    if (onSegmentClick && clickable) {
+      onSegmentClick(data.name.toLowerCase());
+    }
   };
 
   return (
@@ -65,6 +69,8 @@ const PieChart = ({ title, data }) => {
                 startAngle={90}
                 endAngle={-270}
                 dataKey="value"
+                onClick={handleSegmentClick}
+                cursor={clickable ? "pointer" : "default"}
               >
                 {chartData.map((entry, index) => (
                   <Cell
@@ -78,7 +84,15 @@ const PieChart = ({ title, data }) => {
           </ResponsiveContainer>
           <div className={styles.legend}>
             {chartData.map((entry, index) => (
-              <div key={`legend-${index}`} className={styles.legendItem}>
+              <div
+                key={`legend-${index}`}
+                className={`${styles.legendItem} ${
+                  clickable ? styles.clickable : ""
+                }`}
+                onClick={() =>
+                  onSegmentClick && onSegmentClick(entry.name.toLowerCase())
+                }
+              >
                 <span
                   className={styles.legendColor}
                   style={{ backgroundColor: COLORS[index % COLORS.length] }}

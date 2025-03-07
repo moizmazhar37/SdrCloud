@@ -88,6 +88,16 @@ export const routes = [
       import("src/layouts/DashboardLayout/NavBar/LeadsDashboard/LeadsDashboard")
     ),
   },
+  //necessary duplicate route
+  {
+    exact: true,
+    path: "/visitor-dashboard",
+    guard: true,
+    layout: DashboardLayout,
+    component: lazy(() =>
+      import("src/layouts/DashboardLayout/NavBar/LeadsDashboard/LeadsDashboard")
+    ),
+  },
   {
     exact: true,
     path: "/leads-search",
@@ -341,10 +351,11 @@ export const routes = [
     guard: true,
     layout: DashboardLayout,
     component: lazy(() =>
-      import("src/views/pages/settings/EmailTemplates/NewEmailTemplate/NewEmailTemplate")
+      import(
+        "src/views/pages/settings/EmailTemplates/NewEmailTemplate/NewEmailTemplate"
+      )
     ),
   },
-
 
   {
     exact: true,
@@ -551,7 +562,7 @@ export const routes = [
     guard: true,
     layout: DashboardLayout,
     component: lazy(() =>
-      import("src/views/pages/DashboardUser/MyProject/ProjectList")
+      import("src/views/pages/MyProjects/Prospects/Prospects")
     ),
   },
   {

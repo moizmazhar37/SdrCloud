@@ -1,4 +1,22 @@
 export const transformFilters = (filters) => {
+  // Format netWorth as a single string if both min and max values exist
+  const formatNetWorth = (netWorth) => {
+    if (!netWorth.checked) return null;
+
+    const min = netWorth.minValue;
+    const max = netWorth.maxValue;
+
+    if (min && max) {
+      return `${min} to ${max}`;
+    } else if (min) {
+      return min;
+    } else if (max) {
+      return max;
+    }
+
+    return null;
+  };
+
   const transformed = {
     startDate: filters.dateRange.start || null,
     endDate: filters.dateRange.end || null,
@@ -51,15 +69,13 @@ export const transformFilters = (filters) => {
       : null,
 
     // Financial Criteria
-    netWorth: filters.financialCriteria.netWorth?.checked
-      ? filters.financialCriteria.netWorth.value
-      : null,
+    netWorth: formatNetWorth(filters.financialCriteria.netWorth || {}),
     annualIncome: filters.financialCriteria.income?.checked
       ? filters.financialCriteria.income.value
       : null,
     ownHouse: filters.financialCriteria.ownHouse?.checked
       ? filters.financialCriteria.ownHouse.value
-      : null, // Fixed ownHouse handling
+      : null,
   };
 
   return transformed;
@@ -114,7 +130,8 @@ export const resetFiltersState = () => ({
   financialCriteria: {
     netWorth: {
       checked: false,
-      value: null,
+      minValue: "",
+      maxValue: "",
     },
     income: {
       checked: false,
