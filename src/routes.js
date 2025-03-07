@@ -459,7 +459,7 @@ export const routes = [
     path: "/PP-createaccount",
     // guard: true,
     layout: DashboardLayout,
-    component: lazy(() => import("src/views/pages/PPAdmin/Accounts/index")),
+    component: lazy(() => import("src/views/pages/PPAdmin/Accounts/Accounts")),
   },
   {
     exact: true,
@@ -467,7 +467,7 @@ export const routes = [
     // guard: true,
     layout: DashboardLayout,
     component: lazy(() =>
-      import("src/views/pages/PPAdmin/Accounts/CreateAccount")
+      import("src/views/pages/PPAdmin/Accounts/CreateAccount/CreateAccount")
     ),
   },
   {

@@ -477,7 +477,7 @@ function SuperAdminAccount() {
         method: "GET",
         url: ApiConfig.ppadminUserListNew,
         headers: {
-          token: `${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
       if (res?.data?.status === 200) {
@@ -640,7 +640,7 @@ function SuperAdminAccount() {
           </Typography>
         </Box>
         <Grid container spacing={3}>
-          <Grid item xs={12} sm={12} md={3}>
+          {/* <Grid item xs={12} sm={12} md={3}>
             <Box className={classes.sidebarfilter}>
               <div className="firstinnerdiv">
                 <div style={{ gap: "4px", display: "flex" }}>
@@ -822,7 +822,7 @@ function SuperAdminAccount() {
                 </div>
               </Box>
             </Box>
-          </Grid>
+          </Grid> */}
 
           <Grid item xs={12} sm={12} md={9}>
             <Box className="datatable">
