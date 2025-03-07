@@ -26,7 +26,6 @@ const useGetRealTimeAlerts = () => {
         err.response?.data?.message ||
         "An error occurred while fetching alerts";
       setError(errorMessage);
-      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -34,13 +33,13 @@ const useGetRealTimeAlerts = () => {
 
   useEffect(() => {
     getAlerts();
-  }, []); 
+  }, []);
 
   return {
     data,
     loading,
     error,
-    refresh: getAlerts, 
+    refresh: getAlerts,
   };
 };
 
