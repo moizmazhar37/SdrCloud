@@ -112,7 +112,7 @@
   }
   
   .saveButton,
-  .nextButton {
+  .cancelButton {
     padding: 8px 24px;
     border-radius: 4px;
     font-size: 14px;
@@ -150,6 +150,16 @@
   
     &:hover {
       background: #f7fafc;
+    }
+  }
+
+  .cancelButton {
+    background-color: white;
+    color: #333;
+    border: 1px solid #ccc;
+  
+    &:hover {
+      background-color: #f5f5f5;
     }
   }
   
