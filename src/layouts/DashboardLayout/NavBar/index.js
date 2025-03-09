@@ -131,30 +131,30 @@ const getNavSections = (userType) => {
             icon: "images/template/dashboard.svg",
             href: "/dashboard",
           },
-          {
-            title: "Users",
-            icon: "images/usersnew.png",
-            href: "/companyUsers-List",
-          },
-          {
-            title: "Visitors",
-            icon: "images/Leads.svg",
-            href: "/leads",
-            items: [
-              {
-                title: "Dashboard",
-                href: "/leads-dashboard",
-              },
-              {
-                title: "Search Visitors",
-                href: "/leads-search",
-              },
-              {
-                title: "Installations",
-                href: "/leads",
-              },
-            ],
-          },
+          // {
+          //   title: "Users",
+          //   icon: "images/usersnew.png",
+          //   href: "/companyUsers-List",
+          // },
+          // {
+          //   title: "Visitors",
+          //   icon: "images/Leads.svg",
+          //   href: "/leads",
+          //   items: [
+          //     {
+          //       title: "Dashboard",
+          //       href: "/leads-dashboard",
+          //     },
+          //     {
+          //       title: "Search Visitors",
+          //       href: "/leads-search",
+          //     },
+          //     {
+          //       title: "Installations",
+          //       href: "/leads",
+          //     },
+          //   ],
+          // },
           {
             title: "Create",
             icon: "images/template/play.svg",
