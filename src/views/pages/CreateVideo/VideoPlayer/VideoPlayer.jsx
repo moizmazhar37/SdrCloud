@@ -10,9 +10,25 @@ const VideoPlayer = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [trackingData, setTrackingData] = useState([]);
+  const [userIP, setUserIP] = useState("");
   const videoRef = useRef(null);
   const video_id = window.location.href.split("/").pop().trim();
-  const userIP = window.location.hostname; // Replace with actual IP retrieval logic
+
+  // Fetch the user's IP address using ipify API
+  useEffect(() => {
+    const fetchUserIP = async () => {
+      try {
+        const response = await axios.get("https://api.ipify.org?format=json");
+        setUserIP(response.data.ip);
+        console.log("User IP fetched:", response.data.ip);
+      } catch (err) {
+        console.error("Error fetching user IP:", err);
+        setUserIP(window.location.hostname); // Fallback to hostname if API fails
+      }
+    };
+
+    fetchUserIP();
+  }, []);
 
   useEffect(() => {
     const fetchVideoUrl = async () => {
@@ -66,7 +82,7 @@ const VideoPlayer = () => {
   }, [trackingData, video_id]);
 
   const handleVideoEvent = (event) => {
-    if (!videoRef.current) return;
+    if (!videoRef.current || !userIP) return;
 
     const currentTime = Math.floor(videoRef.current.currentTime);
     const totalDuration = Math.floor(videoRef.current.duration);
