@@ -3,7 +3,9 @@ import Card from "../../../Common/Card/Card";
 import styles from "./settings.module.scss";
 import add_integration from "../../../images/Setting/add_integration.svg";
 import add_archive_user from "../../../images/Setting/add_archive_user.svg";
-import my_personal_svg from "../../../images/Setting/my_personal.svg";
+import add_intent from "../../../images/Setting/add_intent.png";
+import add_email from "../../../images/Setting/add_email.svg";
+import add_alerts from "../../../images/Setting/add_alerts.svg";
 import company from "../../../images/Setting/Company.png";
 
 const NewSettings = () => {
@@ -22,7 +24,7 @@ const NewSettings = () => {
         infoText={"Integrate sheets and API's here."}
       />
       <Card
-        image={add_integration}
+        image={add_intent}
         route={"/intent"}
         text={"Intent Tracking"}
         infoText={"Track pixels and footer links here."}
@@ -35,13 +37,13 @@ const NewSettings = () => {
         infoText={"View and edit personal information here."}
       />
       <Card
-        image={add_archive_user}
+        image={add_alerts}
         route={"/alerts"}
         text={"Alerts"}
         infoText={"Manage custom alerts here."}
       />
       <Card
-        image={add_archive_user}
+        image={add_email}
         route={"/email-templates"}
         text={"Email Templates"}
         infoText={"Create or edit email templates here"}
