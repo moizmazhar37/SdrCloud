@@ -54,7 +54,7 @@ const Installation = () => {
           className={`tab ${activeTab === "Links To Track" ? "active" : ""}`}
           onClick={() => setActiveTab("Links To Track")}
         >
-          Links To Track
+          Link To Track
         </button>
       </div>
       <div className="content">

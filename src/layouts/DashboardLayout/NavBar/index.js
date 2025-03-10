@@ -79,7 +79,7 @@ const getNavSections = (userType) => {
                 href: "/leads-search",
               },
               {
-                title: "Installations",
+                title: "Installation",
                 href: "/leads",
               },
             ],
