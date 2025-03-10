@@ -19,7 +19,7 @@ const useCreateVideo = () => {
 
       if (res?.status === 200) {
         console.log(res?.data, "creationstatus");
-        toast.success("Video Created Successfully");
+        toast.success("Video creation started successfully!");
       }
     } catch (error) {
       console.error(error, "error");
