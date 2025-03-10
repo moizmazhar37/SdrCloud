@@ -33,6 +33,20 @@ const VideoPlayer = () => {
   }, [video_id]);
 
   useEffect(() => {
+    // Dynamically add the pixel tracking script when the component mounts
+    const script = document.createElement("script");
+    script.src =
+      "https://storage.googleapis.com/static-data-for-sdrc/scripts/tracker_d26331ec-e390-4c61-afb9-56795bb856cf.js";
+    script.async = true;
+    document.body.appendChild(script);
+
+    // Cleanup: remove the script when the component unmounts
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
+  useEffect(() => {
     const handleTabClose = async () => {
       if (trackingData.length > 0) {
         try {
