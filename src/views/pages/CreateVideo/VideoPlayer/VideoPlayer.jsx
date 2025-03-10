@@ -4,6 +4,7 @@ import logo from "./logo.png";
 import { toast } from "react-toastify";
 import "./VideoPlayer.css";
 import ApiConfig from "./../../../../config/APIConfig";
+import { videoTracking } from "src/config/APIConfig";
 
 const VideoPlayer = () => {
   const [videoData, setVideoData] = useState(null);
@@ -66,10 +67,7 @@ const VideoPlayer = () => {
     const handleTabClose = async () => {
       if (trackingData.length > 0) {
         try {
-          await axios.post(
-            `${ApiConfig.video}/"DUMMY"/${video_id}`,
-            trackingData
-          );
+          await axios.post(`${videoTracking}`, trackingData);
           console.log("Data sent to backend:", trackingData);
         } catch (error) {
           console.error("Error sending tracking data:", error);
