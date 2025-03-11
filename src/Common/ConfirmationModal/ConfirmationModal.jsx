@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./ConfirmationModal.module.scss";
 
 const ConfirmationModal = ({
@@ -11,7 +11,22 @@ const ConfirmationModal = ({
   cancelButtonText = "Cancel",
   actionButtonText = "Proceed",
   onAction,
+  totalRecords,
+  pricePerSecond,
+  totalDuration,
+  balance,
 }) => {
+  const [rowsToCreate, setRowsToCreate] = useState(totalRecords);
+  const [calculatedPrice, setCalculatedPrice] = useState(0);
+
+  useEffect(() => {
+    const price = rowsToCreate * totalDuration * pricePerSecond;
+    setCalculatedPrice(parseFloat(price.toFixed(2))); // Round to 2 decimal places
+  }, [rowsToCreate, totalDuration, pricePerSecond]);
+
+  const roundedBalance = parseFloat((balance || 0).toFixed(2)); // Round balance to 2 decimal places
+  const isProceedDisabled = calculatedPrice > roundedBalance; // Disable button if price exceeds balance
+
   if (!isOpen) return null;
 
   return (
@@ -27,30 +42,58 @@ const ConfirmationModal = ({
                   {item.label && (
                     <span className={styles.label}>{item.label}: </span>
                   )}
-                  <span className={styles.value}>{item.value}</span>
+                  <span className={styles.value}>{parseFloat(item.value).toFixed(2)}</span>
                 </p>
               ))}
             </div>
           )}
 
-          {confirmationText && (
-            <p className={styles.confirmText}>{confirmationText}</p>
-          )}
+          {/* Input field for number of records */}
+          <div className={styles.inputSection}>
+            <label htmlFor="recordsInput" className={styles.inputLabel}>
+              Number of Videos (Max: {totalRecords} rows in the sheet):
+            </label>
+            <input
+              id="recordsInput"
+              type="number"
+              min="1"
+              max={totalRecords}
+              value={rowsToCreate}
+              onChange={(e) => {
+                const value = Math.min(totalRecords, Math.max(1, Number(e.target.value)));
+                setRowsToCreate(value);
+              }}
+              className={styles.inputField}
+            />
+            <small className={styles.helperText}>
+              Enter the number of rows to process. Default is {totalRecords}.
+            </small>
+          </div>
 
+          {/* Balance and Price Details */}
+          {/* <p className={styles.infoItem}>
+            <span className={styles.label}>Your Balance: </span>
+            <span className={styles.value}>{roundedBalance}</span>
+          </p> */}
+
+          <p className={styles.infoItem}>
+            <span className={styles.label}>Total Price: </span>
+            <span className={styles.value}>{calculatedPrice}</span>
+          </p>
+
+          {confirmationText && <p className={styles.confirmText}>{confirmationText}</p>}
           {noteText && <p className={styles.noteText}>{noteText}</p>}
         </div>
 
         <div className={styles.modalFooter}>
-          <button
-            className={`${styles.button} ${styles.cancelButton}`}
-            onClick={onClose}
-          >
+          <button className={`${styles.button} ${styles.cancelButton}`} onClick={onClose}>
             {cancelButtonText}
           </button>
           {actionButtonText && (
             <button
               className={`${styles.button} ${styles.actionButton}`}
-              onClick={onAction}
+              onClick={() => onAction(rowsToCreate)}
+              // disabled={isProceedDisabled}
             >
               {actionButtonText}
             </button>
