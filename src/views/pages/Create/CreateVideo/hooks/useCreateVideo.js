@@ -6,7 +6,7 @@ import ApiConfig from "src/config/APIConfig";
 const useCreateVideo = () => {
   const [isLoading, setLoading] = useState(false);
 
-  const handleCreateVideo = async (templateId) => {
+  const handleCreateVideo = async (templateId, rowsToCreate) => {
     try {
       setLoading(true);
       const res = await axios({
@@ -14,6 +14,9 @@ const useCreateVideo = () => {
         url: `${ApiConfig.createVideo}/${templateId}`,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        data: {
+          rowsToCreate, 
         },
       });
 
