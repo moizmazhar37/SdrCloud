@@ -369,6 +369,16 @@ export const routes = [
 
   {
     exact: true,
+    path: "/calenderlink",
+    guard: true,
+    layout: DashboardLayout,
+    component: lazy(() =>
+      import("src/views/pages/settings/Integrations/CalenderLink/CalenderLink")
+    ),
+  },
+
+  {
+    exact: true,
     path: "/addsheet",
     guard: true,
     layout: DashboardLayout,
