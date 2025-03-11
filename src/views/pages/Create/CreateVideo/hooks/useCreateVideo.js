@@ -11,12 +11,9 @@ const useCreateVideo = () => {
       setLoading(true);
       const res = await axios({
         method: "POST",
-        url: `${ApiConfig.createVideo}/${templateId}`,
+        url: `${ApiConfig.createVideo}/${templateId}?rows_to_create=${rowsToCreate}`,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        data: {
-          rowsToCreate, 
         },
       });
 

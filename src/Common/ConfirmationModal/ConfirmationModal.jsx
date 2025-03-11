@@ -93,7 +93,7 @@ const ConfirmationModal = ({
             <button
               className={`${styles.button} ${styles.actionButton}`}
               onClick={() => onAction(rowsToCreate)}
-              disabled={isProceedDisabled}
+              // disabled={isProceedDisabled}
             >
               {actionButtonText}
             </button>
