@@ -56,7 +56,7 @@ const ConfirmationModal = ({
             <input
               id="recordsInput"
               type="number"
-              min="1"
+              // min="1"
               max={totalRecords}
               value={rowsToCreate}
               onChange={(e) => {
