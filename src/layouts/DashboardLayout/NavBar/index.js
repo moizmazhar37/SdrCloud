@@ -66,7 +66,7 @@ const getNavSections = (userType) => {
             href: "/companyUsers-List",
           },
           {
-            title: "Leads",
+            title: "Visitors",
             icon: "images/Leads.svg",
             href: "/leads",
             items: [
@@ -75,11 +75,11 @@ const getNavSections = (userType) => {
                 href: "/leads-dashboard",
               },
               {
-                title: "Search Leads",
+                title: "Search Visitors",
                 href: "/leads-search",
               },
               {
-                title: "Installations",
+                title: "Installation",
                 href: "/leads",
               },
             ],
@@ -102,23 +102,73 @@ const getNavSections = (userType) => {
         ],
       },
     ],
+    // USER: [
+    //   {
+    //     items: [
+    //       {
+    //         title: "My Dashboard",
+    //         icon: "images/template/dashboard.svg",
+    //         href: "/user-dashboard",
+    //       },
+    //       {
+    //         title: "My Prospects",
+    //         icon: "images/template/clipboard-text.svg",
+    //         href: "/myprojects-list",
+    //       },
+    //       {
+    //         title: "Settings",
+    //         icon: "images/template/setting.svg",
+    //         href: "/user-settings",
+    //       },
+    //     ],
+    //   },
+    // ],
     USER: [
       {
         items: [
           {
-            title: "My Dashboard",
+            title: "Dashboard",
             icon: "images/template/dashboard.svg",
-            href: "/user-dashboard",
+            href: "/dashboard",
+          },
+          // {
+          //   title: "Users",
+          //   icon: "images/usersnew.png",
+          //   href: "/companyUsers-List",
+          // },
+          // {
+          //   title: "Visitors",
+          //   icon: "images/Leads.svg",
+          //   href: "/leads",
+          //   items: [
+          //     {
+          //       title: "Dashboard",
+          //       href: "/leads-dashboard",
+          //     },
+          //     {
+          //       title: "Search Visitors",
+          //       href: "/leads-search",
+          //     },
+          //     {
+          //       title: "Installations",
+          //       href: "/leads",
+          //     },
+          //   ],
+          // },
+          {
+            title: "Create",
+            icon: "images/template/play.svg",
+            href: "/CreateTemplate",
           },
           {
-            title: "My Prospects",
+            title: "Prospects",
             icon: "images/template/clipboard-text.svg",
-            href: "/myprojects-list",
+            href: "/Myprojects",
           },
           {
             title: "Settings",
             icon: "images/template/setting.svg",
-            href: "/user-settings",
+            href: "/settings",
           },
         ],
       },
@@ -165,7 +215,7 @@ const NavBar = ({ onMobileClose, openMobile, drawerOpen, onToggleDrawer }) => {
         const key = item.title + depth;
         const isActive = matchPath(pathname, { path: item.href, exact: true });
 
-        if (item.items && item.title === "Leads") {
+        if (item.items && item.title === "Visitors") {
           const open = Boolean(isActive || activeLeadsSection === item.title);
           return (
             <NavItem

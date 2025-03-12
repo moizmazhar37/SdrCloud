@@ -1,5 +1,5 @@
-// SearchLeads.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import useLeads from "./useLeads";
 import Table from "src/Common/Table/Table";
 import SearchFilters from "../SearchFilters/SearchFilters";
@@ -7,8 +7,31 @@ import Pagination from "src/Common/Pagination/Pagination";
 import { headers, transformData } from "./helpers";
 import styles from "./SearchLeads.module.scss";
 import Loader from "src/Common/Loader/Loader";
+import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
 
-export default function SearchLeads() {
+export default function SearchLeads({
+  initialFilters = null,
+  isFromDashboard = false,
+}) {
+  const location = useLocation();
+  const currentPath = location.pathname;
+
+  // Determine navigation items based on current route
+  const navigationItems = [
+    {
+      text: "Leads Dashboard",
+      route: currentPath.includes("leads-dashboard")
+        ? "/visitor-dashboard"
+        : "/leads-dashboard",
+    },
+    {
+      text: "Data Details",
+      route: currentPath.includes("visitor-dashboard")
+        ? "/leads-dashboard"
+        : "/visitor-dashboard",
+    },
+  ];
+
   const ITEMS_PER_PAGE = 12;
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedRows, setSelectedRows] = useState([]);
@@ -16,11 +39,23 @@ export default function SearchLeads() {
 
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
+  // If dashboard mode is on and initial filters exist, use them
+  // Otherwise, use currentFilters
+  const filtersToUse =
+    isFromDashboard && initialFilters ? initialFilters : currentFilters;
+
   const { leads, loading, error, totalCount } = useLeads(
     offset,
     ITEMS_PER_PAGE,
-    currentFilters
+    filtersToUse
   );
+
+  // Automatically trigger search when in dashboard mode
+  useEffect(() => {
+    if (isFromDashboard && initialFilters) {
+      setCurrentPage(1);
+    }
+  }, [initialFilters, isFromDashboard]);
 
   const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
@@ -31,19 +66,23 @@ export default function SearchLeads() {
   const handleSearch = (filters) => {
     setCurrentPage(1);
     setCurrentFilters(filters);
-    // Removed refetch() call since useEffect will handle it
   };
 
   const transformedData = transformData(leads);
 
-  if (error) return <div className={styles.error}>{error}</div>;
-
   return (
     <div className={styles.container}>
+      {isFromDashboard && <DynamicNavigator items={navigationItems} />}
       <div className={styles.contentWrapper}>
-        <div className={styles.filterSection}>
-          <SearchFilters onSearch={handleSearch} />
-        </div>
+        {/* Only show SearchFilters if not from dashboard or no initial filters */}
+        {(!isFromDashboard || !initialFilters) && (
+          <div className={styles.filterSection}>
+            <SearchFilters
+              onSearch={handleSearch}
+              initialFilters={isFromDashboard ? initialFilters : null}
+            />
+          </div>
+        )}
         <div className={styles.tableSection}>
           <div className={styles.TableAndPagination}>
             {loading ? (

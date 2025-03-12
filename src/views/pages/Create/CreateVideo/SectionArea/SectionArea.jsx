@@ -50,7 +50,7 @@ const SectionArea = ({
     const currentSectionData = sectionData[sequence];
 
     if (elementsList?.length > 0 && currentSectionData) {
-      return <SectionView sectionData={currentSectionData} />;
+      return <SectionView sectionData={currentSectionData} type={type} />;
     }
 
     return (

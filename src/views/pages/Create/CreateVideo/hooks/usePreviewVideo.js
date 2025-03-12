@@ -21,7 +21,7 @@ const usePreviewVideo = () => {
           },
         }
       );
-      toast.success("Video preview generated successfully!");
+      toast.success("Video preview will be generated shortly!");
       return response.data;
     } catch (error) {
       console.error("Error details:", error.response?.data);

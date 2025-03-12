@@ -1,8 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import AlertsCard from "./AlertsCard";
 import styles from "./Alerts.module.scss";
+import useSaveAlerts from "./Hooks/useSaveAlerts";
+import useGetAlerts from "./Hooks/useGetAlerts";
+import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
 
 const Alerts = () => {
+  const { saveAlerts, loading: saving } = useSaveAlerts();
+  const { data: fetchedAlerts, loading: fetching, error } = useGetAlerts();
   const [alertsData, setAlertsData] = useState({
     emails: {
       active: false,
@@ -29,14 +34,41 @@ const Alerts = () => {
       receiveAlerts: false,
     },
   });
+  const navigationItems = [
+    { text: "Settings", route: "/settings" },
+    { text: "Alerts", route: "/alerts" }
+  ];
+  useEffect(() => {
+    if (fetchedAlerts && Object.keys(fetchedAlerts).length > 0) {
+      console.log("Fetched Alerts:", fetchedAlerts); // Debugging fetched data
+
+      // Create a copy of current state
+      const updatedAlertsData = { ...alertsData };
+
+      // Update each section with data from the API
+      Object.keys(fetchedAlerts).forEach((key) => {
+        if (updatedAlertsData[key]) {
+          updatedAlertsData[key] = {
+            ...updatedAlertsData[key],
+            active: fetchedAlerts[key].active,
+            emailCount:
+              fetchedAlerts[key].emailCount === null
+                ? ""
+                : fetchedAlerts[key].emailCount,
+            receiveAlerts: fetchedAlerts[key].receiveAlerts,
+          };
+        }
+      });
+
+      // Update state with the transformed data
+      setAlertsData(updatedAlertsData);
+    }
+  }, [fetchedAlerts]);
 
   const handleChange = (section, field, value) => {
-    // If the field is emailCount, ensure it's a positive number
     if (field === "emailCount") {
       const numValue = parseInt(value);
-      if (value !== "" && (isNaN(numValue) || numValue < 0)) {
-        return;
-      }
+      if (value !== "" && (isNaN(numValue) || numValue < 0)) return;
     }
 
     setAlertsData((prev) => ({
@@ -58,38 +90,28 @@ const Alerts = () => {
     }));
   };
 
-  const handleSave = () => {
-    // Create payload with only necessary data
-    const payload = Object.entries(alertsData).reduce((acc, [key, value]) => {
-      if (value.active) {
-        // If alerts are enabled, include all values
-        acc[key] = {
-          active: value.active,
-          type: value.type,
-          emailCount: parseInt(value.emailCount) || 0,
-          receiveAlerts: value.receiveAlerts,
-        };
-      } else {
-        // If alerts are disabled, only include active and type
-        acc[key] = {
-          active: false,
-          type: value.type,
-        };
-      }
-      return acc;
-    }, {});
-
-    console.log("Alerts Data:", payload);
+  const handleSave = async () => {
+    try {
+      await saveAlerts(alertsData);
+    } catch (err) {
+      console.error("Failed to save alerts:", err);
+    }
   };
 
   return (
     <div className={styles.alertsContainer}>
+        <DynamicNavigator items={navigationItems}/>
       <div className={styles.header}>
         <h2>Alerts Configuration</h2>
-        <button onClick={handleSave} className={styles.saveButton}>
-          Save
+        <button
+          onClick={handleSave}
+          className={`${styles.saveButton} ${saving ? styles.loading : ""}`}
+          disabled={saving}
+        >
+          {saving ? "Saving..." : "Save"}
         </button>
       </div>
+
       <div className={styles.cardsGrid}>
         <AlertsCard
           title="Emails"

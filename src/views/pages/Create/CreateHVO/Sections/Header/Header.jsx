@@ -32,6 +32,10 @@ const Header = ({
     }
   }, [initialData, dynamicOptions]);
 
+  const handleClose = () => {
+    onClose();
+  };
+
   const handleSaveSuccess = useCallback(() => {
     if (onSectionSave) {
       onSectionSave();
@@ -111,6 +115,14 @@ const Header = ({
           >
             {loading ? "Saving..." : isEditMode ? "Update" : "Save"}
           </button>
+
+          <button
+          onClick={handleClose}
+          className={styles.cancelButton}
+          disabled={loading}
+        >
+          Cancel
+        </button>
         </div>
       </div>
     </div>

@@ -6,12 +6,12 @@ import ApiConfig from "src/config/APIConfig";
 const useCreateVideo = () => {
   const [isLoading, setLoading] = useState(false);
 
-  const handleCreateVideo = async (templateId) => {
+  const handleCreateVideo = async (templateId, rowsToCreate) => {
     try {
       setLoading(true);
       const res = await axios({
         method: "POST",
-        url: `${ApiConfig.createVideo}/${templateId}`,
+        url: `${ApiConfig.createVideo}/${templateId}?rows_to_create=${rowsToCreate}`,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -19,7 +19,7 @@ const useCreateVideo = () => {
 
       if (res?.status === 200) {
         console.log(res?.data, "creationstatus");
-        toast.success("Video Created Successfully");
+        toast.success("Video creation started successfully!");
       }
     } catch (error) {
       console.error(error, "error");

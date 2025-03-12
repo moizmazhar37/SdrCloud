@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-//import Table from "src/Common/Table/Table";
 import Table from "../../../../Common/Table/Table";
 import useProspects from "./Hooks/useProspects";
 import styles from "./Prospects.module.scss";
@@ -40,7 +39,6 @@ const Prospects = () => {
       />
     );
   }
-  console.log("Data===,", videoData);
   return (
     <div className={styles.name}>
       <div className={styles.toggleButtons}>

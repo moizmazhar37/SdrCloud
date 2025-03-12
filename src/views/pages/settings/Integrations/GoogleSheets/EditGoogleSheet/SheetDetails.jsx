@@ -4,7 +4,7 @@ import Table from "./Table/Table";
 import SheetDropdown from "../SheetDropdown/SheetDropdown";
 import SheetDropdownTable from "../SheetDropdownTable.jsx/SheetDropdownTable";
 
-const SheetDetails = ({ viewData }) => {
+const SheetDetails = ({ viewData, type }) => {
   const [tableData, setTableData] = useState(null);
   const [selectedSheetType, setSelectedSheetType] = useState("");
   const [dropdownTableData, setDropdownTableData] = useState([]);
@@ -17,6 +17,7 @@ const SheetDetails = ({ viewData }) => {
 
   useEffect(() => {
     if (viewData) {
+      console.log("aaaaaaaa==", type)
       const formatDate = (dateString) => {
         if (!dateString) return "N/A";
         try {
@@ -92,8 +93,9 @@ const SheetDetails = ({ viewData }) => {
   // Props for the SheetDropdown component
   const dropdownProps = {
     options: ["Video", "HVO"],
-    label: "Customer ID",
+    label: "Sheet Type",
     disabled: false,
+    selectedValue: { type }
   };
 
   return (
@@ -103,7 +105,7 @@ const SheetDetails = ({ viewData }) => {
         headers={mainHeaders}
         data={tableData}
         canEdit={false}
-        onSave={() => {}}
+        onSave={() => { }}
       />
 
       <SheetDropdownTable
@@ -114,9 +116,11 @@ const SheetDetails = ({ viewData }) => {
         SheetDropdownComponent={SheetDropdown}
         dropdownProps={{
           ...dropdownProps,
+          selectedValue: selectedSheetType,  // Ensure the dropdown reflects the selected sheet type
           onSelect: handleSheetTypeChange,
         }}
       />
+
     </div>
   );
 };

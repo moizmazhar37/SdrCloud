@@ -1,327 +1,166 @@
-import React, { useContext, useEffect, useState } from "react";
-import clsx from "clsx";
+import React, { useContext, useState } from "react";
 import PropTypes from "prop-types";
-import {
-  AppBar,
-  Toolbar,
-  makeStyles,
-  IconButton,
-  Hidden,
-  SvgIcon,
-  Box,
-  Typography,
-  Avatar,
-} from "@material-ui/core";
 import { AiOutlineMenuUnfold } from "react-icons/ai";
-
-import { Menu as MenuIcon } from "react-feather";
-import { TopBarData } from "src/layouts/HomeLayout/TopBar";
-import { useHistory, useLocation } from "react-router-dom";
-import { BiBell } from "react-icons/bi";
+import { useHistory } from "react-router-dom";
 import { UserContext } from "../../../context/User";
+import useGetAllUsers from "src/views/pages/CompanyUsers/Users/Hooks/useGetAllUsers";
+import useViewAsUser from "./useViewAsUser"
+import styles from "./TopBar.module.scss";
+import { toast } from "react-toastify";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    background: "transparent",
-  },
-  toolbar: {
-    background: "transparent !important",
-    height: "60px",
-    padding: "12px 29px 12px 0",
-    width: "100%",
-    "& svg": {
-      fontSize: "25px ",
-    },
-    "& .hiddenlogo": {
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      marginLeft: "16px",
-      gap: "10px",
-      "@media (max-width: 1280px)": {
-        gap: "5px",
-        marginLeft: "8px",
-      },
-      "@media (min-width: 960px) and (max-width: 1280px)": {
-        gap: "5px",
-        marginLeft: "14px",
-      },
-      "@media (max-width: 400px)": {
-        gap: "0px",
-        marginLeft: "3px",
-      },
-    },
-  },
-  logo: {
-    marginRight: theme.spacing(2),
-  },
-  link: {
-    fontWeight: theme.typography.fontWeightMedium,
-    "& + &": {
-      marginLeft: theme.spacing(2),
-    },
-  },
-  divider: {
-    width: 1,
-    height: 32,
-    marginLeft: theme.spacing(2),
-    marginRight: theme.spacing(2),
-  },
-  navbarContainer: {
-    "@media(min-width:1280px)": {},
-    "& .MuiPaper-elevation4 ": {
-      boxShadow: "none !important",
-    },
-    "& .MuiPaper-root": {
-      boxShadow: "none !important",
-    },
-    "& .MuiAppBar-positionFixed": {
-      right: "auto",
-    },
-    "& h4": {
-      color: "#152F40",
-      fontWeight: 600,
-    },
-    "& .avatarBox": {
-      gap: "10px",
-      marginRight: "15px",
-      [theme.breakpoints.down("sm")]: {
-        marginRight: "23px",
-      },
-      "@media(max-width:400px)": {
-        marginRight: "15px",
-      },
-      "& .svgBox": {
-        background: "#F2F7FF",
-        padding: "10px",
-        borderRadius: "50px",
-        cursor: "pointer",
-        "& svg": {
-          fontSize: "24px ",
-        },
-      },
-      "& .MuiAvatar-root": {
-        width: "44px",
-        height: "44px",
-      },
-      "& .MuiTypography-body2": {
-        color: "#858585",
-        fontWeight: 400,
-      },
-      "& .MuiTypography-body1": {
-        fontFamily: " Inter",
-        fontSize: "12px",
-        fontWeight: 400,
-        lineHeight: "16.8px",
-        color: "#858585 !important",
-      },
-      "& .accounttype": {
-        fontFamily: " Inter",
-        fontSize: "12px",
-        fontWeight: 400,
-        lineHeight: "16.8px",
-        color: "#858585 !important",
-      },
-      "& .accountname": {
-        fontFamily: " Inter",
-        fontSize: "14px",
-        fontWeight: 500,
-        lineHeight: "19.6px !important",
-        color: "#152F40 !important",
-      },
-    },
-  },
-}));
-
-const TopBar = ({ className, onMobileNavOpen, onDrawerAction, ...rest }) => {
-  const classes = useStyles();
+const TopBar = ({ onMobileNavOpen }) => {
   const history = useHistory();
   const user = useContext(UserContext);
-  console.log(user, "ipweri");
-  const [open, setOpen] = React.useState(false);
-  const [pageTitle, setPageTitle] = useState("");
-  const [pageTitle1, setPageTitle1] = useState("");
-  const [pageTitle2, setPageTitle2] = useState("");
-  const location = useLocation();
-  const confirmationLogouthandler = () => {
-    history.push("/");
+
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [isViewingAs, setIsViewingAs] = useState(
+    sessionStorage.getItem("isViewingAs") === "true"
+  );
+  const [viewingUser, setViewingUser] = useState(
+    isViewingAs ? JSON.parse(sessionStorage.getItem("slaveUser")) : null
+  );
+
+  const { getTemporaryToken } = useViewAsUser(); // Use API hook
+  const { loading, error, data } = useGetAllUsers();
+
+  // Handle user selection
+  const handleUserSelect = async (selectedUser) => {
+    toast.info(`Switching to ${selectedUser.first_name}...`);
+
+    const token = await getTemporaryToken(selectedUser.id);
+    if (!token) return; // Stop if token request failed
+
+    // Store Master’s session before switching
+    if (!isViewingAs) {
+      sessionStorage.setItem("masterUser", JSON.stringify({
+        email: localStorage.getItem("email"),
+        userType: localStorage.getItem("userType"),
+        token: localStorage.getItem("token"),
+        _id: localStorage.getItem("_id"),
+      }));
+    }
+
+    // Set Slave user session
+    localStorage.setItem("email", selectedUser.email);
+    localStorage.setItem("userType", "USER");
+    localStorage.setItem("_id", selectedUser.id);
+    localStorage.setItem("token", token); // Use new token
+
+    sessionStorage.setItem("slaveUser", JSON.stringify(selectedUser));
+    sessionStorage.setItem("isViewingAs", "true");
+
+    setIsViewingAs(true);
+    setViewingUser(selectedUser);
+
+    toast.success(`Now viewing as ${selectedUser.first_name}`);
+    setDropdownOpen(false);
+    history.push("/user-dashboard"); // Redirect
   };
-  useEffect(() => {
-    const id = window.localStorage.getItem("token");
-    if (!id) {
-      confirmationLogouthandler();
-    }
-  }, []);
 
-  useEffect(() => {
-    const pathname = location.pathname;
-    if (
-      pathname.includes("PP-createaccount") ||
-      pathname.includes("/PP-create")
-    ) {
-      setPageTitle("Accounts");
-    } else if (
-      pathname.includes("PP-user-management") ||
-      pathname.includes("edit-PPAdmin")
-    ) {
-      setPageTitle("User Management");
-    } else if (
-      pathname.includes("pp-settings") ||
-      pathname.includes("/edit-profile") ||
-      pathname.includes("/company-setting")
-    ) {
-      setPageTitle("Settings");
-    }
-  }, [location.pathname]);
+  // Handle stopping "View As"
+  const handleStopViewing = () => {
+    const masterUser = JSON.parse(sessionStorage.getItem("masterUser"));
 
-  useEffect(() => {
-    const pathname = location.pathname;
-    if (pathname.includes("dashboard")) {
-      setPageTitle1("Dashboard");
-    } else if (pathname.includes("companyUsers-List")) {
-      setPageTitle1("Users");
-    } else if (pathname.includes("CreateTemplate")) {
-      setPageTitle1("Create");
-    } else if (pathname.includes("Myprojects")) {
-      setPageTitle1("Prospects");
-    } else if (pathname.includes("view-myproject")) {
-      setPageTitle1("Prospects");
-    } else if (pathname.includes("Edit-Myproject")) {
-      setPageTitle1("Prospects");
-    } else if (pathname.includes("userProfile")) {
-      setPageTitle1("Settings");
-    }
-  }, [location.pathname]);
+    if (masterUser) {
+      // Restore Master’s session
+      localStorage.setItem("email", masterUser.email);
+      localStorage.setItem("userType", masterUser.userType);
+      localStorage.setItem("_id", masterUser._id);
+      localStorage.setItem("token", masterUser.token);
 
-  useEffect(() => {
-    const pathname = location.pathname;
-    if (pathname.includes("dashboard")) {
-      setPageTitle2("Dashboard");
-    } else if (
-      pathname.includes("companyUsers-List") ||
-      pathname.includes("viewuser")
-    ) {
-      setPageTitle2("Users");
-    } else if (
-      pathname.includes("CreateTemplate") ||
-      pathname.includes("createtemplate&Video") ||
-      pathname.includes("preview-video") ||
-      pathname.includes("Create-hvo-template")
-    ) {
-      setPageTitle2("Create");
-    } else if (
-      pathname.includes("Myprojects") ||
-      pathname.includes("View-Myprojects") ||
-      pathname.includes("error-list") ||
-      pathname.includes("user-myprojects") ||
-      pathname.includes("view-myproject")
-    ) {
-      setPageTitle2("Prospects");
-    } else if (
-      pathname.includes("settings") ||
-      pathname.includes("viewSheets") ||
-      pathname.includes("company-information") ||
-      pathname.includes("integrations") ||
-      pathname.includes("intent") ||
-      pathname.includes("myprofile")
-    ) {
-      setPageTitle2("Settings");
+      sessionStorage.removeItem("slaveUser");
+      sessionStorage.removeItem("isViewingAs");
+      sessionStorage.removeItem("masterUser");
+
+      setIsViewingAs(false);
+      setViewingUser(null);
+
+      toast.info("Returned to Master account");
+      history.push("/dashboard"); // Redirect
     }
-  }, [location.pathname]);
+  };
+
   return (
-    <nav className={classes.navbarContainer} {...rest}>
-      <Toolbar className={classes.toolbar}>
-        <Box
-          width={"100%"}
-          className="d-flex justify-space-between"
-          style={{ marginTop: "29px", flexWrap: "wrap" }}
-        >
-          <div className="hiddenlogo">
-            <Hidden lgUp>
-              <IconButton
-                color="#FF2626"
-                onClick={onMobileNavOpen}
-                style={{ marginRight: 10 }}
-              >
-                <SvgIcon fontSize="large">
-                  <AiOutlineMenuUnfold />
-                </SvgIcon>
-              </IconButton>
-            </Hidden>
-            <Hidden mdDown>
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                onClick={onDrawerAction}
-                edge="start"
-                className={clsx(classes.menuButton, {
-                  [classes.hide]: open,
-                })}
-              >
-                <SvgIcon fontSize="large">
-                  <AiOutlineMenuUnfold style={{ color: "#152F40" }} />
-                </SvgIcon>
-              </IconButton>
-            </Hidden>
-            {localStorage.getItem("userType") === "ADMIN" ? (
-              <Typography variant="h4" style={{ fontSize: "21px" }}>
-                {pageTitle}
-              </Typography>
-            ) : localStorage.getItem("userType") === "SUBADMIN" ? (
-              <Typography variant="h4" style={{ fontSize: "21px" }}>
-                {" "}
-                {pageTitle2}
-              </Typography>
-            ) : localStorage.getItem("userType") === "USER" ? (
-              <Typography variant="h4">{pageTitle1}</Typography>
-            ) : (
-              ""
-            )}
-          </div>
-          <div className="d-flex avatarBox">
-            {localStorage.getItem("userType") === "ADMIN" ? (
-              <Avatar src={user?.profileData?.profilePicture}></Avatar>
-            ) : localStorage.getItem("userType") === "SUBADMIN" ? (
-              <Avatar src={user?.profileData?.adminProfileImage}></Avatar>
-            ) : localStorage.getItem("userType") === "USER" ? (
-              <Avatar src={user?.profileData?.profilePicture}></Avatar>
-            ) : (
-              ""
-            )}
-            <div className="d-flex column alignstart">
-              {localStorage.getItem("userType") === "ADMIN" ? (
-                <Typography ClassName="accounttype">PP Admin</Typography>
-              ) : localStorage.getItem("userType") === "SUBADMIN" ? (
-                <Typography ClassName="accounttype">Company Admin</Typography>
-              ) : localStorage.getItem("userType") === "USER" ? (
-                <Typography ClassName="accounttype">Company User</Typography>
-              ) : (
-                ""
-              )}
-              <Typography className="accountname" style={{ marginTop: "2px" }}>
-                {user?.profileData?.first_name &&
-                user?.profileData?.first_name.length > 10
-                  ? user?.profileData?.first_name.slice(0, 10) + "..."
-                  : user?.profileData?.first_name}{" "}
-                {user?.profileData?.last_name &&
-                user?.profileData?.last_name.length > 10
-                  ? user?.profileData?.last_name.slice(0, 10) + "..."
-                  : user?.profileData?.last_name}
-              </Typography>
+    <nav className={styles.navbarContainer}>
+      <div className={styles.toolbar}>
+        <div className={styles.hiddenLogo}>
+          <button className={styles.menuButton} onClick={onMobileNavOpen}>
+            <AiOutlineMenuUnfold className={styles.menuIcon} />
+          </button>
+          <h4 className={styles.pageTitle}>
+            {isViewingAs ? `Viewing as ${viewingUser?.first_name}` : "Dashboard"}
+          </h4>
+        </div>
+
+        {/* Right Section: User Info & "View As" */}
+        <div className={styles.rightSection}>
+          {/* User Info */}
+          <div className={styles.avatarBox}>
+            <img
+              className={styles.avatar}
+              src={user?.profileData?.profile_picture || "/default-avatar.png"}
+              alt="User Avatar"
+            />
+            <div className={styles.userDetails}>
+              <span className={styles.accountType}>
+                {isViewingAs ? "Viewing As User" : "Company Admin"}
+              </span>
+              <span className={styles.accountName}>
+                {user?.profileData?.first_name} {user?.profileData?.last_name}
+              </span>
             </div>
           </div>
-        </Box>
-      </Toolbar>
+
+          {/* "View As" Dropdown */}
+          {!isViewingAs ? (
+            <div className={styles.dropdownContainer}>
+              <button
+                className={styles.createButton}
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+              >
+                View As ▼
+              </button>
+
+              {dropdownOpen && (
+                <div className={styles.dropdownMenu}>
+                  <div className={styles.dropdownHeader}>Select a User</div>
+                  {loading ? (
+                    <div className={styles.loading}>Loading...</div>
+                  ) : error ? (
+                    <div className={styles.error}>Failed to load users</div>
+                  ) : data?.length > 0 ? (
+                    data.map((user) => (
+                      <div
+                        key={user.id}
+                        className={styles.dropdownItem}
+                        onClick={() => handleUserSelect(user)}
+                      >
+                        {user.first_name} {user.last_name}
+                      </div>
+                    ))
+                  ) : (
+                    <div className={styles.noTemplates}>No users available</div>
+                  )}
+                </div>
+              )}
+            </div>
+          ) : (
+            <button className={styles.stopViewingButton} onClick={handleStopViewing}>
+              Stop Viewing
+            </button>
+          )}
+        </div>
+      </div>
     </nav>
   );
 };
 
 TopBar.propTypes = {
-  className: PropTypes.string,
+  onMobileNavOpen: PropTypes.func,
 };
+
 TopBar.defaultProps = {
   onMobileNavOpen: () => {},
-  onDrawerAction: () => {},
 };
 
 export default TopBar;

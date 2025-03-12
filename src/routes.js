@@ -88,6 +88,16 @@ export const routes = [
       import("src/layouts/DashboardLayout/NavBar/LeadsDashboard/LeadsDashboard")
     ),
   },
+  //necessary duplicate route
+  {
+    exact: true,
+    path: "/visitor-dashboard",
+    guard: true,
+    layout: DashboardLayout,
+    component: lazy(() =>
+      import("src/layouts/DashboardLayout/NavBar/LeadsDashboard/LeadsDashboard")
+    ),
+  },
   {
     exact: true,
     path: "/leads-search",
@@ -327,6 +337,48 @@ export const routes = [
 
   {
     exact: true,
+    path: "/email-templates",
+    guard: true,
+    layout: DashboardLayout,
+    component: lazy(() =>
+      import("src/views/pages/settings/EmailTemplates/EmailTemplates")
+    ),
+  },
+
+  {
+    exact: true,
+    path: "/create-email-template",
+    guard: true,
+    layout: DashboardLayout,
+    component: lazy(() =>
+      import(
+        "src/views/pages/settings/EmailTemplates/NewEmailTemplate/NewEmailTemplate"
+      )
+    ),
+  },
+
+  {
+    exact: true,
+    path: "/sendgrid",
+    guard: true,
+    layout: DashboardLayout,
+    component: lazy(() =>
+      import("src/views/pages/settings/Integrations/SendGrid/SendGrid")
+    ),
+  },
+
+  {
+    exact: true,
+    path: "/calenderlink",
+    guard: true,
+    layout: DashboardLayout,
+    component: lazy(() =>
+      import("src/views/pages/settings/Integrations/CalenderLink/CalenderLink")
+    ),
+  },
+
+  {
+    exact: true,
     path: "/addsheet",
     guard: true,
     layout: DashboardLayout,
@@ -520,7 +572,7 @@ export const routes = [
     guard: true,
     layout: DashboardLayout,
     component: lazy(() =>
-      import("src/views/pages/DashboardUser/MyProject/ProjectList")
+      import("src/views/pages/MyProjects/Prospects/Prospects")
     ),
   },
   {
