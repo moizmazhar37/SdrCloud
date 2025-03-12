@@ -74,6 +74,17 @@ const CreateVideo = () => {
     setSectionNum(null);
   };
 
+  const pricePerSecond = sectionData?.price || 0;
+  const totalRecords = sectionData?.sheet?.totalRecords || 0;
+
+  const totalDuration = elementsList?.reduce((sum, element) => {
+    return sum + (element.duration || 0);
+  }, 0);
+
+  const totalVideoDuration = totalDuration * totalRecords;
+
+  const totalPrice = totalVideoDuration * pricePerSecond;
+
   const handleSectionTypeChange = (selectedValue, sectionNumber) => {
     // Reset all edit-related states when opening from section area
     setEditingSection(null);
@@ -149,8 +160,8 @@ const CreateVideo = () => {
     setIsModalOpen(false);
   };
 
-  const handleProceed = () => {
-    handleCreateVideo(templateId);
+  const handleProceed = (rowsToCreate) => {
+    handleCreateVideo(templateId, rowsToCreate);
     setIsModalOpen(false);
   };
 
@@ -245,12 +256,10 @@ const CreateVideo = () => {
         title="Confirm Video Creation"
         infoItems={[
           { label: "Your balance", value: sectionData?.balance },
-          {
-            label: "Total price for generating videos",
-            value: sectionData?.price,
-          },
         ]}
-        noteText={confirmationText}
+        totalRecords={totalRecords}
+        pricePerSecond={pricePerSecond}
+        totalDuration={totalDuration}
         confirmationText="Please confirm if you want to proceed"
         onAction={handleProceed}
       />
