@@ -56,11 +56,11 @@ const ConfirmationModal = ({
             <input
               id="recordsInput"
               type="number"
-              min="1"
+              // min="1"
               max={totalRecords}
               value={rowsToCreate}
               onChange={(e) => {
-                const value = Math.min(totalRecords, Math.max(1, Number(e.target.value)));
+                const value = Math.min(totalRecords, Math.max(0, Number(e.target.value)));
                 setRowsToCreate(value);
               }}
               className={styles.inputField}
