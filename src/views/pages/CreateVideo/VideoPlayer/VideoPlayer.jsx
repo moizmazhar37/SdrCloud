@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import "./VideoPlayer.css";
 import ApiConfig from "./../../../../config/APIConfig";
 import { videoTracking } from "src/config/APIConfig";
+import { v4 as uuidv4 } from "uuid"; // Make sure to install uuid package with npm install uuid
 
 const VideoPlayer = () => {
   const [videoData, setVideoData] = useState(null);
@@ -14,7 +15,8 @@ const VideoPlayer = () => {
   const [userIP, setUserIP] = useState("");
   const videoRef = useRef(null);
   const video_id = window.location.href.split("/").pop().trim();
-  const hasTrackedRef = useRef(false); // Ref to prevent duplicate tracking
+  const hasTrackedRef = useRef(false);
+  const lastSentTimeRef = useRef(0);
 
   // Fetch the user's IP address using ipify API
   useEffect(() => {
@@ -66,44 +68,52 @@ const VideoPlayer = () => {
     };
   }, []);
 
-  // Use navigator.sendBeacon for beforeunload only
+  // Function to prepare tracking data for sending
+  const prepareTrackingData = () => {
+    if (trackingData.length === 0 || !videoRef.current) return null;
+
+    const currentTime = Math.floor(videoRef.current.currentTime);
+    const totalDuration = Math.floor(videoRef.current.duration);
+
+    return trackingData.map((entry) => {
+      if (entry.ip_address === userIP && entry.customer_data_id === video_id) {
+        return {
+          ...entry,
+          id: entry.id, // Keep existing UUID
+          duration_played: Math.max(entry.duration_played, currentTime),
+          total_duration: totalDuration,
+        };
+      }
+      return entry;
+    });
+  };
+
+  // Function to send tracking data with beacon
+  const sendTrackingDataBeacon = (data) => {
+    if (!data) return false;
+
+    const blob = new Blob([JSON.stringify(data)], {
+      type: "application/json",
+    });
+
+    const success = navigator.sendBeacon(`${videoTracking}`, blob);
+    console.log("Beacon sent:", success, "with data:", data);
+    return success;
+  };
+
+  // Tab close tracking
   useEffect(() => {
     const handleTabClose = () => {
-      if (trackingData.length > 0 && !hasTrackedRef.current) {
-        // Update the current video position for all entries
-        if (videoRef.current) {
-          const currentTime = Math.floor(videoRef.current.currentTime);
-          const totalDuration = Math.floor(videoRef.current.duration);
-
-          const updatedData = trackingData.map((entry) => {
-            if (
-              entry.ip_address === userIP &&
-              entry.customer_data_id === video_id
-            ) {
-              return {
-                ...entry,
-                duration_played: Math.max(entry.duration_played, currentTime),
-                total_duration: totalDuration,
-              };
-            }
-            return entry;
-          });
-
-          const blob = new Blob([JSON.stringify(updatedData)], {
-            type: "application/json",
-          });
-
-          // Use navigator.sendBeacon which is designed for sending data before page unload
-          navigator.sendBeacon(`${videoTracking}`, blob);
-          console.log("Beacon sent with tracking data:", updatedData);
-
-          // Mark as tracked to prevent duplicate sends
+      if (!hasTrackedRef.current) {
+        const data = prepareTrackingData();
+        if (data) {
+          sendTrackingDataBeacon(data);
           hasTrackedRef.current = true;
         }
+        return "Changes you made may not be saved.";
       }
     };
 
-    // Only listen for beforeunload, not unload (which can cause duplicates)
     window.addEventListener("beforeunload", handleTabClose);
 
     return () => {
@@ -128,8 +138,9 @@ const VideoPlayer = () => {
       );
 
       if (existingSessionIndex === -1) {
-        // No active session, create a new one
+        // No active session, create a new one with UUID
         updatedTrackingData.push({
+          id: uuidv4(), // Generate UUID for this session
           ip_address: userIP,
           customer_data_id: video_id,
           duration_played: 0, // Start at 0
