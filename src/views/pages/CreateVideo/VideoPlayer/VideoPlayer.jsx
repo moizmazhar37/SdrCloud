@@ -14,6 +14,7 @@ const VideoPlayer = () => {
   const [userIP, setUserIP] = useState("");
   const videoRef = useRef(null);
   const video_id = window.location.href.split("/").pop().trim();
+  const hasTrackedRef = useRef(false); // Ref to prevent duplicate tracking
 
   // Fetch the user's IP address using ipify API
   useEffect(() => {
@@ -59,25 +60,56 @@ const VideoPlayer = () => {
 
     // Cleanup: remove the script when the component unmounts
     return () => {
-      document.body.removeChild(script);
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
     };
   }, []);
 
+  // Use navigator.sendBeacon for beforeunload only
   useEffect(() => {
-    const handleTabClose = async () => {
-      if (trackingData.length > 0) {
-        try {
-          await axios.post(`${videoTracking}`, trackingData);
-          console.log("Data sent to backend:", trackingData);
-        } catch (error) {
-          console.error("Error sending tracking data:", error);
+    const handleTabClose = () => {
+      if (trackingData.length > 0 && !hasTrackedRef.current) {
+        // Update the current video position for all entries
+        if (videoRef.current) {
+          const currentTime = Math.floor(videoRef.current.currentTime);
+          const totalDuration = Math.floor(videoRef.current.duration);
+
+          const updatedData = trackingData.map((entry) => {
+            if (
+              entry.ip_address === userIP &&
+              entry.customer_data_id === video_id
+            ) {
+              return {
+                ...entry,
+                duration_played: Math.max(entry.duration_played, currentTime),
+                total_duration: totalDuration,
+              };
+            }
+            return entry;
+          });
+
+          const blob = new Blob([JSON.stringify(updatedData)], {
+            type: "application/json",
+          });
+
+          // Use navigator.sendBeacon which is designed for sending data before page unload
+          navigator.sendBeacon(`${videoTracking}`, blob);
+          console.log("Beacon sent with tracking data:", updatedData);
+
+          // Mark as tracked to prevent duplicate sends
+          hasTrackedRef.current = true;
         }
       }
     };
 
+    // Only listen for beforeunload, not unload (which can cause duplicates)
     window.addEventListener("beforeunload", handleTabClose);
-    return () => window.removeEventListener("beforeunload", handleTabClose);
-  }, [trackingData, video_id]);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleTabClose);
+    };
+  }, [trackingData, userIP, video_id]);
 
   const handleVideoEvent = (event) => {
     if (!videoRef.current || !userIP) return;
