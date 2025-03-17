@@ -77,6 +77,8 @@ const ApiConfig = {
   hvoStatus: `${hvo}/hvo-status`,
   video: `${video}`,
   footerLink: `${footer}`,
+
+  privacyPolicy: `${tenant}/privacy-policy`,
   // userSignup: `${user}/userSignUp`,
   // // verifyEmail: `${user}/verifyEmail`,
   // goggleLogin: `${user}/googleLogin`,
