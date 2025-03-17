@@ -1,28 +1,40 @@
-import React, { useState, useEffect } from 'react';
-import AlertToast from '../AlertToast';
-import styles from './ToastManager.module.scss';
-import useMarkAlertViewed from '../useMarkAlertAsViewed';
+import React, { useState, useEffect } from "react";
+import AlertToast from "../AlertToast";
+import styles from "./ToastManager.module.scss";
+import useMarkAlertViewed from "../useMarkAlertAsViewed";
 
-const ToastManager = ({ toastMessages = [], duration = 5000, staggerDelay = 300 }) => {
+const ToastManager = ({
+  toastMessages = [],
+  duration = 5000,
+  staggerDelay = 300,
+}) => {
   const [visibleAlerts, setVisibleAlerts] = useState([]);
   const warningText = "You can change the alert configurations from settings.";
   const { markAlertViewed, loading } = useMarkAlertViewed();
 
   useEffect(() => {
-    const newAlerts = toastMessages.filter(
-      alert => !visibleAlerts.some(visible => visible.id === alert.id)
+    // Deduplicate incoming toastMessages by ID
+    const uniqueToastMessages = Array.from(
+      new Map(toastMessages.map((alert) => [alert.id, alert])).values()
+    );
+
+    const newAlerts = uniqueToastMessages.filter(
+      (alert) => !visibleAlerts.some((visible) => visible.id === alert.id)
     );
 
     if (newAlerts.length > 0) {
       newAlerts.forEach((alert, index) => {
         setTimeout(() => {
-          setVisibleAlerts(prev => [...prev, alert]);
+          setVisibleAlerts((prev) => [...prev, alert]);
         }, index * staggerDelay);
       });
     }
-    
-    setVisibleAlerts(prev => 
-      prev.filter(visible => toastMessages.some(alert => alert.id === visible.id))
+
+    // Keep only alerts that are still in the uniqueToastMessages array
+    setVisibleAlerts((prev) =>
+      prev.filter((visible) =>
+        uniqueToastMessages.some((alert) => alert.id === visible.id)
+      )
     );
   }, [toastMessages, staggerDelay]);
 
@@ -30,13 +42,13 @@ const ToastManager = ({ toastMessages = [], duration = 5000, staggerDelay = 300 
     try {
       // Call the API to mark the alert as viewed
       await markAlertViewed(id);
-      
+
       // Remove the alert from visible alerts after API call succeeds
-      setVisibleAlerts(prev => prev.filter(alert => alert.id !== id));
+      setVisibleAlerts((prev) => prev.filter((alert) => alert.id !== id));
     } catch (error) {
       // Even if the API fails, remove the alert from UI for better UX
       // The error is already being handled in the hook with toast.error
-      setVisibleAlerts(prev => prev.filter(alert => alert.id !== id));
+      setVisibleAlerts((prev) => prev.filter((alert) => alert.id !== id));
     }
   };
 

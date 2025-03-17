@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import "./VideoPlayer.css";
 import ApiConfig from "./../../../../config/APIConfig";
 import { videoTracking } from "src/config/APIConfig";
+import { v4 as uuidv4 } from "uuid"; // Make sure to install uuid package with npm install uuid
 
 const VideoPlayer = () => {
   const [videoData, setVideoData] = useState(null);
@@ -14,6 +15,8 @@ const VideoPlayer = () => {
   const [userIP, setUserIP] = useState("");
   const videoRef = useRef(null);
   const video_id = window.location.href.split("/").pop().trim();
+  const hasTrackedRef = useRef(false);
+  const lastSentTimeRef = useRef(0);
 
   // Fetch the user's IP address using ipify API
   useEffect(() => {
@@ -59,31 +62,86 @@ const VideoPlayer = () => {
 
     // Cleanup: remove the script when the component unmounts
     return () => {
-      document.body.removeChild(script);
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
     };
   }, []);
 
-  useEffect(() => {
-    const handleTabClose = async () => {
-      if (trackingData.length > 0) {
-        try {
-          await axios.post(`${videoTracking}`, trackingData);
-          console.log("Data sent to backend:", trackingData);
-        } catch (error) {
-          console.error("Error sending tracking data:", error);
+  // Function to prepare tracking data for sending
+  const prepareTrackingData = () => {
+    if (trackingData.length === 0 || !videoRef.current) return null;
+
+    const currentTime = Math.floor(videoRef.current.currentTime);
+    const totalDuration = Math.floor(videoRef.current.duration);
+
+    // Filter out entries with duration 0 and update the rest
+    const validTrackingData = trackingData
+      .map((entry) => {
+        if (
+          entry.ip_address === userIP &&
+          entry.customer_data_id === video_id
+        ) {
+          const updatedDuration = Math.max(entry.duration_played, currentTime);
+          return {
+            ...entry,
+            id: entry.id, // Keep existing UUID
+            duration_played: updatedDuration,
+            total_duration: totalDuration,
+          };
         }
+        return entry;
+      })
+      .filter((entry) => entry.duration_played > 0); // Filter out entries with duration 0
+
+    return validTrackingData.length > 0 ? validTrackingData : null;
+  };
+
+  // Function to send tracking data with beacon
+  const sendTrackingDataBeacon = (data) => {
+    if (!data) return false;
+
+    const blob = new Blob([JSON.stringify(data)], {
+      type: "application/json",
+    });
+
+    const success = navigator.sendBeacon(`${videoTracking}`, blob);
+    console.log("Beacon sent:", success, "with data:", data);
+    return success;
+  };
+
+  // Tab close tracking
+  useEffect(() => {
+    const handleTabClose = () => {
+      if (!hasTrackedRef.current) {
+        const data = prepareTrackingData();
+        if (data) {
+          sendTrackingDataBeacon(data);
+          hasTrackedRef.current = true;
+        }
+        return "Changes you made may not be saved.";
       }
     };
 
     window.addEventListener("beforeunload", handleTabClose);
-    return () => window.removeEventListener("beforeunload", handleTabClose);
-  }, [trackingData, video_id]);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleTabClose);
+    };
+  }, [trackingData, userIP, video_id]);
 
   const handleVideoEvent = (event) => {
     if (!videoRef.current || !userIP) return;
 
     const currentTime = Math.floor(videoRef.current.currentTime);
     const totalDuration = Math.floor(videoRef.current.duration);
+
+    // Check if video has a valid duration before proceeding
+    if (isNaN(totalDuration) || totalDuration <= 0) {
+      console.warn("Invalid video duration detected, skipping tracking");
+      return;
+    }
+
     let updatedTrackingData = [...trackingData];
 
     if (event.type === "play") {
@@ -96,8 +154,9 @@ const VideoPlayer = () => {
       );
 
       if (existingSessionIndex === -1) {
-        // No active session, create a new one
+        // No active session, create a new one with UUID
         updatedTrackingData.push({
+          id: uuidv4(), // Generate UUID for this session
           ip_address: userIP,
           customer_data_id: video_id,
           duration_played: 0, // Start at 0

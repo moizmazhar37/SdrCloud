@@ -9,6 +9,9 @@ import {
   makeStyles,
   Hidden,
 } from "@material-ui/core";
+
+import { v4 as uuidv4 } from "uuid";
+
 import React, { useEffect, useState } from "react";
 // import 'animate.css/animate.min.css';
 import AOS from "aos";
@@ -27,6 +30,7 @@ import { values } from "lodash";
 import { IoIosArrowForward } from "react-icons/io";
 import { Link } from "react-router-dom/cjs/react-router-dom";
 import FullScreenLoader from "src/component/FullScreenLoader";
+import { hvoTracking } from "src/config/APIConfig";
 import { toast } from "react-toastify";
 // Styles for the component
 const useStyles = makeStyles((theme) => ({
@@ -342,6 +346,57 @@ function CustomerPreview(location) {
   const [hoveredContact, setHoveredContact] = useState(false);
   const handleMouseEnterContact = () => setHoveredContact(true);
   const handleMouseLeaveContact = () => setHoveredContact(false);
+
+  //==================================================================================================================================================================//
+
+  const [startTime, setStartTime] = useState(Date.now());
+  const [ipAddress, setIpAddress] = useState("");
+  const [trackingId, setTrackingId] = useState(uuidv4()); // Generate a unique ID when component mounts
+
+  // Fetch IP address once when component mounts
+  useEffect(() => {
+    axios
+      .get("https://api64.ipify.org?format=json")
+      .then((response) => setIpAddress(response.data.ip))
+      .catch((error) => console.error("IP fetch error:", error));
+  }, []);
+
+  // Set up reliable beforeunload tracking
+  useEffect(() => {
+    const handleTabClose = () => {
+      const viewedDuration = Math.floor((Date.now() - startTime) / 1000);
+
+      const pathParts = window.location.pathname.split("/preview-url/");
+      const customerDataId = pathParts[1]?.split("/")[0];
+
+      if (!customerDataId) return;
+
+      const payload = {
+        id: trackingId, // Send the pre-generated UUID
+        ip_address: ipAddress,
+        viewed_duration: viewedDuration,
+        customer_data_id: customerDataId,
+      };
+
+      // Create a Blob with the correct MIME type for reliable sending
+      const blob = new Blob([JSON.stringify(payload)], {
+        type: "application/json",
+      });
+
+      // Using a single method to send the data - sendBeacon
+      navigator.sendBeacon(`${hvoTracking}/hvo`, blob);
+    };
+
+    // Just use a single event listener to avoid duplicate calls
+    window.addEventListener("beforeunload", handleTabClose);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleTabClose);
+    };
+  }, [startTime, ipAddress, hvoTracking, trackingId]);
+  // Removed the separate sendTrackingData function since it's unnecessary
+  //=================================================================================================================================================================//
+
   return (
     <>
       {loading && <FullScreenLoader />}
