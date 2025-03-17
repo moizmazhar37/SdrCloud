@@ -56,7 +56,7 @@ const VideoPlayer = () => {
     // Dynamically add the pixel tracking script when the component mounts
     const script = document.createElement("script");
     script.src =
-      "https://storage.googleapis.com/static-data-for-sdrc/tenants/tracker_d26331ec-e390-4c61-afb9-56795bb856cf.js";
+      "/tracker_d26331ec-e390-4c61-afb9-56795bb856cf.js";
     script.async = true;
     document.body.appendChild(script);
 
