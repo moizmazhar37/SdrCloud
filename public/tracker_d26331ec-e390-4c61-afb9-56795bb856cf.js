@@ -1,17 +1,30 @@
 // Function to create and display the cookie consent banner
-function showConsentBanner() {
+function showConsentBanner(learnMoreUrl) {
     return new Promise((resolve) => {
         let banner = document.createElement("div");
         banner.id = "cookieBanner";
         banner.innerHTML = `
             <div style="position: fixed; bottom: 0; left: 0; width: 100%; 
-                        background: white; padding: 15px; text-align: center; 
-                        box-shadow: 0px -2px 5px rgba(0,0,0,0.1); z-index: 1000;">
-                <p>We use cookies to improve your experience. Do you accept?</p>
-                <button id="acceptCookies" style="background: green; color: white; padding: 8px 16px; margin-right: 10px;">Accept</button>
-                <button id="rejectCookies" style="background: red; color: white; padding: 8px 16px;">Reject</button>
+                background: white; padding: 15px; text-align: center; 
+                box-shadow: 0px -2px 5px rgba(0,0,0,0.1); z-index: 1000;">
+                
+                <p>
+                    We use cookies to improve your experience. Do you accept? 
+                    <a id="learnMoreLink" href="${learnMoreUrl}" target="_blank" style="color: blue; text-decoration: underline; margin-left: 5px;">
+                        Learn More
+                    </a>
+                </p>
+
+                <button id="acceptCookies" style="background: green; color: white; padding: 8px 16px; margin-right: 10px;">
+                    Accept
+                </button>
+
+                <button id="rejectCookies" style="background: red; color: white; padding: 8px 16px;">
+                    Reject
+                </button>
             </div>
         `;
+
         document.body.appendChild(banner);
 
         document.getElementById("acceptCookies").addEventListener("click", function () {
@@ -26,6 +39,9 @@ function showConsentBanner() {
         });
     });
 }
+
+
+
 
 // Function to get or create a stored user ID
 function getUserID() {
@@ -79,6 +95,7 @@ function appendUserIdToURL(user_id) {
 }
 
 // Function to send tracking data
+let tenant_id = 'd26331ec-e390-4c61-afb9-56795bb856cf';
 async function sendPixelData() {
     let user_pixel_id = getUserID();
 
@@ -89,7 +106,7 @@ async function sendPixelData() {
         link: window.location.href,
         ip: ip,
         user_id: user_pixel_id,
-        tenant_id: 'd26331ec-e390-4c61-afb9-56795bb856cf'
+        tenant_id: tenant_id,
     };
 
     try {
@@ -144,7 +161,7 @@ observer.observe(document.body, { childList: true, subtree: true });
 console.log("🔍 Watching for Cookie Policy button...");
 
 
-
+let learnMoreLink = `https://portal.sdrcloud.ai/privacy-policy/${tenant_id}`
 // Main function that runs on script load
 async function initTracking() {
     let consentStored = localStorage.getItem("cookie_consent");
@@ -153,7 +170,7 @@ async function initTracking() {
         console.log("Cookie consent already given. Skipping prompt.");
         sendPixelData();
     } else {
-        const consentGiven = await showConsentBanner();
+        const consentGiven = await showConsentBanner(learnMoreLink);
         storeConsent(consentGiven);
         if (consentGiven) {
             sendPixelData();
