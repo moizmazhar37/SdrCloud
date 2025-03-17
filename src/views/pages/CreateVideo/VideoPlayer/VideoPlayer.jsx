@@ -75,17 +75,26 @@ const VideoPlayer = () => {
     const currentTime = Math.floor(videoRef.current.currentTime);
     const totalDuration = Math.floor(videoRef.current.duration);
 
-    return trackingData.map((entry) => {
-      if (entry.ip_address === userIP && entry.customer_data_id === video_id) {
-        return {
-          ...entry,
-          id: entry.id, // Keep existing UUID
-          duration_played: Math.max(entry.duration_played, currentTime),
-          total_duration: totalDuration,
-        };
-      }
-      return entry;
-    });
+    // Filter out entries with duration 0 and update the rest
+    const validTrackingData = trackingData
+      .map((entry) => {
+        if (
+          entry.ip_address === userIP &&
+          entry.customer_data_id === video_id
+        ) {
+          const updatedDuration = Math.max(entry.duration_played, currentTime);
+          return {
+            ...entry,
+            id: entry.id, // Keep existing UUID
+            duration_played: updatedDuration,
+            total_duration: totalDuration,
+          };
+        }
+        return entry;
+      })
+      .filter((entry) => entry.duration_played > 0); // Filter out entries with duration 0
+
+    return validTrackingData.length > 0 ? validTrackingData : null;
   };
 
   // Function to send tracking data with beacon
@@ -126,6 +135,13 @@ const VideoPlayer = () => {
 
     const currentTime = Math.floor(videoRef.current.currentTime);
     const totalDuration = Math.floor(videoRef.current.duration);
+
+    // Check if video has a valid duration before proceeding
+    if (isNaN(totalDuration) || totalDuration <= 0) {
+      console.warn("Invalid video duration detected, skipping tracking");
+      return;
+    }
+
     let updatedTrackingData = [...trackingData];
 
     if (event.type === "play") {
