@@ -303,7 +303,7 @@ function CustomerPreview(location) {
   useEffect(() => {
     const script = document.createElement("script");
     script.src =
-      "/tracker_d26331ec-e390-4c61-afb9-56795bb856cf.js";
+      "https://storage.googleapis.com/static-data-for-sdrc/scripts/tracker_d26331ec-e390-4c61-afb9-56795bb856cf.js";
     script.async = true;
     document.body.appendChild(script);
 
