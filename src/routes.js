@@ -269,6 +269,14 @@ export const routes = [
     ),
   },
 
+  {
+    exact: true,
+    path: "/privacy-policy/:tenantId",
+    component: lazy(() =>
+      import("src/views/pages/PrivacyPolicy/PrivacyPolicyPage")
+    ),
+  },
+
   // Setting Pages
 
   {
