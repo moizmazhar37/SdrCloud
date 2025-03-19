@@ -5,6 +5,8 @@ import Card from "../MainDashboard/CardBlock/Card";
 import styles from "./AdminDashboard.module.scss";
 import useDownloadCSV from "../MainDashboard/Hooks/useDownloadCSV";
 import TopUsers from "../MainDashboard/TableCardBlock/TabularCard";
+import VisitorsGraph from "./VisitorsGraph/VisitorsGraph.jsx";
+import UserCreditsChart from "./UserCreditsChart/UserCreditsChart";
 
 const AdminDashboard = () => {
   const [dateRange, setDateRange] = useState({
@@ -13,6 +15,17 @@ const AdminDashboard = () => {
   });
 
   const { downloadCSV, loading: csvLoading } = useDownloadCSV();
+
+  // Sample data for credits usage chart
+  const creditsData = [
+    { month: "Jan", credits: 5300, usage: 2900 },
+    { month: "Feb", credits: 4500, usage: 2800 },
+    { month: "Mar", credits: 4600, usage: 2200 },
+    { month: "Apr", credits: 4500, usage: 2700 },
+    { month: "May", credits: 4500, usage: 2400 },
+    { month: "Jun", credits: 2800, usage: 2000 },
+    { month: "Jul", credits: 4800, usage: 3200 },
+  ];
 
   const handleDateRangeChange = (newDateRange) => {
     setDateRange(newDateRange);
@@ -154,6 +167,14 @@ const AdminDashboard = () => {
             usersData={toptemplatesData}
             tableHeaders={tableHeaders2}
           />
+        </div>
+      </div>
+
+      {/* Analytics Overview Section */}
+      <div className={styles.componentSection}>
+        <div className={styles.analyticsContainer}>
+          <VisitorsGraph />
+          <UserCreditsChart creditsData={creditsData} />
         </div>
       </div>
     </div>

@@ -218,3 +218,19 @@
     width: 85%;
   }
 }
+
+// New analytics container for charts
+.analyticsContainer {
+  display: flex;
+  width: 100%;
+  gap: 20px;
+
+  > * {
+    flex: 1;
+    min-width: 0; // Ensures flex items can shrink below content size
+  }
+
+  @media screen and (max-width: 780px) {
+    flex-direction: column;
+  }
+}
