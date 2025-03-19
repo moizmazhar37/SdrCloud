@@ -565,6 +565,18 @@ export const routes = [
       import("src/views/pages/DashboardAdmin/MainDashboard/MainDashboard")
     ),
   },
+  //updated admin dashboard
+  {
+    exact: true,
+    path: "/admin-dashboard",
+    guard: true,
+    layout: DashboardLayout,
+    // component: lazy(() => import("src/views/pages/DashboardUser/index")),
+    component: lazy(() =>
+      import("src/views/pages/DashboardAdmin/AdminDashboard/AdminDashboard")
+    ),
+  },
+
   {
     exact: true,
     path: "/user-myprojects",
