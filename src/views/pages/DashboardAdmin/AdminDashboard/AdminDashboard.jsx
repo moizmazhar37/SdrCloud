@@ -4,6 +4,7 @@ import SupportContactLabel from "./SupportContactLabel/SupportContactLabel";
 import Card from "../MainDashboard/CardBlock/Card";
 import styles from "./AdminDashboard.module.scss";
 import useDownloadCSV from "../MainDashboard/Hooks/useDownloadCSV";
+import TopUsers from "../MainDashboard/TableCardBlock/TabularCard";
 
 const AdminDashboard = () => {
   const [dateRange, setDateRange] = useState({
@@ -25,6 +26,65 @@ const AdminDashboard = () => {
     phone: "967-278-0909",
     email: "Janice@sdrcloud.com",
   };
+
+  // Sample data for top users
+  const topUsersData = [
+    {
+      name: "Afnan Bashir",
+      credits: 0.0,
+      score: 0,
+      image:
+        "https://png.pngtree.com/png-vector/20220817/ourmid/pngtree-man-avatar-with-circle-frame-vector-ilustration-png-image_6110328.png",
+    },
+  ];
+
+  // Sample data for top templates
+  const toptemplatesData = [
+    {
+      group: 1,
+      template_name: "1ASDF$",
+      template_type: "HVO",
+      viewed_count: 4,
+    },
+    {
+      group: 1,
+      template_name: "test bulk update sheet",
+      template_type: "VIDEO",
+      viewed_count: 5,
+    },
+    {
+      group: 2,
+      template_name: "24 feb",
+      template_type: "VIDEO",
+      viewed_count: 1,
+    },
+    {
+      group: 2,
+      template_name: "adnan demo",
+      template_type: "VIDEO",
+      viewed_count: 24,
+    },
+    {
+      group: 3,
+      template_name: "Adnan Demo 2",
+      template_type: "VIDEO",
+      viewed_count: 10,
+    },
+  ];
+
+  // Table headers for users
+  const tableHeaders = [
+    { key: "name", label: "Name" },
+    { key: "credits", label: "Credits used" },
+    { key: "score", label: "Score" },
+  ];
+
+  // Table headers for templates
+  const tableHeaders2 = [
+    { key: "template_name", label: "Name" },
+    { key: "template_type", label: "Type" },
+    { key: "viewed_count", label: "Times Used" },
+  ];
 
   return (
     <div className={styles.dashboardContainer}>
@@ -52,7 +112,7 @@ const AdminDashboard = () => {
       {/* Main Metrics Section */}
       <div className={styles.metricsCardContainer}>
         <Card heading="Active Users" amount={200} />
-        <Card heading="Avaialable Seats" amount={45} />
+        <Card heading="Available Seats" amount={45} />
         <Card heading="Credits" amount={20000} />
         <Card heading="No of Sheets Connected" amount={3839} />
         <Card heading="Amounts of templates generated" amount={4849} />
@@ -77,6 +137,23 @@ const AdminDashboard = () => {
           <Card heading="Total prospects" amount={12334} />
           <Card heading="HVO Templates" amount={2665} />
           <Card heading="Meetings Booked" amount={234} />
+        </div>
+      </div>
+
+      {/* Performance Overview Section */}
+      <div className={styles.componentSection}>
+        <h2 className={styles.sectionTitle}>Performance Overview</h2>
+        <div className={styles.topUsersContainer}>
+          <TopUsers
+            title="Top Performing Users"
+            usersData={topUsersData}
+            tableHeaders={tableHeaders}
+          />
+          <TopUsers
+            title="Top Performing Templates"
+            usersData={toptemplatesData}
+            tableHeaders={tableHeaders2}
+          />
         </div>
       </div>
     </div>
