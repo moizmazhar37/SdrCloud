@@ -94,31 +94,13 @@ const TopBar = ({ onMobileNavOpen }) => {
 
         {/* Right Section: User Info & "View As" */}
         <div className={styles.rightSection}>
-          {/* User Info */}
-          <div className={styles.avatarBox}>
-            <img
-              className={styles.avatar}
-              src={user?.profileData?.profile_picture || "/default-avatar.png"}
-              alt="User Avatar"
-            />
-            <div className={styles.userDetails}>
-              <span className={styles.accountType}>
-                {isViewingAs ? "Viewing As User" : "Company Admin"}
-              </span>
-              <span className={styles.accountName}>
-                {user?.profileData?.first_name} {user?.profileData?.last_name}
-              </span>
-            </div>
-          </div>
-
-          {/* "View As" Dropdown */}
-          {!isViewingAs ? (
+        {!isViewingAs ? (
             <div className={styles.dropdownContainer}>
               <button
                 className={styles.createButton}
                 onClick={() => setDropdownOpen(!dropdownOpen)}
               >
-                View As ▼
+                View As
               </button>
 
               {dropdownOpen && (
@@ -146,9 +128,28 @@ const TopBar = ({ onMobileNavOpen }) => {
             </div>
           ) : (
             <button className={styles.stopViewingButton} onClick={handleStopViewing}>
-              Stop Viewing
+              Stop Viewing as {viewingUser?.first_name} {viewingUser?.last_name}
             </button>
           )}
+          {/* User Info */}
+          <div className={styles.avatarBox}>
+            <img
+              className={styles.avatar}
+              src={user?.profileData?.profile_picture || "/default-avatar.png"}
+              alt="User Avatar"
+            />
+            <div className={styles.userDetails}>
+              <span className={styles.accountType}>
+                {isViewingAs ? "Viewing As User" : "Company Admin"}
+              </span>
+              <span className={styles.accountName}>
+                {user?.profileData?.first_name} {user?.profileData?.last_name}
+              </span>
+            </div>
+          </div>
+
+          {/* "View As" Dropdown */}
+          
         </div>
       </div>
     </nav>
