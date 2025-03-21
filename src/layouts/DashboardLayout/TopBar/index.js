@@ -7,6 +7,7 @@ import useGetAllUsers from "src/views/pages/CompanyUsers/Users/Hooks/useGetAllUs
 import useViewAsUser from "./useViewAsUser"
 import styles from "./TopBar.module.scss";
 import { toast } from "react-toastify";
+import { FaUserCircle } from "react-icons/fa";
 
 const TopBar = ({ onMobileNavOpen }) => {
   const history = useHistory();
@@ -133,11 +134,18 @@ const TopBar = ({ onMobileNavOpen }) => {
           )}
           {/* User Info */}
           <div className={styles.avatarBox}>
-            <img
-              className={styles.avatar}
-              src={user?.profileData?.profile_picture || "/default-avatar.png"}
-              alt="User Avatar"
-            />
+          <div className={styles.avatarContainer}>
+  {loading || !user?.profileData?.profile_picture ? (
+    <FaUserCircle className={styles.defaultAvatarIcon} />
+  ) : (
+    <img
+      className={styles.avatar}
+      src={user.profileData.profile_picture}
+      alt="User Avatar"
+      onError={(e) => (e.target.style.display = "none")}
+    />
+  )}
+</div>
             <div className={styles.userDetails}>
               <span className={styles.accountType}>
                 {isViewingAs ? "Viewing As User" : "Company Admin"}
@@ -148,7 +156,6 @@ const TopBar = ({ onMobileNavOpen }) => {
             </div>
           </div>
 
-          {/* "View As" Dropdown */}
           
         </div>
       </div>
