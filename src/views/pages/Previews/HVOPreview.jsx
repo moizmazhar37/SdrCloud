@@ -115,8 +115,12 @@ const HVOPreview = () => {
 
             {/* Highlight Banner */}
             {data.data_list.find((section) => section.sectionName === "HIGHLIGHT_BANNER") && (
-    <HighlightBanner bannerData={data.data_list.find((section) => section.sectionName === "HIGHLIGHT_BANNER")} />
-)}
+                <HighlightBanner bannerData={data.data_list.find((section) => section.sectionName === "HIGHLIGHT_BANNER")} />
+            )}
+
+            
+
+
         </div>
     );
 };
