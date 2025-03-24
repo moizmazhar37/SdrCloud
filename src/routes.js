@@ -263,6 +263,14 @@ export const routes = [
 
   {
     exact: true,
+    path: `/new-hvo`,
+    component: lazy(() =>
+      import("src/views/pages/Previews/HVOPreview")
+    ),
+  },
+
+  {
+    exact: true,
     path: "/play-video/:customerId",
     component: lazy(() =>
       import("src/views/pages/CreateVideo/VideoPlayer/VideoPlayer")
