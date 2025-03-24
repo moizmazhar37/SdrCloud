@@ -1,6 +1,7 @@
 import React from "react";
 import styles from "./HVOPreview.module.scss";
 import data from "./data";
+import HighlightBanner from "./HighlightBanner/HighlightBanner";
 
 // Function to generate a dynamic gradient from primary color
 const generateGradient = (primaryColor) => {
@@ -110,6 +111,12 @@ const HVOPreview = () => {
                     )}
                 </div>
             )}
+
+
+            {/* Highlight Banner */}
+            {data.data_list.find((section) => section.sectionName === "HIGHLIGHT_BANNER") && (
+    <HighlightBanner bannerData={data.data_list.find((section) => section.sectionName === "HIGHLIGHT_BANNER")} />
+)}
         </div>
     );
 };
