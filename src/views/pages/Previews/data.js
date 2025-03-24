@@ -1,6 +1,7 @@
 let data = {
     "id": "68d8bd8c-073d-4ae3-9312-cc487ec17f3b",
     "tenant_id": "d26331ec-e390-4c61-afb9-56795bb856cf",
+    "primary_color": "#ffffff",
     "data_list": [
         {
             "section": 1,
