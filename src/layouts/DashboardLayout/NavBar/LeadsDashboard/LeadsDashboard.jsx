@@ -55,6 +55,16 @@ const LeadsDashboard = () => {
     setShowSearchLeads(true);
   };
 
+  // Handle bar click on VisitorsChart
+  const handleVisitorBarClick = (date) => {
+    const dateFilter = {
+      startDate: date,
+      endDate: date,
+    };
+    setSearchFilters(dateFilter);
+    setShowSearchLeads(true);
+  };
+
   // If SearchLeads is shown, render it
   if (showSearchLeads) {
     return (
@@ -91,7 +101,10 @@ const LeadsDashboard = () => {
         />
       </div>
       <div className={styles.midContainer}>
-        <VisitorsChart data={visitors_data} />
+        <VisitorsChart
+          data={visitors_data}
+          onBarClick={handleVisitorBarClick}
+        />
       </div>
       <div className={styles.TopContainer}>
         <PieChart
