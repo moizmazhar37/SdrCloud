@@ -44,10 +44,12 @@ const PieChart = ({ title, data, onSegmentClick, clickable = false }) => {
     );
   };
 
+  // Create a custom callback without using event methods
   const handleSegmentClick = (data) => {
-    if (onSegmentClick && clickable) {
+    if (onSegmentClick && clickable && data && data.name) {
       onSegmentClick(data.name.toLowerCase());
     }
+    return null;
   };
 
   return (
@@ -56,7 +58,7 @@ const PieChart = ({ title, data, onSegmentClick, clickable = false }) => {
         <h2 className={styles.title}>{title}</h2>
         <div className={styles.chartWrapper}>
           <ResponsiveContainer width="100%" height={300}>
-            <RechartPieChart>
+            <RechartPieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
               <Pie
                 data={chartData}
                 cx="50%"
@@ -70,13 +72,17 @@ const PieChart = ({ title, data, onSegmentClick, clickable = false }) => {
                 endAngle={-270}
                 dataKey="value"
                 onClick={handleSegmentClick}
+                activeIndex={[]}
+                activeShape={null}
                 cursor={clickable ? "pointer" : "default"}
+                style={{ outline: "none" }}
               >
                 {chartData.map((entry, index) => (
                   <Cell
                     key={`cell-${index}`}
                     fill={COLORS[index % COLORS.length]}
                     strokeWidth={0}
+                    style={{ outline: "none", stroke: "none" }}
                   />
                 ))}
               </Pie>
@@ -90,7 +96,9 @@ const PieChart = ({ title, data, onSegmentClick, clickable = false }) => {
                   clickable ? styles.clickable : ""
                 }`}
                 onClick={() =>
-                  onSegmentClick && onSegmentClick(entry.name.toLowerCase())
+                  clickable &&
+                  onSegmentClick &&
+                  onSegmentClick(entry.name.toLowerCase())
                 }
               >
                 <span
