@@ -200,7 +200,7 @@ const VideoPlayer = () => {
     return (
       <div className="video-container">
         <div className="video-preview-logo">
-          <img src={logo} alt="Logo" className="logo" />
+          <img src={videoData?.logo} alt="Logo" className="logo" />
         </div>
         <div>Loading video...</div>
       </div>
@@ -211,7 +211,7 @@ const VideoPlayer = () => {
     return (
       <div className="video-container">
         <div className="video-preview-logo">
-          <img src={logo} alt="Logo" className="logo" />
+          <img src={videoData?.logo} alt="Logo" className="logo" />
         </div>
         <div>{error}</div>
       </div>
@@ -221,7 +221,7 @@ const VideoPlayer = () => {
   return (
     <div className="video-container">
       <div className="video-preview-logo">
-        <img src={logo} alt="Logo" className="logo" />
+        <img src={videoData?.logo} alt="Logo" className="logo" />
       </div>
       {videoData.name ? (
         <div className="customer-name">Welcome {videoData.name}!</div>
