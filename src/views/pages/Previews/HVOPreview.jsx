@@ -69,16 +69,16 @@ const HVOPreview = () => {
                                 {headerSection.values.company_logo && (
                                     <img src="/images/HVO/Found&Chosen.svg" alt="Company Logo" className={styles.logo} />
                                 )}
-                                {headerSection.values.header_logo && (
-                                    <img src="/images/HVO/header.svg" alt="Header Logo" className={styles.logo} />
-                                )}
+                                {/* {headerSection.values.header_logo && ( */}
+                                    <img src="https://png.pngtree.com/png-vector/20220606/ourmid/pngtree-radial-bar-chart-rotation-two-arc-png-image_4802270.png" alt="Header Logo" className={styles.logo} />
+                                {/* )} */}
                             </div>
                         )}
 
                         {/* Hero Text Content */}
                         {heroSection.values.headline1 && (
                             <h1 className={styles.heroTitle} style={{ fontSize: `${heroSection.values.headline1_size}px`, color: heroSection.values.headline1_color }}>
-                                <strong>Hello,</strong> <span className={styles.clientName}>{heroSection.values.headline1.replace("Hello, ", "")}</span>
+                                <span className={styles.clientName}> <strong>Hello, </strong>{heroSection.values.headline1.replace("Hello, ", "")}</span>
                             </h1>
                         )}
 
@@ -139,11 +139,11 @@ const HVOPreview = () => {
                         <div className={styles.textContent}>
                             <h3
                                 style={{
-                                    fontSize: `${leftImageRightText.values.headline2_size}px`,
-                                    color: leftImageRightText.values.headline2_color,
+                                    fontSize: `${leftImageRightText.values.headline1_size}px`,
+                                    color: leftImageRightText.values.headline1_color,
                                 }}
                             >
-                                {leftImageRightText.values.headline2}
+                                {leftImageRightText.values.headline1}
                             </h3>
                             <p
                                 style={{
