@@ -8,8 +8,8 @@ let data = {
             "sectionName": "HEADER",
             "values": {
                 "sequence": 1,
-                "company_logo": "https://www.pngitem.com/pimgs/m/485-4852378_sample-logo-png-transparent-png.png",
-                "header_logo": "https://img.freepik.com/premium-vector/abstract-circle-logo-design_159025-2324.jpg?w=740"
+                "company_logo": "/images/HVO/Found&Chosen.svg",
+                "header_logo": "/images/HVO/header.svg"
             }
         },
         {
@@ -17,25 +17,17 @@ let data = {
             "sectionName": "HERO",
             "values": {
                 "dynamic_url": "https://www.linkedin.com/company/apple",
-                "headline1_size": 26,
-                "headline1": "Your Success, Our Commitment",
-                "headline2_size": 36,
-                "sequence": 1,
-                "headline2": "Your Success, Our Commitment",
-                "body_text_size": 18,
-                "body_text": "Dynamic, automated listening mechanisms that fuel employee motivation, improve retention rates, and generate comprehensive analytics.",
-                "headline1_color": "#72056C",
-                "demo_button_text": "Learn more",
+                "headline1_size": 36,
+                "headline1": "Hello, [Client Name] Team ",
+                "body_text": "Engage, convert & 10x your impact with personalized video automation which has revolutionized outreach.",
                 "body_text_color": "#423441",
                 "headline2_color": "#490244",
-                "demo_button_text_color": "#A0049C",
-                "cta_button_color": "#44013E",
-                "hero_img": "https://img.freepik.com/free-vector/technology-logo-abstract-style_159025-850.jpg?w=740",
-                "demo_button_color": "#64035D",
-                "cta_button_text": "Get Started",
+                "cta_button_color": "#0056FF",
+                "hero_img": "/images/HVO/hero_img.svg", 
+                "cta_button_text": "View Latest Report",
                 "static_url": "",
                 "dynamic_url_demo": "https://www.instagram.com/apple/",
-                "cta_button_text_color": "#E5CFE5",
+                "cta_button_text_color": "#FFFFFF",
                 "static_image": ""
             }
         },
@@ -45,10 +37,10 @@ let data = {
             "values": {
                 "cta_button_text": null,
                 "scroll": true,
-                "banner_text_color": "#EDDEED",
+                "banner_text_color": "#FFFFFF",
                 "sequence": 1,
-                "banner_text": "Special Offer: 150% Off!",
-                "banner_color": "#420237",
+                "banner_text": "Account Based Marketing",
+                "banner_color": "#0056FF",
                 "banner_text_size": 20
             }
         },
@@ -58,56 +50,38 @@ let data = {
             "values": {
                 "sequence": 1,
                 "static_image": "",
-                "headline1": "Why Choose Us?",
-                "headline1_color": "#5D045C",
-                "headline2_color": "#61065A",
-                "body_text": "We are committed to providing the best services.",
+                "headline2_color": "#6A9CFF",
+                "body_text": "This report is key to starting your week with a clear view of which accounts are engaging with your brand—tracking interactions with content, webinars, asset downloads, and your sales team. ",
                 "body_text_size": 18,
-                "left_image_right_text": "https://img.freepik.com/free-vector/gradient-circle-logo-design_159025-1573.jpg?w=740",
-                "headline1_size": 26,
-                "headline2": "Excellence and Quality",
+                "left_image_right_text": "/images/HVO/left_image_right.svg",
+                "headline2": "Weekly Report",
                 "headline2_size": 36,
                 "body_text_color": "#4C464C",
-                "cta_button_text": null
+                "cta_button_text": "See Yours",
+                "cta_button_color": "#0056FF",
+                "cta_button_text_color": "#FFFFFF",
             }
         },
         {
             "section": 5,
-            "sectionName": "HIGHLIGHT_BANNER2",
+            "sectionName": "LEFT_TEXT_RIGHT_IMAGE",
             "values": {
                 "sequence": 1,
-                "banner_text": "Seamless digital platforms to improve every banking transaction and customer engagement.",
-                "cta_button_color": "#4B034B",
-                "banner_button_color": "#4B034B",
-                "banner_button_text_color": "#EEE3E3",
-                "cta_button_text": "Sign Up",
-                "static_url": "google.com",
-                "banner_color": "#3B034F",
-                "banner_text_color": "#E7D9E7",
-                "banner2_text_size": 18
+                "headline2": "Monthly Report",
+                "body_text_color": "#101010",
+                "headline2_color": "#003366",
+                "static_image": "",
+                "body_text": "This report provides a clear view of your ABM and Nearbound strategies' performance in the market. It tracks influence, showing if partners and MQAs are promoting your message and reaching the right audiences. ",
+                "left_text_right_image_url": "/images/HVO/left_text_right_image.svg",
+                "body_text_size": 18,
+                "headline2_size": 32,
+                "cta_button_text": "See Yours",
+                "cta_button_color": "#0056FF",
+                "cta_button_text_color": "#FFFFFF",
             }
         },
         {
             "section": 6,
-            "sectionName": "LEFT_TEXT_RIGHT_IMAGE",
-            "values": {
-                "sequence": 1,
-                "cta_button_text": null,
-                "headline2": "Tailored to Your Needs",
-                "body_text_color": "#342C33",
-                "headline1_color": "#59034F",
-                "headline2_color": "#53044F",
-                "static_image": "",
-                "body_text": "Identify employees at risk and assess the success of your training programs and career development initiatives by leveraging your HRIS data.",
-                "headline1": "Innovative Solutions",
-                "left_text_right_image_url": "https://img.freepik.com/free-vector/digital-logo-technology_159025-1089.jpg?w=740",
-                "body_text_size": 18,
-                "headline1_size": 26,
-                "headline2_size": 32
-            }
-        },
-        {
-            "section": 7,
             "sectionName": "FOOTER",
             "values": {
                 "footer_links": null,
@@ -142,7 +116,24 @@ let data = {
                 "footer_text_3": null,
                 "account_name": null
             }
-        }
+        },
+        {
+            "section": 7,
+            "sectionName": "RIGHT_TEXT_LEFT_IMAGE2",
+            "values": {
+                "sequence": 1,
+                "static_image": "",
+                "headline2_color": "#6A9CFF",
+                "body_text": "This report is key to starting your week with a clear view of which accounts are engaging with your brand—tracking interactions with content, webinars, asset downloads, and your sales team. ",
+                "body_text_size": 18,
+                "left_image_right_text": "/images/HVO/left_image_right.svg",
+                "headline1_size": 26,
+                "headline2": "Weekly Report",
+                "headline2_size": 36,
+                "body_text_color": "#4C464C",
+                "cta_button_text": null
+            }
+        },
     ]
 }
 

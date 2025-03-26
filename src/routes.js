@@ -263,7 +263,7 @@ export const routes = [
 
   {
     exact: true,
-    path: `/new-hvo`,
+    path: `/new-hvo/:customerId`,
     component: lazy(() =>
       import("src/views/pages/Previews/HVOPreview")
     ),
