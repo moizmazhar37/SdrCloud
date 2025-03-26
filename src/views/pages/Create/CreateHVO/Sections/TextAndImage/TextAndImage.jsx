@@ -21,6 +21,7 @@ const TextImage = ({
   initialData,
 }) => {
   const [headline1, setHeadline1] = useState("");
+  const [ctaUrl, setCtaUrl] = useState("");
   const [headline2, setHeadline2] = useState("");
   const [bodyText, setBodyText] = useState("");
   const [headline1Color, setHeadline1Color] = useState("");
@@ -131,6 +132,8 @@ const TextImage = ({
       headline2Color,
       headline2Size: parseInt(size2) || null,
       image: selectedFile || selectedDynamicOption || imageUrl || null,
+      ctaUrl: ctaUrl || null,
+
     };
 
     try {
@@ -328,6 +331,14 @@ const TextImage = ({
                     />
                   </div>
                 </div>
+              </div>
+              <div className={styles.inputGroup}>
+                <label>CTA URL</label>
+                <InputField
+                  value={ctaUrl}
+                  onChange={(e) => setCtaUrl(e.target.value)}
+                  placeholder="Enter Your CTA URL Here"
+                />
               </div>
             </div>
           </div>

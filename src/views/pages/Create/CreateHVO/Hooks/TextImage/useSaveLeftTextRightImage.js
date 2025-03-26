@@ -30,8 +30,8 @@ const useLeftTextRightImage = () => {
       formData.append("headline2_color", data.headline2Color);
     if (data.headline2Size)
       formData.append("headline2_size", data.headline2Size);
-    if (data.ctaButtonText)
-      formData.append("cta_button_text", data.ctaButtonText);
+    if (data.ctaUrl)
+      formData.append("cta_button_text", data.ctaUrl);
 
     // Handle image
     if (data.image instanceof File) {
