@@ -136,9 +136,10 @@ const AdminDashboard = () => {
       <div className={styles.metricsCardContainer}>
         <Card heading="Active Users" amount={200} />
         <Card heading="Available Seats" amount={45} />
-        <Card heading="Credits" amount={20000} />
-        <Card heading="No of Sheets Connected" amount={3839} />
-        <Card heading="Amounts of templates generated" amount={4849} />
+        <Card heading="Credits Spent" amount={20000} />
+        <Card heading="Credits Available" amount={20000} />
+        <Card heading="Sheets Connected" amount={3839} />
+        <Card heading="Templates generated" amount={4849} />
       </div>
 
       {/* AI Components Section */}
@@ -155,11 +156,14 @@ const AdminDashboard = () => {
 
       {/* Prospects Overview Section */}
       <div className={styles.componentSection}>
-        <h2 className={styles.sectionTitle}>Prospects Overview</h2>
+        <h2 className={styles.sectionTitle}>Summary Stats</h2>
         <div className={styles.prospectsCardContainer}>
-          <Card heading="Total prospects" amount={12334} />
-          <Card heading="HVO Templates" amount={2665} />
-          <Card heading="Meetings Booked" amount={234} />
+        <Card heading="Campaigns" amount={new Intl.NumberFormat().format(12334)} />
+        <Card heading="Prospects Added" amount={new Intl.NumberFormat().format(12334)} />
+        <Card heading="Meetings Booked" amount={new Intl.NumberFormat().format(12334)} />
+        <Card heading="Meeting Attended" amount={new Intl.NumberFormat().format(12334)} />
+        <Card heading="Total Sales" amount={new Intl.NumberFormat().format(12334)} />
+        <Card heading="Visitors identified" amount={new Intl.NumberFormat().format(12334)} />
         </div>
       </div>
 

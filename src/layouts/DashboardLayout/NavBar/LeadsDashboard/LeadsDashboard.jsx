@@ -19,6 +19,7 @@ const LeadsDashboard = () => {
   const { data, loading } = useLeadsDashboard();
   const [showSearchLeads, setShowSearchLeads] = useState(false);
   const [searchFilters, setSearchFilters] = useState(null);
+  const [selectedVisitor, setSelectedVisitor] = useState(null);
 
   if (loading) {
     return <p>{""}</p>;
@@ -55,10 +56,31 @@ const LeadsDashboard = () => {
     setShowSearchLeads(true);
   };
 
+  // Handle bar click on VisitorsChart
+  const handleVisitorBarClick = (date) => {
+    const dateFilter = {
+      startDate: date,
+      endDate: date,
+    };
+    setSearchFilters(dateFilter);
+    setShowSearchLeads(true);
+  };
+
+  // Handle click on individual visitor eye button
+  const handleVisitorEyeClick = (visitor) => {
+    // Example of extracting first name, adjust based on your actual data structure
+    const firstName = visitor.name;
+    setSelectedVisitor({ firstName });
+    setShowSearchLeads(true);
+  };
+
   // If SearchLeads is shown, render it
   if (showSearchLeads) {
     return (
-      <SearchLeads isFromDashboard={true} initialFilters={searchFilters} />
+      <SearchLeads
+        isFromDashboard={true}
+        initialFilters={searchFilters || selectedVisitor}
+      />
     );
   }
 
@@ -75,6 +97,7 @@ const LeadsDashboard = () => {
           onViewAll={() =>
             handleViewAllVisitors(setShowSearchLeads, setSearchFilters)
           }
+          onVisitorEyeClick={handleVisitorEyeClick}
         />
         <PieChart
           title="Direct Vs. Referral"
@@ -91,7 +114,10 @@ const LeadsDashboard = () => {
         />
       </div>
       <div className={styles.midContainer}>
-        <VisitorsChart data={visitors_data} />
+        <VisitorsChart
+          data={visitors_data}
+          onBarClick={handleVisitorBarClick}
+        />
       </div>
       <div className={styles.TopContainer}>
         <PieChart
