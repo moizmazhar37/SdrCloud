@@ -7,6 +7,7 @@ import useDownloadCSV from "../MainDashboard/Hooks/useDownloadCSV";
 import TopUsers from "../MainDashboard/TableCardBlock/TabularCard";
 import VisitorsGraph from "./VisitorsGraph/VisitorsGraph.jsx";
 import UserCreditsChart from "./UserCreditsChart/UserCreditsChart";
+import ActiveProspectsLifecycle from "./ActiveProspectsLifeCycle/ActiveProspectsLifeCycle";
 
 const AdminDashboard = () => {
   const [dateRange, setDateRange] = useState({
@@ -27,6 +28,15 @@ const AdminDashboard = () => {
     { month: "Jul", credits: 4800, usage: 3200 },
   ];
 
+  const prospectsLifecycleData = [
+    { date: "2024-01-01", product1: -60, product2: 20, product3: -20 },
+    { date: "2024-02-01", product1: -30, product2: 20, product3: -60 },
+    { date: "2024-03-01", product1: 50, product2: -40, product3: -100 },
+    { date: "2024-04-01", product1: 0, product2: -60, product3: -100 },
+    { date: "2024-05-01", product1: 20, product2: -40, product3: -60 },
+    { date: "2024-06-01", product1: -80, product2: 0, product3: -60 },
+    { date: "2024-07-01", product1: 40, product2: 30, product3: -10 },
+  ];
   const handleDateRangeChange = (newDateRange) => {
     setDateRange(newDateRange);
     // Here you can perform additional actions like fetching data for the selected date range
@@ -176,6 +186,12 @@ const AdminDashboard = () => {
           <VisitorsGraph />
           <UserCreditsChart creditsData={creditsData} />
         </div>
+      </div>
+      <div className={styles.prospectsLifecycleContainer}>
+        <ActiveProspectsLifecycle
+          data={prospectsLifecycleData}
+          title="Active Prospects Lifecycle Over Time (Hover to Explore)"
+        />
       </div>
     </div>
   );
