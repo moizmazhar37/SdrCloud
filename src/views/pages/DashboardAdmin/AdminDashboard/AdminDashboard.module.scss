@@ -118,12 +118,63 @@
   }
 }
 
+.VisitorsGraphContainer {
+  width: 100%;
+  box-sizing: border-box;
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  border-radius: 6px;
+  gap: 20px;
+  padding: 20px;
+
+  @media screen and (max-width: 480px) {
+    padding: 15px;
+  }
+}
+
 .sectionTitle {
   margin-top: 0;
   margin-bottom: 20px;
   font-size: 20px;
   font-weight: 600;
   color: #333333;
+}
+
+.GraphContainer {
+  width: 100%;
+  box-sizing: border-box;
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  border-radius: 6px;
+  gap: 20px;
+  padding: 20px;
+
+  > * {
+    flex: 1;
+  }
+  @media screen and (max-width: 520px) {
+    width: 96%;
+  }
+  @media screen and (max-width: 390px) {
+    width: 95%;
+  }
+  @media screen and (max-width: 780px) {
+    flex-direction: column;
+
+    > * {
+      width: 97%;
+      margin-bottom: 10px;
+      padding-bottom: 17%;
+    }
+  }
+}
+
+@media screen and (max-width: 780px) {
+  .TopUserContainer {
+    max-width: 95%;
+  }
 }
 
 // AI Components section cards

@@ -8,6 +8,7 @@ import TopUsers from "../MainDashboard/TableCardBlock/TabularCard";
 import VisitorsGraph from "./VisitorsGraph/VisitorsGraph.jsx";
 import UserCreditsChart from "./UserCreditsChart/UserCreditsChart";
 import ActiveProspectsLifecycle from "./ActiveProspectsLifeCycle/ActiveProspectsLifeCycle";
+import Graph from "../MainDashboard/Graph/Graph";
 
 const AdminDashboard = () => {
   const [dateRange, setDateRange] = useState({
@@ -109,6 +110,21 @@ const AdminDashboard = () => {
     { key: "viewed_count", label: "Times Used" },
   ];
 
+  const sampleData = [
+    { name: "Jan", hvo: 4000, videos: 2400 },
+    { name: "Feb", hvo: 3000, videos: 1398 },
+    { name: "Mar", hvo: 2000, videos: 9800 },
+    { name: "Apr", hvo: 2780, videos: 3908 },
+    { name: "May", hvo: 1890, videos: 4800 },
+    { name: "Jun", hvo: 2390, videos: 3800 },
+    { name: "Jul", hvo: 3490, videos: 4300 },
+    { name: "Aug", hvo: 4000, videos: 2400 },
+    { name: "Sep", hvo: 3000, videos: 1398 },
+    { name: "Oct", hvo: 2000, videos: 9800 },
+    { name: "Nov", hvo: 2780, videos: 3908 },
+    { name: "Dec", hvo: 1890, videos: 4800 },
+  ];
+
   return (
     <div className={styles.dashboardContainer}>
       {/* Header Section with Support Contact and Action Buttons */}
@@ -158,12 +174,30 @@ const AdminDashboard = () => {
       <div className={styles.componentSection}>
         <h2 className={styles.sectionTitle}>Summary Stats</h2>
         <div className={styles.prospectsCardContainer}>
-        <Card heading="Campaigns" amount={new Intl.NumberFormat().format(12334)} />
-        <Card heading="Prospects Added" amount={new Intl.NumberFormat().format(12334)} />
-        <Card heading="Meetings Booked" amount={new Intl.NumberFormat().format(12334)} />
-        <Card heading="Meeting Attended" amount={new Intl.NumberFormat().format(12334)} />
-        <Card heading="Total Sales" amount={new Intl.NumberFormat().format(12334)} />
-        <Card heading="Visitors identified" amount={new Intl.NumberFormat().format(12334)} />
+          <Card
+            heading="Campaigns"
+            amount={new Intl.NumberFormat().format(12334)}
+          />
+          <Card
+            heading="Prospects Added"
+            amount={new Intl.NumberFormat().format(12334)}
+          />
+          <Card
+            heading="Meetings Booked"
+            amount={new Intl.NumberFormat().format(12334)}
+          />
+          <Card
+            heading="Meeting Attended"
+            amount={new Intl.NumberFormat().format(12334)}
+          />
+          <Card
+            heading="Total Sales"
+            amount={new Intl.NumberFormat().format(12334)}
+          />
+          <Card
+            heading="Visitors identified"
+            amount={new Intl.NumberFormat().format(12334)}
+          />
         </div>
       </div>
 
@@ -172,6 +206,36 @@ const AdminDashboard = () => {
           data={prospectsLifecycleData}
           title="Active Prospects Lifecycle Over Time (Hover to Explore)"
         />
+      </div>
+
+      <div className={styles.GraphContainer}>
+        <Graph
+          title="Amount of Templates Created"
+          data={sampleData}
+          type={"filters"}
+        />
+        <Graph
+          title="Amount of HVOs/Videos Sent"
+          data={sampleData}
+          type={"filters"}
+          // setIsViewed={setIsViewed}
+        />
+      </div>
+      <div className={styles.GraphContainer}>
+        <Graph
+          title="Visit Duration"
+          data={sampleData}
+          type={"filters"}
+          // setIsViewed={setIsViewed}
+        />
+      </div>
+
+      {/* Analytics Overview Section */}
+      <div className={styles.VisitorsGraphContainer}>
+        <div className={styles.analyticsContainer}>
+          <VisitorsGraph />
+          <UserCreditsChart creditsData={creditsData} />
+        </div>
       </div>
 
       {/* Performance Overview Section */}
@@ -188,14 +252,6 @@ const AdminDashboard = () => {
             usersData={toptemplatesData}
             tableHeaders={tableHeaders2}
           />
-        </div>
-      </div>
-
-      {/* Analytics Overview Section */}
-      <div className={styles.componentSection}>
-        <div className={styles.analyticsContainer}>
-          <VisitorsGraph />
-          <UserCreditsChart creditsData={creditsData} />
         </div>
       </div>
     </div>

@@ -14,8 +14,8 @@ const ActiveProspectsLifecycle = ({ data }) => {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <div className={styles.primaryText}>5.987,37</div>
-        <div className={styles.secondaryText}>Secondary text</div>
+        {/* <div className={styles.primaryText}>5.987,37</div> */}
+        <div className={styles.secondaryText}>Active Prospects Life Cycle</div>
       </div>
 
       <div className={styles.chartContainer}>
