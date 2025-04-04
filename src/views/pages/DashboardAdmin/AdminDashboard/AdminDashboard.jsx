@@ -163,6 +163,13 @@ const AdminDashboard = () => {
         </div>
       </div>
 
+      <div className={styles.prospectsLifecycleContainer}>
+        <ActiveProspectsLifecycle
+          data={prospectsLifecycleData}
+          title="Active Prospects Lifecycle Over Time (Hover to Explore)"
+        />
+      </div>
+
       {/* Performance Overview Section */}
       <div className={styles.componentSection}>
         <h2 className={styles.sectionTitle}>Performance Overview</h2>
@@ -186,12 +193,6 @@ const AdminDashboard = () => {
           <VisitorsGraph />
           <UserCreditsChart creditsData={creditsData} />
         </div>
-      </div>
-      <div className={styles.prospectsLifecycleContainer}>
-        <ActiveProspectsLifecycle
-          data={prospectsLifecycleData}
-          title="Active Prospects Lifecycle Over Time (Hover to Explore)"
-        />
       </div>
     </div>
   );
