@@ -7,6 +7,7 @@ import useGetAllUsers from "src/views/pages/CompanyUsers/Users/Hooks/useGetAllUs
 import useViewAsUser from "./useViewAsUser"
 import styles from "./TopBar.module.scss";
 import { toast } from "react-toastify";
+import { FaUserCircle } from "react-icons/fa";
 
 const TopBar = ({ onMobileNavOpen }) => {
   const history = useHistory();
@@ -94,31 +95,13 @@ const TopBar = ({ onMobileNavOpen }) => {
 
         {/* Right Section: User Info & "View As" */}
         <div className={styles.rightSection}>
-          {/* User Info */}
-          <div className={styles.avatarBox}>
-            <img
-              className={styles.avatar}
-              src={user?.profileData?.profile_picture || "/default-avatar.png"}
-              alt="User Avatar"
-            />
-            <div className={styles.userDetails}>
-              <span className={styles.accountType}>
-                {isViewingAs ? "Viewing As User" : "Company Admin"}
-              </span>
-              <span className={styles.accountName}>
-                {user?.profileData?.first_name} {user?.profileData?.last_name}
-              </span>
-            </div>
-          </div>
-
-          {/* "View As" Dropdown */}
-          {!isViewingAs ? (
+        {!isViewingAs ? (
             <div className={styles.dropdownContainer}>
               <button
                 className={styles.createButton}
                 onClick={() => setDropdownOpen(!dropdownOpen)}
               >
-                View As ▼
+                View As
               </button>
 
               {dropdownOpen && (
@@ -146,9 +129,34 @@ const TopBar = ({ onMobileNavOpen }) => {
             </div>
           ) : (
             <button className={styles.stopViewingButton} onClick={handleStopViewing}>
-              Stop Viewing
+              Stop Viewing as {viewingUser?.first_name} {viewingUser?.last_name}
             </button>
           )}
+          {/* User Info */}
+          <div className={styles.avatarBox}>
+          <div className={styles.avatarContainer}>
+  {loading || !user?.profileData?.profile_picture ? (
+    <FaUserCircle className={styles.defaultAvatarIcon} />
+  ) : (
+    <img
+      className={styles.avatar}
+      src={user.profileData.profile_picture}
+      alt="User Avatar"
+      onError={(e) => (e.target.style.display = "none")}
+    />
+  )}
+</div>
+            <div className={styles.userDetails}>
+              <span className={styles.accountType}>
+                {isViewingAs ? "Viewing As User" : "Company Admin"}
+              </span>
+              <span className={styles.accountName}>
+                {user?.profileData?.first_name} {user?.profileData?.last_name}
+              </span>
+            </div>
+          </div>
+
+          
         </div>
       </div>
     </nav>

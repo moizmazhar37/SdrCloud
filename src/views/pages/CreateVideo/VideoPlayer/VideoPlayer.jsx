@@ -56,7 +56,7 @@ const VideoPlayer = () => {
     // Dynamically add the pixel tracking script when the component mounts
     const script = document.createElement("script");
     script.src =
-      "/tracker_d26331ec-e390-4c61-afb9-56795bb856cf.js";
+      "https://storage.googleapis.com/static-data-for-sdrc/scripts/tracker_d26331ec-e390-4c61-afb9-56795bb856cf.js";
     script.async = true;
     document.body.appendChild(script);
 
@@ -200,7 +200,7 @@ const VideoPlayer = () => {
     return (
       <div className="video-container">
         <div className="video-preview-logo">
-          <img src={logo} alt="Logo" className="logo" />
+          <img src={videoData?.logo} alt="Logo" className="logo" />
         </div>
         <div>Loading video...</div>
       </div>
@@ -211,7 +211,7 @@ const VideoPlayer = () => {
     return (
       <div className="video-container">
         <div className="video-preview-logo">
-          <img src={logo} alt="Logo" className="logo" />
+          <img src={videoData?.logo} alt="Logo" className="logo" />
         </div>
         <div>{error}</div>
       </div>
@@ -221,7 +221,7 @@ const VideoPlayer = () => {
   return (
     <div className="video-container">
       <div className="video-preview-logo">
-        <img src={logo} alt="Logo" className="logo" />
+        <img src={videoData?.logo} alt="Logo" className="logo" />
       </div>
       {videoData.name ? (
         <div className="customer-name">Welcome {videoData.name}!</div>

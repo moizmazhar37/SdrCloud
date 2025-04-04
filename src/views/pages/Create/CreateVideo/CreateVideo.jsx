@@ -253,13 +253,8 @@ const CreateVideo = () => {
       <ConfirmationModal
         isOpen={isModalOpen}
         onClose={handleModalClose}
-        title="Confirm Video Creation"
-        infoItems={[
-          { label: "Your balance", value: sectionData?.balance },
-        ]}
+        title="How many videos should be created?"
         totalRecords={totalRecords}
-        pricePerSecond={pricePerSecond}
-        totalDuration={totalDuration}
         confirmationText="Please confirm if you want to proceed"
         onAction={handleProceed}
       />
