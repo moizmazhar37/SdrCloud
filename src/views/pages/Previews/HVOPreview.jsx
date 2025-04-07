@@ -4,7 +4,7 @@ import styles from "./HVOPreview.module.scss";
 import HighlightBanner from "./HighlightBanner/HighlightBanner";
 import axios from "axios";
 import ApiConfig from "src/config/APIConfig";
-
+import Footer from "./Footer/Footer";
 // Adjust brightness helper function
 const adjustBrightness = (hex, percent) => {
     let num = parseInt(hex.replace("#", ""), 16),
@@ -19,6 +19,33 @@ const adjustBrightness = (hex, percent) => {
 const generateGradient = (primaryColor) => {
     return `linear-gradient(135deg, ${primaryColor}, ${adjustBrightness(primaryColor, 30)})`;
 };
+
+function getMediaTypeAndSource(url) {
+    if (!url) return { type: 'none', src: '' };
+
+    const isYouTube = url.includes('youtube.com') || url.includes('youtu.be');
+    const isDrive = url.includes('drive.google.com');
+    const isDirectVideo = url.endsWith('.mp4');
+
+    if (isYouTube) {
+        const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^\s&]+)/);
+        const id = match?.[1];
+        if (id) return { type: 'youtube', src: `https://www.youtube.com/embed/${id}` };
+    }
+
+    if (isDrive) {
+        const match = url.match(/\/d\/([^/]+)\//);
+        const id = match?.[1];
+        if (id) return { type: 'drive', src: `https://drive.google.com/file/d/${id}/preview` };
+    }
+
+    if (isDirectVideo) {
+        return { type: 'video', src: url };
+    }
+
+    return { type: 'image', src: url };
+}
+
 
 const HVOPreview = () => {
     const [data, setData] = useState(null);
@@ -57,6 +84,9 @@ const HVOPreview = () => {
     const leftImageRightText = data?.data_list?.find((section) => section.sectionName === "RIGHT_TEXT_LEFT_IMAGE");
     const leftTextRightImage = data?.data_list?.find((section) => section.sectionName === "LEFT_TEXT_RIGHT_IMAGE");
 
+    const { type, src } = getMediaTypeAndSource(heroSection?.values?.hero_img);
+
+
     return (
         <div className={styles.bgGradient}>
             {/* Hero Section */}
@@ -70,7 +100,7 @@ const HVOPreview = () => {
                                     <img src="/images/HVO/Found&Chosen.svg" alt="Company Logo" className={styles.logo} />
                                 )}
                                 {/* {headerSection.values.header_logo && ( */}
-                                    <img src="https://png.pngtree.com/png-vector/20220606/ourmid/pngtree-radial-bar-chart-rotation-two-arc-png-image_4802270.png" alt="Header Logo" className={styles.logo} />
+                                <img src="https://png.pngtree.com/png-vector/20220606/ourmid/pngtree-radial-bar-chart-rotation-two-arc-png-image_4802270.png" alt="Header Logo" className={styles.logo} />
                                 {/* )} */}
                             </div>
                         )}
@@ -90,12 +120,12 @@ const HVOPreview = () => {
                             </h2>
                         )}
                         {/* {heroSection.values.body_text && ( */}
-                            <p
-                                className={styles.bodyText}
-                                style={{ fontSize: `${heroSection.values.body_text_size}px`, color: heroSection.values.body_text_color }}
-                            >
-                                Engage, convert & 10x your impact with personalized video automation which has revolutionized outreach.
-                            </p>
+                        <p
+                            className={styles.bodyText}
+                            style={{ fontSize: `${heroSection.values.body_text_size}px`, color: heroSection.values.body_text_color }}
+                        >
+                            Engage, convert & 10x your impact with personalized video automation which has revolutionized outreach.
+                        </p>
                         {/* )} */}
 
 
@@ -118,10 +148,36 @@ const HVOPreview = () => {
                         </div>
                     </div>
 
-                    {/* Hero Image */}
-                    {/* {heroSection.values.hero_img && ( */}
-                        <img className={styles.heroImage} src="/images/HVO/hero_img.svg" alt="Hero" />
-                    {/* )} */}
+                    {src && (
+                        type === 'youtube' || type === 'drive' ? (
+                            <iframe
+                                className={styles.heroImage}
+                                src={src}
+                                frameBorder="0"
+                                allow="autoplay; encrypted-media"
+                                allowFullScreen
+                                title="Hero Video"
+                                width="100%"
+                                height="auto"
+                            />
+                        ) : type === 'video' ? (
+                            <video
+                                className={styles.heroImage}
+                                src={src}
+                                controls
+                                autoPlay
+                                muted
+                                loop
+                            />
+                        ) : (
+                            <img
+                                className={styles.heroImage}
+                                src={src}
+                                alt="Hero"
+                            />
+                        )
+                    )}
+
                 </div>
             )}
 
@@ -157,16 +213,16 @@ const HVOPreview = () => {
                             {/* Button */}
                             <div className={styles.buttons}>
                                 {/* {leftImageRightText.values.cta_button_text && ( */}
-                                    <a href={leftImageRightText?.values?.cta_button_text} target="_blank" rel="noopener noreferrer">
-                                        <button
-                                            style={{
-                                                backgroundColor: leftImageRightText.values.cta_button_color,
-                                                color: leftImageRightText.values.cta_button_text_color,
-                                            }}
-                                        >
-                                            See Yours
-                                        </button>
-                                    </a>
+                                <a href={leftImageRightText?.values?.cta_button_text} target="_blank" rel="noopener noreferrer">
+                                    <button
+                                        style={{
+                                            backgroundColor: leftImageRightText.values.cta_button_color,
+                                            color: leftImageRightText.values.cta_button_text_color,
+                                        }}
+                                    >
+                                        See Yours
+                                    </button>
+                                </a>
                                 {/* )} */}
                             </div>
                         </div>
@@ -210,16 +266,16 @@ const HVOPreview = () => {
                             {/* Button */}
                             <div className={styles.buttons}>
                                 {/* {leftTextRightImage.values.cta_button_text && ( */}
-                                    <a href={leftTextRightImage.values.cta_button_text} target="_blank" rel="noopener noreferrer">
-                                        <button
-                                            style={{
-                                                backgroundColor: leftTextRightImage.values.cta_button_color,
-                                                color: leftTextRightImage.values.cta_button_text_color,
-                                            }}
-                                        >
-                                            See Yours
-                                        </button>
-                                    </a>
+                                <a href={leftTextRightImage.values.cta_button_text} target="_blank" rel="noopener noreferrer">
+                                    <button
+                                        style={{
+                                            backgroundColor: leftTextRightImage.values.cta_button_color,
+                                            color: leftTextRightImage.values.cta_button_text_color,
+                                        }}
+                                    >
+                                        See Yours
+                                    </button>
+                                </a>
                                 {/* )} */}
                             </div>
                         </div>
@@ -234,8 +290,10 @@ const HVOPreview = () => {
 
             )}
 
+            <Footer />
+
             {/* Footer Image */}
-            <img src="/images/HVO/Footer.svg" alt="Footer" className={styles.footerImage} />
+            {/* <img src="/images/HVO/team_image.png" alt="Footer" className={styles.footerImage} /> */}
 
 
         </div>
