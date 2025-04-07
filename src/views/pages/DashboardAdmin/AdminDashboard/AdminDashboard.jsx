@@ -109,6 +109,8 @@ const AdminDashboard = () => {
     { key: "viewed_count", label: "Times Used" },
   ];
 
+  
+
   return (
     <div className={styles.dashboardContainer}>
       {/* Header Section with Support Contact and Action Buttons */}
@@ -158,13 +160,14 @@ const AdminDashboard = () => {
       <div className={styles.componentSection}>
         <h2 className={styles.sectionTitle}>Summary Stats</h2>
         <div className={styles.prospectsCardContainer}>
-        <Card heading="Campaigns" amount={new Intl.NumberFormat().format(12334)} />
-        <Card heading="Prospects Added" amount={new Intl.NumberFormat().format(12334)} />
-        <Card heading="Meetings Booked" amount={new Intl.NumberFormat().format(12334)} />
-        <Card heading="Meeting Attended" amount={new Intl.NumberFormat().format(12334)} />
-        <Card heading="Total Sales" amount={new Intl.NumberFormat().format(12334)} />
-        <Card heading="Visitors identified" amount={new Intl.NumberFormat().format(12334)} />
+          <Card heading="Campaigns" amount={800} change={15} />
+          <Card heading="Prospects Added" amount={700} change={-10} />
+          <Card heading="Meetings Booked" amount={204} change={5} />
+          <Card heading="Meeting Attended" amount={75} change={-8} />
+          <Card heading="Total Sales" amount={500} change={20} />
+          <Card heading="Visitors identified" amount={400} change={-12} />
         </div>
+
       </div>
 
       {/* Performance Overview Section */}

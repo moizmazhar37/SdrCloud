@@ -32,13 +32,13 @@
 
 .label {
   padding: 4px 12px;
-  border-radius: 8px;
+  border-radius: 16px;
   font-size: 14px;
   font-weight: 500;
 
   &.intuitive {
     background: #f0faf0;
-    color: #2d8a39;
+    color: #2e923b;
   }
 
   &.new {
@@ -53,6 +53,34 @@
 }
 
 .growthText {
-  color: #667085;
-  font-size: 16px;
+  color: #777;
+  font-size: 12px;
+}
+
+
+.growthContainer {
+  display: flex;
+  align-items: center;
+  gap: 5px; /* Space between icon and text */
+}
+
+.growthIcon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.positive {
+  background-color: #e6f4ea; /* Light green */
+  color: #148138; /* Dark green */
+}
+
+.negative {
+  background-color: #fdecea; /* Light red */
+  color: #d93025; /* Dark red */
 }
