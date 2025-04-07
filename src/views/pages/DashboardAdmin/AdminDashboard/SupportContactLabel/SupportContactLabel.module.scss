@@ -3,6 +3,10 @@
   border-radius: 8px;
   padding: 16px 24px;
   width: 100%;
+
+  @media (max-width: 998px) {
+    width: auto;
+  }
 }
 
 .title {
