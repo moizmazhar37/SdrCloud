@@ -10,6 +10,7 @@ import UserCreditsChart from "./UserCreditsChart/UserCreditsChart";
 import ActiveProspectsLifecycle from "./ActiveProspectsLifeCycle/ActiveProspectsLifeCycle";
 import CardPopUpGraph from "../MainDashboard/CardBlock/CardPopUpGraph/CardPopUpGraph";
 import useGetAdminDashboard from "../MainDashboard/Hooks/useGetAdminDashboard";
+import Graph from "../MainDashboard/Graph/Graph";
 
 const AdminDashboard = () => {
   const [dateRange, setDateRange] = useState({
@@ -48,6 +49,20 @@ const AdminDashboard = () => {
     { month: "Jul", credits: 4800, usage: 3200 },
   ];
 
+  const sampleData = [
+    { name: "Jan", hvo: 4000, videos: 2400 },
+    { name: "Feb", hvo: 3000, videos: 1398 },
+    { name: "Mar", hvo: 2000, videos: 9800 },
+    { name: "Apr", hvo: 2780, videos: 3908 },
+    { name: "May", hvo: 1890, videos: 4800 },
+    { name: "Jun", hvo: 2390, videos: 3800 },
+    { name: "Jul", hvo: 3490, videos: 4300 },
+    { name: "Aug", hvo: 4000, videos: 2400 },
+    { name: "Sep", hvo: 3000, videos: 1398 },
+    { name: "Oct", hvo: 2000, videos: 9800 },
+    { name: "Nov", hvo: 2780, videos: 3908 },
+    { name: "Dec", hvo: 1890, videos: 4800 },
+  ];
   const prospectsLifecycleData = [
     { date: "2024-01-01", product1: -60, product2: 20, product3: -20 },
     { date: "2024-02-01", product1: -30, product2: 20, product3: -60 },
@@ -273,23 +288,6 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      {/* Performance Overview Section */}
-      <div className={styles.componentSection}>
-        <h2 className={styles.sectionTitle}>Performance Overview</h2>
-        <div className={styles.topUsersContainer}>
-          <TopUsers
-            title="Top Performing Users"
-            usersData={topUsersData}
-            tableHeaders={tableHeaders}
-          />
-          <TopUsers
-            title="Top Performing Templates"
-            usersData={toptemplatesData}
-            tableHeaders={tableHeaders2}
-          />
-        </div>
-      </div>
-
       {/* Analytics Overview Section */}
       <div className={styles.componentSection}>
         <div className={styles.analyticsContainer}>
@@ -302,6 +300,44 @@ const AdminDashboard = () => {
           data={prospectsLifecycleData}
           title="Active Prospects Lifecycle Over Time (Hover to Explore)"
         />
+      </div>
+
+      <div className={styles.GraphContainer}>
+        <Graph
+          title="Amount of Templates Created"
+          data={sampleData}
+          type={"filters"}
+        />
+        <Graph
+          title="Amount of HVOs/Videos Sent"
+          data={sampleData}
+          type={"filters"}
+          // setIsViewed={setIsViewed}
+        />
+      </div>
+      <div className={styles.GraphContainer}>
+        <Graph
+          title="Visit Duration"
+          data={sampleData}
+          type={"filters"}
+          // setIsViewed={setIsViewed}
+        />
+      </div>
+
+      {/* Performance Overview Section */}
+      <div className={styles.componentSection}>
+        <div className={styles.topUsersContainer}>
+          <TopUsers
+            title="Top Performing Users"
+            usersData={topUsersData}
+            tableHeaders={tableHeaders}
+          />
+          <TopUsers
+            title="Top Performing Templates"
+            usersData={toptemplatesData}
+            tableHeaders={tableHeaders2}
+          />
+        </div>
       </div>
 
       {/* Popup component */}
