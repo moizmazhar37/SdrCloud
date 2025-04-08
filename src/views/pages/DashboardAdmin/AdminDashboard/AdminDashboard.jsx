@@ -21,8 +21,6 @@ const AdminDashboard = () => {
   const [popupHeading, setPopupHeading] = useState("");
   const { downloadCSV, loading: csvLoading } = useDownloadCSV();
 
-  // Sample data for credits usage chart
-
   const {
     data: dashboardData,
     loading: dashboardLoading,
@@ -39,43 +37,8 @@ const AdminDashboard = () => {
     }
   }, [dashboardData, dashboardError]);
 
-  const creditsData = [
-    { month: "Jan", credits: 5300, usage: 2900 },
-    { month: "Feb", credits: 4500, usage: 2800 },
-    { month: "Mar", credits: 4600, usage: 2200 },
-    { month: "Apr", credits: 4500, usage: 2700 },
-    { month: "May", credits: 4500, usage: 2400 },
-    { month: "Jun", credits: 2800, usage: 2000 },
-    { month: "Jul", credits: 4800, usage: 3200 },
-  ];
-
-  const sampleData = [
-    { name: "Jan", hvo: 4000, videos: 2400 },
-    { name: "Feb", hvo: 3000, videos: 1398 },
-    { name: "Mar", hvo: 2000, videos: 9800 },
-    { name: "Apr", hvo: 2780, videos: 3908 },
-    { name: "May", hvo: 1890, videos: 4800 },
-    { name: "Jun", hvo: 2390, videos: 3800 },
-    { name: "Jul", hvo: 3490, videos: 4300 },
-    { name: "Aug", hvo: 4000, videos: 2400 },
-    { name: "Sep", hvo: 3000, videos: 1398 },
-    { name: "Oct", hvo: 2000, videos: 9800 },
-    { name: "Nov", hvo: 2780, videos: 3908 },
-    { name: "Dec", hvo: 1890, videos: 4800 },
-  ];
-  const prospectsLifecycleData = [
-    { date: "2024-01-01", product1: -60, product2: 20, product3: -20 },
-    { date: "2024-02-01", product1: -30, product2: 20, product3: -60 },
-    { date: "2024-03-01", product1: 50, product2: -40, product3: -100 },
-    { date: "2024-04-01", product1: 0, product2: -60, product3: -100 },
-    { date: "2024-05-01", product1: 20, product2: -40, product3: -60 },
-    { date: "2024-06-01", product1: -80, product2: 0, product3: -60 },
-    { date: "2024-07-01", product1: 40, product2: 30, product3: -10 },
-  ];
-
   const handleDateRangeChange = (newDateRange) => {
     setDateRange(newDateRange);
-    // Here you can perform additional actions like fetching data for the selected date range
     console.log("Date range updated:", newDateRange);
   };
 
@@ -88,57 +51,35 @@ const AdminDashboard = () => {
     setIsPopUpOpen(false);
   };
 
-  // Support contact information
-  const supportInfo = {
-    manager: "Janice Stevens",
-    phone: "967-278-0909",
-    email: "Janice@sdrcloud.com",
-  };
+  // If data is loading or there's an error, you might want to show a loading state or error message
+  if (dashboardLoading) {
+    return <div className={styles.loading}>Loading dashboard data...</div>;
+  }
 
-  // Sample data for top users
-  const topUsersData = [
-    {
-      name: "Afnan Bashir",
-      credits: 0.0,
-      score: 0,
-      image:
-        "https://png.pngtree.com/png-vector/20220817/ourmid/pngtree-man-avatar-with-circle-frame-vector-ilustration-png-image_6110328.png",
-    },
-  ];
+  if (dashboardError) {
+    return <div className={styles.error}>Error loading dashboard data</div>;
+  }
 
-  // Sample data for top templates
-  const toptemplatesData = [
-    {
-      group: 1,
-      template_name: "1ASDF$",
-      template_type: "HVO",
-      viewed_count: 4,
-    },
-    {
-      group: 1,
-      template_name: "test bulk update sheet",
-      template_type: "VIDEO",
-      viewed_count: 5,
-    },
-    {
-      group: 2,
-      template_name: "24 feb",
-      template_type: "VIDEO",
-      viewed_count: 1,
-    },
-    {
-      group: 2,
-      template_name: "adnan demo",
-      template_type: "VIDEO",
-      viewed_count: 24,
-    },
-    {
-      group: 3,
-      template_name: "Adnan Demo 2",
-      template_type: "VIDEO",
-      viewed_count: 10,
-    },
-  ];
+  // Only render the dashboard when data is available
+  if (!dashboardData) {
+    return null;
+  }
+
+  // Destructure the data for easier access
+  const {
+    supportInfo,
+    metrics,
+    aiComponents,
+    summaryStats,
+    prospectsLifecycleData,
+    templatesCreatedData,
+    templatesSentData,
+    visitDurationData,
+    visitorsGraphData,
+    userCreditsData,
+    topUsersData,
+    topTemplatesData,
+  } = dashboardData;
 
   // Table headers for users
   const tableHeaders = [
@@ -181,22 +122,22 @@ const AdminDashboard = () => {
       <div className={styles.metricsCardContainer}>
         <Card
           heading="Active Users"
-          amount={200}
+          amount={metrics.activeUsers}
           isClickable={true}
           onClick={() => handleCardClick("Active Users")}
         />
-        <Card heading="Available Seats" amount={45} />
-        <Card heading="Credits Spent" amount={20000} />
-        <Card heading="Credits Available" amount={20000} />
+        <Card heading="Available Seats" amount={metrics.availableSeats} />
+        <Card heading="Credits Spent" amount={metrics.creditsSpent} />
+        <Card heading="Credits Available" amount={metrics.creditsAvailable} />
         <Card
           heading="Sheets Connected"
-          amount={3839}
+          amount={metrics.sheetsConnected}
           isClickable={true}
           onClick={() => handleCardClick("Sheets Connected")}
         />
         <Card
           heading="Templates generated"
-          amount={4849}
+          amount={metrics.templatesGenerated}
           isClickable={true}
           onClick={() => handleCardClick("Templates generated")}
         />
@@ -208,31 +149,31 @@ const AdminDashboard = () => {
         <div className={styles.componentCardContainer}>
           <Card
             heading="AI Agents"
-            amount={200}
+            amount={aiComponents.aiAgents}
             isClickable={true}
             onClick={() => handleCardClick("AI Agents")}
           />
           <Card
             heading="HVO Templates"
-            amount={45}
+            amount={aiComponents.hvoTemplates}
             isClickable={true}
             onClick={() => handleCardClick("HVO Templates")}
           />
           <Card
             heading="Video Templates"
-            amount={20000}
+            amount={aiComponents.videoTemplates}
             isClickable={true}
             onClick={() => handleCardClick("Video Templates")}
           />
           <Card
             heading="Emails Templates"
-            amount={4849}
+            amount={aiComponents.emailTemplates}
             isClickable={true}
             onClick={() => handleCardClick("Emails Templates")}
           />
           <Card
             heading="SMS Templates"
-            amount={4849}
+            amount={aiComponents.smsTemplates}
             isClickable={true}
             onClick={() => handleCardClick("SMS Templates")}
           />
@@ -245,43 +186,37 @@ const AdminDashboard = () => {
         <div className={styles.prospectsCardContainer}>
           <Card
             heading="Campaigns"
-            amount={800}
-            change={15}
+            amount={summaryStats.campaigns}
             isClickable={true}
             onClick={() => handleCardClick("Campaigns")}
           />
           <Card
             heading="Prospects Added"
-            amount={700}
-            change={-10}
+            amount={summaryStats.prospectsAdded}
             isClickable={true}
             onClick={() => handleCardClick("Prospects Added")}
           />
           <Card
             heading="Meetings Booked"
-            amount={204}
-            change={5}
+            amount={summaryStats.meetingsBooked}
             isClickable={true}
             onClick={() => handleCardClick("Meetings Booked")}
           />
           <Card
             heading="Meeting Attended"
-            amount={75}
-            change={-8}
+            amount={summaryStats.meetingsAttended}
             isClickable={true}
             onClick={() => handleCardClick("Meeting Attended")}
           />
           <Card
             heading="Total Sales"
-            amount={500}
-            change={20}
+            amount={summaryStats.totalSales}
             isClickable={true}
             onClick={() => handleCardClick("Total Sales")}
           />
           <Card
             heading="Visitors identified"
-            amount={400}
-            change={-12}
+            amount={summaryStats.visitorsIdentified}
             isClickable={true}
             onClick={() => handleCardClick("Visitors identified")}
           />
@@ -291,8 +226,8 @@ const AdminDashboard = () => {
       {/* Analytics Overview Section */}
       <div className={styles.componentSection}>
         <div className={styles.analyticsContainer}>
-          <VisitorsGraph />
-          <UserCreditsChart creditsData={creditsData} />
+          <VisitorsGraph data={visitorsGraphData} />
+          <UserCreditsChart creditsData={userCreditsData} />
         </div>
       </div>
       <div className={styles.prospectsLifecycleContainer}>
@@ -305,22 +240,20 @@ const AdminDashboard = () => {
       <div className={styles.GraphContainer}>
         <Graph
           title="Amount of Templates Created"
-          data={sampleData}
+          data={templatesCreatedData}
           type={"filters"}
         />
         <Graph
           title="Amount of HVOs/Videos Sent"
-          data={sampleData}
+          data={templatesSentData}
           type={"filters"}
-          // setIsViewed={setIsViewed}
         />
       </div>
       <div className={styles.GraphContainer}>
         <Graph
           title="Visit Duration"
-          data={sampleData}
+          data={visitDurationData}
           type={"filters"}
-          // setIsViewed={setIsViewed}
         />
       </div>
 
@@ -334,7 +267,7 @@ const AdminDashboard = () => {
           />
           <TopUsers
             title="Top Performing Templates"
-            usersData={toptemplatesData}
+            usersData={topTemplatesData}
             tableHeaders={tableHeaders2}
           />
         </div>
