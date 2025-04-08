@@ -97,18 +97,18 @@ const HVOPreview = () => {
                         {headerSection && (
                             <div className={styles.logoContainer}>
                                 {headerSection.values.company_logo && (
-                                    <img src="/images/HVO/Found&Chosen.svg" alt="Company Logo" className={styles.logo} />
+                                    <img src={headerSection.values.company_logo} alt="Company Logo" className={styles.logo} />
                                 )}
-                                {/* {headerSection.values.header_logo && ( */}
-                                <img src="https://png.pngtree.com/png-vector/20220606/ourmid/pngtree-radial-bar-chart-rotation-two-arc-png-image_4802270.png" alt="Header Logo" className={styles.logo} />
-                                {/* )} */}
+                                {headerSection.values.header_logo && (
+                                <img src={headerSection.values.header_logo} alt="Header Logo" className={styles.logo} />
+                             )}
                             </div>
                         )}
 
                         {/* Hero Text Content */}
                         {heroSection.values.headline1 && (
                             <h1 className={styles.heroTitle} style={{ fontSize: `${heroSection.values.headline1_size}px`, color: heroSection.values.headline1_color }}>
-                                <span className={styles.clientName}> <strong>Hello, </strong>{heroSection.values.headline1.replace("Hello, ", "")}</span>
+                                <span className={styles.clientName}>{heroSection.values.headline1}</span>
                             </h1>
                         )}
 
@@ -119,14 +119,14 @@ const HVOPreview = () => {
                                 {heroSection.values.headline2}
                             </h2>
                         )}
-                        {/* {heroSection.values.body_text && ( */}
+                        {heroSection.values.body_text && (
                         <p
                             className={styles.bodyText}
                             style={{ fontSize: `${heroSection.values.body_text_size}px`, color: heroSection.values.body_text_color }}
                         >
-                            Engage, convert & 10x your impact with personalized video automation which has revolutionized outreach.
+                            {heroSection.values.body_text}
                         </p>
-                        {/* )} */}
+                        )}
 
 
                         {/* Buttons */}
@@ -189,7 +189,7 @@ const HVOPreview = () => {
                 <div className={styles.leftImageRightText}>
                     <div className={styles.container}>
                         <img
-                            src="/images/HVO/left_image_right.svg"
+                            src={leftImageRightText?.values?.left_image_right_text}
                             className={styles.sectionImage}
                         />
                         <div className={styles.textContent}>
