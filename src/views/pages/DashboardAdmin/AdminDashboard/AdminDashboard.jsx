@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import DateRangeDropdown from "./DateRangeDropdown/DateRangeDropdown";
 import SupportContactLabel from "./SupportContactLabel/SupportContactLabel";
 import Card from "../MainDashboard/CardBlock/Card";
@@ -9,6 +9,7 @@ import VisitorsGraph from "./VisitorsGraph/VisitorsGraph.jsx";
 import UserCreditsChart from "./UserCreditsChart/UserCreditsChart";
 import ActiveProspectsLifecycle from "./ActiveProspectsLifeCycle/ActiveProspectsLifeCycle";
 import CardPopUpGraph from "../MainDashboard/CardBlock/CardPopUpGraph/CardPopUpGraph";
+import useGetAdminDashboard from "../MainDashboard/Hooks/useGetAdminDashboard";
 
 const AdminDashboard = () => {
   const [dateRange, setDateRange] = useState({
@@ -20,6 +21,23 @@ const AdminDashboard = () => {
   const { downloadCSV, loading: csvLoading } = useDownloadCSV();
 
   // Sample data for credits usage chart
+
+  const {
+    data: dashboardData,
+    loading: dashboardLoading,
+    error: dashboardError,
+  } = useGetAdminDashboard(dateRange.startDate, dateRange.endDate);
+
+  useEffect(() => {
+    if (dashboardData) {
+      console.log("📊 Dashboard Data:", dashboardData);
+    }
+
+    if (dashboardError) {
+      console.error("❌ Dashboard Error:", dashboardError);
+    }
+  }, [dashboardData, dashboardError]);
+
   const creditsData = [
     { month: "Jan", credits: 5300, usage: 2900 },
     { month: "Feb", credits: 4500, usage: 2800 },
