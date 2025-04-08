@@ -8,13 +8,15 @@ import TopUsers from "../MainDashboard/TableCardBlock/TabularCard";
 import VisitorsGraph from "./VisitorsGraph/VisitorsGraph.jsx";
 import UserCreditsChart from "./UserCreditsChart/UserCreditsChart";
 import ActiveProspectsLifecycle from "./ActiveProspectsLifeCycle/ActiveProspectsLifeCycle";
+import CardPopUpGraph from "../MainDashboard/CardBlock/CardPopUpGraph/CardPopUpGraph";
 
 const AdminDashboard = () => {
   const [dateRange, setDateRange] = useState({
     startDate: null,
     endDate: null,
   });
-
+  const [isPopUpOpen, setIsPopUpOpen] = useState(false);
+  const [popupHeading, setPopupHeading] = useState("");
   const { downloadCSV, loading: csvLoading } = useDownloadCSV();
 
   // Sample data for credits usage chart
@@ -37,10 +39,20 @@ const AdminDashboard = () => {
     { date: "2024-06-01", product1: -80, product2: 0, product3: -60 },
     { date: "2024-07-01", product1: 40, product2: 30, product3: -10 },
   ];
+
   const handleDateRangeChange = (newDateRange) => {
     setDateRange(newDateRange);
     // Here you can perform additional actions like fetching data for the selected date range
     console.log("Date range updated:", newDateRange);
+  };
+
+  const handleCardClick = (heading) => {
+    setPopupHeading(heading);
+    setIsPopUpOpen(true);
+  };
+
+  const closePopup = () => {
+    setIsPopUpOpen(false);
   };
 
   // Support contact information
@@ -109,8 +121,6 @@ const AdminDashboard = () => {
     { key: "viewed_count", label: "Times Used" },
   ];
 
-  
-
   return (
     <div className={styles.dashboardContainer}>
       {/* Header Section with Support Contact and Action Buttons */}
@@ -136,23 +146,63 @@ const AdminDashboard = () => {
 
       {/* Main Metrics Section */}
       <div className={styles.metricsCardContainer}>
-        <Card heading="Active Users" amount={200} />
+        <Card
+          heading="Active Users"
+          amount={200}
+          isClickable={true}
+          onClick={() => handleCardClick("Active Users")}
+        />
         <Card heading="Available Seats" amount={45} />
         <Card heading="Credits Spent" amount={20000} />
         <Card heading="Credits Available" amount={20000} />
-        <Card heading="Sheets Connected" amount={3839} />
-        <Card heading="Templates generated" amount={4849} />
+        <Card
+          heading="Sheets Connected"
+          amount={3839}
+          isClickable={true}
+          onClick={() => handleCardClick("Sheets Connected")}
+        />
+        <Card
+          heading="Templates generated"
+          amount={4849}
+          isClickable={true}
+          onClick={() => handleCardClick("Templates generated")}
+        />
       </div>
 
       {/* AI Components Section */}
       <div className={styles.componentSection}>
         <h2 className={styles.sectionTitle}>AI Components</h2>
         <div className={styles.componentCardContainer}>
-          <Card heading="AI Agents" amount={200} />
-          <Card heading="HVO Templates" amount={45} />
-          <Card heading="Video Templates" amount={20000} />
-          <Card heading="Emails Templates" amount={4849} />
-          <Card heading="SMS Templates" amount={4849} />
+          <Card
+            heading="AI Agents"
+            amount={200}
+            isClickable={true}
+            onClick={() => handleCardClick("AI Agents")}
+          />
+          <Card
+            heading="HVO Templates"
+            amount={45}
+            isClickable={true}
+            onClick={() => handleCardClick("HVO Templates")}
+          />
+          <Card
+            heading="Video Templates"
+            amount={20000}
+            isClickable={true}
+            onClick={() => handleCardClick("Video Templates")}
+          />
+          <Card
+            heading="Emails Templates"
+            amount={4849}
+            isClickable={true}
+            onClick={() => handleCardClick("Emails Templates")}
+          />
+          <Card
+            heading="SMS Templates"
+            amount={4849}
+            isClickable={true}
+            onClick={() => handleCardClick("SMS Templates")}
+          />
         </div>
       </div>
 
@@ -160,14 +210,49 @@ const AdminDashboard = () => {
       <div className={styles.componentSection}>
         <h2 className={styles.sectionTitle}>Summary Stats</h2>
         <div className={styles.prospectsCardContainer}>
-          <Card heading="Campaigns" amount={800} change={15} />
-          <Card heading="Prospects Added" amount={700} change={-10} />
-          <Card heading="Meetings Booked" amount={204} change={5} />
-          <Card heading="Meeting Attended" amount={75} change={-8} />
-          <Card heading="Total Sales" amount={500} change={20} />
-          <Card heading="Visitors identified" amount={400} change={-12} />
+          <Card
+            heading="Campaigns"
+            amount={800}
+            change={15}
+            isClickable={true}
+            onClick={() => handleCardClick("Campaigns")}
+          />
+          <Card
+            heading="Prospects Added"
+            amount={700}
+            change={-10}
+            isClickable={true}
+            onClick={() => handleCardClick("Prospects Added")}
+          />
+          <Card
+            heading="Meetings Booked"
+            amount={204}
+            change={5}
+            isClickable={true}
+            onClick={() => handleCardClick("Meetings Booked")}
+          />
+          <Card
+            heading="Meeting Attended"
+            amount={75}
+            change={-8}
+            isClickable={true}
+            onClick={() => handleCardClick("Meeting Attended")}
+          />
+          <Card
+            heading="Total Sales"
+            amount={500}
+            change={20}
+            isClickable={true}
+            onClick={() => handleCardClick("Total Sales")}
+          />
+          <Card
+            heading="Visitors identified"
+            amount={400}
+            change={-12}
+            isClickable={true}
+            onClick={() => handleCardClick("Visitors identified")}
+          />
         </div>
-
       </div>
 
       {/* Performance Overview Section */}
@@ -200,6 +285,13 @@ const AdminDashboard = () => {
           title="Active Prospects Lifecycle Over Time (Hover to Explore)"
         />
       </div>
+
+      {/* Popup component */}
+      <CardPopUpGraph
+        isOpen={isPopUpOpen}
+        onClose={closePopup}
+        heading={popupHeading}
+      />
     </div>
   );
 };
