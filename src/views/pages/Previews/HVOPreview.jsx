@@ -105,31 +105,29 @@ const HVOPreview = () => {
 
     return (
         <div className={styles.bgGradient}>
+            {headerSection && (
+                <div className={styles.logoContainer}>
+                    {headerSection.values.company_logo && (
+                        <img
+                            src={headerSection.values.company_logo}
+                            alt="Company Logo"
+                            className={styles.logo1}
+                        />
+                    )}
+                    <div className={styles.plus}>+</div>
+                    {headerSection.values.header_logo && (
+                        <img
+                            src={headerSection.values.header_logo}
+                            alt="Header Logo"
+                            className={styles.logo}
+                        />
+                    )}
+                </div>
+            )}
             {/* Hero Section */}
             {heroSection && (
                 <div className={styles.hero}>
                     <div className={styles.heroContent}>
-                        {/* Header Section */}
-                        {headerSection && (
-                            <div className={styles.logoContainer}>
-                                {headerSection.values.company_logo && (
-                                    <img
-                                        src={headerSection.values.company_logo}
-                                        alt="Company Logo"
-                                        className={styles.logo1}
-                                    />
-                                )}
-                                <div className={styles.plus}>+</div>
-                                {headerSection.values.header_logo && (
-                                    <img
-                                        src={headerSection.values.header_logo}
-                                        alt="Header Logo"
-                                        className={styles.logo}
-                                    />
-                                )}
-                            </div>
-                        )}
-
                         {/* Hero Text Content */}
                         {heroSection.values.headline1 && (
                             <h1
@@ -323,8 +321,8 @@ const HVOPreview = () => {
                                 </a>
                                 {/* )} */}
                             </div>
-                        </div>
 
+                        </div>
                         <img
                             src="/images/HVO/left_text_right_image.svg"
                             className={styles.sectionImage}
