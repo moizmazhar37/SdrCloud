@@ -275,3 +275,22 @@ button {
 .leftTextRightImageBodyText {
   line-height: 1.6 !important;
 }
+
+
+.centerImageSection {
+  width: 100%;
+  padding: 40px 0;
+}
+
+.centerContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.centerImage {
+  max-width: 100%;
+  margin: 20px 0;
+}
