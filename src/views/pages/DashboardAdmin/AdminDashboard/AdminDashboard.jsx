@@ -27,16 +27,6 @@ const AdminDashboard = () => {
     error: dashboardError,
   } = useGetAdminDashboard(dateRange.startDate, dateRange.endDate);
 
-  useEffect(() => {
-    if (dashboardData) {
-      console.log("📊 Dashboard Data:", dashboardData);
-    }
-
-    if (dashboardError) {
-      console.error("❌ Dashboard Error:", dashboardError);
-    }
-  }, [dashboardData, dashboardError]);
-
   const handleDateRangeChange = (newDateRange) => {
     setDateRange(newDateRange);
     console.log("Date range updated:", newDateRange);
@@ -50,11 +40,6 @@ const AdminDashboard = () => {
   const closePopup = () => {
     setIsPopUpOpen(false);
   };
-
-  // If data is loading or there's an error, you might want to show a loading state or error message
-  if (dashboardLoading) {
-    return <div className={styles.loading}>Loading dashboard data...</div>;
-  }
 
   if (dashboardError) {
     return <div className={styles.error}>Error loading dashboard data</div>;
