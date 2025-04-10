@@ -129,7 +129,7 @@ const AdminDashboard = () => {
       </div>
 
       {/* AI Components Section */}
-      <div className={styles.componentSection}>
+      {/* <div className={styles.componentSection}>
         <h2 className={styles.sectionTitle}>AI Components</h2>
         <div className={styles.componentCardContainer}>
           <Card
@@ -163,7 +163,7 @@ const AdminDashboard = () => {
             onClick={() => handleCardClick("SMS Templates")}
           />
         </div>
-      </div>
+      </div> */}
 
       {/* Prospects Overview Section */}
       <div className={styles.componentSection}>
@@ -174,24 +174,28 @@ const AdminDashboard = () => {
             amount={summaryStats.campaigns}
             isClickable={true}
             onClick={() => handleCardClick("Campaigns")}
+            change={15}
           />
           <Card
             heading="Prospects Added"
             amount={summaryStats.prospectsAdded}
             isClickable={true}
             onClick={() => handleCardClick("Prospects Added")}
+            change={-10}
           />
           <Card
             heading="Meetings Booked"
             amount={summaryStats.meetingsBooked}
             isClickable={true}
             onClick={() => handleCardClick("Meetings Booked")}
+            change={12}
           />
           <Card
             heading="Meeting Attended"
             amount={summaryStats.meetingsAttended}
             isClickable={true}
             onClick={() => handleCardClick("Meeting Attended")}
+            change={-5}
           />
           <Card
             heading="Total Sales"
