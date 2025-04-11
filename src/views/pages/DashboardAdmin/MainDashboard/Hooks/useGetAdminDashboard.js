@@ -26,8 +26,8 @@ const useGetAdminDashboard = (start_date, end_date) => {
         const defaultEndDate = new Date().toISOString();
 
         const params = {
-          start_date: start_date || defaultStartDate,
-          end_date: end_date || defaultEndDate,
+          start_date: start_date || null,
+          end_date: end_date || null,
         };
 
         console.log("Fetching dashboard data with params:", params);
