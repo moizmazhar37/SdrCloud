@@ -22,34 +22,6 @@ const DateRangeDropdown = ({ onDateRangeChange }) => {
     };
   }, []);
 
-  // Effect to load saved date range from localStorage on component mount
-  useEffect(() => {
-    const savedStartDate = localStorage.getItem("dashboard_start_date");
-    const savedEndDate = localStorage.getItem("dashboard_end_date");
-
-    if (savedStartDate && savedEndDate) {
-      // Convert ISO strings to date input format (YYYY-MM-DD)
-      const formatForDateInput = (dateString) => {
-        const date = new Date(dateString);
-        return date.toISOString().split("T")[0];
-      };
-
-      const formattedStartDate = formatForDateInput(savedStartDate);
-      const formattedEndDate = formatForDateInput(savedEndDate);
-
-      setStartDate(formattedStartDate);
-      setEndDate(formattedEndDate);
-
-      // Notify parent component of the date range (if needed)
-      if (onDateRangeChange) {
-        onDateRangeChange({
-          startDate: savedStartDate,
-          endDate: savedEndDate,
-        });
-      }
-    }
-  }, [onDateRangeChange]);
-
   // Effect to update display text when dates change
   useEffect(() => {
     if (startDate && endDate) {
@@ -77,6 +49,7 @@ const DateRangeDropdown = ({ onDateRangeChange }) => {
       const startDateISO = new Date(startDate).toISOString();
       const endDateISO = new Date(endDate).toISOString();
 
+      // Notify parent component of the date range change
       onDateRangeChange({ startDate: startDateISO, endDate: endDateISO });
       setIsOpen(false);
     }
@@ -85,8 +58,8 @@ const DateRangeDropdown = ({ onDateRangeChange }) => {
   const handleClear = () => {
     setStartDate("");
     setEndDate("");
-    localStorage.removeItem("dashboard_start_date");
-    localStorage.removeItem("dashboard_end_date");
+
+    // Notify parent component that date range has been cleared
     onDateRangeChange({ startDate: null, endDate: null });
   };
 

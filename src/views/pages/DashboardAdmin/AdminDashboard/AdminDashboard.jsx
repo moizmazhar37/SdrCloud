@@ -16,15 +16,11 @@ import useGetRealTimeAlerts from "../MainDashboard/Hooks/Alerts/useGetAlerts";
 import ToastManager from "src/Common/AlertToast/ToastManager/ToastManager";
 
 const AdminDashboard = () => {
-  // Initialize date range from localStorage or use null values
-
-  const initialDateRange = {
-    startDate: localStorage.getItem("dashboard_start_date") || null,
-    endDate: localStorage.getItem("dashboard_end_date") || null,
-  };
-
   const [toastMessages, setToastMessages] = useState([]);
-  const [dateRange, setDateRange] = useState(initialDateRange);
+  const [dateRange, setDateRange] = useState({
+    startDate: null,
+    endDate: null,
+  });
   const [isPopUpOpen, setIsPopUpOpen] = useState(false);
   const [popupHeading, setPopupHeading] = useState("");
   const { downloadCSV, loading: csvLoading } = useDownloadCSV();

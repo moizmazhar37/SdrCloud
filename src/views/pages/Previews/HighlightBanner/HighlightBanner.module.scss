@@ -1,33 +1,29 @@
 .banner {
-    width: 100%;
-    overflow: hidden;
-    white-space: nowrap;
-    padding: 10px 0;
-    position: relative;
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 10px 0;
+  position: relative;
 }
 
 .bannerTextWrapper {
-    display: flex;
-    width: max-content;
-<<<<<<< HEAD
-    animation: scrollBanner 100s linear infinite; /* Slow speed */
-=======
-    animation: scrollBanner 1000s linear infinite; /* Slow speed */
->>>>>>> 74a4d74cba6d079f1e15becea57001b9d6345822
+  display: flex;
+  width: max-content;
+  animation: scrollBanner 1000s linear infinite; /* Slow speed */
 }
 
 .bannerText {
-    display: flex;
-    gap: 20px;
-    min-width: 100%;
+  display: flex;
+  gap: 20px;
+  min-width: 100%;
 }
 
 /* Smooth continuous scrolling */
 @keyframes scrollBanner {
-    from {
-        transform: translateX(0);
-    }
-    to {
-        transform: translateX(-50%);
-    }
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
 }
