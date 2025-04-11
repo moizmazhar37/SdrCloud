@@ -253,11 +253,13 @@ const AdminDashboard = () => {
             title="Top Performing Users"
             usersData={topUsersData}
             tableHeaders={tableHeaders}
+            showDropdown={false}
           />
           <TopUsers
             title="Top Performing Templates"
             usersData={topTemplatesData}
             tableHeaders={tableHeaders2}
+            showDropdown={false}
           />
         </div>
       </div>
