@@ -13,15 +13,7 @@ import styles from "./UserCreditsChart.module.scss";
 
 const UserCreditsChart = ({ creditsData }) => {
   // If no data is provided, use sample data
-  const data = creditsData || [
-    { month: "Jan", credits: 5300, usage: 2900 },
-    { month: "Feb", credits: 4500, usage: 2800 },
-    { month: "Mar", credits: 4600, usage: 2200 },
-    { month: "Apr", credits: 4500, usage: 2700 },
-    { month: "May", credits: 4500, usage: 2400 },
-    { month: "Jun", credits: 2800, usage: 2000 },
-    { month: "Jul", credits: 4800, usage: 3200 },
-  ];
+  const data = creditsData;
 
   const chartRef = useRef(null);
 
@@ -65,13 +57,13 @@ const UserCreditsChart = ({ creditsData }) => {
               }}
             />
             <Legend wrapperStyle={{ paddingTop: "10px" }} />
-            <Bar
+            {/* <Bar
               dataKey="credits"
               name="Credits"
               fill="#00A3FF"
               radius={[2, 2, 0, 0]}
               maxBarSize={40}
-            />
+            /> */}
             <Bar
               dataKey="usage"
               name="Usage"

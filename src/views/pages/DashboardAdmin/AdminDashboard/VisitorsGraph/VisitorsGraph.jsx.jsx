@@ -11,39 +11,39 @@ import {
 import FiltersDropdown from "./FIltersDropdown/FiltersDropdown";
 import styles from "./VisitorsGraph.module.scss";
 
-const VisitorsGraph = () => {
-  const data = [
-    {
-      name: "Mar",
-      visitors: 5,
-      website: "bloxbunny.com",
-    },
-    {
-      name: "Feb",
-      visitors: 3,
-      website: "bloxbunny.com",
-    },
-    {
-      name: "Mar",
-      visitors: 7,
-      website: "techco.io",
-    },
-    {
-      name: "Feb",
-      visitors: 4,
-      website: "techco.io",
-    },
-    {
-      name: "Mar",
-      visitors: 8,
-      website: "example.com",
-    },
-    {
-      name: "Feb",
-      visitors: 6,
-      website: "example.com",
-    },
-  ];
+const VisitorsGraph = ({ data }) => {
+  // const data = [
+  //   {
+  //     name: "Mar",
+  //     visitors: 5,
+  //     website: "bloxbunny.com",
+  //   },
+  //   {
+  //     name: "Feb",
+  //     visitors: 3,
+  //     website: "bloxbunny.com",
+  //   },
+  //   {
+  //     name: "Mar",
+  //     visitors: 7,
+  //     website: "techco.io",
+  //   },
+  //   {
+  //     name: "Feb",
+  //     visitors: 4,
+  //     website: "techco.io",
+  //   },
+  //   {
+  //     name: "Mar",
+  //     visitors: 8,
+  //     website: "example.com",
+  //   },
+  //   {
+  //     name: "Feb",
+  //     visitors: 6,
+  //     website: "example.com",
+  //   },
+  // ];
 
   const [filteredData, setFilteredData] = useState(data);
   const [selectedWebsite, setSelectedWebsite] = useState(null);
