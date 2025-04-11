@@ -30,6 +30,8 @@ const useGetAdminDashboard = (start_date, end_date) => {
           end_date: end_date || defaultEndDate,
         };
 
+        console.log("Fetching dashboard data with params:", params);
+
         const response = await axios({
           url: `${ApiConfig.mainDashboard}/new-dashboard`,
           method: "GET",
@@ -41,6 +43,7 @@ const useGetAdminDashboard = (start_date, end_date) => {
 
         setData(response.data);
       } catch (err) {
+        console.error("Error fetching dashboard data:", err);
         setError(err);
       } finally {
         setLoading(false);

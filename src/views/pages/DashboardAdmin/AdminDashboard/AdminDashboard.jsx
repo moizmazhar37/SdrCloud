@@ -29,8 +29,8 @@ const AdminDashboard = () => {
   } = useGetAdminDashboard(dateRange.startDate, dateRange.endDate);
 
   const handleDateRangeChange = (newDateRange) => {
-    setDateRange(newDateRange);
     console.log("Date range updated:", newDateRange);
+    setDateRange(newDateRange);
   };
 
   const handleCardClick = (heading) => {
@@ -44,7 +44,6 @@ const AdminDashboard = () => {
   if (dashboardLoading)
     return (
       <div className={styles.loader}>
-        {" "}
         <Loader size={160} />
       </div>
     );

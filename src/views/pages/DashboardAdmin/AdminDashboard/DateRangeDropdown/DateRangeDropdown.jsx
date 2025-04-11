@@ -43,7 +43,11 @@ const DateRangeDropdown = ({ onDateRangeChange }) => {
 
   const handleApply = () => {
     if (startDate && endDate) {
-      onDateRangeChange({ startDate, endDate });
+      // Convert date strings to ISO format for API compatibility
+      const startDateISO = new Date(startDate).toISOString();
+      const endDateISO = new Date(endDate).toISOString();
+
+      onDateRangeChange({ startDate: startDateISO, endDate: endDateISO });
       setIsOpen(false);
     }
   };
