@@ -9,7 +9,11 @@
 .bannerTextWrapper {
     display: flex;
     width: max-content;
+<<<<<<< HEAD
     animation: scrollBanner 100s linear infinite; /* Slow speed */
+=======
+    animation: scrollBanner 1000s linear infinite; /* Slow speed */
+>>>>>>> 74a4d74cba6d079f1e15becea57001b9d6345822
 }
 
 .bannerText {
