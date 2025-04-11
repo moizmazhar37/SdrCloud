@@ -1,0 +1,29 @@
+.banner {
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 10px 0;
+    position: relative;
+}
+
+.bannerTextWrapper {
+    display: flex;
+    width: max-content;
+    animation: scrollBanner 1000s linear infinite; /* Slow speed */
+}
+
+.bannerText {
+    display: flex;
+    gap: 20px;
+    min-width: 100%;
+}
+
+/* Smooth continuous scrolling */
+@keyframes scrollBanner {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-50%);
+    }
+}
