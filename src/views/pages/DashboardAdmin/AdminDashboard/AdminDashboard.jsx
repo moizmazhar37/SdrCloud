@@ -14,10 +14,13 @@ import Graph from "../MainDashboard/Graph/Graph";
 import Loader from "src/Common/Loader/Loader";
 
 const AdminDashboard = () => {
-  const [dateRange, setDateRange] = useState({
-    startDate: null,
-    endDate: null,
-  });
+  // Initialize date range from localStorage or use null values
+  const initialDateRange = {
+    startDate: localStorage.getItem("dashboard_start_date") || null,
+    endDate: localStorage.getItem("dashboard_end_date") || null,
+  };
+
+  const [dateRange, setDateRange] = useState(initialDateRange);
   const [isPopUpOpen, setIsPopUpOpen] = useState(false);
   const [popupHeading, setPopupHeading] = useState("");
   const { downloadCSV, loading: csvLoading } = useDownloadCSV();
@@ -41,6 +44,7 @@ const AdminDashboard = () => {
   const closePopup = () => {
     setIsPopUpOpen(false);
   };
+
   if (dashboardLoading)
     return (
       <div className={styles.loader}>
@@ -130,43 +134,6 @@ const AdminDashboard = () => {
           onClick={() => handleCardClick("Templates generated")}
         />
       </div>
-
-      {/* AI Components Section */}
-      {/* <div className={styles.componentSection}>
-        <h2 className={styles.sectionTitle}>AI Components</h2>
-        <div className={styles.componentCardContainer}>
-          <Card
-            heading="AI Agents"
-            amount={aiComponents.aiAgents}
-            isClickable={true}
-            onClick={() => handleCardClick("AI Agents")}
-          />
-          <Card
-            heading="HVO Templates"
-            amount={aiComponents.hvoTemplates}
-            isClickable={true}
-            onClick={() => handleCardClick("HVO Templates")}
-          />
-          <Card
-            heading="Video Templates"
-            amount={aiComponents.videoTemplates}
-            isClickable={true}
-            onClick={() => handleCardClick("Video Templates")}
-          />
-          <Card
-            heading="Emails Templates"
-            amount={aiComponents.emailTemplates}
-            isClickable={true}
-            onClick={() => handleCardClick("Emails Templates")}
-          />
-          <Card
-            heading="SMS Templates"
-            amount={aiComponents.smsTemplates}
-            isClickable={true}
-            onClick={() => handleCardClick("SMS Templates")}
-          />
-        </div>
-      </div> */}
 
       {/* Prospects Overview Section */}
       <div className={styles.componentSection}>

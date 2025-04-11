@@ -42,6 +42,19 @@ const useGetAdminDashboard = (start_date, end_date) => {
         });
 
         setData(response.data);
+
+        // Save the date range to local storage upon successful fetch
+        if (start_date && end_date) {
+          localStorage.setItem("dashboard_start_date", start_date);
+          localStorage.setItem("dashboard_end_date", end_date);
+        } else if (
+          localStorage.getItem("dashboard_start_date") &&
+          !start_date
+        ) {
+          // If we're clearing the date range, also clear it from local storage
+          localStorage.removeItem("dashboard_start_date");
+          localStorage.removeItem("dashboard_end_date");
+        }
       } catch (err) {
         console.error("Error fetching dashboard data:", err);
         setError(err);
