@@ -1,28 +1,43 @@
-import React from 'react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import React from "react";
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+} from "recharts";
 import Dropdown from "src/Common/Dropdown/Dropdown";
-import FiltersDropdown from 'src/Common/FiltersDropdown/FiltersDropdown';
-import styles from './Graph.module.scss';
+import FiltersDropdown from "src/Common/FiltersDropdown/FiltersDropdown";
+import styles from "./Graph.module.scss";
 
-const Graph = ({ data, title, dropdownOptions, selectedOption, type, setIsViewed }) => {
+const Graph = ({
+  data,
+  title,
+  dropdownOptions,
+  selectedOption,
+  type,
+  setIsViewed,
+}) => {
   const renderDropdown = () => {
-    if (type === 'filters') {
-      return (
-        <FiltersDropdown
-          options={dropdownOptions}
-          className={styles.dropdown}
-          setIsViewed={setIsViewed}
-        />
-      );
-    }
-    
-    return (
-      <Dropdown
-        options={dropdownOptions}
-        buttonText={selectedOption || "Monthly"}
-        className={styles.dropdown}
-      />
-    );
+    // if (type === 'filters') {
+    //   return (
+    //     <FiltersDropdown
+    //       options={dropdownOptions}
+    //       className={styles.dropdown}
+    //       setIsViewed={setIsViewed}
+    //     />
+    //   );
+    // }
+    // return (
+    //   <Dropdown
+    //     options={dropdownOptions}
+    //     buttonText={selectedOption || "Monthly"}
+    //     className={styles.dropdown}
+    //   />
+    // );
   };
 
   const CustomTooltip = ({ active, payload, label }) => {
@@ -31,8 +46,8 @@ const Graph = ({ data, title, dropdownOptions, selectedOption, type, setIsViewed
         <div className={styles.customTooltip}>
           <p className={styles.tooltipLabel}>{label}</p>
           {payload.map((item, index) => (
-            <p 
-              key={index} 
+            <p
+              key={index}
               className={styles.tooltipItem}
               style={{ color: item.color }}
             >
@@ -47,14 +62,14 @@ const Graph = ({ data, title, dropdownOptions, selectedOption, type, setIsViewed
 
   const renderLegend = (props) => {
     const { payload } = props;
-    
+
     return (
       <div className={styles.legendContainer}>
         {payload.map((entry, index) => (
           <div key={`item-${index}`} className={styles.legendItem}>
-            <div 
+            <div
               className={styles.legendDot}
-              style={{ 
+              style={{
                 backgroundColor: entry.color,
               }}
             />
@@ -82,37 +97,37 @@ const Graph = ({ data, title, dropdownOptions, selectedOption, type, setIsViewed
               bottom: 0,
             }}
           >
-            <CartesianGrid 
-              strokeDasharray="3 3" 
+            <CartesianGrid
+              strokeDasharray="3 3"
               vertical={false}
               stroke="#E5E7EB"
             />
-            <XAxis 
-              dataKey="name" 
+            <XAxis
+              dataKey="name"
               axisLine={false}
               tickLine={false}
-              tick={{ fill: '#6B7280', fontSize: 12 }}
+              tick={{ fill: "#6B7280", fontSize: 12 }}
               dy={10}
             />
-            <YAxis 
+            <YAxis
               axisLine={false}
               tickLine={false}
-              tick={{ fill: '#6B7280', fontSize: 12 }}
+              tick={{ fill: "#6B7280", fontSize: 12 }}
               dx={-10}
               tickFormatter={(value) => value.toLocaleString()}
             />
-            <Tooltip 
+            <Tooltip
               content={<CustomTooltip />}
-              cursor={{ stroke: '#E5E7EB', strokeWidth: 1 }}
+              cursor={{ stroke: "#E5E7EB", strokeWidth: 1 }}
             />
-            <Legend 
+            <Legend
               content={renderLegend}
               verticalAlign="top"
               align="left"
               height={36}
               wrapperStyle={{
-                paddingLeft: '24px',
-                marginTop: '-15px'
+                paddingLeft: "24px",
+                marginTop: "-15px",
               }}
             />
             <Area

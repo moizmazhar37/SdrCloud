@@ -1,0 +1,47 @@
+.supportContact {
+  background-color: #fff3e0;
+  border-radius: 8px;
+  padding: 16px 24px;
+  width: 100%;
+
+  @media (max-width: 998px) {
+    width: auto;
+  }
+}
+
+.title {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #5d4037;
+}
+
+.contactInfo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+.contactItem {
+  display: flex;
+  align-items: center;
+
+  @media (max-width: 480px) {
+    flex-wrap: wrap;
+  }
+}
+
+.label {
+  font-weight: 600;
+  color: #5d4037;
+  margin-right: 4px;
+}
+
+.value {
+  color: #5d4037;
+}
