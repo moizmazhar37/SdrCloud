@@ -11,6 +11,7 @@ import ActiveProspectsLifecycle from "./ActiveProspectsLifeCycle/ActiveProspects
 import CardPopUpGraph from "../MainDashboard/CardBlock/CardPopUpGraph/CardPopUpGraph";
 import useGetAdminDashboard from "../MainDashboard/Hooks/useGetAdminDashboard";
 import Graph from "../MainDashboard/Graph/Graph";
+import Loader from "src/Common/Loader/Loader";
 
 const AdminDashboard = () => {
   const [dateRange, setDateRange] = useState({
@@ -40,10 +41,13 @@ const AdminDashboard = () => {
   const closePopup = () => {
     setIsPopUpOpen(false);
   };
-
-  if (dashboardError) {
-    return <div className={styles.error}>Error loading dashboard data</div>;
-  }
+  if (dashboardLoading)
+    return (
+      <div className={styles.loader}>
+        {" "}
+        <Loader size={160} />
+      </div>
+    );
 
   // Only render the dashboard when data is available
   if (!dashboardData) {
