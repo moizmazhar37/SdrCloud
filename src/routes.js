@@ -63,7 +63,7 @@ export const routes = [
 
   {
     exact: true,
-    path: "/dashboard",
+    path: "/old-dashboard",
     guard: true,
     layout: DashboardLayout,
     component: lazy(() =>
@@ -264,9 +264,7 @@ export const routes = [
   {
     exact: true,
     path: `/new-hvo/:customerId`,
-    component: lazy(() =>
-      import("src/views/pages/Previews/HVOPreview")
-    ),
+    component: lazy(() => import("src/views/pages/Previews/HVOPreview")),
   },
 
   {
@@ -573,6 +571,18 @@ export const routes = [
       import("src/views/pages/DashboardAdmin/MainDashboard/MainDashboard")
     ),
   },
+  //updated admin dashboard
+  {
+    exact: true,
+    path: "/dashboard",
+    guard: true,
+    layout: DashboardLayout,
+    // component: lazy(() => import("src/views/pages/DashboardUser/index")),
+    component: lazy(() =>
+      import("src/views/pages/DashboardAdmin/AdminDashboard/AdminDashboard")
+    ),
+  },
+
   {
     exact: true,
     path: "/user-myprojects",

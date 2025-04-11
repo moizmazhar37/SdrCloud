@@ -4,10 +4,11 @@ import styles from "./TabularCard.module.scss";
 
 const TabularCard = ({
   title,
-  dropdownOptions,
+  dropdownOptions = [],
   usersData,
   tableHeaders,
   buttonText,
+  showDropdown = true, // Default value is true
 }) => {
   if (
     !tableHeaders ||
@@ -22,7 +23,9 @@ const TabularCard = ({
     <div className={styles.container}>
       <div className={styles.header}>
         <h1 className={styles.title}>{title}</h1>
-        <Dropdown options={dropdownOptions} buttonText={buttonText} />
+        {showDropdown && (
+          <Dropdown options={dropdownOptions} buttonText={buttonText} />
+        )}
       </div>
 
       <div className={styles.tableContainer}>
