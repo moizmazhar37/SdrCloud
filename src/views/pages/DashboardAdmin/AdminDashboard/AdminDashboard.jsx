@@ -12,14 +12,18 @@ import CardPopUpGraph from "../MainDashboard/CardBlock/CardPopUpGraph/CardPopUpG
 import useGetAdminDashboard from "../MainDashboard/Hooks/useGetAdminDashboard";
 import Graph from "../MainDashboard/Graph/Graph";
 import Loader from "src/Common/Loader/Loader";
+import useGetRealTimeAlerts from "../MainDashboard/Hooks/Alerts/useGetAlerts";
+import ToastManager from "src/Common/AlertToast/ToastManager/ToastManager";
 
 const AdminDashboard = () => {
   // Initialize date range from localStorage or use null values
+
   const initialDateRange = {
     startDate: localStorage.getItem("dashboard_start_date") || null,
     endDate: localStorage.getItem("dashboard_end_date") || null,
   };
 
+  const [toastMessages, setToastMessages] = useState([]);
   const [dateRange, setDateRange] = useState(initialDateRange);
   const [isPopUpOpen, setIsPopUpOpen] = useState(false);
   const [popupHeading, setPopupHeading] = useState("");
@@ -30,6 +34,19 @@ const AdminDashboard = () => {
     loading: dashboardLoading,
     error: dashboardError,
   } = useGetAdminDashboard(dateRange.startDate, dateRange.endDate);
+
+  //Get Alerts for user
+  const {
+    data: alerts = [],
+    loading: alertsLoading,
+    error: alertsError,
+  } = useGetRealTimeAlerts();
+
+  useEffect(() => {
+    if (alerts && alerts.length > 0 && !alertsLoading) {
+      setToastMessages(alerts);
+    }
+  }, [alerts, alertsLoading]);
 
   const handleDateRangeChange = (newDateRange) => {
     console.log("Date range updated:", newDateRange);
@@ -240,6 +257,8 @@ const AdminDashboard = () => {
         onClose={closePopup}
         heading={popupHeading}
       />
+
+      <ToastManager toastMessages={toastMessages} />
     </div>
   );
 };
