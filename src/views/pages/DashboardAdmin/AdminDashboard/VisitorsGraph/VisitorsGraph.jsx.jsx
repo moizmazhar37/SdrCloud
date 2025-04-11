@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   AreaChart,
   Area,
@@ -8,31 +8,76 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import FiltersDropdown from "src/Common/FiltersDropdown/FiltersDropdown";
+import FiltersDropdown from "./FIltersDropdown/FiltersDropdown";
 import styles from "./VisitorsGraph.module.scss";
 
-const VisitorsGraph = ({ setIsViewed }) => {
-  // Sample data that matches the graph in the image
+const VisitorsGraph = () => {
   const data = [
-    { name: "Jan", visitors: 1500 },
-    { name: "Feb", visitors: 4700 },
-    { name: "Mar", visitors: 500 },
-    { name: "Apr", visitors: 1950 },
-    { name: "May", visitors: 800 },
-    { name: "Jun", visitors: 1200 },
-    { name: "Jul", visitors: 5000 },
+    {
+      name: "Mar",
+      visitors: 5,
+      website: "bloxbunny.com",
+    },
+    {
+      name: "Feb",
+      visitors: 3,
+      website: "bloxbunny.com",
+    },
+    {
+      name: "Mar",
+      visitors: 7,
+      website: "techco.io",
+    },
+    {
+      name: "Feb",
+      visitors: 4,
+      website: "techco.io",
+    },
+    {
+      name: "Mar",
+      visitors: 8,
+      website: "example.com",
+    },
+    {
+      name: "Feb",
+      visitors: 6,
+      website: "example.com",
+    },
   ];
 
-  // Options for the filter dropdown
-  const timeframeOptions = [
-    { value: "today", label: "Today" },
-    { value: "yesterday", label: "Yesterday" },
-    { value: "last-7-days", label: "Last 7 days" },
-    { value: "last-30-days", label: "Last 30 days" },
-    { value: "this-month", label: "This month" },
-    { value: "last-month", label: "Last month" },
-    { value: "custom", label: "Custom" },
-  ];
+  const [filteredData, setFilteredData] = useState(data);
+  const [selectedWebsite, setSelectedWebsite] = useState(null);
+
+  // Extract unique websites from data
+  const uniqueWebsites = [...new Set(data.map((item) => item.website))];
+
+  // Create options in the required format
+  const websiteOptions = uniqueWebsites.map((website) => ({
+    label: website,
+  }));
+
+  // Add "All Websites" option
+  const allOptions = [{ label: "All Websites" }, ...websiteOptions];
+
+  // Handle website selection
+  const handleWebsiteSelect = (website) => {
+    setSelectedWebsite(website);
+
+    // Filter data by selected website
+    if (website && website !== "All Websites") {
+      const filtered = data.filter((item) => item.website === website);
+      setFilteredData(filtered);
+    } else {
+      // Show all data when "All Websites" is selected or no selection
+      setFilteredData(data);
+    }
+  };
+
+  // Set all data initially
+  useEffect(() => {
+    // Initially show all data
+    setFilteredData(data);
+  }, []);
 
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
@@ -42,6 +87,11 @@ const VisitorsGraph = ({ setIsViewed }) => {
           <p className={styles.tooltipItem} style={{ color: "#0D3B66" }}>
             Visitors: {payload[0].value.toLocaleString()}
           </p>
+          {(!selectedWebsite || selectedWebsite === "All Websites") && (
+            <p className={styles.tooltipItem} style={{ color: "#6B7280" }}>
+              Website: {payload[0].payload.website}
+            </p>
+          )}
         </div>
       );
     }
@@ -53,15 +103,15 @@ const VisitorsGraph = ({ setIsViewed }) => {
       <div className={styles.header}>
         <h2 className={styles.title}>Visitors Graph</h2>
         <FiltersDropdown
-          options={timeframeOptions}
-          className={styles.dropdown}
-          setIsViewed={setIsViewed}
+          options={allOptions}
+          type="Dropdown"
+          onOptionSelect={handleWebsiteSelect}
         />
       </div>
       <div className={styles.graphContainer}>
         <ResponsiveContainer width="100%" height={300}>
           <AreaChart
-            data={data}
+            data={filteredData}
             margin={{
               top: 20,
               right: 20,
@@ -89,11 +139,9 @@ const VisitorsGraph = ({ setIsViewed }) => {
               tickFormatter={(value) =>
                 value === 0 ? "0" : value.toLocaleString()
               }
-              // Allow the chart to automatically calculate appropriate ticks
-              // based on the data range
               allowDataOverflow={false}
               allowDecimals={false}
-              domain={["dataMin", "dataMax"]}
+              domain={[0, "dataMax + 2"]}
             />
             <Tooltip
               content={<CustomTooltip />}
