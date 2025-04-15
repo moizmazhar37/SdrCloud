@@ -134,14 +134,14 @@ const AdminDashboard = () => {
           onClick={() => handleCardClick("Active Users")}
         />
         <Card heading="Available Seats" amount={metrics.availableSeats} />
-        <Card 
-          heading="Credits Spent" 
+        <Card
+          heading="Credits Spent"
           amount={metrics.creditsSpent}
           change={15}
         />
-        <Card 
-          heading="Credits Available" 
-          amount={metrics.creditsAvailable} 
+        <Card
+          heading="Credits Available"
+          amount={metrics.creditsAvailable}
           change={20}
         />
         <Card
@@ -191,13 +191,6 @@ const AdminDashboard = () => {
             isClickable={true}
             onClick={() => handleCardClick("Meeting Attended")}
             change={-5}
-          />
-          <Card
-            heading="Total Sales"
-            amount={summaryStats.totalSales}
-            isClickable={true}
-            onClick={() => handleCardClick("Total Sales")}
-            change={10}
           />
           <Card
             heading="Visitors identified"
@@ -255,12 +248,12 @@ const AdminDashboard = () => {
             showDropdown={false}
           />
           {showTopTemplates && (
-          <TopUsers
-            title="Top Performing Templates"
-            usersData={topTemplatesData}
-            tableHeaders={tableHeaders2}
-            showDropdown={false}
-          />  
+            <TopUsers
+              title="Top Performing Templates"
+              usersData={topTemplatesData}
+              tableHeaders={tableHeaders2}
+              showDropdown={false}
+            />
           )}
         </div>
       </div>
