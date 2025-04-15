@@ -70,6 +70,8 @@ const AdminDashboard = () => {
     return null;
   }
 
+  const showTopTemplates = false; // Toggle this when needed
+
   // Destructure the data for easier access
   const {
     supportInfo,
@@ -132,19 +134,29 @@ const AdminDashboard = () => {
           onClick={() => handleCardClick("Active Users")}
         />
         <Card heading="Available Seats" amount={metrics.availableSeats} />
-        <Card heading="Credits Spent" amount={metrics.creditsSpent} />
-        <Card heading="Credits Available" amount={metrics.creditsAvailable} />
+        <Card
+          heading="Credits Spent"
+          amount={metrics.creditsSpent}
+          change={15}
+        />
+        <Card
+          heading="Credits Available"
+          amount={metrics.creditsAvailable}
+          change={20}
+        />
         <Card
           heading="Sheets Connected"
           amount={metrics.sheetsConnected}
           isClickable={true}
           onClick={() => handleCardClick("Sheets Connected")}
+          change={25}
         />
         <Card
           heading="Templates generated"
           amount={metrics.templatesGenerated}
           isClickable={true}
           onClick={() => handleCardClick("Templates generated")}
+          change={30}
         />
       </div>
 
@@ -185,17 +197,12 @@ const AdminDashboard = () => {
             amount={summaryStats.visitorsIdentified}
             isClickable={true}
             onClick={() => handleCardClick("Visitors identified")}
+            change={10}
           />
         </div>
       </div>
 
       {/* Analytics Overview Section */}
-      <div className={styles.componentSection}>
-        <div className={styles.analyticsContainer}>
-          <VisitorsGraph data={visitorsGraphData} />
-          <UserCreditsChart creditsData={userCreditsData} />
-        </div>
-      </div>
       <div className={styles.prospectsLifecycleContainer}>
         <ActiveProspectsLifecycle
           data={prospectsLifecycleData}
@@ -215,6 +222,14 @@ const AdminDashboard = () => {
           type={"filters"}
         />
       </div>
+
+      <div className={styles.componentSection}>
+        <div className={styles.analyticsContainer}>
+          <VisitorsGraph data={visitorsGraphData} />
+          <UserCreditsChart creditsData={userCreditsData} />
+        </div>
+      </div>
+
       <div className={styles.GraphContainer}>
         <Graph
           title="Visit Duration"
@@ -227,17 +242,19 @@ const AdminDashboard = () => {
       <div className={styles.componentSection}>
         <div className={styles.topUsersContainer}>
           <TopUsers
-            title="Top Performing Users"
+            title="Company Users"
             usersData={topUsersData}
             tableHeaders={tableHeaders}
             showDropdown={false}
           />
-          <TopUsers
-            title="Top Performing Templates"
-            usersData={topTemplatesData}
-            tableHeaders={tableHeaders2}
-            showDropdown={false}
-          />
+          {showTopTemplates && (
+            <TopUsers
+              title="Top Performing Templates"
+              usersData={topTemplatesData}
+              tableHeaders={tableHeaders2}
+              showDropdown={false}
+            />
+          )}
         </div>
       </div>
 
