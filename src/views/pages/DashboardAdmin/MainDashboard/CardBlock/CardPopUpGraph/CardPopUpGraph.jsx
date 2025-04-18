@@ -11,19 +11,11 @@ import {
 } from "recharts";
 import styles from "./CardPopUpGraph.module.scss";
 
-const CardPopUpGraph = ({ onClose, isOpen, heading }) => {
+const CardPopUpGraph = ({ onClose, isOpen, heading, graphData }) => {
   const popupRef = useRef(null);
 
   // Sample data that matches the graph in the image
-  const data = [
-    { name: "Jan", value: 1500 },
-    { name: "Feb", value: 4700 },
-    { name: "Mar", value: 500 },
-    { name: "Apr", value: 1950 },
-    { name: "May", value: 800 },
-    { name: "Jun", value: 1200 },
-    { name: "Jul", value: 5000 },
-  ];
+  const data = graphData;
 
   // Handle click outside to close the popup
   useEffect(() => {
