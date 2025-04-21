@@ -96,6 +96,16 @@ const AdminDashboard = () => {
     topUsersData,
     topTemplatesData,
   } = dashboardData;
+ 
+const growthRates_metrics = metrics?.growth_rates;
+const growthRates_summaryStats = summaryStats?.growth_rates;
+
+// console.log("Growth Rates:", growthRates);
+// console.log("Credits Spent:", growthRates?.creditsSpent);
+// console.log("Credits Available:", growthRates?.creditsAvailable);
+// console.log("Sheets Connected:", growthRates?.sheetsConnected);
+// console.log("Templates Generated:", growthRates?.templatesGenerated);
+
 
   // Table headers for users
   const tableHeaders = [
@@ -146,26 +156,33 @@ const AdminDashboard = () => {
         <Card
           heading="Credits Spent"
           amount={metrics.creditsSpent}
-          change={15}
+          {...(growthRates_metrics?.creditsSpent !== null && {
+            change: growthRates_metrics?.creditsSpent })}
         />
         <Card
           heading="Credits Available"
           amount={metrics.creditsAvailable}
-          change={20}
+          {...(growthRates_metrics?.creditsAvailable !== null && {
+            change: growthRates_metrics?.creditsAvailable
+          })}
         />
         <Card
           heading="Sheets Connected"
           amount={metrics.sheetsConnected}
           isClickable={true}
           onClick={() => handleCardClick("Sheets Connected")}
-          change={25}
+          {...(growthRates_metrics?.sheetsConnected !== null && {
+            change: growthRates_metrics?.sheetsConnected
+          })}
         />
         <Card
           heading="Templates Generated"
           amount={metrics.templatesGenerated}
           isClickable={true}
           onClick={() => handleCardClick("Templates Generated")}
-          change={30}
+          {...(growthRates_metrics?.templatesGenerated !== null && {
+            change: growthRates_metrics?.templatesGenerated
+          })}
         />
       </div>
 
@@ -173,41 +190,57 @@ const AdminDashboard = () => {
       <div className={styles.componentSection}>
         <h2 className={styles.sectionTitle}>Summary Stats</h2>
         <div className={styles.prospectsCardContainer}>
-          <Card
-            heading="Campaigns"
-            amount={summaryStats.campaigns}
-            isClickable={true}
-            onClick={() => handleCardClick("Campaigns")}
-            change={15}
-          />
+        <Card
+          heading="Campaigns"
+          amount={summaryStats.campaigns}
+          isClickable={true}
+          onClick={() => handleCardClick("Campaigns")}
+          // Only pass `change` if it's not null
+          {...(growthRates_summaryStats?.campaigns !== null && {
+            change: growthRates_summaryStats?.campaigns
+          })}
+        />
+
           <Card
             heading="Prospects Added"
             amount={summaryStats.prospectsAdded}
             isClickable={true}
             onClick={() => handleCardClick("Prospects Added")}
-            change={-10}
+            {...(growthRates_summaryStats?.prospectsAdded !== null && {
+            change: growthRates_summaryStats?.prospectsAdded
+            })}
           />
+
           <Card
             heading="Meetings Booked"
             amount={summaryStats.meetingsBooked}
             isClickable={true}
             onClick={() => handleCardClick("Meetings Booked")}
-            change={12}
+            {...(growthRates_summaryStats?.meetingsBooked !== null && {
+            change: growthRates_summaryStats?.meetingsBooked
+            })}
           />
+
           <Card
             heading="Meeting Attended"
             amount={summaryStats.meetingsAttended}
             isClickable={true}
             onClick={() => handleCardClick("Meeting Attended")}
-            change={-5}
+            {...(growthRates_summaryStats?.meetingsAttended !== null && {
+            change: growthRates_summaryStats?.meetingsAttended
+            })}
           />
+
           <Card
             heading="Visitors Identified"
             amount={summaryStats.visitorsIdentified}
             isClickable={true}
             onClick={() => handleCardClick("Visitors Identified")}
-            change={10}
+            {...(growthRates_summaryStats?.visitorsIdentified !== null && {
+            change: growthRates_summaryStats?.visitorsIdentified
+            })}
           />
+          
         </div>
       </div>
 
