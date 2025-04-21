@@ -10,6 +10,7 @@ import UserCreditsChart from "./UserCreditsChart/UserCreditsChart";
 import ActiveProspectsLifecycle from "./ActiveProspectsLifeCycle/ActiveProspectsLifeCycle";
 import CardPopUpGraph from "../MainDashboard/CardBlock/CardPopUpGraph/CardPopUpGraph";
 import useGetAdminDashboard from "../MainDashboard/Hooks/useGetAdminDashboard";
+import useGetMiniGraphData from "../MainDashboard/Hooks/useGetMiniGraphData";
 import Graph from "../MainDashboard/Graph/Graph";
 import Loader from "src/Common/Loader/Loader";
 import useGetRealTimeAlerts from "../MainDashboard/Hooks/Alerts/useGetAlerts";
@@ -24,6 +25,13 @@ const AdminDashboard = () => {
   const [isPopUpOpen, setIsPopUpOpen] = useState(false);
   const [popupHeading, setPopupHeading] = useState("");
   const { downloadCSV, loading: csvLoading } = useDownloadCSV();
+
+  // Get mini graph data for popup
+  const {
+    data: miniGraphData,
+    loading: miniGraphLoading,
+    error: miniGraphError,
+  } = useGetMiniGraphData(popupHeading);
 
   const {
     data: dashboardData,
@@ -56,6 +64,7 @@ const AdminDashboard = () => {
 
   const closePopup = () => {
     setIsPopUpOpen(false);
+    setPopupHeading(""); // Reset heading when closing popup
   };
 
   if (dashboardLoading)
@@ -157,10 +166,10 @@ const AdminDashboard = () => {
           change={25}
         />
         <Card
-          heading="Templates generated"
+          heading="Templates Generated"
           amount={metrics.templatesGenerated}
           isClickable={true}
-          onClick={() => handleCardClick("Templates generated")}
+          onClick={() => handleCardClick("Templates Generated")}
           change={30}
         />
       </div>
@@ -198,10 +207,10 @@ const AdminDashboard = () => {
             change={-5}
           />
           <Card
-            heading="Visitors identified"
+            heading="Visitors Identified"
             amount={summaryStats.visitorsIdentified}
             isClickable={true}
-            onClick={() => handleCardClick("Visitors identified")}
+            onClick={() => handleCardClick("Visitors Identified")}
             change={10}
           />
         </div>
@@ -268,6 +277,9 @@ const AdminDashboard = () => {
         isOpen={isPopUpOpen}
         onClose={closePopup}
         heading={popupHeading}
+        graphData={miniGraphData}
+        loading={miniGraphLoading}
+        error={miniGraphError}
       />
 
       <ToastManager toastMessages={toastMessages} />
