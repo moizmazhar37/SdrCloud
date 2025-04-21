@@ -142,7 +142,12 @@ const AdminDashboard = () => {
           isClickable={true}
           onClick={() => handleCardClick("Active Users")}
         />
-        <Card heading="Available Seats" amount={metrics.availableSeats} />
+        <Card
+          heading="Available Seats"
+          amount={metrics.availableSeats}
+          isClickable={true}
+          onClick={() => handleCardClick("Available Seats")}
+        />
         <Card
           heading="Credits Spent"
           amount={metrics.creditsSpent}
@@ -176,8 +181,8 @@ const AdminDashboard = () => {
           <Card
             heading="Campaigns"
             amount={summaryStats.campaigns}
-            isClickable={true}
-            onClick={() => handleCardClick("Campaigns")}
+            // isClickable={true}
+            // onClick={() => handleCardClick("Campaigns")}
             change={15}
           />
           <Card
@@ -190,15 +195,15 @@ const AdminDashboard = () => {
           <Card
             heading="Meetings Booked"
             amount={summaryStats.meetingsBooked}
-            isClickable={true}
-            onClick={() => handleCardClick("Meetings Booked")}
+            // isClickable={true}
+            // onClick={() => handleCardClick("Meetings Booked")}
             change={12}
           />
           <Card
             heading="Meeting Attended"
             amount={summaryStats.meetingsAttended}
-            isClickable={true}
-            onClick={() => handleCardClick("Meeting Attended")}
+            // isClickable={true}
+            s // onClick={() => handleCardClick("Meeting Attended")}
             change={-5}
           />
           <Card
