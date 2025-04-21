@@ -1,7 +1,7 @@
 import React from "react";
 import {
-  LineChart,
-  Line,
+  AreaChart,
+  Area,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -14,30 +14,22 @@ const ActiveProspectsLifecycle = ({ data }) => {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        {/* <div className={styles.primaryText}>5.987,37</div> */}
         <div className={styles.secondaryText}>Active Prospects Life Cycle</div>
       </div>
 
       <div className={styles.chartContainer}>
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart
+          <AreaChart
             data={data}
             margin={{ top: 20, right: 30, left: 30, bottom: 50 }}
+            baseValue="dataMin"
           >
             <CartesianGrid
               horizontal={true}
               vertical={true}
               stroke="#e0e0e0"
               strokeDasharray="3 3"
-              fillOpacity={0.1}
-              fill="url(#colorGrid)"
             />
-            <defs>
-              <linearGradient id="colorGrid" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stopColor="#f0f0f0" stopOpacity={0.5} />
-                <stop offset="100%" stopColor="#f0f0f0" stopOpacity={0.1} />
-              </linearGradient>
-            </defs>
 
             <XAxis
               dataKey="date"
@@ -65,10 +57,14 @@ const ActiveProspectsLifecycle = ({ data }) => {
                 borderRadius: "5px",
               }}
             />
-            <Line
+
+            {/* Each area component with proper shading */}
+            <Area
               type="monotone"
               dataKey="product1"
               stroke="#0000FF"
+              fill="rgba(0, 0, 255, 0.15)"
+              fillOpacity={1}
               strokeWidth={2}
               dot={{
                 stroke: "#0000FF",
@@ -76,10 +72,12 @@ const ActiveProspectsLifecycle = ({ data }) => {
                 r: 4,
               }}
             />
-            <Line
+            <Area
               type="monotone"
               dataKey="product2"
               stroke="#800080"
+              fill="rgba(128, 0, 128, 0.15)"
+              fillOpacity={1}
               strokeWidth={2}
               dot={{
                 stroke: "#800080",
@@ -87,10 +85,12 @@ const ActiveProspectsLifecycle = ({ data }) => {
                 r: 4,
               }}
             />
-            <Line
+            <Area
               type="monotone"
               dataKey="product3"
               stroke="#FF69B4"
+              fill="rgba(255, 105, 180, 0.15)"
+              fillOpacity={1}
               strokeWidth={2}
               dot={{
                 stroke: "#FF69B4",
@@ -98,7 +98,7 @@ const ActiveProspectsLifecycle = ({ data }) => {
                 r: 4,
               }}
             />
-          </LineChart>
+          </AreaChart>
         </ResponsiveContainer>
       </div>
     </div>

@@ -93,7 +93,7 @@ const Graph = ({
             margin={{
               top: 40,
               right: 20,
-              left: -20,
+              left: 0,
               bottom: 0,
             }}
           >
