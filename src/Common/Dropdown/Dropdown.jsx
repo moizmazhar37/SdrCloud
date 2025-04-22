@@ -2,11 +2,19 @@ import React, { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import styles from "./dorpdown.module.scss";
 
-const Dropdown = ({ options = [], buttonText = "Actions", className = "" }) => {
+const Dropdown = ({
+  options = [],
+  buttonText = "Actions",
+  className = "",
+  selectedOption = null, // Add selectedOption prop
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
   const triggerRef = useRef(null);
   const menuRef = useRef(null);
+
+  // Determine what text to show on the button
+  const displayText = selectedOption || buttonText;
 
   // Calculate and update menu position when dropdown opens
   useEffect(() => {
@@ -45,7 +53,7 @@ const Dropdown = ({ options = [], buttonText = "Actions", className = "" }) => {
         onClick={() => setIsOpen(!isOpen)}
         className={styles.trigger}
       >
-        {buttonText}
+        {displayText}
         <svg
           className={`${styles.arrow} ${isOpen ? styles.arrowOpen : ""}`}
           viewBox="0 0 24 24"
@@ -76,12 +84,17 @@ const Dropdown = ({ options = [], buttonText = "Actions", className = "" }) => {
             {options.map((option, index) => (
               <button
                 key={index}
-                className={styles.option}
+                className={`${styles.option} ${
+                  selectedOption === option.value ? styles.selected : ""
+                }`}
                 onClick={() => {
-                  option.onClick();
-                  setIsOpen(false);
+                  if (!option.disabled) {
+                    option.onClick();
+                    setIsOpen(false);
+                  }
                 }}
                 role="menuitem"
+                disabled={option.disabled}
               >
                 {option.label}
               </button>
