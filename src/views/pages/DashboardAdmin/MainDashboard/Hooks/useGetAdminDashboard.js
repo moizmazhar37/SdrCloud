@@ -35,6 +35,7 @@ const useGetAdminDashboard = (start_date, end_date) => {
           params,
         });
 
+        console.log("Dashboard data fetched successfully:", response.data);
         setData(response.data);
       } catch (err) {
         console.error("Error fetching dashboard data:", err);
