@@ -585,6 +585,16 @@ export const routes = [
 
   {
     exact: true,
+    path: "/google-auth",
+    guard: true,
+    layout: DashboardLayout,
+    component: lazy(() =>
+      import("src/views/pages/OAuth/OAuth")
+    ),
+  },
+
+  {
+    exact: true,
     path: "/user-myprojects",
     guard: true,
     layout: DashboardLayout,
