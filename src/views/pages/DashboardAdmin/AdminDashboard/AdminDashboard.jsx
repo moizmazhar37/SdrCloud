@@ -79,9 +79,9 @@ const AdminDashboard = () => {
     return null;
   }
 
-  const showTopTemplates = false; // Toggle this when needed
+  const showTopTemplates = false;
 
-  // Destructure the data for easier access
+  // Destructure the data
   const {
     supportInfo,
     metrics,
@@ -96,16 +96,9 @@ const AdminDashboard = () => {
     topUsersData,
     topTemplatesData,
   } = dashboardData;
- 
-const growthRates_metrics = metrics?.growth_rates;
-const growthRates_summaryStats = summaryStats?.growth_rates;
 
-// console.log("Growth Rates:", growthRates);
-// console.log("Credits Spent:", growthRates?.creditsSpent);
-// console.log("Credits Available:", growthRates?.creditsAvailable);
-// console.log("Sheets Connected:", growthRates?.sheetsConnected);
-// console.log("Templates Generated:", growthRates?.templatesGenerated);
-
+  const growthRates_metrics = metrics?.growth_rates;
+  const growthRates_summaryStats = summaryStats?.growth_rates;
 
   // Table headers for users
   const tableHeaders = [
@@ -152,18 +145,24 @@ const growthRates_summaryStats = summaryStats?.growth_rates;
           isClickable={true}
           onClick={() => handleCardClick("Active Users")}
         />
-        <Card heading="Available Seats" amount={metrics.availableSeats} />
+        <Card
+          heading="Available Seats"
+          amount={metrics.availableSeats}
+          isClickable={true}
+          onClick={() => handleCardClick("Available Seats")}
+        />
         <Card
           heading="Credits Spent"
           amount={metrics.creditsSpent}
           {...(growthRates_metrics?.creditsSpent !== null && {
-            change: growthRates_metrics?.creditsSpent })}
+            change: growthRates_metrics?.creditsSpent,
+          })}
         />
         <Card
           heading="Credits Available"
           amount={metrics.creditsAvailable}
           {...(growthRates_metrics?.creditsAvailable !== null && {
-            change: growthRates_metrics?.creditsAvailable
+            change: growthRates_metrics?.creditsAvailable,
           })}
         />
         <Card
@@ -172,7 +171,7 @@ const growthRates_summaryStats = summaryStats?.growth_rates;
           isClickable={true}
           onClick={() => handleCardClick("Sheets Connected")}
           {...(growthRates_metrics?.sheetsConnected !== null && {
-            change: growthRates_metrics?.sheetsConnected
+            change: growthRates_metrics?.sheetsConnected,
           })}
         />
         <Card
@@ -181,7 +180,7 @@ const growthRates_summaryStats = summaryStats?.growth_rates;
           isClickable={true}
           onClick={() => handleCardClick("Templates Generated")}
           {...(growthRates_metrics?.templatesGenerated !== null && {
-            change: growthRates_metrics?.templatesGenerated
+            change: growthRates_metrics?.templatesGenerated,
           })}
         />
       </div>
@@ -190,24 +189,31 @@ const growthRates_summaryStats = summaryStats?.growth_rates;
       <div className={styles.componentSection}>
         <h2 className={styles.sectionTitle}>Summary Stats</h2>
         <div className={styles.prospectsCardContainer}>
-        <Card
-          heading="Campaigns"
-          amount={summaryStats.campaigns}
-          isClickable={true}
-          onClick={() => handleCardClick("Campaigns")}
-          // Only pass `change` if it's not null
-          {...(growthRates_summaryStats?.campaigns !== null && {
-            change: growthRates_summaryStats?.campaigns
-          })}
-        />
+          <Card
+            heading="Campaigns"
+            amount={summaryStats.campaigns}
+            // isClickable={true}
+            // onClick={() => handleCardClick("Campaigns")}
+            // Only pass `change` if it's not null
+            {...(growthRates_summaryStats?.campaigns !== null && {
+              change: growthRates_summaryStats?.campaigns,
+            })}
+          />
 
+          <Card
+            heading="Campaigns"
+            amount={summaryStats.campaigns}
+            // isClickable={true}
+            // onClick={() => handleCardClick("Campaigns")}
+            // change={15}
+          />
           <Card
             heading="Prospects Added"
             amount={summaryStats.prospectsAdded}
             isClickable={true}
             onClick={() => handleCardClick("Prospects Added")}
             {...(growthRates_summaryStats?.prospectsAdded !== null && {
-            change: growthRates_summaryStats?.prospectsAdded
+              change: growthRates_summaryStats?.prospectsAdded,
             })}
           />
 
@@ -217,8 +223,11 @@ const growthRates_summaryStats = summaryStats?.growth_rates;
             isClickable={true}
             onClick={() => handleCardClick("Meetings Booked")}
             {...(growthRates_summaryStats?.meetingsBooked !== null && {
-            change: growthRates_summaryStats?.meetingsBooked
+              change: growthRates_summaryStats?.meetingsBooked,
             })}
+            // isClickable={true}
+            // onClick={() => handleCardClick("Meetings Booked")}
+            // change={12}
           />
 
           <Card
@@ -227,8 +236,11 @@ const growthRates_summaryStats = summaryStats?.growth_rates;
             isClickable={true}
             onClick={() => handleCardClick("Meeting Attended")}
             {...(growthRates_summaryStats?.meetingsAttended !== null && {
-            change: growthRates_summaryStats?.meetingsAttended
+              change: growthRates_summaryStats?.meetingsAttended,
             })}
+            // isClickable={true}
+            s // onClick={() => handleCardClick("Meeting Attended")}
+            // change={-5}
           />
 
           <Card
@@ -237,10 +249,9 @@ const growthRates_summaryStats = summaryStats?.growth_rates;
             isClickable={true}
             onClick={() => handleCardClick("Visitors Identified")}
             {...(growthRates_summaryStats?.visitorsIdentified !== null && {
-            change: growthRates_summaryStats?.visitorsIdentified
+              change: growthRates_summaryStats?.visitorsIdentified,
             })}
           />
-          
         </div>
       </div>
 
