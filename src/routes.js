@@ -277,6 +277,14 @@ export const routes = [
 
   {
     exact: true,
+    path: "/book-meeting/:tenant_id",
+    component: lazy(() =>
+      import("src/views/pages/Meeting/BookMeeting")
+    ),
+  },
+
+  {
+    exact: true,
     path: "/privacy-policy/:tenantId",
     component: lazy(() =>
       import("src/views/pages/PrivacyPolicy/PrivacyPolicyPage")
@@ -585,11 +593,11 @@ export const routes = [
 
   {
     exact: true,
-    path: "/google-auth",
+    path: "/calendar-link",
     guard: true,
     layout: DashboardLayout,
     component: lazy(() =>
-      import("src/views/pages/OAuth/OAuth")
+      import("src/views/pages/settings/Integrations/CalendarLink/OAuth")
     ),
   },
 
