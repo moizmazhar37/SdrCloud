@@ -201,13 +201,6 @@ const AdminDashboard = () => {
           />
 
           <Card
-            heading="Campaigns"
-            amount={summaryStats.campaigns}
-            // isClickable={true}
-            // onClick={() => handleCardClick("Campaigns")}
-            // change={15}
-          />
-          <Card
             heading="Prospects Added"
             amount={summaryStats.prospectsAdded}
             isClickable={true}
