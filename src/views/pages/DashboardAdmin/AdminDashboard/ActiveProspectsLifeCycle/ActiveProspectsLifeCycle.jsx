@@ -58,43 +58,43 @@ const ActiveProspectsLifecycle = ({ data }) => {
               }}
             />
 
-            {/* Each area component with proper shading */}
+            {/* Each area component with updated colors */}
             <Area
               type="monotone"
               dataKey="product1"
-              stroke="#0000FF"
-              fill="rgba(0, 0, 255, 0.15)"
+              stroke="#4CAF50" // Green
+              fill="rgba(76, 175, 80, 0.15)"
               fillOpacity={1}
               strokeWidth={2}
               dot={{
-                stroke: "#0000FF",
-                fill: "#0000FF",
+                stroke: "#4CAF50",
+                fill: "#4CAF50",
                 r: 4,
               }}
             />
             <Area
               type="monotone"
               dataKey="product2"
-              stroke="#800080"
-              fill="rgba(128, 0, 128, 0.15)"
+              stroke="#1D4ED8" // Blue
+              fill="rgba(29, 78, 216, 0.15)"
               fillOpacity={1}
               strokeWidth={2}
               dot={{
-                stroke: "#800080",
-                fill: "#800080",
+                stroke: "#1D4ED8",
+                fill: "#1D4ED8",
                 r: 4,
               }}
             />
             <Area
               type="monotone"
               dataKey="product3"
-              stroke="#FF69B4"
-              fill="rgba(255, 105, 180, 0.15)"
+              stroke="#F97316" // Orange
+              fill="rgba(249, 115, 22, 0.15)"
               fillOpacity={1}
               strokeWidth={2}
               dot={{
-                stroke: "#FF69B4",
-                fill: "#FF69B4",
+                stroke: "#F97316",
+                fill: "#F97316",
                 r: 4,
               }}
             />
