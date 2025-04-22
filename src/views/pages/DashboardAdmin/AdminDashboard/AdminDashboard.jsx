@@ -15,6 +15,7 @@ import Graph from "../MainDashboard/Graph/Graph";
 import Loader from "src/Common/Loader/Loader";
 import useGetRealTimeAlerts from "../MainDashboard/Hooks/Alerts/useGetAlerts";
 import ToastManager from "src/Common/AlertToast/ToastManager/ToastManager";
+import ProspectDashboardTable from "../ProspectDashboardTable/ProspectDashboardTable";
 
 const AdminDashboard = () => {
   const [toastMessages, setToastMessages] = useState([]);
@@ -301,6 +302,9 @@ const AdminDashboard = () => {
               showDropdown={false}
             />
           )}
+        </div>
+        <div className={styles.meetingsTableContainer}>
+          <ProspectDashboardTable />
         </div>
       </div>
 
