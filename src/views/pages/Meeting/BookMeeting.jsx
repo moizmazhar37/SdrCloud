@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styles from "./BookMeeting.module.scss";
-import { getTenantSlots } from "./hooks";
+import { getTenantSlots, scheduleMeeting } from "./hooks";
+import { toast } from "react-toastify";
 
 const BookMeetingPage = () => {
   const id = window.location.href.split("/").pop().trim();
@@ -17,7 +18,8 @@ const BookMeetingPage = () => {
         setTenant(res);
         groupSlotsByDate(res.slots);
       } catch (error) {
-        console.error("Failed to fetch tenant slots:", error);
+        toast.error("Failed to load slots");
+        console.error("Fetch error:", error);
       } finally {
         setLoading(false);
       }
@@ -32,18 +34,34 @@ const BookMeetingPage = () => {
       const local = new Date(slot);
       const dateStr = local.toLocaleDateString();
       const timeStr = local.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-      const slotValue = slot; // keep raw UTC string as value
       if (!grouped[dateStr]) grouped[dateStr] = [];
-      grouped[dateStr].push({ label: timeStr, value: slotValue });
+      grouped[dateStr].push({ label: timeStr, value: slot }); // keep UTC in value
     });
     setGroupedSlots(grouped);
   };
 
-  const handleSchedule = () => {
-    if (!email || !selectedSlot) return alert("Please enter email and select a slot.");
-    console.log("📅 Schedule meeting for:", { tenant_id: id, email, slot: selectedSlot });
-    alert("Meeting scheduled! (simulate API)");
-    // Call scheduleMeeting API here
+  const handleSchedule = async () => {
+    if (!email || !selectedSlot) {
+      toast.warn("Please enter your email and select a time slot.");
+      return;
+    }
+
+    const payload = {
+      tenant_id: id,
+      email,
+      start_time_utc: selectedSlot,
+      summary: "Meeting",
+      description: "Scheduled via platform",
+    };
+
+    try {
+      const res = await scheduleMeeting(payload);
+      toast.success("Meeting scheduled successfully!");
+      toast.info(`Join link: ${res.hangoutLink}`, { autoClose: 6000 });
+    } catch (error) {
+      console.error("Schedule error:", error);
+      toast.error("Failed to schedule meeting.");
+    }
   };
 
   if (loading) return <p className={styles.loading}>Loading...</p>;
