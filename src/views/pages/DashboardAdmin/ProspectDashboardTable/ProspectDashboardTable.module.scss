@@ -1,6 +1,6 @@
 .dashboardContainer {
   font-family: "Inter", "Segoe UI", Arial, sans-serif;
-  font-size: 0.875rem;
+  font-size: 1.25rem;
   border: 1px solid #e0e4e8;
   border-radius: 6px;
 }
@@ -14,12 +14,12 @@
 
 .dashboardHeader {
   background-color: #f5f7fa;
-  padding: 1rem 1.5rem;
+  padding: 1.4rem 1.5rem;
   border-bottom: 1px solid #e0e4e8;
 }
 
 .dashboardTitle {
-  font-size: 1.125rem;
+  font-size: 1.25rem;
   font-weight: 600;
   color: #374151;
   margin: 0;
@@ -51,28 +51,36 @@
 
 .prospectsTable {
   width: 100%;
-  border-collapse: collapse;
-  min-width: 1200px; // Ensures table requires scrolling on smaller screens
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: 1200px;
   font-size: 0.8125rem;
 
   th,
   td {
-    padding: 0.75rem 1rem;
+    padding: 0.75rem 1.5rem; /* Increased horizontal padding */
     text-align: left;
     border-bottom: 1px solid #e9ecef;
     white-space: nowrap;
+    font-size: 14px;
+  }
+
+  td {
+    font-size: 16px;
   }
 
   th {
     background-color: #f8fafc;
     color: #64748b;
-    font-weight: 600;
-    font-size: 0.75rem;
+    font-weight: 500;
+    font-size: 14px;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    position: sticky;
-    top: 0;
-    z-index: 10;
+  }
+
+  th:not(:last-child),
+  td:not(:last-child) {
+    padding-right: 2rem; /* Additional right padding for all cells except the last one */
   }
 
   tbody tr {

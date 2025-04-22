@@ -1,7 +1,7 @@
 .container {
-  background: #FFFFFF;
+  background: #ffffff;
   border-radius: 7px;
-  border: 1px solid #ECECEC;
+  border: 1px solid #ececec;
 
   padding: 24px;
   width: 100%;
@@ -18,8 +18,8 @@
 }
 
 .title {
-  font-size: 28px;
-  font-weight: 500;
+  font-size: 1.25rem;
+  font-weight: 600;
   color: #111827;
   margin: 0;
   line-height: 36px;
@@ -32,33 +32,32 @@
 }
 
 .tableContainer::-webkit-scrollbar {
-  width: 3px; 
+  width: 3px;
 }
-
 
 .table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  
+
   th {
     padding: 12px 0;
     text-align: left;
     font-weight: 500;
     font-size: 14px;
-    color: #6B7280;
-    border-bottom: 1px solid #E5E7EB;
-    background: #FFFFFF;
+    color: #6b7280;
+    border-bottom: 1px solid #e5e7eb;
+    background: #ffffff;
     position: sticky;
     top: 0;
     z-index: 1;
   }
-  
+
   td {
     padding: 16px 0;
-    border-bottom: 1px solid #E5E7EB;
+    border-bottom: 1px solid #e5e7eb;
   }
-  
+
   tr:last-child td {
     border-bottom: none;
   }
@@ -87,10 +86,10 @@
 }
 
 .avatar {
-  width: 40px; 
+  width: 40px;
   height: 40px;
   border-radius: 50%;
-  object-fit: cover; 
+  object-fit: cover;
 }
 
 .userName {
@@ -99,8 +98,9 @@
   font-size: 14px;
 }
 
-.creditsCell, .scoreCell {
+.creditsCell,
+.scoreCell {
   font-weight: 500;
-  color: #1F2937;
+  color: #1f2937;
   font-size: 14px;
 }
