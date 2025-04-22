@@ -79,9 +79,9 @@ const AdminDashboard = () => {
     return null;
   }
 
-  const showTopTemplates = false; // Toggle this when needed
+  const showTopTemplates = false;
 
-  // Destructure the data for easier access
+  // Destructure the data
   const {
     supportInfo,
     metrics,
@@ -96,6 +96,9 @@ const AdminDashboard = () => {
     topUsersData,
     topTemplatesData,
   } = dashboardData;
+
+  const growthRates_metrics = metrics?.growth_rates;
+  const growthRates_summaryStats = summaryStats?.growth_rates;
 
   // Table headers for users
   const tableHeaders = [
@@ -151,26 +154,34 @@ const AdminDashboard = () => {
         <Card
           heading="Credits Spent"
           amount={metrics.creditsSpent}
-          change={15}
+          {...(growthRates_metrics?.creditsSpent !== null && {
+            change: growthRates_metrics?.creditsSpent,
+          })}
         />
         <Card
           heading="Credits Available"
           amount={metrics.creditsAvailable}
-          change={20}
+          {...(growthRates_metrics?.creditsAvailable !== null && {
+            change: growthRates_metrics?.creditsAvailable,
+          })}
         />
         <Card
           heading="Sheets Connected"
           amount={metrics.sheetsConnected}
           isClickable={true}
           onClick={() => handleCardClick("Sheets Connected")}
-          change={25}
+          {...(growthRates_metrics?.sheetsConnected !== null && {
+            change: growthRates_metrics?.sheetsConnected,
+          })}
         />
         <Card
           heading="Templates Generated"
           amount={metrics.templatesGenerated}
           isClickable={true}
           onClick={() => handleCardClick("Templates Generated")}
-          change={30}
+          {...(growthRates_metrics?.templatesGenerated !== null && {
+            change: growthRates_metrics?.templatesGenerated,
+          })}
         />
       </div>
 
@@ -183,35 +194,63 @@ const AdminDashboard = () => {
             amount={summaryStats.campaigns}
             // isClickable={true}
             // onClick={() => handleCardClick("Campaigns")}
-            change={15}
+            // Only pass `change` if it's not null
+            {...(growthRates_summaryStats?.campaigns !== null && {
+              change: growthRates_summaryStats?.campaigns,
+            })}
+          />
+
+          <Card
+            heading="Campaigns"
+            amount={summaryStats.campaigns}
+            // isClickable={true}
+            // onClick={() => handleCardClick("Campaigns")}
+            // change={15}
           />
           <Card
             heading="Prospects Added"
             amount={summaryStats.prospectsAdded}
             isClickable={true}
             onClick={() => handleCardClick("Prospects Added")}
-            change={-10}
+            {...(growthRates_summaryStats?.prospectsAdded !== null && {
+              change: growthRates_summaryStats?.prospectsAdded,
+            })}
           />
+
           <Card
             heading="Meetings Booked"
             amount={summaryStats.meetingsBooked}
+            isClickable={true}
+            onClick={() => handleCardClick("Meetings Booked")}
+            {...(growthRates_summaryStats?.meetingsBooked !== null && {
+              change: growthRates_summaryStats?.meetingsBooked,
+            })}
             // isClickable={true}
             // onClick={() => handleCardClick("Meetings Booked")}
-            change={12}
+            // change={12}
           />
+
           <Card
             heading="Meeting Attended"
             amount={summaryStats.meetingsAttended}
+            isClickable={true}
+            onClick={() => handleCardClick("Meeting Attended")}
+            {...(growthRates_summaryStats?.meetingsAttended !== null && {
+              change: growthRates_summaryStats?.meetingsAttended,
+            })}
             // isClickable={true}
             s // onClick={() => handleCardClick("Meeting Attended")}
-            change={-5}
+            // change={-5}
           />
+
           <Card
             heading="Visitors Identified"
             amount={summaryStats.visitorsIdentified}
             isClickable={true}
             onClick={() => handleCardClick("Visitors Identified")}
-            change={10}
+            {...(growthRates_summaryStats?.visitorsIdentified !== null && {
+              change: growthRates_summaryStats?.visitorsIdentified,
+            })}
           />
         </div>
       </div>
