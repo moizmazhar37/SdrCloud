@@ -114,6 +114,12 @@ const AdminDashboard = () => {
     { key: "viewed_count", label: "Times Used" },
   ];
 
+  const formatAmount = (value) => {
+    if (value === null) {
+      return "N/A";
+    }
+    return value;
+  };
   return (
     <div className={styles.dashboardContainer}>
       {/* Header Section with Support Contact and Action Buttons */}
@@ -141,33 +147,33 @@ const AdminDashboard = () => {
       <div className={styles.metricsCardContainer}>
         <Card
           heading="Active Users"
-          amount={metrics.activeUsers}
+          amount={formatAmount(metrics.activeUsers)}
           isClickable={true}
           onClick={() => handleCardClick("Active Users")}
         />
         <Card
           heading="Available Seats"
-          amount={metrics.availableSeats}
+          amount={formatAmount(metrics.availableSeats)}
           isClickable={true}
           onClick={() => handleCardClick("Available Seats")}
         />
         <Card
           heading="Credits Spent"
-          amount={metrics.creditsSpent}
+          amount={formatAmount(metrics.creditsSpent)}
           {...(growthRates_metrics?.creditsSpent !== null && {
             change: growthRates_metrics?.creditsSpent,
           })}
         />
         <Card
           heading="Credits Available"
-          amount={metrics.creditsAvailable}
+          amount={formatAmount(metrics.creditsAvailable)}
           {...(growthRates_metrics?.creditsAvailable !== null && {
             change: growthRates_metrics?.creditsAvailable,
           })}
         />
         <Card
           heading="Sheets Connected"
-          amount={metrics.sheetsConnected}
+          amount={formatAmount(metrics.sheetsConnected)}
           isClickable={true}
           onClick={() => handleCardClick("Sheets Connected")}
           {...(growthRates_metrics?.sheetsConnected !== null && {
@@ -176,7 +182,7 @@ const AdminDashboard = () => {
         />
         <Card
           heading="Templates Generated"
-          amount={metrics.templatesGenerated}
+          amount={formatAmount(metrics.templatesGenerated)}
           isClickable={true}
           onClick={() => handleCardClick("Templates Generated")}
           {...(growthRates_metrics?.templatesGenerated !== null && {
@@ -191,7 +197,7 @@ const AdminDashboard = () => {
         <div className={styles.prospectsCardContainer}>
           <Card
             heading="Campaigns"
-            amount={summaryStats.campaigns}
+            amount={formatAmount(summaryStats.campaigns)}
             // isClickable={true}
             // onClick={() => handleCardClick("Campaigns")}
             // Only pass `change` if it's not null
@@ -202,7 +208,7 @@ const AdminDashboard = () => {
 
           <Card
             heading="Prospects Added"
-            amount={summaryStats.prospectsAdded}
+            amount={formatAmount(summaryStats.prospectsAdded)}
             isClickable={true}
             onClick={() => handleCardClick("Prospects Added")}
             {...(growthRates_summaryStats?.prospectsAdded !== null && {
@@ -212,33 +218,27 @@ const AdminDashboard = () => {
 
           <Card
             heading="Meetings Booked"
-            amount={summaryStats.meetingsBooked}
+            amount={formatAmount(summaryStats.meetingsBooked)}
             isClickable={true}
             onClick={() => handleCardClick("Meetings Booked")}
             {...(growthRates_summaryStats?.meetingsBooked !== null && {
               change: growthRates_summaryStats?.meetingsBooked,
             })}
-            // isClickable={true}
-            // onClick={() => handleCardClick("Meetings Booked")}
-            // change={12}
           />
 
           <Card
             heading="Meeting Attended"
-            amount={summaryStats.meetingsAttended}
+            amount={formatAmount(summaryStats.meetingsAttended)}
             isClickable={true}
             onClick={() => handleCardClick("Meeting Attended")}
             {...(growthRates_summaryStats?.meetingsAttended !== null && {
               change: growthRates_summaryStats?.meetingsAttended,
             })}
-            // isClickable={true}
-            s // onClick={() => handleCardClick("Meeting Attended")}
-            // change={-5}
           />
 
           <Card
             heading="Visitors Identified"
-            amount={summaryStats.visitorsIdentified}
+            amount={formatAmount(summaryStats.visitorsIdentified)}
             isClickable={true}
             onClick={() => handleCardClick("Visitors Identified")}
             {...(growthRates_summaryStats?.visitorsIdentified !== null && {
