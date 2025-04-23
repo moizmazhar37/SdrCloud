@@ -11,11 +11,9 @@ const ConfirmationModal = ({
   actionButtonText = "Proceed",
   onAction,
   totalRecords,
+  showInputField = true, // <-- NEW PROP
 }) => {
-  const [rowsToCreate, setRowsToCreate] = useState(totalRecords);
-  const [calculatedPrice, setCalculatedPrice] = useState(0);
-
-
+  const [rowsToCreate, setRowsToCreate] = useState(totalRecords || 0);
 
   if (!isOpen) return null;
 
@@ -25,29 +23,28 @@ const ConfirmationModal = ({
         {title && <h2 className={styles.modalTitle}>{title}</h2>}
 
         <div className={styles.modalBody}>
-          {/* Input field for number of records */}
-          <div className={styles.inputSection}>
-            <label htmlFor="recordsInput" className={styles.inputLabel}>
-              Number of Videos (Max: {totalRecords} rows in the sheet):
-            </label>
-            <input
-              id="recordsInput"
-              type="number"
-              // min="1"
-              max={totalRecords}
-              value={rowsToCreate}
-              onChange={(e) => {
-                const value = Math.min(totalRecords, Math.max(0, Number(e.target.value)));
-                setRowsToCreate(value);
-              }}
-              className={styles.inputField}
-            />
-            <small className={styles.helperText}>
-              Enter the number of rows to process. Max is {totalRecords}.
-            </small>
-          </div>
-
-
+          {/* Conditionally show the input section */}
+          {showInputField && (
+            <div className={styles.inputSection}>
+              <label htmlFor="recordsInput" className={styles.inputLabel}>
+                Number of Videos (Max: {totalRecords} rows in the sheet):
+              </label>
+              <input
+                id="recordsInput"
+                type="number"
+                max={totalRecords}
+                value={rowsToCreate}
+                onChange={(e) => {
+                  const value = Math.min(totalRecords, Math.max(0, Number(e.target.value)));
+                  setRowsToCreate(value);
+                }}
+                className={styles.inputField}
+              />
+              <small className={styles.helperText}>
+                Enter the number of rows to process. Max is {totalRecords}.
+              </small>
+            </div>
+          )}
 
           {confirmationText && <p className={styles.confirmText}>{confirmationText}</p>}
           {noteText && <p className={styles.noteText}>{noteText}</p>}
@@ -60,7 +57,7 @@ const ConfirmationModal = ({
           {actionButtonText && (
             <button
               className={`${styles.button} ${styles.actionButton}`}
-              onClick={() => onAction(rowsToCreate)}
+              onClick={() => onAction(showInputField ? rowsToCreate : undefined)}
             >
               {actionButtonText}
             </button>

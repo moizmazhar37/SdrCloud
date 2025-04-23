@@ -79,8 +79,7 @@ const AdminDashboard = () => {
     return null;
   }
 
-  // Changed to true to enable the top templates section
-  const showTopTemplates = true;
+  const showTopTemplates = false;
 
   // Destructure the data for easier access
   const {
@@ -101,8 +100,13 @@ const AdminDashboard = () => {
   // Table headers for users
   const tableHeaders = [
     { key: "name", label: "Name" },
-    { key: "credits", label: "Credits used" },
-    { key: "score", label: "Score" },
+    { key: "role", label: "Role" },
+    { key: "email", label: "Email" },
+    { key: "phone", label: "Phone" },
+    { key: "active_prospects", label: "Active Prospects" },
+    { key: "booked_meetings", label: "Booked Meetings" },
+    { key: "viewAs", label: "View As" },
+    { key: "editUser", label: "Edit User" },
   ];
 
   // Table headers for templates

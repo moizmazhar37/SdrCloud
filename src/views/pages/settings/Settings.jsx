@@ -48,6 +48,12 @@ const NewSettings = () => {
         text={"Email Templates"}
         infoText={"Create or edit email templates here"}
       />
+      <Card
+        image={add_email}
+        route={"/book-meeting"}
+        text={"Schedule Availability"}
+        infoText={"Set meeting slots as per available schedule"}
+      />
     </div>
   );
 };

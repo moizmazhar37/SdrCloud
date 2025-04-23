@@ -12,44 +12,40 @@ import FiltersDropdown from "./FIltersDropdown/FiltersDropdown";
 import styles from "./VisitorsGraph.module.scss";
 
 const VisitorsGraph = ({ data }) => {
-  // const data = [
-  //   {
-  //     name: "Mar",
-  //     visitors: 5,
-  //     website: "bloxbunny.com",
-  //   },
-  //   {
-  //     name: "Feb",
-  //     visitors: 3,
-  //     website: "bloxbunny.com",
-  //   },
-  //   {
-  //     name: "Mar",
-  //     visitors: 7,
-  //     website: "techco.io",
-  //   },
-  //   {
-  //     name: "Feb",
-  //     visitors: 4,
-  //     website: "techco.io",
-  //   },
-  //   {
-  //     name: "Mar",
-  //     visitors: 8,
-  //     website: "example.com",
-  //   },
-  //   {
-  //     name: "Feb",
-  //     visitors: 6,
-  //     website: "example.com",
-  //   },
-  // ];
+  // Function to get default empty data with all months
+  const getDefaultData = () => {
+    if (data && data.length > 0) return data;
 
-  const [filteredData, setFilteredData] = useState(data);
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+
+    return months.map((month) => ({
+      name: month,
+      visitors: 0,
+      website: "-",
+    }));
+  };
+
+  const [filteredData, setFilteredData] = useState([]);
   const [selectedWebsite, setSelectedWebsite] = useState(null);
 
-  // Extract unique websites from data
-  const uniqueWebsites = [...new Set(data.map((item) => item.website))];
+  // Extract unique websites from data (if data exists)
+  const uniqueWebsites =
+    data && data.length > 0
+      ? [...new Set(data.map((item) => item.website))]
+      : [];
 
   // Create options in the required format
   const websiteOptions = uniqueWebsites.map((website) => ({
@@ -63,21 +59,24 @@ const VisitorsGraph = ({ data }) => {
   const handleWebsiteSelect = (website) => {
     setSelectedWebsite(website);
 
+    // Get the base data (either actual data or default empty data)
+    const baseData = getDefaultData();
+
     // Filter data by selected website
-    if (website && website !== "All Websites") {
-      const filtered = data.filter((item) => item.website === website);
-      setFilteredData(filtered);
+    if (website && website !== "All Websites" && data.length > 0) {
+      const filtered = baseData.filter((item) => item.website === website);
+      setFilteredData(filtered.length > 0 ? filtered : getDefaultData());
     } else {
       // Show all data when "All Websites" is selected or no selection
-      setFilteredData(data);
+      setFilteredData(baseData);
     }
   };
 
   // Set all data initially
   useEffect(() => {
-    // Initially show all data
-    setFilteredData(data);
-  }, []);
+    // Initially show all data or default empty data
+    setFilteredData(getDefaultData());
+  }, [data]);
 
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
@@ -87,15 +86,37 @@ const VisitorsGraph = ({ data }) => {
           <p className={styles.tooltipItem} style={{ color: "#0D3B66" }}>
             Visitors: {payload[0].value.toLocaleString()}
           </p>
-          {(!selectedWebsite || selectedWebsite === "All Websites") && (
-            <p className={styles.tooltipItem} style={{ color: "#6B7280" }}>
-              Website: {payload[0].payload.website}
-            </p>
-          )}
+          {(!selectedWebsite || selectedWebsite === "All Websites") &&
+            payload[0].payload.website !== "-" && (
+              <p className={styles.tooltipItem} style={{ color: "#6B7280" }}>
+                Website: {payload[0].payload.website}
+              </p>
+            )}
         </div>
       );
     }
     return null;
+  };
+
+  // Show a message when there's no data
+  const NoDataMessage = () => {
+    if (data && data.length > 0) return null;
+
+    return (
+      <div
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          fontSize: "14px",
+          color: "#6B7280",
+          zIndex: 1,
+        }}
+      >
+        No data available
+      </div>
+    );
   };
 
   return (
@@ -108,7 +129,8 @@ const VisitorsGraph = ({ data }) => {
           onOptionSelect={handleWebsiteSelect}
         />
       </div>
-      <div className={styles.graphContainer}>
+      <div className={styles.graphContainer} style={{ position: "relative" }}>
+        <NoDataMessage />
         <ResponsiveContainer width="100%" height={300}>
           <AreaChart
             data={filteredData}
@@ -141,7 +163,7 @@ const VisitorsGraph = ({ data }) => {
               }
               allowDataOverflow={false}
               allowDecimals={false}
-              domain={[0, "dataMax + 2"]}
+              domain={[0, data && data.length > 0 ? "dataMax + 2" : 5]}
             />
             <Tooltip
               content={<CustomTooltip />}

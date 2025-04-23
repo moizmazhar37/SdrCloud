@@ -278,9 +278,7 @@ export const routes = [
   {
     exact: true,
     path: "/book-meeting/:tenant_id",
-    component: lazy(() =>
-      import("src/views/pages/Meeting/BookMeeting")
-    ),
+    component: lazy(() => import("src/views/pages/Meeting/BookMeeting")),
   },
 
   {
@@ -491,7 +489,7 @@ export const routes = [
     path: "/PP-createaccount",
     // guard: true,
     layout: DashboardLayout,
-    component: lazy(() => import("src/views/pages/PPAdmin/Accounts/index")),
+    component: lazy(() => import("src/views/pages/PPAdmin/Accounts/Accounts")),
   },
   {
     exact: true,
@@ -499,7 +497,7 @@ export const routes = [
     // guard: true,
     layout: DashboardLayout,
     component: lazy(() =>
-      import("src/views/pages/PPAdmin/Accounts/CreateAccount")
+      import("src/views/pages/PPAdmin/Accounts/CreateAccount/CreateAccount")
     ),
   },
   {
@@ -598,6 +596,16 @@ export const routes = [
     layout: DashboardLayout,
     component: lazy(() =>
       import("src/views/pages/settings/Integrations/CalendarLink/OAuth")
+    ),
+  },
+
+  {
+    exact: true,
+    path: "/book-meeting",
+    guard: true,
+    layout: DashboardLayout,
+    component: lazy(() =>
+      import("src/views/pages/settings/ScheduleMeetings/ScheduleMeetings")
     ),
   },
 

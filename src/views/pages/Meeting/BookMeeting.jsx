@@ -33,7 +33,10 @@ const BookMeetingPage = () => {
     slots.forEach((slot) => {
       const local = new Date(slot);
       const dateStr = local.toLocaleDateString();
-      const timeStr = local.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+      const timeStr = local.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
       if (!grouped[dateStr]) grouped[dateStr] = [];
       grouped[dateStr].push({ label: timeStr, value: slot }); // keep UTC in value
     });
@@ -64,52 +67,91 @@ const BookMeetingPage = () => {
     }
   };
 
-  if (loading) return <p className={styles.loading}>Loading...</p>;
+  if (loading)
+    return (
+      <div className={styles.loadingContainer}>
+        <div className={styles.loadingSpinner}></div>
+        <p>Loading calendar...</p>
+      </div>
+    );
 
   return (
-    <div className={styles.container}>
-      {tenant && (
-        <>
-          <div className={styles.header}>
-            <img src={tenant.logo} alt="Tenant Logo" className={styles.logo} />
-            <h2>{tenant.name}'s Calendar</h2>
-          </div>
+    <div className={styles.pageWrapper}>
+      <div className={styles.container}>
+        {tenant && (
+          <>
+            <div className={styles.header}>
+              <div className={styles.logoWrapper}>
+                <img
+                  src={tenant.logo}
+                  alt="Tenant Logo"
+                  className={styles.logo}
+                />
+              </div>
+              <h1 className={styles.title}>{tenant.name}'s Calendar</h1>
+            </div>
 
-          <div className={styles.slots}>
-            {Object.keys(groupedSlots).map((date) => (
-              <div key={date} className={styles.slotGroup}>
-                <h4>{date}</h4>
-                {groupedSlots[date].map((slot, idx) => (
-                  <div key={idx} className={styles.slotItem}>
-                    <input
-                      type="radio"
-                      id={`${date}-${idx}`}
-                      name="slot"
-                      value={slot.value}
-                      checked={selectedSlot === slot.value}
-                      onChange={(e) => setSelectedSlot(e.target.value)}
-                    />
-                    <label htmlFor={`${date}-${idx}`}>{slot.label}</label>
+            <div className={styles.calendarSection}>
+              <h3 className={styles.sectionTitle}>Select a time slot</h3>
+
+              <div className={styles.slots}>
+                {Object.keys(groupedSlots).map((date) => (
+                  <div key={date} className={styles.slotGroup}>
+                    <div className={styles.dateHeader}>
+                      <h4>{date}</h4>
+                    </div>
+                    <div className={styles.slotsList}>
+                      {groupedSlots[date].map((slot, idx) => (
+                        <div
+                          key={idx}
+                          className={`${styles.slotItem} ${
+                            selectedSlot === slot.value ? styles.selected : ""
+                          }`}
+                          onClick={() => setSelectedSlot(slot.value)}
+                        >
+                          <input
+                            type="radio"
+                            id={`${date}-${idx}`}
+                            name="slot"
+                            value={slot.value}
+                            checked={selectedSlot === slot.value}
+                            onChange={() => {}}
+                          />
+                          <label htmlFor={`${date}-${idx}`}>{slot.label}</label>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 ))}
               </div>
-            ))}
-          </div>
+            </div>
 
-          <div className={styles.form}>
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className={styles.emailInput}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <button className={styles.scheduleBtn} onClick={handleSchedule}>
-              Schedule Meeting
-            </button>
-          </div>
-        </>
-      )}
+            <div className={styles.form}>
+              <h3 className={styles.sectionTitle}>Your information</h3>
+              <div className={styles.formGroup}>
+                <label htmlFor="email" className={styles.label}>
+                  Email
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  placeholder="Enter your email address"
+                  className={styles.emailInput}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+              <button
+                className={styles.scheduleBtn}
+                onClick={handleSchedule}
+                disabled={!selectedSlot || !email}
+              >
+                Schedule Meeting
+              </button>
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 };

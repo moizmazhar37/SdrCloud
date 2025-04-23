@@ -1,15 +1,44 @@
-import React from "react";
-import Dropdown from "src/Common/Dropdown/Dropdown";
+import React, { useContext, useState } from "react";
 import styles from "./TabularCard.module.scss";
+import useUserSelect from "src/views/pages/DashboardAdmin/MainDashboard/Hooks/useUserSelect";
+import { UserContext } from "src/context/User";
+import CreateUser from "src/views/pages/CompanyUsers/Users/CreateUser/CreateUser";
 
 const TabularCard = ({
   title,
-  dropdownOptions = [],
   usersData,
   tableHeaders,
-  buttonText,
-  showDropdown = true, // Default value is true
 }) => {
+
+  const [selectedUserId, setSelectedUserId] = useState(null);
+  const [isCreateUserOpen, setCreateUserOpen] = useState(false);
+  const [viewState, setViewState] = useState("create");
+
+  const user2=useContext(UserContext)
+  const [isViewingAs, setIsViewingAs] = useState(
+    sessionStorage.getItem("isViewingAs") === "true"
+  );
+  const [viewingUser, setViewingUser] = useState(
+    isViewingAs ? JSON.parse(sessionStorage.getItem("slaveUser")) : null
+  );
+
+  const handleUserSelect = useUserSelect({
+    setIsViewingAs,
+    setViewingUser,
+    isViewingAs,
+  });
+
+  const handleCreateUserSuccess = () => {
+    setCreateUserOpen(false);
+  };
+
+  const handleEditView = (user) => {
+    setSelectedUserId(user.id); // or however the user ID is stored
+    setViewState("edit");
+    setCreateUserOpen(true);
+  };
+  
+
   if (
     !tableHeaders ||
     !Array.isArray(tableHeaders) ||
@@ -23,9 +52,6 @@ const TabularCard = ({
     <div className={styles.container}>
       <div className={styles.header}>
         <h1 className={styles.title}>{title}</h1>
-        {showDropdown && (
-          <Dropdown options={dropdownOptions} buttonText={buttonText} />
-        )}
       </div>
 
       <div className={styles.tableContainer}>
@@ -42,31 +68,58 @@ const TabularCard = ({
           <tbody>
             {usersData && usersData.length > 0 ? (
               usersData.map((user, index) => (
+                
                 <tr key={index}>
-                  {tableHeaders.map((header) => (
-                    <td
-                      key={header.key}
-                      className={styles[`${header.key}Cell`]}
-                    >
-                      {header.key === "name" ? (
-                        <div className={styles.userInfo}>
-                          {user.image && (
-                            <img
-                              src={user.image}
-                              alt="User avatar"
-                              className={styles.avatar}
-                            />
-                          )}
-                          <span className={styles.userName}>{user.name}</span>
-                        </div>
-                      ) : user[header.key] !== null &&
-                        user[header.key] !== undefined ? (
-                        user[header.key]
-                      ) : (
-                        "-"
-                      )}
-                    </td>
-                  ))}
+                  {tableHeaders.map((header) => {
+                    const value = user[header.key];
+
+                    if (header.key === "viewAs") {
+                      return (
+                        <td key={header.key} className={styles[`${header.key}Cell`]}>
+                          <span
+                            className={styles.linkAction}
+                            onClick={() => handleUserSelect(user)}
+                          >
+                            View As
+                          </span>
+                        </td>
+                      );
+                    }
+
+                    if (header.key === "editUser") {
+                      return (
+                        <td key={header.key} className={styles[`${header.key}Cell`]}>
+                          <span
+                            className={styles.linkAction}
+                            onClick={() => handleEditView(user)}
+                          >
+                            Edit User
+                          </span>
+                        </td>
+                      );
+                    }
+
+                    return (
+                      <td key={header.key} className={styles[`${header.key}Cell`]}>
+                        {header.key === "name" ? (
+                          <div className={styles.userInfo}>
+                            {user.image && (
+                              <img
+                                src={user.image}
+                                alt="User avatar"
+                                className={styles.avatar}
+                              />
+                            )}
+                            <span className={styles.userName}>{user.name}</span>
+                          </div>
+                        ) : value !== null && value !== undefined ? (
+                          <span className={styles.userName}>{value}</span>
+                        ) : (
+                          "-"
+                        )}
+                      </td>
+                    );
+                  })}
                 </tr>
               ))
             ) : (
@@ -79,6 +132,16 @@ const TabularCard = ({
           </tbody>
         </table>
       </div>
+
+      {isCreateUserOpen && (
+        <CreateUser
+          isOpen={isCreateUserOpen}
+          onClose={() => setCreateUserOpen(false)}
+          onSuccess={handleCreateUserSuccess}
+          userId={selectedUserId}
+          viewState={viewState}
+        />
+      )}
     </div>
   );
 };
