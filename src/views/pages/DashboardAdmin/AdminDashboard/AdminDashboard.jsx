@@ -88,7 +88,7 @@ const AdminDashboard = () => {
     aiComponents,
     summaryStats,
     prospectsLifecycleData,
-    templates_created_data, // Make sure this matches the property name in the API response
+    templates_created_data,
     templatesSentData,
     visitDurationData,
     visitorsGraphData,
@@ -151,26 +151,26 @@ const AdminDashboard = () => {
         <Card
           heading="Credits Spent"
           amount={metrics?.creditsSpent || 0}
-          change={15}
+          change={metrics?.growth_rates?.creditsSpent}
         />
         <Card
           heading="Credits Available"
           amount={metrics?.creditsAvailable || 0}
-          change={20}
+          change={metrics?.growth_rates?.creditsAvailable}
         />
         <Card
           heading="Sheets Connected"
           amount={metrics?.sheetsConnected || 0}
           isClickable={true}
           onClick={() => handleCardClick("Sheets Connected")}
-          change={25}
+          change={metrics?.growth_rates?.sheetsConnected}
         />
         <Card
           heading="Templates Generated"
           amount={metrics?.templatesGenerated || 0}
           isClickable={true}
           onClick={() => handleCardClick("Templates Generated")}
-          change={30}
+          change={metrics?.growth_rates?.templatesGenerated}
         />
       </div>
 
@@ -183,35 +183,35 @@ const AdminDashboard = () => {
             amount={summaryStats?.campaigns || 0}
             isClickable={true}
             onClick={() => handleCardClick("Campaigns")}
-            change={15}
+            change={summaryStats?.growth_rates?.campaigns}
           />
           <Card
             heading="Prospects Added"
             amount={summaryStats?.prospectsAdded || 0}
             isClickable={true}
             onClick={() => handleCardClick("Prospects Added")}
-            change={-10}
+            change={summaryStats?.growth_rates?.prospectsAdded}
           />
           <Card
             heading="Meetings Booked"
             amount={summaryStats?.meetingsBooked || 0}
-            isClickable={true}
-            onClick={() => handleCardClick("Meetings Booked")}
-            change={12}
+            isClickable={false}
+            // onClick={() => handleCardClick("Meetings Booked")}
+            change={summaryStats?.growth_rates?.meetingsBooked}
           />
           <Card
             heading="Meeting Attended"
             amount={summaryStats?.meetingsAttended || 0}
-            isClickable={true}
-            onClick={() => handleCardClick("Meeting Attended")}
-            change={-5}
+            isClickable={false}
+            // onClick={() => handleCardClick("Meeting Attended")}
+            change={summaryStats?.growth_rates?.meetingsAttended}
           />
           <Card
             heading="Visitors Identified"
             amount={summaryStats?.visitorsIdentified || 0}
             isClickable={true}
             onClick={() => handleCardClick("Visitors Identified")}
-            change={10}
+            change={summaryStats?.growth_rates?.visitorsIdentified}
           />
         </div>
       </div>
@@ -229,7 +229,7 @@ const AdminDashboard = () => {
       <div className={styles.GraphContainer}>
         <Graph
           title="Amount of Templates Created"
-          data={templates_created_data || []} // Use proper variable name
+          data={templates_created_data || []}
           type={"filters"}
         />
         <Graph
