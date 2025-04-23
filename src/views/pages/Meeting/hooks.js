@@ -1,5 +1,5 @@
 // hooks.js
-import url from "src/config/APIConfig";
+import { url } from "src/config/APIConfig";
 
 export const getTenantSlots = async (tenantId) => {
   const res = await fetch(`${url}/tenant-meeting/tenant-slots/${tenantId}`);

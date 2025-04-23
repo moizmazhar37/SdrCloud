@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import "./VideoPlayer.css";
 import ApiConfig from "./../../../../config/APIConfig";
 import { videoTracking } from "src/config/APIConfig";
-import url from "src/config/APIConfig";
+import { url } from "src/config/APIConfig";
 import { v4 as uuidv4 } from "uuid"; // Make sure to install uuid package with npm install uuid
 
 const VideoPlayer = () => {
