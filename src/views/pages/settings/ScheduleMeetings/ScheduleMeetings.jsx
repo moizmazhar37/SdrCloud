@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styles from "./ScheduleMeetings.module.scss";
+import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
+import { useSetAvailability } from "./Hooks/useSetAvailability";
 
 const ScheduleMeetings = () => {
   // Days of the week
@@ -11,6 +13,11 @@ const ScheduleMeetings = () => {
     "Friday",
     "Saturday",
     "Sunday",
+  ];
+
+  const navs = [
+    { text: "Settings", route: "/settings" },
+    { text: "Schedule Meeting", route: "/book-meeting" },
   ];
 
   // State to store selected times for each day
@@ -38,6 +45,12 @@ const ScheduleMeetings = () => {
   // State for user's timezone
   const [userTimezone, setUserTimezone] = useState("");
   const [timezoneOffset, setTimezoneOffset] = useState(0);
+
+  // Use the availability hook
+  const { setAvailability, loading, error } = useSetAvailability();
+
+  // State to track which day is currently saving
+  const [savingDay, setSavingDay] = useState(null);
 
   // Get user's timezone on component mount
   useEffect(() => {
@@ -122,103 +135,117 @@ const ScheduleMeetings = () => {
   };
 
   // Save time slots for a specific day
-  const saveTimeSlots = (day) => {
-    const data = {
-      weekday: day,
-      time_slots_utc: timeSlots[day],
-    };
-    console.log(data);
-    console.log(userTimezone);
-    // Here you would typically send this data to your backend
+  const saveTimeSlots = async (day) => {
+    try {
+      setSavingDay(day);
+      const data = {
+        weekday: day,
+        timeSlotsUtc: timeSlots[day],
+      };
+
+      console.log("Sending data to API:", data);
+      await setAvailability(data);
+    } catch (err) {
+      console.error("Error saving time slots:", err);
+    } finally {
+      setSavingDay(null);
+    }
   };
 
   return (
-    <div className={styles.scheduleMeetings}>
-      <h1 className={styles.title}>Schedule Meetings</h1>
-      <p className={styles.description}>
-        Set your availability for the next 7 days
-      </p>
-      <p className={styles.timezoneInfo}>
-        Your timezone: {userTimezone || "Detecting..."}
-      </p>
+    <>
+      {" "}
+      <DynamicNavigator items={navs} />
+      <div className={styles.scheduleMeetings}>
+        <h1 className={styles.title}>Schedule Meetings</h1>
+        {/* <p className={styles.description}>
+          Set your availability for the next 7 days
+        </p> */}
+        <p className={styles.timezoneInfo}>
+          Your timezone: {userTimezone || "Detecting..."}
+        </p>
 
-      <div className={styles.daysContainer}>
-        {weekdays.map((day) => (
-          <div key={day} className={styles.dayCard}>
-            <div className={styles.dayHeader}>
-              <h2>{day}</h2>
-            </div>
-            <div className={styles.timeSelectionArea}>
-              <div className={styles.timePickerContainer}>
-                <label>Add Availability Time (Your Local Time)</label>
-                <div className={styles.timePickerWrapper}>
-                  <div className={styles.timeInputGroup}>
-                    <input
-                      type="number"
-                      min="0"
-                      max="23"
-                      value={currentTimeInputs[day].hour}
-                      onChange={(e) => handleHourChange(day, e.target.value)}
-                      className={styles.timeInput}
-                    />
-                    <span className={styles.timeSeparator}>:</span>
-                    <input
-                      type="number"
-                      min="0"
-                      max="59"
-                      value={currentTimeInputs[day].minute}
-                      onChange={(e) => handleMinuteChange(day, e.target.value)}
-                      className={styles.timeInput}
-                    />
+        <div className={styles.daysContainer}>
+          {weekdays.map((day) => (
+            <div key={day} className={styles.dayCard}>
+              <div className={styles.dayHeader}>
+                <h2>{day}</h2>
+              </div>
+              <div className={styles.timeSelectionArea}>
+                <div className={styles.timePickerContainer}>
+                  <label>Add Availability Time (Your Local Time)</label>
+                  <div className={styles.timePickerWrapper}>
+                    <div className={styles.timeInputGroup}>
+                      <input
+                        type="number"
+                        min="0"
+                        max="23"
+                        value={currentTimeInputs[day].hour}
+                        onChange={(e) => handleHourChange(day, e.target.value)}
+                        className={styles.timeInput}
+                      />
+                      <span className={styles.timeSeparator}>:</span>
+                      <input
+                        type="number"
+                        min="0"
+                        max="59"
+                        value={currentTimeInputs[day].minute}
+                        onChange={(e) =>
+                          handleMinuteChange(day, e.target.value)
+                        }
+                        className={styles.timeInput}
+                      />
+                    </div>
                   </div>
+
+                  <button
+                    className={styles.addTimeButton}
+                    onClick={() => addTimeSlot(day)}
+                  >
+                    + Add Time
+                  </button>
                 </div>
 
+                <div className={styles.selectedTimesSection}>
+                  <h3>Selected Time Slots:</h3>
+                  {timeSlots[day].length === 0 ? (
+                    <p className={styles.noTimes}>No times selected</p>
+                  ) : (
+                    <ul className={styles.timeSlotsList}>
+                      {timeSlots[day].map((slot, index) => (
+                        <li key={index} className={styles.timeSlot}>
+                          <span className={styles.localTime}>
+                            {formatLocalTime(slot)} (Your time)
+                          </span>
+                          <span className={styles.utcTime}>
+                            {formatUTCTime(slot)} UTC
+                          </span>
+                          <button
+                            className={styles.removeButton}
+                            onClick={() => removeTimeSlot(day, index)}
+                          >
+                            ×
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </div>
+              <div className={styles.saveButtonContainer}>
                 <button
-                  className={styles.addTimeButton}
-                  onClick={() => addTimeSlot(day)}
+                  className={styles.saveButton}
+                  onClick={() => saveTimeSlots(day)}
+                  disabled={loading && savingDay === day}
                 >
-                  + Add Time
+                  {loading && savingDay === day ? "Saving..." : "Save"}
                 </button>
               </div>
-
-              <div className={styles.selectedTimesSection}>
-                <h3>Selected Time Slots:</h3>
-                {timeSlots[day].length === 0 ? (
-                  <p className={styles.noTimes}>No times selected</p>
-                ) : (
-                  <ul className={styles.timeSlotsList}>
-                    {timeSlots[day].map((slot, index) => (
-                      <li key={index} className={styles.timeSlot}>
-                        <span className={styles.localTime}>
-                          {formatLocalTime(slot)} (Your time)
-                        </span>
-                        <span className={styles.utcTime}>
-                          {formatUTCTime(slot)} UTC
-                        </span>
-                        <button
-                          className={styles.removeButton}
-                          onClick={() => removeTimeSlot(day, index)}
-                        >
-                          ×
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
             </div>
-            <div className={styles.saveButtonContainer}>
-              <button
-                className={styles.saveButton}
-                onClick={() => saveTimeSlots(day)}
-              >
-                Save
-              </button>
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

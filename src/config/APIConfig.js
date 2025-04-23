@@ -23,7 +23,7 @@ export const tenantEmail = `${url}/tenant-email/`;
 export const emailTemplate = `${url}/email-template`;
 export const videoTracking = `${url}/video-tracking/`;
 export const hvoTracking = `${url}/hvo-tracking`;
-
+export const tenantMeeting = `${url}/tenant-meeting`;
 const ApiConfig = {
   getUrls: `${url}/url`,
   addUrl: `${url}/url`,

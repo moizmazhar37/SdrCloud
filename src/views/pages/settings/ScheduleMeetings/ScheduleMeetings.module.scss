@@ -34,7 +34,7 @@
       margin-bottom: 20px;
 
       .dayHeader {
-        background: #0456b3;
+        background: #ececec;
         color: white;
         padding: 16px 20px;
 
@@ -42,6 +42,7 @@
           margin: 0;
           font-size: 22px;
           font-weight: 500;
+          color: black;
         }
       }
 
@@ -69,7 +70,7 @@
               border-radius: 4px;
               padding: 0 10px;
               max-width: 100%;
-              width: 100%;
+              width: 97%;
               height: 44px;
 
               .timeInput {
