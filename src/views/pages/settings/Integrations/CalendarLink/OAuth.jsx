@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import styles from "./OAuth.module.scss";
-import { getConnectedGoogleEmail, initiateGoogleOAuth } from "./hooks";
+import { getConnectedGoogleEmail, initiateGoogleOAuth, disconnectGoogleAccount } from "./hooks";
 import Loader from "src/Common/Loader/Loader";
+import { toast } from "react-toastify";
 
 const GoogleCalendarConnect = () => {
   const [connectedEmail, setConnectedEmail] = useState(null);
@@ -34,9 +35,21 @@ const GoogleCalendarConnect = () => {
       if (authUrl) window.location.href = authUrl;
     } catch (error) {
       console.error("OAuth initiation failed:", error);
-      alert("Failed to connect calendar.");
+      toast("Failed to connect calendar.");
     }
   };
+
+  const handleDisconnect = async () => {
+    try {
+      await disconnectGoogleAccount(token);
+      toast("Calendar connection successfully disconnected.");
+      setConnectedEmail(null);
+    } catch (error) {
+      console.error("Failed to disconnect Google account:", error);
+      toast("Failed to disconnect calendar.");
+    }
+  }
+    
 
   return (
     <div className={styles.container}>
@@ -60,6 +73,9 @@ const GoogleCalendarConnect = () => {
       ) : connectedEmail ? (
         <div className={styles.connectedInfo}>
           Connected to <strong>{connectedEmail}</strong>
+          <button className={styles.disconnectBtn} onClick={() => handleDisconnect()}>
+            Disconnect
+          </button>
         </div>
       ) : (
         <button onClick={handleConnect} className={styles.connectBtn}>
