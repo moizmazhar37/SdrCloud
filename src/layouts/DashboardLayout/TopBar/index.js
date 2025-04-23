@@ -129,7 +129,7 @@ const TopBar = ({ onMobileNavOpen }) => {
             </div>
           ) : (
             <button className={styles.stopViewingButton} onClick={handleStopViewing}>
-              Stop Viewing as {viewingUser?.first_name} {viewingUser?.last_name}
+              Stop Viewing as {viewingUser?.first_name ?? viewingUser?.name}
             </button>
           )}
           {/* User Info */}

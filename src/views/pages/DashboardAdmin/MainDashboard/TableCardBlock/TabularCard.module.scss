@@ -63,20 +63,20 @@
   }
 }
 
-.nameColumn {
-  width: 50%;
+.roleColumn {
+  width: 8%;
 }
 
-.creditsColumn {
-  width: 25%;
+.emailColumn {
+  width: 15%;
 }
 
-.scoreColumn {
-  width: 25%;
+.phoneColumn {
+  width: 10%;
 }
 
-.nameCell {
-  padding-right: 24px;
+.activeColumn {
+  width: 8%;
 }
 
 .userInfo {
@@ -90,6 +90,21 @@
   height: 40px;
   border-radius: 50%;
   object-fit: cover;
+}
+
+.nameCell {
+  padding-right: 24px;
+}
+
+.linkAction {
+  color: #007bff;
+  cursor: pointer;
+  margin-left: 10px;
+  font-size: 0.875rem;
+}
+
+.linkAction:hover {
+  color: #0056b3;
 }
 
 .userName {

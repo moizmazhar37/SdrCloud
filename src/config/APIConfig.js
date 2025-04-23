@@ -1,10 +1,5 @@
-<<<<<<< HEAD
-const url = "https://backend-283763506150.us-central1.run.app";
-// const url = "http://localhost:8000";
-=======
 export const url = "https://backend-283763506150.us-central1.run.app";
 // export const url = "http://localhost:8000";
->>>>>>> d20eec9c64fa6b9167587c014770f7b98254bae3
 
 const auth = `${url}/auth`;
 export const users = `${url}/users`;
