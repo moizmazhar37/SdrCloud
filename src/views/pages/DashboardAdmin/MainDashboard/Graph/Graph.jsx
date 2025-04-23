@@ -21,6 +21,34 @@ const Graph = ({
   type,
   setIsViewed,
 }) => {
+  // Create default empty data with all months when data is empty
+  const getDefaultData = () => {
+    if (data && data.length > 0) return data;
+
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+
+    return months.map((month) => ({
+      name: month,
+      hvo: 0,
+      videos: 0,
+    }));
+  };
+
+  const displayData = getDefaultData();
+
   const renderDropdown = () => {
     // if (type === 'filters') {
     //   return (
@@ -80,16 +108,38 @@ const Graph = ({
     );
   };
 
+  // Show a message when there's no data
+  const NoDataMessage = () => {
+    if (data && data.length > 0) return null;
+
+    return (
+      <div
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          fontSize: "14px",
+          color: "#6B7280",
+          zIndex: 1,
+        }}
+      >
+        No data available
+      </div>
+    );
+  };
+
   return (
     <div className={styles.graphCard}>
       <div className={styles.header}>
         <h2 className={styles.title}>{title}</h2>
         {renderDropdown()}
       </div>
-      <div className={styles.graphContainer}>
+      <div className={styles.graphContainer} style={{ position: "relative" }}>
+        <NoDataMessage />
         <ResponsiveContainer width="100%" height={300}>
           <AreaChart
-            data={data}
+            data={displayData}
             margin={{
               top: 40,
               right: 20,
@@ -115,6 +165,7 @@ const Graph = ({
               tick={{ fill: "#6B7280", fontSize: 12 }}
               dx={-10}
               tickFormatter={(value) => value.toLocaleString()}
+              domain={[0, "auto"]}
             />
             <Tooltip
               content={<CustomTooltip />}

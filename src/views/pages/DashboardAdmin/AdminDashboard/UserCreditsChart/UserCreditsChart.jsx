@@ -12,8 +12,24 @@ import {
 import styles from "./UserCreditsChart.module.scss";
 
 const UserCreditsChart = ({ creditsData }) => {
-  // If no data is provided, use sample data
-  const data = creditsData;
+  // Check if data is empty and create default data with all months
+  const data =
+    creditsData && creditsData.length > 0
+      ? creditsData
+      : [
+          { month: "Jan", usage: 0 },
+          { month: "Feb", usage: 0 },
+          { month: "Mar", usage: 0 },
+          { month: "Apr", usage: 0 },
+          { month: "May", usage: 0 },
+          { month: "Jun", usage: 0 },
+          { month: "Jul", usage: 0 },
+          { month: "Aug", usage: 0 },
+          { month: "Sep", usage: 0 },
+          { month: "Oct", usage: 0 },
+          { month: "Nov", usage: 0 },
+          { month: "Dec", usage: 0 },
+        ];
 
   const chartRef = useRef(null);
 
