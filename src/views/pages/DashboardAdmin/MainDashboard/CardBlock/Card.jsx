@@ -3,7 +3,7 @@ import { FaArrowUp, FaArrowDown } from "react-icons/fa";
 import styles from "./Card.module.scss";
 
 const Cards = ({ heading, amount, change, isClickable = false, onClick }) => {
-  if (heading === undefined || amount === undefined) return null; // Ensure required props exist
+  if (heading == null || amount == null) return null; // Ensure required props exist
 
   const hasChange = change !== undefined; // Check if change is provided
   const isPositive = change >= 0;

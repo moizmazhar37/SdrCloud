@@ -34,23 +34,52 @@ export const useGetAllUsers = () => {
   return { data, loading, error, getAllUsers };
 };
 
-// Hook to fetch Google Sheets
-export const useFetchSheet = () => {
+  // Hook to fetch Google Sheets
+  export const useFetchSheet = () => {
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    const fetchSheet = async (payload) => {
+      setLoading(true);
+      try {
+        const response = await Axios({
+          url: `${ApiConfig.fetchSheet}/`,
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          data: payload,
+        });
+        return response?.data; // Return response data directly
+      } catch (err) {
+        console.error("Error fetching sheet:", err);
+        setError(err);
+        throw err;
+      } finally {
+        setLoading(false);
+      }
+    };
+
+  return { fetchSheet, loading, error };
+};
+
+
+// Hook to fetch Google Sheet names
+export const useFetchSheetNames = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const fetchSheet = async (payload) => {
+  const fetchnames = async (sheetId) => {
     setLoading(true);
     try {
       const response = await Axios({
-        url: `${ApiConfig.fetchSheet}/`,
-        method: "POST",
+        url: `${ApiConfig.googlesheetnames}/${sheetId}`, // <<< Calling the API with the sheetId
+        method: "GET",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-        data: payload,
       });
-      return response?.data; // Return response data directly
+      return response?.data;
     } catch (err) {
       console.error("Error fetching sheet:", err);
       setError(err);
@@ -60,5 +89,5 @@ export const useFetchSheet = () => {
     }
   };
 
-  return { fetchSheet, loading, error };
+  return { fetchnames, loading, error };
 };

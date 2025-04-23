@@ -9,13 +9,18 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import Loader from "src/Common/Loader/Loader"; // Import the Loader component
 import styles from "./CardPopUpGraph.module.scss";
 
-const CardPopUpGraph = ({ onClose, isOpen, heading, graphData }) => {
+const CardPopUpGraph = ({
+  onClose,
+  isOpen,
+  heading,
+  graphData,
+  loading,
+  error,
+}) => {
   const popupRef = useRef(null);
-
-  // Sample data that matches the graph in the image
-  const data = graphData;
 
   // Handle click outside to close the popup
   useEffect(() => {
@@ -81,54 +86,67 @@ const CardPopUpGraph = ({ onClose, isOpen, heading, graphData }) => {
               <h2 className={styles.title}>{heading}</h2>
             </div>
             <div className={styles.graphContainer}>
-              <ResponsiveContainer width="100%" height={300}>
-                <AreaChart
-                  data={data}
-                  margin={{
-                    top: 20,
-                    right: 20,
-                    left: 0,
-                    bottom: 0,
-                  }}
-                >
-                  <CartesianGrid
-                    strokeDasharray="3 3"
-                    vertical={false}
-                    stroke="#E5E7EB"
-                  />
-                  <XAxis
-                    dataKey="name"
-                    axisLine={false}
-                    tickLine={false}
-                    tick={{ fill: "#6B7280", fontSize: 14 }}
-                    dy={10}
-                  />
-                  <YAxis
-                    axisLine={false}
-                    tickLine={false}
-                    tick={{ fill: "#6B7280", fontSize: 14 }}
-                    dx={-10}
-                    tickFormatter={(value) =>
-                      value === 0 ? "0" : value.toLocaleString()
-                    }
-                    allowDataOverflow={false}
-                    allowDecimals={false}
-                    domain={["dataMin", "dataMax"]}
-                  />
-                  <Tooltip
-                    content={<CustomTooltip />}
-                    cursor={{ stroke: "#E5E7EB", strokeWidth: 1 }}
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="value"
-                    name="value"
-                    stroke="#0D3B66"
-                    fill="#D1E3F8"
-                    strokeWidth={2}
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
+              {loading ? (
+                <div className={styles.loaderContainer}>
+                  <Loader size={60} />{" "}
+                  {/* Using the same Loader component as in AdminDashboard */}
+                </div>
+              ) : error ? (
+                <div className={styles.errorContainer}>
+                  <p className={styles.errorText}>
+                    Error loading data. Please try again.
+                  </p>
+                </div>
+              ) : (
+                <ResponsiveContainer width="100%" height={300}>
+                  <AreaChart
+                    data={graphData}
+                    margin={{
+                      top: 20,
+                      right: 20,
+                      left: 0,
+                      bottom: 0,
+                    }}
+                  >
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      vertical={false}
+                      stroke="#E5E7EB"
+                    />
+                    <XAxis
+                      dataKey="name"
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fill: "#6B7280", fontSize: 14 }}
+                      dy={10}
+                    />
+                    <YAxis
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fill: "#6B7280", fontSize: 14 }}
+                      dx={-10}
+                      tickFormatter={(value) =>
+                        value === 0 ? "0" : value.toLocaleString()
+                      }
+                      allowDataOverflow={false}
+                      allowDecimals={false}
+                      domain={["dataMin", "dataMax"]}
+                    />
+                    <Tooltip
+                      content={<CustomTooltip />}
+                      cursor={{ stroke: "#E5E7EB", strokeWidth: 1 }}
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="value"
+                      name="value"
+                      stroke="#0D3B66"
+                      fill="#D1E3F8"
+                      strokeWidth={2}
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              )}
             </div>
           </div>
         </div>

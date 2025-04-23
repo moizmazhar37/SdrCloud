@@ -65,19 +65,22 @@
   }
 }
 
+.meetingsTableContainer {
+  padding: 20px;
+  margin-bottom: 20px;
+}
 .prospectsCardContainer {
   display: flex;
   width: 100%;
   gap: 8px;
   box-sizing: border-box;
-  justify-content: space-between; // Add this to distribute space evenly
+  justify-content: space-between;
 
   > * {
-    flex: 1; // Make each child take equal available space
+    flex: 1;
   }
 
   @media screen and (max-width: 1040px) and (min-width: 781px) {
-    // flex-direction: column;
     flex-wrap: wrap;
     justify-content: flex-start;
     gap: 12px;
@@ -86,7 +89,6 @@
       flex: 1 1 calc(33.33% - 12px);
       max-width: calc(53.33% - 12px);
     }
-
   }
 
   @media screen and (max-width: 780px) {
@@ -107,7 +109,6 @@
     }
   }
 }
-
 
 // Main metrics section - using same responsive pattern as cardsContainer
 .metricsCardContainer {
@@ -265,7 +266,6 @@
     }
   }
 }
-
 
 // Fixed top users container styling
 .topUsersContainer {

@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 const url = "https://backend-283763506150.us-central1.run.app";
 // const url = "http://localhost:8000";
+=======
+export const url = "https://backend-283763506150.us-central1.run.app";
+// export const url = "http://localhost:8000";
+>>>>>>> d20eec9c64fa6b9167587c014770f7b98254bae3
 
 const auth = `${url}/auth`;
 export const users = `${url}/users`;
@@ -51,9 +56,10 @@ const ApiConfig = {
   UploadFile: `${upload}/upload-file`,
   headers: `${googlesheets}/sheet-data-types`,
   createVideo: `${video}/create-video`,
-  getAllPPUsers: `${admin}/subadmin`,
+  getAllTenants: `${admin}/subadmin`,
   googleSheet: `${googlesheets}`,
   googleSheetDataTypes: `${googlesheets}/get-headers`,
+  googlesheetnames: `${googlesheets}/tabs`,
   getTemplateList: `${templates}`,
   deleteTemplate: `${templates}`,
   deleteElement: `${videoelement}`,
