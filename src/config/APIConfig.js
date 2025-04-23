@@ -54,6 +54,7 @@ const ApiConfig = {
   getAllPPUsers: `${admin}/subadmin`,
   googleSheet: `${googlesheets}`,
   googleSheetDataTypes: `${googlesheets}/get-headers`,
+  googlesheetnames: `${googlesheets}/tabs`,
   getTemplateList: `${templates}`,
   deleteTemplate: `${templates}`,
   deleteElement: `${videoelement}`,

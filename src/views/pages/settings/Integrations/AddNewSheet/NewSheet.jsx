@@ -1,17 +1,21 @@
 import React, { useState } from "react";
-import { useGetAllUsers, useFetchSheet } from "./hooks";
+import { useGetAllUsers, useFetchSheet, useFetchSheetNames } from "./hooks";
 import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
 import styles from "./newSheet.module.scss";
 import { toast } from "react-toastify";
 import FullScreenLoader from "src/component/FullScreenLoader";
 import { useHistory } from "react-router-dom";
 
-const NewSheet = () => {
+const NewSheet = ()  => {
   const { data: users, loading: usersLoading } = useGetAllUsers();
   const { fetchSheet, loading: sheetLoading } = useFetchSheet();
+  const { fetchnames, loading1, error1 } = useFetchSheetNames();
 
   const [sheetName, setSheetName] = useState("");
+  const [sheetOptions, setSheetOptions] = useState([]);
   const [sheetUrl, setSheetUrl] = useState("");
+  const [sheetId, setSheetId] = useState(""); 
+  const [sheetData, setSheetData] = useState(null); // Optional: store returned data
   const [sheetType, setSheetType] = useState("VIDEO");
   const [assignedUser, setAssignedUser] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -56,6 +60,37 @@ const NewSheet = () => {
     { text: "Create New", route: "/create-new" },
   ];
 
+  const handleUrlChange = (e) => {
+    const url = e.target.value;
+    setSheetUrl(url);
+    // Try to extract Google Sheet ID
+    const match = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
+    if (match && match[1]) {
+      setSheetId(match[1]); // Set the extracted ID
+    } else {
+      setSheetId(""); // fallback if not a valid URL
+    }
+  };
+
+    // Called when user clicks Get names
+    const handleFetchnames = async () => {
+      if (!sheetId) {
+        console.warn("Sheet ID is missing or invalid.");
+        toast.error("Link is not valid. Please enter a valid Google Sheet URL.");
+        return;
+      }
+      try {
+        const data = await fetchnames(sheetId);
+        toast.success("Google Sheet names are fetched.");
+        setSheetData(data);
+        setSheetOptions(data); // Array of sheet names
+      } catch (err) {
+        console.error("❌ Failed to fetch sheet tabs.");
+        toast.error("Failed to fetch sheet tabs.");
+      }
+    };
+  
+
   return (
     <>
       <DynamicNavigator items={routes} />
@@ -96,32 +131,43 @@ const NewSheet = () => {
         </div>
 
         <div className={styles.field}>
-          <div className={styles.label}>Google Sheet Name</div>
-          <input
-            placeholder="Enter SDRCloud.ai Sheet Name"
-            className={styles.input}
-            value={sheetName}
-            onChange={(e) => setSheetName(e.target.value)}
-          />
-          <div className={styles.error}>
-            {sheetName.length === 0 || sheetName.length > 150
-              ? "Sheet name is required and must be between 1 and 150 characters long."
-              : null}
-          </div>
-        </div>
-
-        <div className={styles.field}>
           <div className={styles.label}>Google Sheet URL</div>
           <div className={styles.inputWithButton}>
             <input
               placeholder="Enter SDRCloud.ai Sheet URL"
               className={styles.input}
               value={sheetUrl}
-              onChange={(e) => setSheetUrl(e.target.value)}
+              onChange={handleUrlChange}
             />
-            <button className={styles.button} onClick={handleFetch}>
-              Fetch
+            <button className={styles.button} onClick={handleFetchnames}>
+              Fetch names
             </button>
+          </div>
+        </div>
+
+        <div className={styles.field}>
+          <div className={styles.label}>Select Sheet</div>
+          <div className={styles.inputWithButton}>
+          <div className={styles.select}>
+            <select
+              defaultValue=""
+              onChange={(e) => setSheetName(e.target.value)}
+              disabled={sheetOptions.length === 0}
+            >
+            <option value="" disabled>
+              Select a sheet name
+              </option>
+              {sheetOptions &&
+                sheetOptions.map((sheet, index) => (
+                  <option key={index} value={sheet}>
+                    {sheet}
+                  </option>
+                ))}
+              </select>
+          </div>
+          <button className={styles.button} onClick={handleFetch}>
+            Fetch
+          </button>
           </div>
         </div>
       </div>
