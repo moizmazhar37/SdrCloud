@@ -25,7 +25,7 @@ const Integration = () => {
     {
       name: "Calender Link",
       status: isUser ? "Disabled" : "Enabled",
-      path: "/calenderlink",
+      path: "/calendar-link",
     },
   ];
 

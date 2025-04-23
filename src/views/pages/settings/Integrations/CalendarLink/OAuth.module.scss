@@ -1,0 +1,61 @@
+.container {
+    padding: 2rem;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+    text-align: center;
+  }
+  
+  .heading {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+  
+  .description {
+    color: #555;
+    margin-bottom: 2rem;
+  }
+  
+  .connectBtn {
+    background-color: #4285f4;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .connectedInfo {
+    font-size: 1.1rem;
+    color: #333;
+  }
+  
+  .loaderWrapper,
+  .errorWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .errorText {
+    color: #d32f2f;
+  }
+  
+  .retryBtn {
+    padding: 0.5rem 1rem;
+    border: 1px solid #d32f2f;
+    background: none;
+    color: #d32f2f;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  
+  .note {
+    margin-top: 2rem;
+    color: #777;
+    font-size: 0.9rem;
+  }
+  

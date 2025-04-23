@@ -1,5 +1,5 @@
-const url = "https://backend-283763506150.us-central1.run.app";
-// const url = "http://localhost:8000";
+// const url = "https://backend-283763506150.us-central1.run.app";
+const url = "http://localhost:8000";
 
 const auth = `${url}/auth`;
 export const users = `${url}/users`;
@@ -54,6 +54,7 @@ const ApiConfig = {
   getAllPPUsers: `${admin}/subadmin`,
   googleSheet: `${googlesheets}`,
   googleSheetDataTypes: `${googlesheets}/get-headers`,
+  googlesheetnames: `${googlesheets}/tabs`,
   getTemplateList: `${templates}`,
   deleteTemplate: `${templates}`,
   deleteElement: `${videoelement}`,
