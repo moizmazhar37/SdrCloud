@@ -3,6 +3,15 @@ import axios from 'axios';
 import ApiConfig from 'src/config/APIConfig';
 import { toast } from "react-toastify";
 
+function toSnakeCase(obj) {
+  const snakeObj = {};
+  Object.keys(obj).forEach((key) => {
+    const snakeKey = key.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+    snakeObj[snakeKey] = obj[key];
+  });
+  return snakeObj;
+}
+
 const useAccountForm = () => {
   const [formData, setFormData] = useState({
     firstName: '',
@@ -27,6 +36,8 @@ const useAccountForm = () => {
     contractEndDate: '',
     logo: null,
     contractPdf: null,
+    hvoPrice: null,
+    videoPrice: null
   });
 
   const handleInputChange = (e) => {
@@ -40,10 +51,16 @@ const useAccountForm = () => {
 
   const handleSubmit = async () => {
     try {
-      const formDataPayload = new FormData();
-      Object.entries(formData).forEach(([key, value]) => {
-        formDataPayload.append(key, value);
+      const formDataToSend = new FormData();
+      const snakeCaseData = toSnakeCase({
+        ...formData,
       });
+
+      for (const key in snakeCaseData) {
+        if (snakeCaseData[key]) {
+          formDataToSend.append(key, snakeCaseData[key]);
+        }
+      }
 
       // await axios.post(ApiConfig.createNewAccount, formDataPayload, {
       //   headers: {
@@ -59,12 +76,12 @@ const useAccountForm = () => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "multipart/form-data",
         },
-        data: formDataPayload, // Sending the FormData object
+        data: formDataToSend, // Sending the FormData object
       });
 
       toast.success('Account created successfully!');
     } catch (error) {
-      toast.error('Error creating account.');
+      toast.error(error?.response?.data?.detail || 'Error creating account!');
       console.error('Error creating account:', error);
     }
   };

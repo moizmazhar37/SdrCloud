@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import Card from "src/Common/Card/Card";
 import Table from "src/Common/Table/Table";
 import AdduserImage from "src/images/AddUserImage.png";
@@ -15,6 +16,8 @@ const Accounts = () => {
   const [isCreateUserOpen, setCreateUserOpen] = useState(false);
   const [viewState, setViewState] = useState("create");
 
+  const history = useHistory(); 
+
   const handleDelete = async () => {
     console.log(`Deleting user with ID: ${selectedUserId}`);
   };
@@ -22,6 +25,43 @@ const Accounts = () => {
   const handleCreateUserSuccess = () => {
     setCreateUserOpen(false);
   };
+  
+  // on clicking Create New User, card route to /pp-create
+  const handleCreateUserClick = () => {
+    setCreateUserOpen(true);
+    setViewState("create");
+  };
+
+  // on clicking Edit User, card route to /pp-create
+
+  const handleEditUserClick = () => {
+    setCreateUserOpen(true);
+    setViewState("edit");
+  };
+
+  // on clicking View User, card route to /pp-create
+  const handleViewUserClick = () => {
+    setCreateUserOpen(true);
+    setViewState("view");
+  };
+
+
+  // have to work on isCreateUserOpen to route user to /pp-create depending on view or create state
+  // maybe it's useEffect hook
+  // or useNavigate hook from react-router-dom
+  // or useHistory hook from react-router-dom
+
+
+
+  useEffect(() => {
+    if (isCreateUserOpen) {
+      // Logic to navigate to the create user page
+      // For example, using react-router-dom's useNavigate hook
+      // navigate("/pp-create");
+      history.push("/pp-create", { state: { viewState } });
+    }
+  }, [isCreateUserOpen, viewState]);
+
 
   const headers = [
     { label: "Account Name", key: "user_name" },
@@ -77,6 +117,7 @@ const Accounts = () => {
         image={AdduserImage}
         onClick={() => {
           setViewState("create");
+          // navigate to add
           setCreateUserOpen(true);
         }}
         text={"Create New Account"}

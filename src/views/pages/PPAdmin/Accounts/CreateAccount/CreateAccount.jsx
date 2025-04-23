@@ -385,6 +385,28 @@ const AccountManagementPage = () => {
                 onChange={handleInputChange}
               />
             </div>
+
+            <div className={styles.formGroup}>
+              <label>Tokens per HVO</label>
+              <input
+                type="float"
+                name="hvoPrice"
+                placeholder="0.0001"
+                value={formData.hvoPrice}
+                onChange={handleInputChange}
+              />
+            </div>
+
+            <div className={styles.formGroup}>
+              <label>Token per Video per second</label>
+              <input
+                type="float"
+                name="videoPrice"
+                placeholder="0.000001"
+                value={formData.videoPrice}
+                onChange={handleInputChange}
+              />
+            </div>
           </div>
         </div>
 
