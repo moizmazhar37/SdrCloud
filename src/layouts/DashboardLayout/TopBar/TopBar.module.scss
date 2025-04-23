@@ -1,0 +1,211 @@
+.navbarContainer {
+    background: transparent;
+    width: 100%;
+  }
+  
+  .toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 60px;
+    padding: 12px 20px;
+  }
+  
+  .hiddenLogo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .menuButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+  }
+  
+  .menuIcon {
+    font-size: 25px;
+    color: #152F40;
+  }
+  
+  .pageTitle {
+    font-size: 21px;
+    font-weight: 600;
+    color: #152F40;
+  }
+  
+  .avatarBox {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+  }
+  
+  .userDetails {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .accountType {
+    font-size: 12px;
+    color: #858585;
+  }
+  
+  .accountName {
+    font-size: 14px;
+    font-weight: 500;
+    color: #152F40;
+  }
+  
+
+  .dropdownContainer {
+    position: relative;
+  }
+  
+  /* Dropdown Menu */
+  .dropdownMenu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    width: 250px;
+    z-index: 10;
+  }
+  
+  /* Dropdown Header */
+  .dropdownHeader {
+    font-weight: bold;
+    padding: 8px;
+    background: #f4f4f4;
+    cursor: default;
+  }
+  
+  /* Dropdown Items */
+  .dropdownItem {
+    padding: 10px;
+    cursor: pointer;
+    transition: background 0.2s;
+  
+    &:hover {
+        background: #eee;
+    }
+  }
+  
+  /* No Templates */
+  .noTemplates {
+    padding: 10px;
+    color: gray;
+    text-align: center;
+  }
+
+
+  .createButton {
+    background-color: white;
+    color: #333;
+    font-size: 14px;
+    border: 1px solid #ddd; // Light border to mimic a dropdown
+    border-radius: 6px;
+    padding: 10px 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-width: 120px; // Ensures width consistency
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    
+    &:hover {
+      background-color: #f9f9f9;
+      border-color: #bbb;
+    }
+  
+    &:active {
+      background-color: #f0f0f0;
+    }
+  
+    &::after {
+      content: "▼";
+      font-size: 12px;
+      margin-left: 8px;
+      color: #666;
+    }
+  }
+  
+
+  
+  .stopViewingButton {
+    background-color: #ff4d4d;
+    color: white;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 14px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s ease-in-out;
+  
+    &:hover {
+      background-color: #cc0000;
+    }
+  
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+
+  .rightSection {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  
+    .viewAsDropdown {
+      padding: 0.5rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      background: white;
+      cursor: pointer;
+      color: #333;
+      
+      option {
+        padding: 8px; // Adding padding to the options
+        color: gray; // Gray text color
+        background: white;
+      }
+    
+      option:hover {
+        background: #f0f0f0; // Light gray background on hover
+      }
+    }
+  
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+  
+    .userDetails {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+  
+      .accountType {
+        font-size: 12px;
+        color: gray;
+      }
+  
+      .accountName {
+        font-size: 14px;
+        font-weight: bold;
+      }
+    }
+  }
+  

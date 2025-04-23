@@ -48,18 +48,25 @@ const CreateHVO = () => {
   const [editingSection, setEditingSection] = useState(null);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedSection, setSelectedSection] = useState(null);
+  const [dataFetchTrigger, setDataFetchTrigger] = useState(0);
 
   const { data: sheetData, loading: sheetsLoading } = useGetSheets("HVO");
-  const { data, loading, error } = useGetSheetData(templateId);
+  // Now we'll refetch when dataFetchTrigger changes
+  const { data, loading, error, refetch } = useGetSheetData(
+    templateId,
+    dataFetchTrigger
+  );
   const { data: tenantData, loading: tenantLoading } = useCompanyTenant();
   const {
     data: sectionData,
     loading: sectionLoading,
     error: sectionError,
+    refetch: refetchSections,
   } = useHvoSections(templateId, sectionUpdateTrigger);
 
   const { handleCreateVideo, isLoading: isCreatingHVO } = useCreateHVO();
 
+  // Check for templateId in URL on initial load
   useEffect(() => {
     const url = new URL(window.location.href);
     const id = url.searchParams.get("templateId");
@@ -69,16 +76,27 @@ const CreateHVO = () => {
     }
   }, []);
 
+  // Update URL when templateId changes
   useEffect(() => {
     if (templateId) {
       const newUrl = `/createtemplate&HVO?templateId=${templateId}`;
       if (isSheetConnected) window.history.pushState({}, "", newUrl);
     }
-  }, [templateId]);
+  }, [templateId, isSheetConnected]);
+
+  // Explicitly trigger data fetch when sheet is connected and template ID is set
+  useEffect(() => {
+    if (isSheetConnected && templateId) {
+      setDataFetchTrigger((prev) => prev + 1);
+      refetch && refetch();
+      refetchSections && refetchSections();
+    }
+  }, [isSheetConnected, templateId, refetch, refetchSections]);
 
   const handleSectionUpdate = useCallback(() => {
     setSectionUpdateTrigger((prev) => !prev);
   }, []);
+
   const elementsList = Array.isArray(sectionData?.elementsList)
     ? sectionData.elementsList
     : [];
@@ -92,6 +110,7 @@ const CreateHVO = () => {
     "Image URL",
   ]);
   const dynamicVideos = extractKeywordList(data, ["Video URL"]);
+
   const resetAllStates = () => {
     setActiveForm(null);
     setEditingSection(null);
@@ -107,10 +126,11 @@ const CreateHVO = () => {
   const handleSheetConnectSuccess = () => {
     setIsSheetConnected(true);
     setIsViewMode(true);
+    // This will trigger the useEffect that explicitly calls refetch
   };
 
   const handleEdit = (section) => {
-    console.log("Selecteed==,", section.section_name);
+    console.log("Selected==,", section.section_name);
     setIsEditMode(true);
     setEditingSection(section);
     setSectionNum(section.sequence);
@@ -229,7 +249,6 @@ const CreateHVO = () => {
           </div>
         );
       case SECTION_TYPES.VIDEO:
-        console.log("aasa", dynamicVideos);
         return (
           <div className={styles.leftComponent}>
             <VideoUpload

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import useLeads from "./useLeads";
 import Table from "src/Common/Table/Table";
 import SearchFilters from "../SearchFilters/SearchFilters";
@@ -12,9 +13,23 @@ export default function SearchLeads({
   initialFilters = null,
   isFromDashboard = false,
 }) {
+  const location = useLocation();
+  const currentPath = location.pathname;
+
+  // Determine navigation items based on current route
   const navigationItems = [
-    { text: "Leads Dashboard", route: "/visitor-dashboard" },
-    { text: "Data Details", route: "/leads-dashboard" },
+    {
+      text: "Leads Dashboard",
+      route: currentPath.includes("leads-dashboard")
+        ? "/visitor-dashboard"
+        : "/leads-dashboard",
+    },
+    {
+      text: "Data Details",
+      route: currentPath.includes("visitor-dashboard")
+        ? "/leads-dashboard"
+        : "/visitor-dashboard",
+    },
   ];
 
   const ITEMS_PER_PAGE = 12;

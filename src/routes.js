@@ -63,7 +63,7 @@ export const routes = [
 
   {
     exact: true,
-    path: "/dashboard",
+    path: "/old-dashboard",
     guard: true,
     layout: DashboardLayout,
     component: lazy(() =>
@@ -263,9 +263,23 @@ export const routes = [
 
   {
     exact: true,
+    path: `/new-hvo/:customerId`,
+    component: lazy(() => import("src/views/pages/Previews/HVOPreview")),
+  },
+
+  {
+    exact: true,
     path: "/play-video/:customerId",
     component: lazy(() =>
       import("src/views/pages/CreateVideo/VideoPlayer/VideoPlayer")
+    ),
+  },
+
+  {
+    exact: true,
+    path: "/privacy-policy/:tenantId",
+    component: lazy(() =>
+      import("src/views/pages/PrivacyPolicy/PrivacyPolicyPage")
     ),
   },
 
@@ -364,6 +378,16 @@ export const routes = [
     layout: DashboardLayout,
     component: lazy(() =>
       import("src/views/pages/settings/Integrations/SendGrid/SendGrid")
+    ),
+  },
+
+  {
+    exact: true,
+    path: "/calenderlink",
+    guard: true,
+    layout: DashboardLayout,
+    component: lazy(() =>
+      import("src/views/pages/settings/Integrations/CalenderLink/CalenderLink")
     ),
   },
 
@@ -547,6 +571,18 @@ export const routes = [
       import("src/views/pages/DashboardAdmin/MainDashboard/MainDashboard")
     ),
   },
+  //updated admin dashboard
+  {
+    exact: true,
+    path: "/dashboard",
+    guard: true,
+    layout: DashboardLayout,
+    // component: lazy(() => import("src/views/pages/DashboardUser/index")),
+    component: lazy(() =>
+      import("src/views/pages/DashboardAdmin/AdminDashboard/AdminDashboard")
+    ),
+  },
+
   {
     exact: true,
     path: "/user-myprojects",
@@ -562,7 +598,7 @@ export const routes = [
     guard: true,
     layout: DashboardLayout,
     component: lazy(() =>
-      import("src/views/pages/DashboardUser/MyProject/ProjectList")
+      import("src/views/pages/MyProjects/Prospects/Prospects")
     ),
   },
   {

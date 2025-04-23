@@ -1,0 +1,225 @@
+.dashboardContainer {
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
+  font-size: 1.25rem;
+  border: 1px solid #e0e4e8;
+  border-radius: 6px;
+}
+
+.dashboardCard {
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  background-color: #fff;
+  overflow: hidden;
+}
+
+.dashboardHeader {
+  background-color: #f5f7fa;
+  padding: 1.4rem 1.5rem;
+  border-bottom: 1px solid #e0e4e8;
+}
+
+.dashboardTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #374151;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.tableWrapper {
+  width: 100%;
+  overflow-x: auto;
+
+  scrollbar-width: thin;
+  &::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #c0c7d0;
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #a9b2bd;
+  }
+}
+
+.prospectsTable {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: 1200px;
+  font-size: 0.8125rem;
+
+  th,
+  td {
+    padding: 0.75rem 1.5rem; /* Increased horizontal padding */
+    text-align: left;
+    border-bottom: 1px solid #e9ecef;
+    white-space: nowrap;
+    font-size: 14px;
+  }
+
+  td {
+    font-size: 16px;
+  }
+
+  th {
+    background-color: #f8fafc;
+    color: #64748b;
+    font-weight: 500;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  th:not(:last-child),
+  td:not(:last-child) {
+    padding-right: 2rem; /* Additional right padding for all cells except the last one */
+  }
+
+  tbody tr {
+    transition: background-color 0.15s ease;
+
+    &:hover {
+      background-color: #f9fafb;
+    }
+
+    &:last-child td {
+      border-bottom: none;
+    }
+  }
+}
+
+.scoreCell {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  border-radius: 12px;
+  min-width: 2rem;
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+.scoreHigh {
+  background-color: #dcf5e6;
+  color: #047857;
+}
+
+.scoreMedium {
+  background-color: #fff3dc;
+  color: #b45309;
+}
+
+.scoreLow {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+.sentimentCell {
+  font-weight: 500;
+  position: relative;
+  padding-left: 0.5rem;
+
+  &::before {
+    content: "";
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+    vertical-align: middle;
+  }
+}
+
+.sentimentPositive {
+  color: #059669;
+
+  &::before {
+    background-color: #059669;
+  }
+}
+
+.sentimentNeutral {
+  color: #6b7280;
+
+  &::before {
+    background-color: #6b7280;
+  }
+}
+
+.sentimentNegative {
+  color: #dc2626;
+
+  &::before {
+    background-color: #dc2626;
+  }
+}
+
+.actionButton {
+  padding: 0.35rem 0.6rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 500;
+  min-width: 100px;
+  text-align: center;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.meetingBooked {
+  background-color: #dbeafe;
+  color: #1e40af;
+
+  &:hover {
+    background-color: #bfdbfe;
+  }
+}
+
+.phoneCampaign {
+  background-color: #f3e8ff;
+  color: #6b21a8;
+
+  &:hover {
+    background-color: #e9d5ff;
+  }
+}
+
+.silent {
+  background-color: #f3f4f6;
+  color: #4b5563;
+
+  &:hover {
+    background-color: #e5e7eb;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboardContainer {
+    padding: 0.75rem;
+  }
+
+  .dashboardHeader {
+    padding: 0.75rem 1rem;
+  }
+
+  .dashboardTitle {
+    font-size: 1rem;
+  }
+}

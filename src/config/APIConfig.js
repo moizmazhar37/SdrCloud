@@ -1,6 +1,5 @@
-// const url = "https://backend-283763506150.us-central1.run.app";
-const url = "http://localhost:8000";
-// const url = "http://192.168.18.91:8000";
+const url = "https://backend-283763506150.us-central1.run.app";
+// const url = "http://localhost:8000";
 
 const auth = `${url}/auth`;
 export const users = `${url}/users`;
@@ -22,12 +21,15 @@ export const leads = `${url}/leads/dashboard`;
 export const alerts = `${url}/user-alerts`;
 export const tenantEmail = `${url}/tenant-email/`;
 export const emailTemplate = `${url}/email-template`;
+export const videoTracking = `${url}/video-tracking/`;
+export const hvoTracking = `${url}/hvo-tracking`;
 
 const ApiConfig = {
   getUrls: `${url}/url`,
   addUrl: `${url}/url`,
   mainDashboard: `${url}/dashboard`,
   login: `${auth}/signin`,
+  viewAsUser: `${auth}/view-as`,
   changePassword: `${auth}/change-password`,
   createNewAccount: `${admin}/subadmin`,
   getAllCategories: `${categories}/`,
@@ -52,6 +54,7 @@ const ApiConfig = {
   getAllTenants: `${admin}/subadmin`,
   googleSheet: `${googlesheets}`,
   googleSheetDataTypes: `${googlesheets}/get-headers`,
+  googlesheetnames: `${googlesheets}/tabs`,
   getTemplateList: `${templates}`,
   deleteTemplate: `${templates}`,
   deleteElement: `${videoelement}`,
@@ -75,6 +78,8 @@ const ApiConfig = {
   hvoStatus: `${hvo}/hvo-status`,
   video: `${video}`,
   footerLink: `${footer}`,
+
+  privacyPolicy: `${tenant}/privacy-policy`,
   // userSignup: `${user}/userSignUp`,
   // // verifyEmail: `${user}/verifyEmail`,
   // goggleLogin: `${user}/googleLogin`,

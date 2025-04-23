@@ -21,6 +21,7 @@ const TextImage = ({
   initialData,
 }) => {
   const [headline1, setHeadline1] = useState("");
+  const [ctaUrl, setCtaUrl] = useState("");
   const [headline2, setHeadline2] = useState("");
   const [bodyText, setBodyText] = useState("");
   const [headline1Color, setHeadline1Color] = useState("");
@@ -91,6 +92,11 @@ const TextImage = ({
     setSelectedDynamicOption(null);
   }, []);
 
+
+  const handleClose = () => {
+    onClose();
+  };
+
   const handleChooseClick = useCallback(() => {
     fileInputRef.current?.click();
   }, []);
@@ -126,6 +132,8 @@ const TextImage = ({
       headline2Color,
       headline2Size: parseInt(size2) || null,
       image: selectedFile || selectedDynamicOption || imageUrl || null,
+      ctaUrl: ctaUrl || null,
+
     };
 
     try {
@@ -324,6 +332,14 @@ const TextImage = ({
                   </div>
                 </div>
               </div>
+              <div className={styles.inputGroup}>
+                <label>CTA URL</label>
+                <InputField
+                  value={ctaUrl}
+                  onChange={(e) => setCtaUrl(e.target.value)}
+                  placeholder="Enter Your CTA URL Here"
+                />
+              </div>
             </div>
           </div>
 
@@ -340,7 +356,13 @@ const TextImage = ({
           >
             {loading ? "Saving..." : initialData ? "Update" : "Save"}
           </button>
-          <button className={styles.nextButton}>Next</button>
+          <button
+          onClick={handleClose}
+          className={styles.cancelButton}
+          disabled={loading}
+        >
+          Cancel
+        </button>
         </div>
       </div>
     </div>

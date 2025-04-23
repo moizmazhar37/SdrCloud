@@ -111,6 +111,10 @@ const HeroSection = ({
     }
   };
 
+  const handleClose = () => {
+    onClose();
+  };
+
   const handleSave = useCallback(async () => {
     const heroSectionData = {
       templateId,
@@ -403,6 +407,14 @@ const HeroSection = ({
           >
             {loading ? "Saving..." : "Save"}
           </button>
+
+          <button
+          onClick={handleClose}
+          className={styles.cancelButton}
+          disabled={loading}
+        >
+          Cancel
+        </button>
         </div>
       </div>
     </div>

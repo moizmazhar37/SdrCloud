@@ -1,0 +1,74 @@
+.abmFooter {
+    width: 100vw; // Full screen width
+    box-sizing: border-box;
+    background: linear-gradient(to bottom, #06184c, #010c28);
+    padding: 60px 40px;
+    text-align: center;
+    color: #fff;
+    border-radius: 0; // Remove border radius if it spans edge-to-edge
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+  }
+
+  body {
+    overflow-x: hidden;
+  }
+  
+  .abmTitle {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .abmSubtitle {
+    font-size: 20px;
+    color: #ccc;
+    margin-bottom: 40px;
+  }
+  
+  .brand {
+    color: #3573ec;
+    font-weight: bold;
+  }
+  
+  .teamGrid {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 50px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .teamMember {
+    text-align: center;
+    max-width: 160px;
+    flex-shrink: 0;
+  }
+  
+  .teamImage {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border: 5px solid white;
+    border-radius: 50%;
+    margin-bottom: 10px;
+    transition: transform 0.3s ease;
+  }
+  
+  .teamImage:hover {
+    transform: scale(1.05);
+  }
+  
+  .teamName {
+    font-weight: bold;
+    font-size: 16px;
+    margin: 0;
+    color: #ffffff;
+  }
+  
+  .teamRole {
+    font-size: 14px;
+    color: #ccc;
+  }
+  

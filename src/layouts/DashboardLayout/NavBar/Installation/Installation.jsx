@@ -33,10 +33,10 @@ const Installation = () => {
 
   useEffect(() => {
     if (tenantId === "b3995e7d-a4a7-4005-88a5-75443af5d9be") {
-      setScriptUrl("https://storage.googleapis.com/static-data-for-sdrc/scripts/2feb965f-d046-4f5d-94fa-92103d886a46.js");
+      setScriptUrl("https://storage.googleapis.com/static-data-for-sdrc/tenants/2feb965f-d046-4f5d-94fa-92103d886a46.js");
     } else if (tenantId) {
       setScriptUrl(
-        `https://storage.googleapis.com/static-data-for-sdrc/scripts/tracker_${tenantId}.js`
+        `https://storage.googleapis.com/static-data-for-sdrc/tenants/tracker_${tenantId}.js`
       );
     }
   }, [tenantId]);
@@ -54,7 +54,7 @@ const Installation = () => {
           className={`tab ${activeTab === "Links To Track" ? "active" : ""}`}
           onClick={() => setActiveTab("Links To Track")}
         >
-          Links To Track
+          Link To Track
         </button>
       </div>
       <div className="content">
