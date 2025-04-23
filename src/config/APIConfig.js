@@ -51,7 +51,7 @@ const ApiConfig = {
   UploadFile: `${upload}/upload-file`,
   headers: `${googlesheets}/sheet-data-types`,
   createVideo: `${video}/create-video`,
-  getAllPPUsers: `${admin}/subadmin`,
+  getAllTenants: `${admin}/subadmin`,
   googleSheet: `${googlesheets}`,
   googleSheetDataTypes: `${googlesheets}/get-headers`,
   googlesheetnames: `${googlesheets}/tabs`,
