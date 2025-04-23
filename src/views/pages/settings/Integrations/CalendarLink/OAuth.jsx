@@ -19,7 +19,12 @@ const GoogleCalendarConnect = () => {
       setConnectedEmail(email);
     } catch (err) {
       console.error("Failed to fetch connected email:", err);
-      setError(true);
+      if (err.response?.status === 404) {
+        // No account connected, treat as no email connected
+        setConnectedEmail(null);
+      } else {
+        setError(true);
+      }
     } finally {
       setLoading(false);
     }
@@ -70,7 +75,8 @@ const GoogleCalendarConnect = () => {
             Retry
           </button>
         </div>
-      ) : connectedEmail ? (
+      )
+       : connectedEmail ? (
         <div className={styles.connectedInfo}>
           Connected to <strong>{connectedEmail}</strong>
           <button className={styles.disconnectBtn} onClick={() => handleDisconnect()}>
