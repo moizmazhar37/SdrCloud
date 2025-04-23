@@ -12,7 +12,7 @@ const useViewAsUser = () => {
     setError(null);
 
     try {
-    console.log(userId);
+    // console.log("User ID:", userId);
       const response = await axios.post(ApiConfig.viewAsUser, { user_id: userId }, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`, // Master’s token
