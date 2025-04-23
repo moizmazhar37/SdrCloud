@@ -1,6 +1,6 @@
 // hooks/googleCalendar.ts
 import axios from "axios";
-import url from "src/config/APIConfig";
+import { url } from "src/config/APIConfig";
 
 export const getConnectedGoogleEmail = async () => {
     const token = localStorage.getItem("token");
