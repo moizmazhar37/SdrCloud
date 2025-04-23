@@ -1,0 +1,141 @@
+.meetingsContainer {
+  width: 100%;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background-color: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.meetingsHeader {
+  padding: 16px 20px;
+  border-bottom: 1px solid #e5e7eb;
+
+  h2 {
+    font-size: 1.25 rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #111827;
+  }
+}
+
+.meetingsActions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+
+    .searchBar {
+      width: 100%;
+      max-width: 100%;
+    }
+  }
+}
+
+.meetingsCount {
+  font-size: 14px;
+  color: #4b5563;
+  font-weight: 500;
+}
+
+.searchBar {
+  flex-grow: 1;
+  max-width: 350px;
+
+  @media (max-width: 768px) {
+    max-width: 100%;
+    width: 100%;
+  }
+}
+
+.searchInput {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+
+  &:focus {
+    border-color: #6b7280;
+    box-shadow: 0 0 0 2px rgba(3, 88, 172, 0.1);
+  }
+}
+
+.exportButton {
+  padding: 8px 16px;
+  background-color: #0358ac;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-weight: 500;
+
+  &:hover {
+    background-color: #0243a3;
+  }
+
+  &:active {
+    background-color: #023c85;
+  }
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+  gap: 8px;
+
+  @media (max-width: 480px) {
+    gap: 4px;
+  }
+}
+
+.pageButton {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: #f3f4f6;
+  }
+
+  @media (max-width: 480px) {
+    width: 28px;
+    height: 28px;
+    font-size: 13px;
+  }
+}
+
+.activePage {
+  background-color: #0358ac;
+  color: white;
+  border-color: #0358ac;
+
+  &:hover {
+    background-color: #0358ac;
+  }
+}
+
+/* Override the Table component's link styling for names */
+:global {
+  [data-column="name"] {
+    color: inherit !important;
+    text-decoration: none !important;
+    cursor: default !important;
+  }
+}

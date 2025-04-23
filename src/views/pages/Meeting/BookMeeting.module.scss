@@ -1,0 +1,247 @@
+.pageWrapper {
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+  padding: 2rem 1rem;
+}
+
+.container {
+  width: 100%;
+  max-width: 600px;
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+  font-family: "Inter", "Segoe UI", sans-serif;
+  margin: 2rem 0;
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  color: #555;
+  font-size: 1.2rem;
+}
+
+.loadingSpinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(0, 123, 255, 0.2);
+  border-radius: 50%;
+  border-top-color: #007bff;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  background: linear-gradient(to right, #3a7bd5, #00d2ff);
+  color: white;
+  text-align: center;
+}
+
+.logoWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 86px;
+  height: 86px;
+  margin-bottom: 1rem;
+  border-radius: 50%;
+  background-color: white;
+  padding: 3px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* Changed from 'cover' to 'contain' */
+  border-radius: 50%;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.sectionTitle {
+  font-size: 1.2rem;
+  color: #333;
+  font-weight: 500;
+  margin: 0 0 1rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.calendarSection {
+  padding: 1.5rem;
+}
+
+.slots {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.slotGroup {
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.dateHeader {
+  background-color: #e9ecef;
+  padding: 0.75rem 1rem;
+
+  h4 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #495057;
+  }
+}
+
+.slotsList {
+  padding: 0.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0.5rem;
+}
+
+.slotItem {
+  padding: 0.5rem;
+  border-radius: 8px;
+  background-color: white;
+  border: 1px solid #e0e0e0;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: #f0f7ff;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+
+  &.selected {
+    background-color: #e6f2ff;
+    border-color: #91c3ff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+  }
+
+  input {
+    margin-right: 0.5rem;
+    cursor: pointer;
+  }
+
+  label {
+    font-size: 0.9rem;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+}
+
+.form {
+  padding: 1.5rem;
+  background-color: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+}
+
+.formGroup {
+  margin-bottom: 1.5rem;
+}
+
+.label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  color: #495057;
+  font-weight: 500;
+}
+
+.emailInput {
+  width: 95%;
+  padding: 0.75rem 0.75rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid #ced4da;
+  background-color: white;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+
+  &:focus {
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  }
+
+  &::placeholder {
+    color: #adb5bd;
+  }
+}
+
+.scheduleBtn {
+  width: 100%;
+  padding: 0.85rem;
+  background-color: #007bff;
+  color: white;
+  font-size: 1rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: #0069d9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 105, 217, 0.3);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: none;
+  }
+
+  &:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+    opacity: 0.7;
+  }
+}
+
+/* Make it responsive */
+@media (max-width: 480px) {
+  .pageWrapper {
+    padding: 0;
+  }
+
+  .container {
+    margin: 0;
+    border-radius: 0;
+    max-width: 100%;
+    box-shadow: none;
+  }
+
+  .slotsList {
+    grid-template-columns: 1fr 1fr;
+  }
+}

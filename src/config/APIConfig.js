@@ -1,5 +1,5 @@
-const url = "https://backend-283763506150.us-central1.run.app";
-// const url = "http://localhost:8000";
+export const url = "https://backend-283763506150.us-central1.run.app";
+// export const url = "http://localhost:8000";
 
 const auth = `${url}/auth`;
 export const users = `${url}/users`;
@@ -23,7 +23,7 @@ export const tenantEmail = `${url}/tenant-email/`;
 export const emailTemplate = `${url}/email-template`;
 export const videoTracking = `${url}/video-tracking/`;
 export const hvoTracking = `${url}/hvo-tracking`;
-
+export const tenantMeeting = `${url}/tenant-meeting`;
 const ApiConfig = {
   getUrls: `${url}/url`,
   addUrl: `${url}/url`,
@@ -51,9 +51,10 @@ const ApiConfig = {
   UploadFile: `${upload}/upload-file`,
   headers: `${googlesheets}/sheet-data-types`,
   createVideo: `${video}/create-video`,
-  getAllPPUsers: `${admin}/subadmin`,
+  getAllTenants: `${admin}/subadmin`,
   googleSheet: `${googlesheets}`,
   googleSheetDataTypes: `${googlesheets}/get-headers`,
+  googlesheetnames: `${googlesheets}/tabs`,
   getTemplateList: `${templates}`,
   deleteTemplate: `${templates}`,
   deleteElement: `${videoelement}`,

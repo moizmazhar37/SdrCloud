@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import "./VideoPlayer.css";
 import ApiConfig from "./../../../../config/APIConfig";
 import { videoTracking } from "src/config/APIConfig";
+import { url } from "src/config/APIConfig";
 import { v4 as uuidv4 } from "uuid"; // Make sure to install uuid package with npm install uuid
 
 const VideoPlayer = () => {
@@ -189,11 +190,8 @@ const VideoPlayer = () => {
   };
 
   const handleMeetButtonClick = () => {
-    if (videoData?.meet_link) {
-      window.location.href = videoData.meet_link;
-    } else {
-      toast.error("Couldn't find meeting link");
-    }
+  const link = `${url}/book-meeting/${videoData?.tenant_id}`;
+  window.open(link, "_blank");
   };
 
   if (isLoading) {
