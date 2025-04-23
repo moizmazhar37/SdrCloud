@@ -189,11 +189,8 @@ const VideoPlayer = () => {
   };
 
   const handleMeetButtonClick = () => {
-    if (videoData?.meet_link) {
-      window.location.href = videoData.meet_link;
-    } else {
-      toast.error("Couldn't find meeting link");
-    }
+    const url = `http://localhost:3000/book-meeting/${videoData?.tenant_id}`;
+  window.open(url, "_blank");
   };
 
   if (isLoading) {
