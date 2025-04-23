@@ -1,13 +1,14 @@
 // hooks.js
+import url from "src/config/APIConfig";
 
 export const getTenantSlots = async (tenantId) => {
-  const res = await fetch(`http://localhost:8000/tenant-meeting/tenant-slots/${tenantId}`);
+  const res = await fetch(`${url}/tenant-meeting/tenant-slots/${tenantId}`);
   if (!res.ok) throw new Error("Failed to fetch slots");
   return await res.json();
 };
 
 export const scheduleMeeting = async (data) => {
-  const res = await fetch("http://localhost:8000/tenant-meeting/create-meeting", {
+  const res = await fetch(`${url}/tenant-meeting/create-meeting`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
