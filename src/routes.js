@@ -278,9 +278,7 @@ export const routes = [
   {
     exact: true,
     path: "/book-meeting/:tenant_id",
-    component: lazy(() =>
-      import("src/views/pages/Meeting/BookMeeting")
-    ),
+    component: lazy(() => import("src/views/pages/Meeting/BookMeeting")),
   },
 
   {
@@ -598,6 +596,16 @@ export const routes = [
     layout: DashboardLayout,
     component: lazy(() =>
       import("src/views/pages/settings/Integrations/CalendarLink/OAuth")
+    ),
+  },
+
+  {
+    exact: true,
+    path: "/book-meeting",
+    guard: true,
+    layout: DashboardLayout,
+    component: lazy(() =>
+      import("src/views/pages/settings/ScheduleMeetings/ScheduleMeetings")
     ),
   },
 

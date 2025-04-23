@@ -79,7 +79,8 @@ const AdminDashboard = () => {
     return null;
   }
 
-  const showTopTemplates = false; // Toggle this when needed
+  // Changed to true to enable the top templates section
+  const showTopTemplates = true;
 
   // Destructure the data for easier access
   const {
@@ -88,7 +89,7 @@ const AdminDashboard = () => {
     aiComponents,
     summaryStats,
     prospectsLifecycleData,
-    templatesCreatedData,
+    templates_created_data, // Make sure this matches the property name in the API response
     templatesSentData,
     visitDurationData,
     visitorsGraphData,
@@ -116,9 +117,9 @@ const AdminDashboard = () => {
       {/* Header Section with Support Contact and Action Buttons */}
       <div className={styles.headerSection}>
         <SupportContactLabel
-          manager={supportInfo.manager}
-          phone={supportInfo.phone}
-          email={supportInfo.email}
+          manager={supportInfo?.manager || ""}
+          phone={supportInfo?.phone || ""}
+          email={supportInfo?.email || ""}
         />
         <div className={styles.actionButtons}>
           <button
@@ -138,31 +139,31 @@ const AdminDashboard = () => {
       <div className={styles.metricsCardContainer}>
         <Card
           heading="Active Users"
-          amount={metrics.activeUsers}
+          amount={metrics?.activeUsers || 0}
           isClickable={true}
           onClick={() => handleCardClick("Active Users")}
         />
-        <Card heading="Available Seats" amount={metrics.availableSeats} />
+        <Card heading="Available Seats" amount={metrics?.availableSeats || 0} />
         <Card
           heading="Credits Spent"
-          amount={metrics.creditsSpent}
+          amount={metrics?.creditsSpent || 0}
           change={15}
         />
         <Card
           heading="Credits Available"
-          amount={metrics.creditsAvailable}
+          amount={metrics?.creditsAvailable || 0}
           change={20}
         />
         <Card
           heading="Sheets Connected"
-          amount={metrics.sheetsConnected}
+          amount={metrics?.sheetsConnected || 0}
           isClickable={true}
           onClick={() => handleCardClick("Sheets Connected")}
           change={25}
         />
         <Card
           heading="Templates Generated"
-          amount={metrics.templatesGenerated}
+          amount={metrics?.templatesGenerated || 0}
           isClickable={true}
           onClick={() => handleCardClick("Templates Generated")}
           change={30}
@@ -175,35 +176,35 @@ const AdminDashboard = () => {
         <div className={styles.prospectsCardContainer}>
           <Card
             heading="Campaigns"
-            amount={summaryStats.campaigns}
+            amount={summaryStats?.campaigns || 0}
             isClickable={true}
             onClick={() => handleCardClick("Campaigns")}
             change={15}
           />
           <Card
             heading="Prospects Added"
-            amount={summaryStats.prospectsAdded}
+            amount={summaryStats?.prospectsAdded || 0}
             isClickable={true}
             onClick={() => handleCardClick("Prospects Added")}
             change={-10}
           />
           <Card
             heading="Meetings Booked"
-            amount={summaryStats.meetingsBooked}
+            amount={summaryStats?.meetingsBooked || 0}
             isClickable={true}
             onClick={() => handleCardClick("Meetings Booked")}
             change={12}
           />
           <Card
             heading="Meeting Attended"
-            amount={summaryStats.meetingsAttended}
+            amount={summaryStats?.meetingsAttended || 0}
             isClickable={true}
             onClick={() => handleCardClick("Meeting Attended")}
             change={-5}
           />
           <Card
             heading="Visitors Identified"
-            amount={summaryStats.visitorsIdentified}
+            amount={summaryStats?.visitorsIdentified || 0}
             isClickable={true}
             onClick={() => handleCardClick("Visitors Identified")}
             change={10}
@@ -213,36 +214,38 @@ const AdminDashboard = () => {
 
       {/* Analytics Overview Section */}
       <div className={styles.prospectsLifecycleContainer}>
-        <ActiveProspectsLifecycle
-          data={prospectsLifecycleData}
-          title="Active Prospects Lifecycle Over Time (Hover to Explore)"
-        />
+        {prospectsLifecycleData && (
+          <ActiveProspectsLifecycle
+            data={prospectsLifecycleData}
+            title="Active Prospects Lifecycle Over Time (Hover to Explore)"
+          />
+        )}
       </div>
 
       <div className={styles.GraphContainer}>
         <Graph
           title="Amount of Templates Created"
-          data={templatesCreatedData}
+          data={templates_created_data || []} // Use proper variable name
           type={"filters"}
         />
         <Graph
           title="Amount of HVOs/Videos Sent"
-          data={templatesSentData}
+          data={templatesSentData || []}
           type={"filters"}
         />
       </div>
 
       <div className={styles.componentSection}>
         <div className={styles.analyticsContainer}>
-          <VisitorsGraph data={visitorsGraphData} />
-          <UserCreditsChart creditsData={userCreditsData} />
+          <VisitorsGraph data={visitorsGraphData || []} />
+          <UserCreditsChart creditsData={userCreditsData || []} />
         </div>
       </div>
 
       <div className={styles.GraphContainer}>
         <Graph
           title="Visit Duration"
-          data={visitDurationData}
+          data={visitDurationData || []}
           type={"filters"}
         />
       </div>
@@ -252,18 +255,20 @@ const AdminDashboard = () => {
         <div className={styles.topUsersContainer}>
           <TopUsers
             title="Company Users"
-            usersData={topUsersData}
+            usersData={topUsersData || []}
             tableHeaders={tableHeaders}
             showDropdown={false}
           />
-          {showTopTemplates && (
-            <TopUsers
-              title="Top Performing Templates"
-              usersData={topTemplatesData}
-              tableHeaders={tableHeaders2}
-              showDropdown={false}
-            />
-          )}
+          {showTopTemplates &&
+            topTemplatesData &&
+            topTemplatesData.length > 0 && (
+              <TopUsers
+                title="Top Performing Templates"
+                usersData={topTemplatesData}
+                tableHeaders={tableHeaders2}
+                showDropdown={false}
+              />
+            )}
         </div>
       </div>
 
