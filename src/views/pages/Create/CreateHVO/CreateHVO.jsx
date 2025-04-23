@@ -9,6 +9,7 @@ import styles from "./CreateHVO.module.scss";
 import HVOCategoryForm from "./HVOCategoryForm/HVOCategoryForm";
 import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
 import HvoSectionCardContainer from "./HvoSectionCard/HvoSectionCardContainer";
+import ConfirmationModal from "src/Common/ConfirmationModal/ConfirmationModal";
 import VideoUpload from "./Sections/VideoSection/VideoSection";
 import {
   extractHvoCategories,
@@ -49,6 +50,9 @@ const CreateHVO = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedSection, setSelectedSection] = useState(null);
   const [dataFetchTrigger, setDataFetchTrigger] = useState(0);
+  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+
+
 
   const { data: sheetData, loading: sheetsLoading } = useGetSheets("HVO");
   // Now we'll refetch when dataFetchTrigger changes
@@ -152,13 +156,19 @@ const CreateHVO = () => {
     resetAllStates();
   };
 
+  const confirmAndCreateHVO = (templateId) => {
+    handleCreateVideo(templateId);
+  };
+
   const handleCreateHVO = () => {
     if (templateId) {
-      handleCreateVideo(templateId);
+      setIsConfirmationOpen(true);
     } else {
       toast.error("Please create a template first");
     }
   };
+  
+  
 
   const isEditable = Boolean(isViewMode || isSheetConnected);
 
@@ -325,6 +335,22 @@ const CreateHVO = () => {
           />
         </div>
       </div>
+      {isConfirmationOpen && (
+        <ConfirmationModal
+          isOpen={isConfirmationOpen}
+          showInputField={false}
+
+          onClose={() => setIsConfirmationOpen(false)}
+          title="Confirm HVO Creation"
+          confirmationText="Are you sure you want to create a HVO with this template? This also means that the emails will be sent!"
+          actionButtonText="Create"
+          onAction={(rowsToCreate) => {
+            confirmAndCreateHVO(templateId);
+            setIsConfirmationOpen(false);
+          }}
+          totalRecords={data?.length || 10} // You can adjust this as needed
+        />
+      )}
     </div>
   );
 };

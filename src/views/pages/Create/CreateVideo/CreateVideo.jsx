@@ -252,10 +252,11 @@ const CreateVideo = () => {
 
       <ConfirmationModal
         isOpen={isModalOpen}
+        showInputField={false}
         onClose={handleModalClose}
-        title="How many videos should be created?"
+        title="Confirm Video Creation"
         totalRecords={totalRecords}
-        confirmationText="Please confirm if you want to proceed"
+        confirmationText="Are you sure you want to create a Video with this template? This also means that the emails will be sent!"
         onAction={handleProceed}
       />
     </div>
