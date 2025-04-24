@@ -116,6 +116,10 @@ const AdminDashboard = () => {
     { key: "viewed_count", label: "Times Used" },
   ];
 
+  const shouldShowChange = (change) => {
+    return change !== null && change !== undefined && change !== "none";
+  };
+
   return (
     <div className={styles.dashboardContainer}>
       {/* Header Section with Support Contact and Action Buttons */}
@@ -151,26 +155,42 @@ const AdminDashboard = () => {
         <Card
           heading="Credits Spent"
           amount={metrics?.creditsSpent || 0}
-          change={metrics?.growth_rates?.creditsSpent}
+          change={
+            shouldShowChange(metrics?.growth_rates?.creditsSpent)
+              ? metrics?.growth_rates?.creditsSpent
+              : undefined
+          }
         />
         <Card
           heading="Credits Available"
           amount={metrics?.creditsAvailable || 0}
-          change={metrics?.growth_rates?.creditsAvailable}
+          change={
+            shouldShowChange(metrics?.growth_rates?.creditsAvailable)
+              ? metrics?.growth_rates?.creditsAvailable
+              : undefined
+          }
         />
         <Card
           heading="Sheets Connected"
           amount={metrics?.sheetsConnected || 0}
           isClickable={true}
           onClick={() => handleCardClick("Sheets Connected")}
-          change={metrics?.growth_rates?.sheetsConnected}
+          change={
+            shouldShowChange(metrics?.growth_rates?.sheetsConnected)
+              ? metrics?.growth_rates?.sheetsConnected
+              : undefined
+          }
         />
         <Card
           heading="Templates Generated"
           amount={metrics?.templatesGenerated || 0}
           isClickable={true}
           onClick={() => handleCardClick("Templates Generated")}
-          change={metrics?.growth_rates?.templatesGenerated}
+          change={
+            shouldShowChange(metrics?.growth_rates?.templatesGenerated)
+              ? metrics?.growth_rates?.templatesGenerated
+              : undefined
+          }
         />
       </div>
 
@@ -183,35 +203,55 @@ const AdminDashboard = () => {
             amount={summaryStats?.campaigns || 0}
             isClickable={true}
             onClick={() => handleCardClick("Campaigns")}
-            change={summaryStats?.growth_rates?.campaigns}
+            change={
+              shouldShowChange(summaryStats?.growth_rates?.campaigns)
+                ? summaryStats?.growth_rates?.campaigns
+                : undefined
+            }
           />
           <Card
             heading="Prospects Added"
             amount={summaryStats?.prospectsAdded || 0}
             isClickable={true}
             onClick={() => handleCardClick("Prospects Added")}
-            change={summaryStats?.growth_rates?.prospectsAdded}
+            change={
+              shouldShowChange(summaryStats?.growth_rates?.prospectsAdded)
+                ? summaryStats?.growth_rates?.prospectsAdded
+                : undefined
+            }
           />
           <Card
             heading="Meetings Booked"
             amount={summaryStats?.meetingsBooked || 0}
             isClickable={false}
             // onClick={() => handleCardClick("Meetings Booked")}
-            change={summaryStats?.growth_rates?.meetingsBooked}
+            change={
+              shouldShowChange(summaryStats?.growth_rates?.meetingsBooked)
+                ? summaryStats?.growth_rates?.meetingsBooked
+                : undefined
+            }
           />
           <Card
             heading="Meeting Attended"
             amount={summaryStats?.meetingsAttended || 0}
             isClickable={false}
             // onClick={() => handleCardClick("Meeting Attended")}
-            change={summaryStats?.growth_rates?.meetingsAttended}
+            change={
+              shouldShowChange(summaryStats?.growth_rates?.meetingsAttended)
+                ? summaryStats?.growth_rates?.meetingsAttended
+                : undefined
+            }
           />
           <Card
             heading="Visitors Identified"
             amount={summaryStats?.visitorsIdentified || 0}
             isClickable={true}
             onClick={() => handleCardClick("Visitors Identified")}
-            change={summaryStats?.growth_rates?.visitorsIdentified}
+            change={
+              shouldShowChange(summaryStats?.growth_rates?.visitorsIdentified)
+                ? summaryStats?.growth_rates?.visitorsIdentified
+                : undefined
+            }
           />
         </div>
       </div>
