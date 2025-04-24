@@ -657,6 +657,15 @@ export const routes = [
   },
   {
     exact: true,
+    path: "/set-admin-password",
+    guard: true,
+    layout: AuthLayout,
+    component: lazy(() =>
+      import("src/views/pages/DashboardUser/SetAdminPassword/SetAdminPassword")
+    ),
+  },
+  {
+    exact: true,
     path: "/company-setting",
     // guard: true,
     layout: DashboardLayout,
