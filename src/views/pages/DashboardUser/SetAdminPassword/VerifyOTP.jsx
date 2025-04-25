@@ -1,9 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
-import styles from "./SetAdminPassword.module.scss";
+import styles from "./VerifyOTP.module.scss";
+import SetPassword from "./SetPassword/SetPassword";
 
-const SetAdminPassword = () => {
+const VerifyOTP = () => {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const [showSetPassword, setShowSetPassword] = useState(false);
   const inputRefs = useRef([]);
+
+  // Hardcoded OTP for verification
+  const hardcodedOTP = "123456";
 
   useEffect(() => {
     // Focus on first input on component mount
@@ -69,10 +74,22 @@ const SetAdminPassword = () => {
     e.preventDefault();
     const otpValue = otp.join("");
     if (otpValue.length === 6) {
-      // Here you would verify the OTP with your backend
-      console.log("Submitting OTP:", otpValue);
+      // Check if entered OTP matches hardcoded OTP
+      if (otpValue === hardcodedOTP) {
+        // Show SetPassword component if OTP is correct
+        setShowSetPassword(true);
+      } else {
+        // Handle incorrect OTP (you might want to add error message display)
+        console.log("Incorrect OTP");
+        // Optional: add visual feedback for incorrect OTP
+      }
     }
   };
+
+  // If verification is successful, show SetPassword component
+  if (showSetPassword) {
+    return <SetPassword />;
+  }
 
   return (
     <div className={styles.sdrWelcome}>
@@ -133,4 +150,4 @@ const SetAdminPassword = () => {
   );
 };
 
-export default SetAdminPassword;
+export default VerifyOTP;

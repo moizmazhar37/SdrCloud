@@ -661,7 +661,18 @@ export const routes = [
     guard: true,
     layout: AuthLayout,
     component: lazy(() =>
-      import("src/views/pages/DashboardUser/SetAdminPassword/SetAdminPassword")
+      import("src/views/pages/DashboardUser/SetAdminPassword/VerifyOTP")
+    ),
+  },
+  {
+    exact: true,
+    path: "/set-admin",
+    guard: true,
+    layout: AuthLayout,
+    component: lazy(() =>
+      import(
+        "src/views/pages/DashboardUser/SetAdminPassword/SetPassword/SetPassword"
+      )
     ),
   },
   {
