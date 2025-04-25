@@ -84,17 +84,21 @@ const Login = () => {
         );
         auth.userLogIn(true, response?.data?.token);
 
-        const userType = response?.data?.user_details?.role;
+        if (response?.data?.user_details?.status === "PENDING") {
+          history.push("/set-admin-password");
+        } else {
+          const userType = response?.data?.user_details?.role;
 
-        if (userType === "USER") {
-          history.push("/user-dashboard"); // Changed from navigate to history.push
-          toast.success(response?.data?.message);
-        } else if (userType === "ADMIN") {
-          history.push("/PP-createaccount"); // Changed from navigate to history.push
-          toast.success(response?.data?.message);
-        } else if (userType === "SUBADMIN") {
-          history.push("/dashboard"); // Changed from navigate to history.push
-          toast.success(response?.data?.message);
+          if (userType === "USER") {
+            history.push("/user-dashboard");
+            toast.success(response?.data?.message);
+          } else if (userType === "ADMIN") {
+            history.push("/PP-createaccount");
+            toast.success(response?.data?.message);
+          } else if (userType === "SUBADMIN") {
+            history.push("/dashboard");
+            toast.success(response?.data?.message);
+          }
         }
 
         if (isRememberMe) {
@@ -137,7 +141,6 @@ const Login = () => {
       }
     }
   };
-
   useEffect(() => {
     if (auth.userLoggedIn === true) {
       const userType = localStorage.getItem("userType");
