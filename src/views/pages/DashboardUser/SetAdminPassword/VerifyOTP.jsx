@@ -151,3 +151,20 @@ const VerifyOTP = () => {
 };
 
 export default VerifyOTP;
+
+/*
+import React, { useState, useEffect, useContext } from "react";
+import { useHistory, Link } from "react-router-dom";
+import { Formik, Form } from "formik";
+import * as Yup from "yup";
+import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+import { AuthContext } from "src/context/Auth";
+import ApiConfig from "src/config/APIConfig";
+import Logo from "src/component/Logo";
+import { VscEye, VscEyeClosed } from "react-icons/vsc";
+import ButtonCircularProgress from "src/component/ButtonCircularProgress";
+import styles from "./Login.module.scss";
+*/
