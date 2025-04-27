@@ -16,6 +16,10 @@ const MeetingIntegrationsConnect = () => {
   const [error, setError] = useState(false);
   const [showCalendlyInput, setShowCalendlyInput] = useState(false);
   const [calendlyToken, setCalendlyToken] = useState("");
+  const [loadingState, setLoadingState] = useState({
+    google: false,
+    calendly: false,
+  });
 
   const token = localStorage.getItem("token");
 
@@ -39,46 +43,58 @@ const MeetingIntegrationsConnect = () => {
 
   const handleGoogleConnect = async () => {
     try {
+      setLoadingState({ ...loadingState, google: true });
       const authUrl = await initiateGoogleOAuth(token);
       if (authUrl) window.location.href = authUrl;
     } catch (error) {
       console.error("OAuth initiation failed:", error);
-      toast("Failed to connect Google Calendar.");
+      toast.error("Failed to connect Google Calendar.");
+    } finally {
+      setLoadingState({ ...loadingState, google: false });
     }
   };
 
   const handleGoogleDisconnect = async () => {
     try {
-      await disconnectGoogleAccount(token);
-      toast("Disconnected Google Calendar.");
+      setLoadingState({ ...loadingState, google: true });
+      const response = await disconnectGoogleAccount(token);
+      toast.success(response.message || "Disconnected Google Calendar.");
       fetchIntegrations();
     } catch (error) {
       console.error("Failed to disconnect:", error);
-      toast("Failed to disconnect Google.");
+      toast.error(error.message || "Failed to disconnect Google.");
+    } finally {
+      setLoadingState({ ...loadingState, google: false });
     }
   };
 
   const handleCalendlyConnect = async () => {
     try {
-      await connectCalendlyAccount(token, calendlyToken);
-      toast("Calendly connected successfully.");
+      setLoadingState({ ...loadingState, calendly: true });
+      const response = await connectCalendlyAccount(token, calendlyToken);
+      toast.success(response.message || "Calendly connected successfully.");
       setShowCalendlyInput(false);
       setCalendlyToken("");
       fetchIntegrations();
     } catch (error) {
       console.error("Calendly connection failed:", error);
-      toast("Failed to connect Calendly.");
+      toast.error(error.message || "Failed to connect Calendly.");
+    } finally {
+      setLoadingState({ ...loadingState, calendly: false });
     }
   };
 
   const handleCalendlyDisconnect = async () => {
     try {
-      await disconnectCalendlyAccount(token);
-      toast("Calendly disconnected successfully.");
+      setLoadingState({ ...loadingState, calendly: true });
+      const response = await disconnectCalendlyAccount(token);
+      toast.success(response.message || "Calendly disconnected successfully.");
       fetchIntegrations();
     } catch (error) {
       console.error("Calendly disconnection failed:", error);
-      toast("Failed to disconnect Calendly.");
+      toast.error(error.message || "Failed to disconnect Calendly.");
+    } finally {
+      setLoadingState({ ...loadingState, calendly: false });
     }
   };
 
@@ -114,13 +130,21 @@ const MeetingIntegrationsConnect = () => {
                 <div className={styles.connectedInfo}>
                   Connected as <strong>{integrations.google.email}</strong>
                 </div>
-                <button className={styles.disconnectBtn} onClick={handleGoogleDisconnect}>
-                  Disconnect
+                <button
+                  className={styles.disconnectBtn}
+                  onClick={handleGoogleDisconnect}
+                  disabled={loadingState.google}
+                >
+                  {loadingState.google ? "Disconnecting..." : "Disconnect"}
                 </button>
               </>
             ) : (
-              <button className={styles.connectBtn} onClick={handleGoogleConnect}>
-                Connect Google Calendar
+              <button
+                onClick={handleGoogleConnect}
+                className={styles.connectBtn}
+                disabled={loadingState.google}
+              >
+                {loadingState.google ? "Connecting..." : "Connect Google Calendar"}
               </button>
             )}
           </div>
@@ -144,26 +168,44 @@ const MeetingIntegrationsConnect = () => {
                     {integrations.calendly.user_link}
                   </a>
                 </div>
-                <button className={styles.disconnectBtn} onClick={handleCalendlyDisconnect}>
-                  Disconnect
+                <button
+                  className={styles.disconnectBtn}
+                  onClick={handleCalendlyDisconnect}
+                  disabled={loadingState.calendly}
+                >
+                  {loadingState.calendly ? "Disconnecting..." : "Disconnect"}
                 </button>
               </>
             ) : showCalendlyInput ? (
               <div className={styles.inputWrapper}>
                 <input
-                  type="text"
-                  placeholder="Enter Calendly API Token"
+                  type="password"
+                  placeholder="Enter your Calendly Access Token"
                   value={calendlyToken}
-                  onChange={(e) => setCalendlyToken(e.target.value)}
+                  onChange={(e) => {
+                    const newValue = e.target.value;
+                    if (newValue.length <= 5000) {
+                      setCalendlyToken(newValue);
+                    }
+                  }}
+                  maxLength={5000}
                   className={styles.tokenInput}
                 />
-                <button className={styles.connectBtn} onClick={handleCalendlyConnect}>
-                  Connect Calendly
+                <button
+                  className={styles.connectBtn}
+                  onClick={handleCalendlyConnect}
+                  disabled={loadingState.calendly}
+                >
+                  {loadingState.calendly ? "Connecting..." : "Connect Calendly"}
                 </button>
               </div>
             ) : (
-              <button className={styles.connectBtn} onClick={() => setShowCalendlyInput(true)}>
-                Connect Calendly
+              <button
+                onClick={() => setShowCalendlyInput(true)}
+                className={styles.connectBtn}
+                disabled={loadingState.calendly}
+              >
+                {loadingState.calendly ? "Connecting..." : "Connect Calendly"}
               </button>
             )}
           </div>

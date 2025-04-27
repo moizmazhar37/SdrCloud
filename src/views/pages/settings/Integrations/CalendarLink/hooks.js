@@ -39,10 +39,9 @@ export const disconnectGoogleAccount = async () => {
 
 };
 
-export const connectCalendlyAccount = async (calendlyToken) => {
-    const token = localStorage.getItem("token");
-    const res = await axios.post(`${url}/tenant-meeting/integrations/calendly`, {
-        token: calendlyToken,
+export const connectCalendlyAccount = async (token, calendlyToken) => {
+    const res = await axios.post(`${url}/tenant-meeting/calendly-creds`, {
+        access_token: calendlyToken,
     }, {
         headers: {
             Authorization: `Bearer ${token}`,
@@ -54,7 +53,7 @@ export const connectCalendlyAccount = async (calendlyToken) => {
 
 export const disconnectCalendlyAccount = async () => {
     const token = localStorage.getItem("token");
-    const res = await axios.delete(`${url}/tenant-meeting/integrations/calendly`, {
+    const res = await axios.delete(`${url}/tenant-meeting/calendly/disconnect`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
