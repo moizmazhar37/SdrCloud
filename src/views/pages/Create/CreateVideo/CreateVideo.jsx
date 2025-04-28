@@ -252,7 +252,6 @@ const CreateVideo = () => {
 
       <ConfirmationModal
         isOpen={isModalOpen}
-        showInputField={false}
         onClose={handleModalClose}
         title="Confirm Video Creation"
         totalRecords={totalRecords}

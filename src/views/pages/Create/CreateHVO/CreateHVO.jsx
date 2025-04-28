@@ -338,7 +338,6 @@ const CreateHVO = () => {
       {isConfirmationOpen && (
         <ConfirmationModal
           isOpen={isConfirmationOpen}
-          showInputField={false}
 
           onClose={() => setIsConfirmationOpen(false)}
           title="Confirm HVO Creation"
