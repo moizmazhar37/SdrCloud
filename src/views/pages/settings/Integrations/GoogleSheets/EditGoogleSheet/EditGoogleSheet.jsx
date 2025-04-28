@@ -7,6 +7,8 @@ import { useGoogleSheetTypes, useSaveGoogleSheetTypes } from "./useGetAllSheets"
 import FullScreenLoader from "src/component/FullScreenLoader";
 import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
 import { hvoTypes, videoTypes } from "./types";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function EditGoogleSheet() {
   const location = useLocation();
@@ -36,7 +38,7 @@ function EditGoogleSheet() {
       setUpdatedData(
         sheetData.map((item) => ({
           value: item.value,
-          dataType: item.dataType || "",
+          dataType: item.dataType || "",  
           column: item.column,
         }))
       );
@@ -54,9 +56,37 @@ function EditGoogleSheet() {
   };
 
   const handleEditToggle = async () => {
-    if (isEditing) await saveSheetTypes(sheetId, updatedData);
+    if (isEditing) {
+      const requiredFields =
+        type === "HVO"
+          ? hvoTypes.filter((t) => t.includes("(Required)"))
+          : videoTypes.filter((t) => t.includes("(Required)"));
+  
+      const selectedFields = updatedData.map((item) => item.dataType);
+      const missingFields = requiredFields.filter(
+        (req) => !selectedFields.includes(req)
+      );
+  
+      if (missingFields.length > 0) {
+        missingFields.forEach((field) => {
+          const msg = `Please select required field: ${field}`;
+          console.error(msg);
+          toast.error(msg, {
+            position: "top-right",
+            autoClose: 4000,
+            pauseOnHover: true,
+            draggable: true,
+          });
+        });
+        return; // prevent save
+      }
+  
+      await saveSheetTypes(sheetId, updatedData);
+    }
+  
     setIsEditing((prevState) => !prevState);
   };
+  
 
   const navs = [
     { text: "Settings", route: "/settings" },
