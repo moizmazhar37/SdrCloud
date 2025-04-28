@@ -657,8 +657,7 @@ export const routes = [
   },
   {
     exact: true,
-    path: "/set-admin-password",
-    guard: true,
+    path: "/set-admin-password/:token",
     layout: AuthLayout,
     component: lazy(() =>
       import("src/views/pages/DashboardUser/SetAdminPassword/VerifyOTP")
