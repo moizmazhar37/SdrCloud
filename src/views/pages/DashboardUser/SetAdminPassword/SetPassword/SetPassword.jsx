@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useHistory } from "react-router-dom";
 import styles from "./SetPassword.module.scss";
 import {
   PasswordField,
@@ -6,6 +7,8 @@ import {
   validatePassword,
   isPasswordValid,
 } from "../Helpers";
+import useSetPassword from "../Hooks/useSetPassword";
+
 const SetPassword = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -18,6 +21,15 @@ const SetPassword = () => {
     match: false,
   });
   const passwordRef = useRef(null);
+  const history = useHistory();
+
+  // Use our custom hook
+  const {
+    setPassword: submitPassword,
+    loading,
+    success,
+    error,
+  } = useSetPassword();
 
   useEffect(() => {
     // Focus on password input on component mount
@@ -31,17 +43,26 @@ const SetPassword = () => {
     setValidations(validatePassword(password, confirmPassword));
   }, [password, confirmPassword]);
 
+  // Redirect after successful password setup
+  useEffect(() => {
+    if (success) {
+      // Redirect to root route after successful password setup
+      setTimeout(() => {
+        history.push("/");
+      }, 2000);
+    }
+  }, [success, history]);
+
   const handlePasswordChange = (e) => setPassword(e.target.value);
   const handleConfirmPasswordChange = (e) => setConfirmPassword(e.target.value);
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
   const toggleConfirmPasswordVisibility = () =>
     setShowConfirmPassword(!showConfirmPassword);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (isPasswordValid(validations)) {
-      // Here you would send the password to your backend
-      console.log("Password set successfully:", password);
+      const result = await submitPassword(password);
     }
   };
 
@@ -63,6 +84,8 @@ const SetPassword = () => {
             <h2>Set Your Password</h2>
             <p>Create a strong password to secure your account</p>
 
+            {error && <div className={styles.errorMessage}>{error}</div>}
+
             <form onSubmit={handleSubmit} className={styles.form}>
               <div className={styles.inputGroup}>
                 <label htmlFor="password">Password</label>
@@ -75,6 +98,7 @@ const SetPassword = () => {
                   placeholder="Enter your password"
                   inputRef={passwordRef}
                   styles={styles}
+                  disabled={loading || success}
                 />
               </div>
 
@@ -88,6 +112,7 @@ const SetPassword = () => {
                   toggleVisibility={toggleConfirmPasswordVisibility}
                   placeholder="Confirm your password"
                   styles={styles}
+                  disabled={loading || success}
                 />
               </div>
 
@@ -120,9 +145,9 @@ const SetPassword = () => {
               <button
                 type="submit"
                 className={styles.submitBtn}
-                disabled={!isPasswordValid(validations)}
+                disabled={!isPasswordValid(validations) || loading || success}
               >
-                Set Password
+                {loading ? "Setting Password..." : "Set Password"}
               </button>
             </form>
           </div>

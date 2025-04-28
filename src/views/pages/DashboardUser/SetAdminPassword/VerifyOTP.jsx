@@ -1,21 +1,40 @@
 import React, { useState, useEffect, useRef } from "react";
 import styles from "./VerifyOTP.module.scss";
 import SetPassword from "./SetPassword/SetPassword";
-
+import useAdminApi from "./Hooks/useAdminApi";
 const VerifyOTP = () => {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [showSetPassword, setShowSetPassword] = useState(false);
+  const [token, setToken] = useState("");
+  const [error, setError] = useState("");
   const inputRefs = useRef([]);
 
-  // Hardcoded OTP for verification
-  const hardcodedOTP = "123456";
+  // Use the custom hook
+  const { verifyOtp, loading, error: apiError } = useAdminApi();
 
   useEffect(() => {
+    // Extract token from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlToken = urlParams.get("token");
+
+    if (urlToken) {
+      setToken(urlToken);
+    } else {
+      setError("Token not found in URL");
+    }
+
     // Focus on first input on component mount
     if (inputRefs.current[0]) {
       inputRefs.current[0].focus();
     }
   }, []);
+
+  // Update error state when API error changes
+  useEffect(() => {
+    if (apiError) {
+      setError(apiError);
+    }
+  }, [apiError]);
 
   const handleChange = (e, index) => {
     const value = e.target.value;
@@ -66,29 +85,36 @@ const VerifyOTP = () => {
     // Focus first input
     inputRefs.current[0].focus();
 
+    // Reset error if any
+    setError("");
+
     // Here you would call your API to resend OTP
     console.log("Resending OTP...");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const otpValue = otp.join("");
-    if (otpValue.length === 6) {
-      // Check if entered OTP matches hardcoded OTP
-      if (otpValue === hardcodedOTP) {
-        // Show SetPassword component if OTP is correct
+
+    if (otpValue.length === 6 && token) {
+      try {
+        // Call the API to verify OTP
+        await verifyOtp(otpValue, token);
+
+        // If verification is successful, show SetPassword component
         setShowSetPassword(true);
-      } else {
-        // Handle incorrect OTP (you might want to add error message display)
-        console.log("Incorrect OTP");
-        // Optional: add visual feedback for incorrect OTP
+      } catch (err) {
+        // Error is already handled by the hook and will be displayed
+        console.error("OTP verification failed:", err.message);
       }
+    } else if (!token) {
+      setError("Authentication token is missing");
     }
   };
 
   // If verification is successful, show SetPassword component
   if (showSetPassword) {
-    return <SetPassword />;
+    return <SetPassword token={token} />;
   }
 
   return (
@@ -108,6 +134,8 @@ const VerifyOTP = () => {
           <div className={styles.otpContainer}>
             <h2>One Time Password</h2>
             <p>Enter One Time Password sent to your registered email address</p>
+
+            {error && <div className={styles.error}>{error}</div>}
 
             <form onSubmit={handleSubmit} className={styles.form}>
               <div className={styles.otpInputs}>
@@ -132,14 +160,18 @@ const VerifyOTP = () => {
               <button
                 type="submit"
                 className={styles.submitBtn}
-                disabled={otp.join("").length !== 6}
+                disabled={otp.join("").length !== 6 || loading || !token}
               >
-                Submit
+                {loading ? "Verifying..." : "Submit"}
               </button>
             </form>
 
             <div className={styles.resendContainer}>
-              <button onClick={handleResendOtp} className={styles.resendBtn}>
+              <button
+                onClick={handleResendOtp}
+                className={styles.resendBtn}
+                disabled={loading}
+              >
                 Resend OTP
               </button>
             </div>
@@ -151,20 +183,3 @@ const VerifyOTP = () => {
 };
 
 export default VerifyOTP;
-
-/*
-import React, { useState, useEffect, useContext } from "react";
-import { useHistory, Link } from "react-router-dom";
-import { Formik, Form } from "formik";
-import * as Yup from "yup";
-import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-
-import { AuthContext } from "src/context/Auth";
-import ApiConfig from "src/config/APIConfig";
-import Logo from "src/component/Logo";
-import { VscEye, VscEyeClosed } from "react-icons/vsc";
-import ButtonCircularProgress from "src/component/ButtonCircularProgress";
-import styles from "./Login.module.scss";
-*/
