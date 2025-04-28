@@ -2,16 +2,16 @@
 import axios from "axios";
 import { url } from "src/config/APIConfig";
 
-export const getConnectedGoogleEmail = async () => {
+export const getConnectedIntegrations = async () => {
     const token = localStorage.getItem("token");
-    const res = await axios.get(`${url}/oauth/google/email`, {
+    const res = await axios.get(`${url}/tenant-meeting/integrations`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
         withCredentials: true,
     });
 
-    return res.data.email;
+    return res.data;
 };
 
 export const initiateGoogleOAuth = async () => {
@@ -38,3 +38,26 @@ export const disconnectGoogleAccount = async () => {
     return res.data;
 
 };
+
+export const connectCalendlyAccount = async (token, calendlyToken) => {
+    const res = await axios.post(`${url}/tenant-meeting/calendly-creds`, {
+        access_token: calendlyToken,
+    }, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+    });
+    return res.data;
+}
+
+export const disconnectCalendlyAccount = async () => {
+    const token = localStorage.getItem("token");
+    const res = await axios.delete(`${url}/tenant-meeting/calendly/disconnect`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+    });
+    return res.data;
+}
