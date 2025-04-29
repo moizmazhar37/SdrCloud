@@ -13,9 +13,9 @@ import styles from "./ActiveProspectsLifeCycle.module.scss";
 const ActiveProspectsLifecycle = ({ data }) => {
   // Calculate min and max values from data for dynamic y-axis
   const getMinMaxValues = () => {
-    if (!data || data.length === 0) return { min: -100, max: 100 };
+    if (!data || data.length === 0) return { min: 0, max: 5 };
 
-    let min = 0;
+    let min = 0; // We'll keep min at 0 for this chart type
     let max = 0;
 
     data.forEach((item) => {
@@ -27,33 +27,64 @@ const ActiveProspectsLifecycle = ({ data }) => {
       ];
 
       values.forEach((value) => {
-        if (value < min) min = value;
-        if (value > max) max = value;
+        // Skip null/undefined values
+        if (value === null || value === undefined) return;
+
+        // Convert to number to ensure proper comparison
+        const numValue = Number(value);
+        if (!isNaN(numValue) && numValue > max) {
+          max = numValue;
+        }
       });
     });
 
-    // Add some padding to min/max for better visualization
-    min = Math.floor(min * 1.1);
-    max = Math.ceil(max * 1.1);
+    // Check if max is still 0 (all data points are 0)
+    if (max === 0) {
+      max = 5; // Default to 5 if all values are zero
+    } else {
+      // Add some padding to max for better visualization
+      max = Math.ceil(max * 1.1);
+    }
 
     return { min, max };
   };
 
   const { min, max } = getMinMaxValues();
 
-  // Generate ticks based on min/max values
+  // Safe generate ticks based on min/max values
   const generateTicks = (min, max) => {
+    // Safety check to prevent invalid arrays
+    if (max <= min) {
+      return [0, 1, 2, 3, 4, 5]; // Safe default
+    }
+
     const range = max - min;
-    const tickCount = 10; // Approximate number of ticks
-    const step = Math.ceil(range / tickCount);
+    // Limit number of ticks based on range
+    const tickCount = Math.min(10, range);
+
+    // Ensure step is at least 1
+    const step = Math.max(1, Math.ceil(range / tickCount));
     const ticks = [];
 
-    for (let i = min; i <= max; i += step) {
+    // Limit the number of iterations as a safety measure
+    for (let i = min, count = 0; i <= max && count < 20; i += step, count++) {
       ticks.push(i);
     }
 
     return ticks;
   };
+
+  // Check if data is all zeros
+  const isAllZeros =
+    data &&
+    data.length > 0 &&
+    data.every(
+      (item) =>
+        (item.campaigns === 0 || item.campaigns === null) &&
+        (item.meetings_booked === 0 || item.meetings_booked === null) &&
+        (item.meetings_attended === 0 || item.meetings_attended === null) &&
+        (item.unattended_meetings === 0 || item.unattended_meetings === null)
+    );
 
   return (
     <div className={styles.container}>
@@ -115,6 +146,7 @@ const ActiveProspectsLifecycle = ({ data }) => {
                 fill: "#4CAF50",
                 r: 4,
               }}
+              name="Campaigns"
             />
             <Area
               type="monotone"
@@ -128,6 +160,7 @@ const ActiveProspectsLifecycle = ({ data }) => {
                 fill: "#1D4ED8",
                 r: 4,
               }}
+              name="Meetings Booked"
             />
             <Area
               type="monotone"
@@ -141,6 +174,7 @@ const ActiveProspectsLifecycle = ({ data }) => {
                 fill: "#F97316",
                 r: 4,
               }}
+              name="Meetings Attended"
             />
             <Area
               type="monotone"
@@ -154,6 +188,7 @@ const ActiveProspectsLifecycle = ({ data }) => {
                 fill: "#9333EA",
                 r: 4,
               }}
+              name="Unattended Meetings"
             />
           </AreaChart>
         </ResponsiveContainer>

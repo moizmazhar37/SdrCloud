@@ -415,6 +415,15 @@ export const routes = [
   //   component: lazy(() => import("src/views/pages/settings/GoogleSheet")),
   // },
 
+  // Email Scheduling
+  {
+    exact: true,
+    path: "/email-scheduling",
+    guard: true,
+    layout: DashboardLayout,
+    component: lazy(() => import("src/views/pages/settings/EmailScheduling/EmailScheduling")),
+  },
+
   {
     exact: true,
     path: "/myprofile",

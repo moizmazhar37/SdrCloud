@@ -142,9 +142,9 @@ const Graph = ({
             data={displayData}
             margin={{
               top: 40,
-              right: 20,
-              left: 0,
-              bottom: 0,
+              right: 30,
+              left: 10,
+              bottom: displayData.length > 6 ? 50 : 15,
             }}
           >
             <CartesianGrid
@@ -158,7 +158,12 @@ const Graph = ({
               tickLine={false}
               tick={{ fill: "#6B7280", fontSize: 12 }}
               dy={10}
+              interval={0}
+              angle={displayData.length > 6 ? -45 : 0}
+              textAnchor={displayData.length > 6 ? "end" : "middle"}
+              height={displayData.length > 6 ? 60 : 30}
             />
+
             <YAxis
               axisLine={false}
               tickLine={false}

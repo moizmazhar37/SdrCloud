@@ -54,6 +54,12 @@ const NewSettings = () => {
         text={"Schedule Availability"}
         infoText={"Set meeting slots as per available schedule"}
       />
+      <Card
+        image={add_email}
+        route={"/email-scheduling"}
+        text={"Schedule Emails"}
+        infoText={"Schedule emails to be sent at a later time"}
+      />
     </div>
   );
 };
