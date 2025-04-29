@@ -29,7 +29,6 @@ const CreateUser = ({ isOpen, onClose, onSuccess, userId, viewState }) => {
     lastName: "",
     email: "",
     phone: "",
-    password: "",
     title: "",
     linkedinUrl: "",
     meetingLink: "",
@@ -37,12 +36,11 @@ const CreateUser = ({ isOpen, onClose, onSuccess, userId, viewState }) => {
   });
 
   const [errors, setErrors] = useState({});
-  const [showPassword, setShowPassword] = useState(false);
 
   // Single effect to handle both modal state and form data
   useEffect(() => {
     if (!isOpen) {
-      resetForm(setFormData, setErrors, setShowPassword);
+      resetForm(setFormData, setErrors);
       return;
     }
 
@@ -52,19 +50,18 @@ const CreateUser = ({ isOpen, onClose, onSuccess, userId, viewState }) => {
         lastName: userData.last_name || "",
         email: userData.email || "",
         phone: userData.phoneNo || "",
-        password: userData.password || "",
         title: userData.title || "",
         linkedinUrl: userData.linkedin_url || "",
         meetingLink: userData.meetLink || "",
         tokens: userData.tokens || 0,
       });
     } else if (viewState === "create") {
-      resetForm(setFormData, setErrors, setShowPassword);
+      resetForm(setFormData, setErrors);
     }
   }, [isOpen, userData, viewState]);
 
   const handleClose = () => {
-    resetForm(setFormData, setErrors, setShowPassword);
+    resetForm(setFormData, setErrors);
     onClose();
   };
   const handleFormSubmit = async () => {
@@ -193,31 +190,6 @@ const CreateUser = ({ isOpen, onClose, onSuccess, userId, viewState }) => {
               </div>
             </div>
 
-            <div className={styles.formGroup}>
-              <label>Password*</label>
-              <div className={styles.passwordWrapper}>
-                <input
-                  type={showPassword ? "text" : "password"}
-                  name="password"
-                  placeholder="Enter User Password"
-                  value={formData.password}
-                  onChange={(e) => handleChange(e, setFormData, setErrors)}
-                  onBlur={(e) => handleBlur(e, setErrors)}
-                  disabled={loading}
-                />
-                <button
-                  type="button"
-                  className={styles.passwordToggle}
-                  onClick={() => setShowPassword(!showPassword)}
-                  disabled={loading}
-                >
-                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                </button>
-              </div>
-              {errors.password && (
-                <span className={styles.error}>{errors.password}</span>
-              )}
-            </div>
 
             <div className={styles.formGroup}>
               <label>Title*</label>

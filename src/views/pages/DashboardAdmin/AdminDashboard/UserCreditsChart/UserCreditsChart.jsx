@@ -40,7 +40,12 @@ const UserCreditsChart = ({ creditsData }) => {
         <ResponsiveContainer width="100%" height={300}>
           <BarChart
             data={data}
-            margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+            margin={{
+              top: 20,
+              right: 30,
+              left: 20,
+              bottom: data.length > 5 ? 60 : 30,
+            }}
             barGap={0}
             barCategoryGap="20%"
           >
@@ -55,7 +60,12 @@ const UserCreditsChart = ({ creditsData }) => {
               axisLine={false}
               tickLine={false}
               tick={{ fill: "#666", fontSize: 12 }}
+              interval={0}
+              angle={data.length > 5 ? -45 : 0}
+              textAnchor={data.length > 5 ? "end" : "middle"}
+              height={data.length > 5 ? 60 : 30}
             />
+
             <YAxis
               axisLine={false}
               tickLine={false}
