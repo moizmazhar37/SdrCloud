@@ -11,6 +11,50 @@ import {
 import styles from "./ActiveProspectsLifeCycle.module.scss";
 
 const ActiveProspectsLifecycle = ({ data }) => {
+  // Calculate min and max values from data for dynamic y-axis
+  const getMinMaxValues = () => {
+    if (!data || data.length === 0) return { min: -100, max: 100 };
+
+    let min = 0;
+    let max = 0;
+
+    data.forEach((item) => {
+      const values = [
+        item.campaigns,
+        item.meetings_booked,
+        item.meetings_attended,
+        item.unattended_meetings,
+      ];
+
+      values.forEach((value) => {
+        if (value < min) min = value;
+        if (value > max) max = value;
+      });
+    });
+
+    // Add some padding to min/max for better visualization
+    min = Math.floor(min * 1.1);
+    max = Math.ceil(max * 1.1);
+
+    return { min, max };
+  };
+
+  const { min, max } = getMinMaxValues();
+
+  // Generate ticks based on min/max values
+  const generateTicks = (min, max) => {
+    const range = max - min;
+    const tickCount = 10; // Approximate number of ticks
+    const step = Math.ceil(range / tickCount);
+    const ticks = [];
+
+    for (let i = min; i <= max; i += step) {
+      ticks.push(i);
+    }
+
+    return ticks;
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -42,8 +86,8 @@ const ActiveProspectsLifecycle = ({ data }) => {
               style={{ fontSize: "12px", fill: "#666" }}
             />
             <YAxis
-              domain={[-100, 100]}
-              ticks={[-100, -80, -60, -40, -20, 0, 20, 40, 60, 80, 100]}
+              domain={[min, max]}
+              ticks={generateTicks(min, max)}
               tickLine={true}
               axisLine={true}
               tickMargin={10}
@@ -61,7 +105,7 @@ const ActiveProspectsLifecycle = ({ data }) => {
             {/* Each area component with updated colors */}
             <Area
               type="monotone"
-              dataKey="product1"
+              dataKey="campaigns"
               stroke="#4CAF50" // Green
               fill="rgba(76, 175, 80, 0.15)"
               fillOpacity={1}
@@ -74,7 +118,7 @@ const ActiveProspectsLifecycle = ({ data }) => {
             />
             <Area
               type="monotone"
-              dataKey="product2"
+              dataKey="meetings_booked"
               stroke="#1D4ED8" // Blue
               fill="rgba(29, 78, 216, 0.15)"
               fillOpacity={1}
@@ -87,7 +131,7 @@ const ActiveProspectsLifecycle = ({ data }) => {
             />
             <Area
               type="monotone"
-              dataKey="product3"
+              dataKey="meetings_attended"
               stroke="#F97316" // Orange
               fill="rgba(249, 115, 22, 0.15)"
               fillOpacity={1}
@@ -95,6 +139,19 @@ const ActiveProspectsLifecycle = ({ data }) => {
               dot={{
                 stroke: "#F97316",
                 fill: "#F97316",
+                r: 4,
+              }}
+            />
+            <Area
+              type="monotone"
+              dataKey="unattended_meetings"
+              stroke="#9333EA" // Purple
+              fill="rgba(147, 51, 234, 0.15)"
+              fillOpacity={1}
+              strokeWidth={2}
+              dot={{
+                stroke: "#9333EA",
+                fill: "#9333EA",
                 r: 4,
               }}
             />
