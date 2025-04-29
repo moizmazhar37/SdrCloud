@@ -421,7 +421,11 @@ export const routes = [
     path: "/email-scheduling",
     guard: true,
     layout: DashboardLayout,
-    component: lazy(() => import("src/views/pages/settings/EmailScheduling/EmailScheduling")),
+    component: lazy(() =>
+      import(
+        "src/views/pages/settings/EmailScheduling/ScheduledEmails/ScheduledEmails"
+      )
+    ),
   },
 
   {
