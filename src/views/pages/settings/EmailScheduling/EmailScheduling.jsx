@@ -5,50 +5,48 @@ import styles from "./EmailSchedulng.module.scss";
 import useTemplateList from "../../Create/Hooks/useTemplateList";
 import useTemplates from "../EmailTemplates/hooks";
 import useSaveScheduleEmails from "./Hooks/useSaveScheduleEmails";
+import useFetchScheduleEmails from "./Hooks/useFetchScheduleEmails";
 
 const EmailScheduling = () => {
   const [selectedType, setSelectedType] = useState("hvo");
-  const { emailTemplatesList, emailLoading, emailError } = useTemplates();
-  const { data: templates, loading, error } = useTemplateList();
+  const { emailTemplatesList } = useTemplates();
+  const { data: templates } = useTemplateList();
   const { saveSchedule, saving } = useSaveScheduleEmails();
+  const { schedules, loadingSchedules } = useFetchScheduleEmails();
 
   const formatDate = (date) => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   };
 
-  const getFirstTemplateId = () => {
-    const type = selectedType.toUpperCase();
-    return templates?.[type]?.[0]?.id || "";
-  };
-
-  const getFirstEmailTemplateId = () => {
-    return emailTemplatesList?.[0]?.id || "";
-  };
-
-  const [forms, setForms] = useState([
-    {
-      id: Date.now(),
-      templateId: getFirstTemplateId(),
-      emailTemplateId: getFirstEmailTemplateId(),
-      date: formatDate(new Date()),
-      removing: false,
-    },
-  ]);
+  const [forms, setForms] = useState([]);
 
   useEffect(() => {
-    if (templates && emailTemplatesList) {
-      setForms((prevForms) =>
-        prevForms.map((form) => ({
-          ...form,
-          templateId: getFirstTemplateId(),
-          emailTemplateId: getFirstEmailTemplateId(),
-        }))
-      );
+    if (schedules && emailTemplatesList && templates) {
+      const formatted = schedules.map((item) => ({
+        id: Date.now() + Math.random(), // unique ID
+        templateId: item.template_id,
+        emailTemplateId: item.email_template_id,
+        date: formatDate(item.scheduled_time),
+        removing: false,
+      }));
+      setForms(formatted);
+    } else if (!schedules?.length && emailTemplatesList && templates) {
+      // fallback form if no schedules exist
+      setForms([
+        {
+          id: Date.now(),
+          templateId: templates?.[selectedType.toUpperCase()]?.[0]?.id || "",
+          emailTemplateId: emailTemplatesList?.[0]?.id || "",
+          date: formatDate(new Date()),
+          removing: false,
+        },
+      ]);
     }
-  }, [templates, emailTemplatesList]);
+  }, [schedules, templates, emailTemplatesList]);
 
   const handleTypeChange = (type) => {
     setSelectedType(type);
@@ -61,36 +59,20 @@ const EmailScheduling = () => {
     );
   };
 
-  const handleTemplateChange = (id, value) => {
+  const updateFormField = (id, field, value) => {
     setForms((prevForms) =>
       prevForms.map((form) =>
-        form.id === id ? { ...form, templateId: value } : form
-      )
-    );
-  };
-
-  const handleEmailTemplateChange = (id, value) => {
-    setForms((prevForms) =>
-      prevForms.map((form) =>
-        form.id === id ? { ...form, emailTemplateId: value } : form
-      )
-    );
-  };
-
-  const handleDateChange = (id, value) => {
-    setForms((prevForms) =>
-      prevForms.map((form) =>
-        form.id === id ? { ...form, date: value } : form
+        form.id === id ? { ...form, [field]: value } : form
       )
     );
   };
 
   const addForm = () => {
-    if (forms.length < 3) {
+    if (forms.length < 3 && templates && emailTemplatesList) {
       const newForm = {
         id: Date.now(),
-        templateId: getFirstTemplateId(),
-        emailTemplateId: getFirstEmailTemplateId(),
+        templateId: templates?.[selectedType.toUpperCase()]?.[0]?.id || "",
+        emailTemplateId: emailTemplatesList?.[0]?.id || "",
         date: formatDate(new Date()),
         removing: false,
       };
@@ -111,8 +93,7 @@ const EmailScheduling = () => {
   };
 
   const getTemplateOptions = () => {
-    const type = selectedType.toUpperCase();
-    return templates?.[type] || [];
+    return templates?.[selectedType.toUpperCase()] || [];
   };
 
   const handleScheduleEmails = async () => {
@@ -129,7 +110,7 @@ const EmailScheduling = () => {
       const message =
         err?.response?.data?.message ||
         err?.message ||
-        "Failed to schedule emails. Please try again."; // Fallback
+        "Failed to schedule emails. Please try again.";
       toast.error(message);
     }
   };
@@ -181,7 +162,7 @@ const EmailScheduling = () => {
                   id={`template-${form.id}`}
                   value={form.templateId}
                   onChange={(e) =>
-                    handleTemplateChange(form.id, e.target.value)
+                    updateFormField(form.id, "templateId", e.target.value)
                   }
                   className={styles.select}
                 >
@@ -208,7 +189,7 @@ const EmailScheduling = () => {
                   id={`email-template-${form.id}`}
                   value={form.emailTemplateId}
                   onChange={(e) =>
-                    handleEmailTemplateChange(form.id, e.target.value)
+                    updateFormField(form.id, "emailTemplateId", e.target.value)
                   }
                   className={styles.select}
                 >
@@ -233,7 +214,9 @@ const EmailScheduling = () => {
                   type="date"
                   id={`date-${form.id}`}
                   value={form.date}
-                  onChange={(e) => handleDateChange(form.id, e.target.value)}
+                  onChange={(e) =>
+                    updateFormField(form.id, "date", e.target.value)
+                  }
                   className={styles.dateInput}
                 />
               </div>
