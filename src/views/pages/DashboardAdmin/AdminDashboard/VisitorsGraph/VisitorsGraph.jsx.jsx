@@ -176,7 +176,7 @@ const VisitorsGraph = ({ data }) => {
               top: 20,
               right: 30,
               left: 10,
-              bottom: 50, // <-- Increase this from 0
+              bottom: formattedData.length > 5 ? 50 : 20,
             }}
           >
             <CartesianGrid
