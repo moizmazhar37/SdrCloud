@@ -11,9 +11,9 @@ export const useSetPassword = () => {
       setLoading(true);
       setError(null);
 
-      // Get the token from URL query parameters
-      const urlParams = new URLSearchParams(window.location.search);
-      const token = urlParams.get("token");
+      // Extract token from the URL path
+      const pathParts = window.location.pathname.split("/");
+      const token = pathParts[pathParts.length - 1];
 
       if (!token) {
         throw new Error("No token found in URL");

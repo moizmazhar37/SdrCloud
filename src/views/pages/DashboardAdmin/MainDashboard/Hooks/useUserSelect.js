@@ -34,7 +34,7 @@ const useUserSelect = ({ setIsViewingAs, setViewingUser, isViewingAs }) => {
     setViewingUser(selectedUser);
 
     toast.success(`Now viewing as ${selectedUser.name}`);
-    history.push("/user-dashboard");
+    history.push("/createtemplate");
   };
 
   return handleUserSelect;

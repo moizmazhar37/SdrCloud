@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useHistory } from "react-router-dom";
 import styles from "./SetPassword.module.scss";
+import SDRLogo from "src/images/SDR.png";
+
 import {
   PasswordField,
   ValidationItem,
@@ -70,11 +72,7 @@ const SetPassword = () => {
     <div className={styles.sdrWelcome}>
       <div className={styles.container}>
         <div className={styles.logoContainer}>
-          <img
-            src="images/template/SDR.png"
-            alt="SDRCloud Logo"
-            className={styles.logo}
-          />
+          <img src={SDRLogo} alt="SDRCloud Logo" className={styles.logo} />
         </div>
 
         <div className={styles.content}>

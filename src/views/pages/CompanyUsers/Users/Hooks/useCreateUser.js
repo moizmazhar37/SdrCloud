@@ -17,7 +17,6 @@ export const useCreateUser = () => {
         lastName: userData.lastName,
         linkedinUrl: userData.linkedinUrl,
         meetLink: userData.meetingLink,
-        password: userData.password,
         phoneNo: userData.phone,
         title: userData.title,
         tokens: parseInt(userData.tokens) || 0

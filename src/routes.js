@@ -567,16 +567,16 @@ export const routes = [
   },
 
   // For Users
-  {
-    exact: true,
-    path: "/user-dashboard",
-    guard: true,
-    layout: DashboardLayout,
-    // component: lazy(() => import("src/views/pages/DashboardUser/index")),
-    component: lazy(() =>
-      import("src/views/pages/DashboardAdmin/MainDashboard/MainDashboard")
-    ),
-  },
+  // {
+  //   exact: true,
+  //   path: "/user-dashboard",
+  //   guard: true,
+  //   layout: DashboardLayout,
+  //   // component: lazy(() => import("src/views/pages/DashboardUser/index")),
+  //   component: lazy(() =>
+  //     import("src/views/pages/DashboardAdmin/MainDashboard/MainDashboard")
+  //   ),
+  // },
   //updated admin dashboard
   {
     exact: true,
@@ -657,8 +657,7 @@ export const routes = [
   },
   {
     exact: true,
-    path: "/set-admin-password",
-    guard: true,
+    path: "/set-password/:token",
     layout: AuthLayout,
     component: lazy(() =>
       import("src/views/pages/DashboardUser/SetAdminPassword/VerifyOTP")

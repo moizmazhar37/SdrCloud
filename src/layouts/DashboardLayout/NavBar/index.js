@@ -126,11 +126,11 @@ const getNavSections = (userType) => {
     USER: [
       {
         items: [
-          {
-            title: "Dashboard",
-            icon: "images/template/dashboard.svg",
-            href: "/dashboard",
-          },
+          // {
+          //   title: "Dashboard",
+          //   icon: "images/template/dashboard.svg",
+          //   href: "/dashboard",
+          // },
           // {
           //   title: "Users",
           //   icon: "images/usersnew.png",
