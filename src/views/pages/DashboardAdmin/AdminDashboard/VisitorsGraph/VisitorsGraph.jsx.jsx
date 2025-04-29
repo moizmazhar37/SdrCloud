@@ -13,7 +13,6 @@ import FiltersDropdown from "./FIltersDropdown/FiltersDropdown";
 import styles from "./VisitorsGraph.module.scss";
 
 // Define color palette for different websites
-// Define color palette for different websites
 const COLORS = [
   "#1D4ED8", // Blue (1st website)
   "#F97316", // Orange (2nd website)
@@ -175,9 +174,9 @@ const VisitorsGraph = ({ data }) => {
             data={formattedData}
             margin={{
               top: 20,
-              right: 20,
-              left: 0,
-              bottom: 0,
+              right: 30,
+              left: 10,
+              bottom: 50, // <-- Increase this from 0
             }}
           >
             <CartesianGrid
@@ -189,9 +188,14 @@ const VisitorsGraph = ({ data }) => {
               dataKey="name"
               axisLine={false}
               tickLine={false}
-              tick={{ fill: "#6B7280", fontSize: 14 }}
+              tick={{ fill: "#6B7280", fontSize: 12 }}
               dy={10}
+              interval={0}
+              angle={formattedData.length > 5 ? -45 : 0}
+              textAnchor={formattedData.length > 5 ? "end" : "middle"}
+              height={formattedData.length > 5 ? 60 : 30}
             />
+
             <YAxis
               axisLine={false}
               tickLine={false}
