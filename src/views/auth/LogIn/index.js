@@ -90,7 +90,7 @@ const Login = () => {
           const userType = response?.data?.user_details?.role;
 
           if (userType === "USER") {
-            history.push("/user-dashboard");
+            history.push("/CreateTemplate");
             toast.success(response?.data?.message);
           } else if (userType === "ADMIN") {
             history.push("/PP-createaccount");
@@ -145,7 +145,7 @@ const Login = () => {
     if (auth.userLoggedIn === true) {
       const userType = localStorage.getItem("userType");
       if (userType === "USER") {
-        history.push("/user-dashboard"); // Changed from navigate to history.push
+        history.push("/CreateTemplate"); // Changed from navigate to history.push
       } else if (userType === "ADMIN") {
         history.push("/PP-createaccount"); // Changed from navigate to history.push
       } else if (userType === "SUBADMIN") {
