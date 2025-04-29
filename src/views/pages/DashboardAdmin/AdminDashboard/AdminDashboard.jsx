@@ -18,6 +18,7 @@ import ToastManager from "src/Common/AlertToast/ToastManager/ToastManager";
 
 const AdminDashboard = () => {
   const [toastMessages, setToastMessages] = useState([]);
+  // Store dateRange in a persistent state
   const [dateRange, setDateRange] = useState({
     startDate: null,
     endDate: null,
@@ -52,6 +53,7 @@ const AdminDashboard = () => {
     }
   }, [alerts, alertsLoading]);
 
+  // This function is called when the DateRangeDropdown component updates the date range
   const handleDateRangeChange = (newDateRange) => {
     console.log("Date range updated:", newDateRange);
     setDateRange(newDateRange);
@@ -139,7 +141,11 @@ const AdminDashboard = () => {
               ? "Downloading..."
               : "Download Transaction history report"}
           </button>
-          <DateRangeDropdown onDateRangeChange={handleDateRangeChange} />
+          {/* Pass the current dateRange to the DateRangeDropdown component */}
+          <DateRangeDropdown
+            onDateRangeChange={handleDateRangeChange}
+            initialDateRange={dateRange}
+          />
         </div>
       </div>
 

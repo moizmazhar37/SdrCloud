@@ -1,10 +1,19 @@
 import React, { useState, useRef, useEffect } from "react";
 import styles from "./DateRangeDropdown.module.scss";
 
-const DateRangeDropdown = ({ onDateRangeChange }) => {
+const DateRangeDropdown = ({ onDateRangeChange, initialDateRange }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  // Initialize with initialDateRange if provided
+  const [startDate, setStartDate] = useState(
+    initialDateRange?.startDate
+      ? new Date(initialDateRange.startDate).toISOString().split("T")[0]
+      : ""
+  );
+  const [endDate, setEndDate] = useState(
+    initialDateRange?.endDate
+      ? new Date(initialDateRange.endDate).toISOString().split("T")[0]
+      : ""
+  );
   const [displayText, setDisplayText] = useState("Date Range");
   const dropdownRef = useRef(null);
 
@@ -22,16 +31,30 @@ const DateRangeDropdown = ({ onDateRangeChange }) => {
     };
   }, []);
 
-  // Effect to update display text when dates change
+  // Effect to update display text when dates change or when initialDateRange changes
   useEffect(() => {
-    if (startDate && endDate) {
+    if (initialDateRange?.startDate && initialDateRange?.endDate) {
+      const formattedStartDate = formatDate(
+        new Date(initialDateRange.startDate)
+      );
+      const formattedEndDate = formatDate(new Date(initialDateRange.endDate));
+      setDisplayText(`${formattedStartDate} - ${formattedEndDate}`);
+
+      // Update internal state to match initialDateRange
+      setStartDate(
+        new Date(initialDateRange.startDate).toISOString().split("T")[0]
+      );
+      setEndDate(
+        new Date(initialDateRange.endDate).toISOString().split("T")[0]
+      );
+    } else if (startDate && endDate) {
       setDisplayText(`${formatDate(startDate)} - ${formatDate(endDate)}`);
     } else if (startDate) {
       setDisplayText(`${formatDate(startDate)} - Select End Date`);
     } else {
       setDisplayText("Date Range");
     }
-  }, [startDate, endDate]);
+  }, [startDate, endDate, initialDateRange]);
 
   const formatDate = (dateString) => {
     if (!dateString) return "";
