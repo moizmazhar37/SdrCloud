@@ -10,10 +10,9 @@ import Loader from "src/Common/Loader/Loader";
 
 const NewEmailTemplate = () => {
   const location = useLocation();
-  const templateId = location.state?.templateId;
   const emailTemplate = location.state?.emailTemplate || null;
 
-  const { dataTypes, loading, error } = useDataTypes(templateId);
+  // const { dataTypes, loading, error } = useDataTypes(templateId);
   const { saveTemplate, saving } = useSaveEmailTemplate();
 
   const [name, setName] = useState(emailTemplate?.name || "");
@@ -61,7 +60,7 @@ const NewEmailTemplate = () => {
   const handleSave = async () => {
     if (!validateFields()) return;
     try {
-      await saveTemplate({ name, subject, body, isHtml, template_id: templateId, emailTemplate_id: emailTemplate?.id, isUpdate: !!emailTemplate });
+      await saveTemplate({ name, subject, body, isHtml, emailTemplate_id: emailTemplate?.id, isUpdate: !!emailTemplate });
       toast.success(`Template ${emailTemplate ? "updated" : "saved"} successfully!`);
       history.push("/email-templates");
     } catch {
@@ -73,11 +72,11 @@ const NewEmailTemplate = () => {
     <div className={styles.container}>
       <DynamicNavigator items={[{ text: "Email Templates", route: "/email-templates" }, { text: emailTemplate ? "Edit Template" : "Create Template", route: "/create-email-template" }]} />
       <h2 className={styles.heading}>{emailTemplate ? "Edit Email Template" : "New Email Template"}</h2>
-      {loading ? (
+      {/* {loading ? (
         <Loader size={160} />
       ) : error ? (
         <div className={styles.error}>Failed to load template</div>
-      ) : (
+      ) : ( */}
         <div className={styles.content}>
           <div className={styles.copySection}>
             <h3 className={styles.sectionTitle}>Available Fields</h3>
@@ -99,7 +98,7 @@ const NewEmailTemplate = () => {
             <button className={styles.saveButton} onClick={handleSave} disabled={saving}>{saving ? "Saving..." : emailTemplate ? "Update" : "Save"}</button>
           </div>
         </div>
-      )}
+      {/* )} */}
     </div>
   );
 };
