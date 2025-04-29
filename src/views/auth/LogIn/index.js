@@ -85,7 +85,7 @@ const Login = () => {
         auth.userLogIn(true, response?.data?.token);
 
         if (response?.data?.user_details?.status === "PENDING") {
-          history.push("/set-admin-password");
+          history.push("/set-password");
         } else {
           const userType = response?.data?.user_details?.role;
 

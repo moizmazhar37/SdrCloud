@@ -1,18 +1,16 @@
 
-export const resetForm = (setFormData, setErrors, setShowPassword) => {
+export const resetForm = (setFormData, setErrors) => {
   setFormData({
     firstName: "",
     lastName: "",
     email: "",
     phone: "",
-    password: "",
     title: "",
     linkedinUrl: "",
     meetingLink: "",
     tokens: ""
   });
   setErrors({});
-  setShowPassword(false);
 };
 
 export const validateField = (name, value) => {
@@ -57,14 +55,6 @@ export const validateField = (name, value) => {
     case "meetingLink":
       if (value && !value.startsWith("http")) {
         return "Please enter a valid meeting link URL.";
-      }
-      break;
-    case "password":
-      if (!value || value.trim() === "") {
-        return "Password is required.";
-      }
-      if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,20}$/.test(value)) {
-        return "Password must be between 8 and 20 characters, including a mix of uppercase, lowercase, numbers, and special characters.";
       }
       break;
     case "title":
