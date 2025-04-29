@@ -427,7 +427,15 @@ export const routes = [
       )
     ),
   },
-
+  {
+    exact: true,
+    path: "/create-new-schedule",
+    guard: true,
+    layout: DashboardLayout,
+    component: lazy(() =>
+      import("src/views/pages/settings/EmailScheduling/EmailScheduling")
+    ),
+  },
   {
     exact: true,
     path: "/myprofile",

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import Table from "src/Common/Table/Table";
 import Dropdown from "src/Common/Dropdown/Dropdown";
 import WarningModal from "src/Common/Modal/Modal";
@@ -6,8 +7,10 @@ import Loader from "src/Common/Loader/Loader";
 import useFetchScheduleEmails from "../Hooks/useFetchScheduleEmails";
 import useDeleteSchedule from "../Hooks/useDeleteSchedule";
 import styles from "./ScheduledEmails.module.scss";
+import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
 
 const ScheduledEmails = () => {
+  const history = useHistory();
   const [isDeleteOpen, setDeleteOpen] = useState(false);
   const [selectedScheduleId, setSelectedScheduleId] = useState(null);
 
@@ -32,6 +35,10 @@ const ScheduledEmails = () => {
   const handleEdit = (scheduleId) => {
     console.log("Edit schedule with ID:", scheduleId);
     // Would normally open edit modal here
+  };
+
+  const handleAddNewSchedule = () => {
+    history.push("/create-new-schedule");
   };
 
   const headers = [
@@ -78,33 +85,47 @@ const ScheduledEmails = () => {
       />
     ),
   }));
+  const navigationItems = [
+    { text: "Settings", route: "/settings" },
+
+    { text: "Email Scheduling", route: "/email-scheduling" },
+  ];
 
   return (
-    <div className={styles.container}>
-      <div className={styles.headerContainer}>
-        <h1 className={styles.title}>Scheduled Emails</h1>
-      </div>
+    <>
+      <DynamicNavigator items={navigationItems} />
+      <div className={styles.container}>
+        <div className={styles.buttonContainer}>
+          <button className={styles.addButton} onClick={handleAddNewSchedule}>
+            Add New Schedule +
+          </button>
+        </div>
 
-      <div className={styles.tableContainer}>
-        {loadingSchedules ? (
-          <div className={styles.loaderContainer}>
-            <Loader />
-          </div>
-        ) : (
-          <Table headers={headers} data={transformedData} />
-        )}
-      </div>
+        <div className={styles.headerContainer}>
+          <h1 className={styles.title}>Scheduled Emails</h1>
+        </div>
 
-      <WarningModal
-        isOpen={isDeleteOpen}
-        onCancel={() => {
-          setDeleteOpen(false);
-          setSelectedScheduleId(null);
-        }}
-        onDelete={handleDelete}
-        message="Please be aware that this action is irreversible. By clicking the 'Delete' button below, you will permanently remove this scheduled email from the system."
-      />
-    </div>
+        <div className={styles.tableContainer}>
+          {loadingSchedules ? (
+            <div className={styles.loaderContainer}>
+              <Loader />
+            </div>
+          ) : (
+            <Table headers={headers} data={transformedData} />
+          )}
+        </div>
+
+        <WarningModal
+          isOpen={isDeleteOpen}
+          onCancel={() => {
+            setDeleteOpen(false);
+            setSelectedScheduleId(null);
+          }}
+          onDelete={handleDelete}
+          message="Please be aware that this action is irreversible. By clicking the 'Delete' button below, you will permanently remove this scheduled email from the system."
+        />
+      </div>
+    </>
   );
 };
 
