@@ -103,11 +103,15 @@ const AdminDashboard = () => {
   const growthRates_metrics = metrics?.growth_rates;
   const growthRates_summaryStats = summaryStats?.growth_rates;
 
-  // Table headers for users
+  // Updated table headers for users to match the actual data structure
   const tableHeaders = [
     { key: "name", label: "Name" },
-    { key: "credits", label: "Credits used" },
-    { key: "score", label: "Score" },
+    { key: "email", label: "Email" },
+    { key: "phone", label: "Phone" },
+    { key: "role", label: "Role" },
+    { key: "active_prospects", label: "Active Prospects" },
+    { key: "viewAs", label: "Actions" },
+    { key: "editUser", label: "Edit" },
   ];
 
   // Table headers for templates
