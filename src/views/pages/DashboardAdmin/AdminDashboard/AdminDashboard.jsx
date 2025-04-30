@@ -40,7 +40,7 @@ const AdminDashboard = () => {
     loading: dashboardLoading,
     error: dashboardError,
   } = useGetAdminDashboard(dateRange.startDate, dateRange.endDate);
-
+  console.log(dashboardData);
   //Get Alerts for user
   const {
     data: alerts = [],
@@ -90,7 +90,7 @@ const AdminDashboard = () => {
     aiComponents,
     summaryStats,
     prospectsLifecycleData,
-    templatesCreatedData,
+    templates_created_data,
     templatesSentData,
     visitDurationData,
     visitorsGraphData,
@@ -266,13 +266,13 @@ const AdminDashboard = () => {
       <div className={styles.GraphContainer}>
         <Graph
           title="Amount of Templates Created"
-          data={templatesCreatedData}
+          data={templates_created_data}
           type={"filters"}
         />
         <Graph
           title="Amount of HVOs/Videos Sent"
           data={templatesSentData}
-          type={"filters"}
+          // type={"filters"}
         />
       </div>
 
