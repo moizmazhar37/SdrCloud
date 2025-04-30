@@ -8,7 +8,6 @@ import Loader from "src/Common/Loader/Loader";
 
 const navigationItems = [
   { text: "Settings", route: "/settings" },
-  { text: "Integration", route: "/integrations" },
   { text: "Email Templates", route: "/email-templates" },
 ];
 
