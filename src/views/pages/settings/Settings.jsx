@@ -7,6 +7,8 @@ import add_intent from "../../../images/Setting/add_intent.png";
 import add_email from "../../../images/Setting/add_email.svg";
 import add_alerts from "../../../images/Setting/add_alerts.svg";
 import company from "../../../images/Setting/Company.png";
+import meetings from "src/images/Setting/meetings.png";
+import emailSchedule from "src/images/Setting/emailSchedule.png";
 
 const NewSettings = () => {
   return (
@@ -48,14 +50,20 @@ const NewSettings = () => {
         text={"Email Templates"}
         infoText={"Create or edit email templates here"}
       />
-      <Card
+      {/* <Card
         image={add_email}
         route={"/book-meeting"}
         text={"Schedule Availability"}
         infoText={"Set meeting slots as per available schedule"}
+      /> */}
+      <Card
+        image={meetings}
+        route={"/booked-meetings"}
+        text={"Booked Meetings"}
+        infoText={"View the currently booked meetings"}
       />
       <Card
-        image={add_email}
+        image={emailSchedule}
         route={"/email-scheduling"}
         text={"Schedule Emails"}
         infoText={"Schedule emails to be sent at a later time"}
