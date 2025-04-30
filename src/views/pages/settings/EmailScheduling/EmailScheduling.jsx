@@ -117,8 +117,8 @@ const EmailScheduling = () => {
   };
   const navigationItems = [
     { text: "Settings", route: "/settings" },
-
     { text: "Email Scheduling", route: "/email-scheduling" },
+    { text: "New Schedule", route: "/create-new-schedule" },
   ];
   return (
     <>

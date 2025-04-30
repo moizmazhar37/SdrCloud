@@ -421,9 +421,33 @@ export const routes = [
     path: "/email-scheduling",
     guard: true,
     layout: DashboardLayout,
-    component: lazy(() => import("src/views/pages/settings/EmailScheduling/EmailScheduling")),
+    component: lazy(() =>
+      import(
+        "src/views/pages/settings/EmailScheduling/ScheduledEmails/ScheduledEmails"
+      )
+    ),
   },
 
+  //Booked Meetings
+  {
+    exact: true,
+    path: "/booked-meetings",
+    guard: true,
+    layout: DashboardLayout,
+    component: lazy(() =>
+      import("src/views/pages/settings/BookedMeetings/BookedMeetings")
+    ),
+  },
+
+  {
+    exact: true,
+    path: "/create-new-schedule",
+    guard: true,
+    layout: DashboardLayout,
+    component: lazy(() =>
+      import("src/views/pages/settings/EmailScheduling/EmailScheduling")
+    ),
+  },
   {
     exact: true,
     path: "/myprofile",

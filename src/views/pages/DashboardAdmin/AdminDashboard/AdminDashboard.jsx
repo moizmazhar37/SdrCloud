@@ -106,7 +106,7 @@ const AdminDashboard = () => {
     { key: "email", label: "Email" },
     { key: "phone", label: "Phone" },
     { key: "active_prospects", label: "Active Prospects" },
-    { key: "booked_meetings", label: "Booked Meetings" },
+    // { key: "booked_meetings", label: "Booked Meetings" },
     { key: "viewAs", label: "View As" },
     { key: "editUser", label: "Edit User" },
   ];
