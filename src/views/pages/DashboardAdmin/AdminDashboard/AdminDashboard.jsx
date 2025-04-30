@@ -97,6 +97,7 @@ const AdminDashboard = () => {
     userCreditsData,
     topUsersData,
     topTemplatesData,
+    prospect_list_data = [], // Default to empty array if not provided
   } = dashboardData;
 
   const growthRates_metrics = metrics?.growth_rates;
@@ -287,7 +288,7 @@ const AdminDashboard = () => {
       </div>
 
       <div className={styles.meetingsTableContainer}>
-        <ProspectDashboardTable />
+        <ProspectDashboardTable prospects={prospect_list_data} />
       </div>
 
       {/* Performance Overview Section */}
