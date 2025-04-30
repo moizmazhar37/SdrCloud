@@ -87,11 +87,36 @@
   }
 }
 
+.tableContainer {
+  max-height: 500px;
+  overflow-y: auto;
+
+  /* Adding styling for scrollbar */
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #a1a1a1;
+  }
+}
+
 .pagination {
   display: flex;
   justify-content: center;
   padding: 16px;
   gap: 8px;
+  border-top: 1px solid #e5e7eb;
 
   @media (max-width: 480px) {
     gap: 4px;
@@ -129,6 +154,38 @@
   &:hover {
     background-color: #0358ac;
   }
+}
+
+.loaderContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+}
+
+.errorContainer {
+  padding: 16px;
+  color: #b91c1c;
+  text-align: center;
+  font-weight: 500;
+}
+
+.noMeetings {
+  padding: 40px 16px;
+  text-align: center;
+  color: #6b7280;
+  font-size: 16px;
+}
+
+.emailLink {
+  cursor: pointer;
+  color: #0358ac;
+  text-decoration: underline;
+}
+
+.meetingLink {
+  color: #0358ac;
+  text-decoration: underline;
 }
 
 /* Override the Table component's link styling for names */

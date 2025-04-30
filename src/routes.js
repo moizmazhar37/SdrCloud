@@ -415,6 +415,39 @@ export const routes = [
   //   component: lazy(() => import("src/views/pages/settings/GoogleSheet")),
   // },
 
+  // Email Scheduling
+  {
+    exact: true,
+    path: "/email-scheduling",
+    guard: true,
+    layout: DashboardLayout,
+    component: lazy(() =>
+      import(
+        "src/views/pages/settings/EmailScheduling/ScheduledEmails/ScheduledEmails"
+      )
+    ),
+  },
+
+  //Booked Meetings
+  {
+    exact: true,
+    path: "/booked-meetings",
+    guard: true,
+    layout: DashboardLayout,
+    component: lazy(() =>
+      import("src/views/pages/settings/BookedMeetings/BookedMeetings")
+    ),
+  },
+
+  {
+    exact: true,
+    path: "/create-new-schedule",
+    guard: true,
+    layout: DashboardLayout,
+    component: lazy(() =>
+      import("src/views/pages/settings/EmailScheduling/EmailScheduling")
+    ),
+  },
   {
     exact: true,
     path: "/myprofile",
@@ -567,16 +600,16 @@ export const routes = [
   },
 
   // For Users
-  {
-    exact: true,
-    path: "/user-dashboard",
-    guard: true,
-    layout: DashboardLayout,
-    // component: lazy(() => import("src/views/pages/DashboardUser/index")),
-    component: lazy(() =>
-      import("src/views/pages/DashboardAdmin/MainDashboard/MainDashboard")
-    ),
-  },
+  // {
+  //   exact: true,
+  //   path: "/user-dashboard",
+  //   guard: true,
+  //   layout: DashboardLayout,
+  //   // component: lazy(() => import("src/views/pages/DashboardUser/index")),
+  //   component: lazy(() =>
+  //     import("src/views/pages/DashboardAdmin/MainDashboard/MainDashboard")
+  //   ),
+  // },
   //updated admin dashboard
   {
     exact: true,
@@ -657,7 +690,7 @@ export const routes = [
   },
   {
     exact: true,
-    path: "/set-admin-password/:token",
+    path: "/set-password/:token",
     layout: AuthLayout,
     component: lazy(() =>
       import("src/views/pages/DashboardUser/SetAdminPassword/VerifyOTP")

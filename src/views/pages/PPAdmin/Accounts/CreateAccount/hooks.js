@@ -79,7 +79,7 @@ const useAccountForm = () => {
         data: formDataToSend, // Sending the FormData object
       });
 
-      toast.success('Account created successfully!');
+      toast.success('Account created successfully');
     } catch (error) {
       toast.error(error?.response?.data?.detail || 'Error creating account!');
       console.error('Error creating account:', error);

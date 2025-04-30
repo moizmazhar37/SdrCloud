@@ -11,6 +11,81 @@ import {
 import styles from "./ActiveProspectsLifeCycle.module.scss";
 
 const ActiveProspectsLifecycle = ({ data }) => {
+  // Calculate min and max values from data for dynamic y-axis
+  const getMinMaxValues = () => {
+    if (!data || data.length === 0) return { min: 0, max: 5 };
+
+    let min = 0; // We'll keep min at 0 for this chart type
+    let max = 0;
+
+    data.forEach((item) => {
+      const values = [
+        item.campaigns,
+        item.meetings_booked,
+        item.meetings_attended,
+        item.unattended_meetings,
+      ];
+
+      values.forEach((value) => {
+        // Skip null/undefined values
+        if (value === null || value === undefined) return;
+
+        // Convert to number to ensure proper comparison
+        const numValue = Number(value);
+        if (!isNaN(numValue) && numValue > max) {
+          max = numValue;
+        }
+      });
+    });
+
+    // Check if max is still 0 (all data points are 0)
+    if (max === 0) {
+      max = 5; // Default to 5 if all values are zero
+    } else {
+      // Add some padding to max for better visualization
+      max = Math.ceil(max * 1.1);
+    }
+
+    return { min, max };
+  };
+
+  const { min, max } = getMinMaxValues();
+
+  // Safe generate ticks based on min/max values
+  const generateTicks = (min, max) => {
+    // Safety check to prevent invalid arrays
+    if (max <= min) {
+      return [0, 1, 2, 3, 4, 5]; // Safe default
+    }
+
+    const range = max - min;
+    // Limit number of ticks based on range
+    const tickCount = Math.min(10, range);
+
+    // Ensure step is at least 1
+    const step = Math.max(1, Math.ceil(range / tickCount));
+    const ticks = [];
+
+    // Limit the number of iterations as a safety measure
+    for (let i = min, count = 0; i <= max && count < 20; i += step, count++) {
+      ticks.push(i);
+    }
+
+    return ticks;
+  };
+
+  // Check if data is all zeros
+  const isAllZeros =
+    data &&
+    data.length > 0 &&
+    data.every(
+      (item) =>
+        (item.campaigns === 0 || item.campaigns === null) &&
+        (item.meetings_booked === 0 || item.meetings_booked === null) &&
+        (item.meetings_attended === 0 || item.meetings_attended === null) &&
+        (item.unattended_meetings === 0 || item.unattended_meetings === null)
+    );
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -42,8 +117,8 @@ const ActiveProspectsLifecycle = ({ data }) => {
               style={{ fontSize: "12px", fill: "#666" }}
             />
             <YAxis
-              domain={[-100, 100]}
-              ticks={[-100, -80, -60, -40, -20, 0, 20, 40, 60, 80, 100]}
+              domain={[min, max]}
+              ticks={generateTicks(min, max)}
               tickLine={true}
               axisLine={true}
               tickMargin={10}
@@ -61,7 +136,7 @@ const ActiveProspectsLifecycle = ({ data }) => {
             {/* Each area component with updated colors */}
             <Area
               type="monotone"
-              dataKey="product1"
+              dataKey="campaigns"
               stroke="#4CAF50" // Green
               fill="rgba(76, 175, 80, 0.15)"
               fillOpacity={1}
@@ -71,10 +146,11 @@ const ActiveProspectsLifecycle = ({ data }) => {
                 fill: "#4CAF50",
                 r: 4,
               }}
+              name="Campaigns"
             />
             <Area
               type="monotone"
-              dataKey="product2"
+              dataKey="meetings_booked"
               stroke="#1D4ED8" // Blue
               fill="rgba(29, 78, 216, 0.15)"
               fillOpacity={1}
@@ -84,10 +160,11 @@ const ActiveProspectsLifecycle = ({ data }) => {
                 fill: "#1D4ED8",
                 r: 4,
               }}
+              name="Meetings Booked"
             />
             <Area
               type="monotone"
-              dataKey="product3"
+              dataKey="meetings_attended"
               stroke="#F97316" // Orange
               fill="rgba(249, 115, 22, 0.15)"
               fillOpacity={1}
@@ -97,6 +174,21 @@ const ActiveProspectsLifecycle = ({ data }) => {
                 fill: "#F97316",
                 r: 4,
               }}
+              name="Meetings Attended"
+            />
+            <Area
+              type="monotone"
+              dataKey="unattended_meetings"
+              stroke="#9333EA" // Purple
+              fill="rgba(147, 51, 234, 0.15)"
+              fillOpacity={1}
+              strokeWidth={2}
+              dot={{
+                stroke: "#9333EA",
+                fill: "#9333EA",
+                r: 4,
+              }}
+              name="Unattended Meetings"
             />
           </AreaChart>
         </ResponsiveContainer>

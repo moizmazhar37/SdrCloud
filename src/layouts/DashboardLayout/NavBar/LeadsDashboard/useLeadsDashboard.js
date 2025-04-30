@@ -19,7 +19,7 @@ const useLeadsDashboard = () => {
         setData(response.data);
       } catch (err) {
         setError(err);
-        toast.error("Failed to fetch leads. Please try again later.");
+        toast.error("Unable to fetch leads. Please try again later.");
       } finally {
         setLoading(false);
       }

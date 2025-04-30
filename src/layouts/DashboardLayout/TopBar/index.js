@@ -55,7 +55,7 @@ const TopBar = ({ onMobileNavOpen }) => {
 
     toast.success(`Now viewing as ${selectedUser.first_name}`);
     setDropdownOpen(false);
-    history.push("/user-dashboard"); // Redirect
+    history.push("/CreateTemplate"); // Redirect
   };
 
   // Handle stopping "View As"

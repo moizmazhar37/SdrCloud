@@ -61,7 +61,7 @@ const useLeftTextRightImage = () => {
       return response.data;
     } catch (err) {
       const errorMessage =
-        err.response?.data?.message || err.message || "Failed to save section";
+        err.response?.data?.message || err.message || "Failed to save section. Please try again.";
       setError(errorMessage);
       toast.error(errorMessage);
     } finally {

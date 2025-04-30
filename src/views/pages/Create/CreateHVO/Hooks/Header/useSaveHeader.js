@@ -42,7 +42,7 @@ const useSaveHeader = (onSuccess) => {
       }
     } catch (err) {
       setError(err.message || "An error occurred while saving the header");
-      toast.error(err.message || "Failed to save header");
+      toast.error(err.message || "Failed to save header. Please try again.");
     } finally {
       setLoading(false);
     }

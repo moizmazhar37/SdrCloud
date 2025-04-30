@@ -5,7 +5,8 @@ import { toast } from "react-toastify";
 import "./VideoPlayer.css";
 import ApiConfig from "./../../../../config/APIConfig";
 import { videoTracking } from "src/config/APIConfig";
-import { v4 as uuidv4 } from "uuid"; // Make sure to install uuid package with npm install uuid
+import { v4 as uuidv4 } from "uuid";
+import useTriggerCalendlyMeeting from "./Hooks/useCalendlyTrigger";
 
 const VideoPlayer = () => {
   const [videoData, setVideoData] = useState(null);
@@ -18,16 +19,16 @@ const VideoPlayer = () => {
   const hasTrackedRef = useRef(false);
   const lastSentTimeRef = useRef(0);
 
-  // Fetch the user's IP address using ipify API
+  const { triggerMeeting } = useTriggerCalendlyMeeting(); // ⬅️ Calendly hook
+
   useEffect(() => {
     const fetchUserIP = async () => {
       try {
         const response = await axios.get("https://api.ipify.org?format=json");
         setUserIP(response.data.ip);
-        console.log("User IP fetched:", response.data.ip);
       } catch (err) {
         console.error("Error fetching user IP:", err);
-        setUserIP(window.location.hostname); // Fallback to hostname if API fails
+        setUserIP(window.location.hostname);
       }
     };
 
@@ -53,14 +54,12 @@ const VideoPlayer = () => {
   }, [video_id]);
 
   useEffect(() => {
-    // Dynamically add the pixel tracking script when the component mounts
     const script = document.createElement("script");
     script.src =
       "https://storage.googleapis.com/static-data-for-sdrc/scripts/tracker_d26331ec-e390-4c61-afb9-56795bb856cf.js";
     script.async = true;
     document.body.appendChild(script);
 
-    // Cleanup: remove the script when the component unmounts
     return () => {
       if (document.body.contains(script)) {
         document.body.removeChild(script);
@@ -68,14 +67,12 @@ const VideoPlayer = () => {
     };
   }, []);
 
-  // Function to prepare tracking data for sending
   const prepareTrackingData = () => {
     if (trackingData.length === 0 || !videoRef.current) return null;
 
     const currentTime = Math.floor(videoRef.current.currentTime);
     const totalDuration = Math.floor(videoRef.current.duration);
 
-    // Filter out entries with duration 0 and update the rest
     const validTrackingData = trackingData
       .map((entry) => {
         if (
@@ -85,19 +82,18 @@ const VideoPlayer = () => {
           const updatedDuration = Math.max(entry.duration_played, currentTime);
           return {
             ...entry,
-            id: entry.id, // Keep existing UUID
+            id: entry.id,
             duration_played: updatedDuration,
             total_duration: totalDuration,
           };
         }
         return entry;
       })
-      .filter((entry) => entry.duration_played > 0); // Filter out entries with duration 0
+      .filter((entry) => entry.duration_played > 0);
 
     return validTrackingData.length > 0 ? validTrackingData : null;
   };
 
-  // Function to send tracking data with beacon
   const sendTrackingDataBeacon = (data) => {
     if (!data) return false;
 
@@ -110,7 +106,6 @@ const VideoPlayer = () => {
     return success;
   };
 
-  // Tab close tracking
   useEffect(() => {
     const handleTabClose = () => {
       if (!hasTrackedRef.current) {
@@ -124,7 +119,6 @@ const VideoPlayer = () => {
     };
 
     window.addEventListener("beforeunload", handleTabClose);
-
     return () => {
       window.removeEventListener("beforeunload", handleTabClose);
     };
@@ -136,7 +130,6 @@ const VideoPlayer = () => {
     const currentTime = Math.floor(videoRef.current.currentTime);
     const totalDuration = Math.floor(videoRef.current.duration);
 
-    // Check if video has a valid duration before proceeding
     if (isNaN(totalDuration) || totalDuration <= 0) {
       console.warn("Invalid video duration detected, skipping tracking");
       return;
@@ -145,7 +138,6 @@ const VideoPlayer = () => {
     let updatedTrackingData = [...trackingData];
 
     if (event.type === "play") {
-      // Check if an existing session is in progress and hasn't completed
       let existingSessionIndex = updatedTrackingData.findIndex(
         (entry) =>
           entry.ip_address === userIP &&
@@ -154,12 +146,11 @@ const VideoPlayer = () => {
       );
 
       if (existingSessionIndex === -1) {
-        // No active session, create a new one with UUID
         updatedTrackingData.push({
-          id: uuidv4(), // Generate UUID for this session
+          id: uuidv4(),
           ip_address: userIP,
           customer_data_id: video_id,
-          duration_played: 0, // Start at 0
+          duration_played: 0,
           total_duration: totalDuration,
         });
       }
@@ -188,16 +179,28 @@ const VideoPlayer = () => {
     console.log(`Video event "${event.type}" logged:`, updatedTrackingData);
   };
 
-  const handleMeetButtonClick = () => {
-    const url = `https://portal.sdrcloud.ai//book-meeting/${videoData?.tenant_id}`;
-  window.open(url, "_blank");
+  // ✅ Calendly trigger before open
+  const handleMeetButtonClick = async () => {
+    const url = videoData?.meet_link || "https://meet.google.com/";
+    const tenantId = videoData?.tenant_id;
+
+    try {
+      if (tenantId) {
+        await triggerMeeting(tenantId);
+        console.log("Calendly meeting triggered");
+      }
+    } catch (err) {
+      console.error("Error triggering meeting, proceeding to link.");
+    } finally {
+      window.open(url, "_blank");
+    }
   };
 
   if (isLoading) {
     return (
       <div className="video-container">
         <div className="video-preview-logo">
-          <img src={videoData?.logo} alt="Logo" className="logo" />
+          <img src={videoData?.logo || logo} alt="Logo" className="logo" />
         </div>
         <div>Loading video...</div>
       </div>
@@ -208,7 +211,7 @@ const VideoPlayer = () => {
     return (
       <div className="video-container">
         <div className="video-preview-logo">
-          <img src={videoData?.logo} alt="Logo" className="logo" />
+          <img src={videoData?.logo || logo} alt="Logo" className="logo" />
         </div>
         <div>{error}</div>
       </div>
@@ -218,13 +221,9 @@ const VideoPlayer = () => {
   return (
     <div className="video-container">
       <div className="video-preview-logo">
-        <img src={videoData?.logo} alt="Logo" className="logo" />
+        <img src={videoData?.logo || logo} alt="Logo" className="logo" />
       </div>
-      {videoData.name ? (
-        <div className="customer-name">Welcome {videoData.name}!</div>
-      ) : (
-        <div className="customer-name">Welcome User!</div>
-      )}
+      <div className="customer-name">Welcome {videoData?.name || "User"}!</div>
       {videoData?.video_url && (
         <video
           className="responsive-video"

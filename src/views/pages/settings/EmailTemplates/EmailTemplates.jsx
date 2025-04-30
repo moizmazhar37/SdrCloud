@@ -8,7 +8,6 @@ import Loader from "src/Common/Loader/Loader";
 
 const navigationItems = [
   { text: "Settings", route: "/settings" },
-  { text: "Integration", route: "/integrations" },
   { text: "Email Templates", route: "/email-templates" },
 ];
 
@@ -32,43 +31,9 @@ const EmailTemplates = () => {
 
         {/* Dropdown Button */}
         <div className={styles.dropdownContainer}>
-          <button className={styles.createButton} onClick={() => setDropdownOpen(!dropdownOpen)}>
-            + Create New Template ▼
+          <button className={styles.createButton} onClick={() => history.push("/create-email-template")}>
+            + Create New Template
           </button>
-
-          {dropdownOpen && (
-            <div className={styles.dropdownMenu}>
-              <div className={styles.dropdownHeader}>HVO</div>
-              {loading ? (
-                <div className={styles.loading}>Loading...</div>
-              ) : error ? (
-                <div className={styles.error}>Failed to load</div>
-              ) : template.HVO.length > 0 ? (
-                template.HVO.map((template) => (
-                  <div key={template.id} className={styles.dropdownItem} onClick={() => handleTemplateSelect(template)}>
-                    {template.template_name}
-                  </div>
-                ))
-              ) : (
-                <div className={styles.noTemplates}>No HVO Templates</div>
-              )}
-
-              <div className={styles.dropdownHeader}>VIDEO</div>
-              {loading ? (
-                <div className={styles.loading}>Loading...</div>
-              ) : error ? (
-                <div className={styles.error}>Failed to load</div>
-              ) : template.VIDEO.length > 0 ? (
-                template.VIDEO.map((template) => (
-                  <div key={template.id} className={styles.dropdownItem} onClick={() => handleTemplateSelect(template)}>
-                    {template.template_name}
-                  </div>
-                ))
-              ) : (
-                <div className={styles.noTemplates}>No Video Templates</div>
-              )}
-            </div>
-          )}
         </div>
       </div>
 

@@ -821,7 +821,7 @@ const CreateAccount = () => {
     const isContractEmpty = !accountContract?.name;
 
     if (isImageEmpty || isContractEmpty) {
-      toast.error("Please verify all the fields are filled.");
+      toast.error("Please verify all required fields are completed.");
     } else {
       const formattedNewAccountData = {
         accountName: values.accountName,

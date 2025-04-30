@@ -196,7 +196,7 @@ function TemplateDetail({ showTemplateDetail }) {
                 });
             })
             .catch((err) => {
-                toast.error("Unable to copy text to clipboard.", {
+                toast.error("Unable to copy text to clipboard. Please try again.", {
                     autoClose: 500,
                 });
             });

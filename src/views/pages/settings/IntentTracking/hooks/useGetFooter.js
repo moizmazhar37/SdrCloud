@@ -26,7 +26,7 @@ const useGetFooters = () => {
             }
         } catch (err) {
             setError(
-                err.response?.data?.msg || err.message || "Something went wrong"
+                err.response?.data?.msg || err.message || "Something went wrong on our end. Please try again.g"
             );
             setData([]);
         } finally {

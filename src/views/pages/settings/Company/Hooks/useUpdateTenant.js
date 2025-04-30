@@ -33,7 +33,7 @@ const useUpdateTenant = () => {
       });
 
       setSuccess(true);
-      toast.success("Tenant updated successfully!");
+      toast.success("Tenant updated successfully");
       return response.data;
     } catch (err) {
       setError(

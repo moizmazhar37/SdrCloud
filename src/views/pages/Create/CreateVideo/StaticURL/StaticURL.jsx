@@ -159,7 +159,7 @@ const StaticURL = ({
           onClose();
         }
       } catch (error) {
-        toast.error("Failed to save static URL section");
+        toast.error("Failed to save static URL section. Please try again.");
       }
     }
   };
