@@ -435,9 +435,7 @@ export const routes = [
     guard: true,
     layout: DashboardLayout,
     component: lazy(() =>
-      import(
-        "src/views/pages/settings/EmailScheduling/ScheduledEmails/ScheduledEmails"
-      )
+      import("src/views/pages/settings/BookedMeetings/BookedMeetings")
     ),
   },
 
