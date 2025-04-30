@@ -80,7 +80,7 @@ const ScheduledEmails = () => {
       <Dropdown
         options={dropdownOptions.map((option) => ({
           ...option,
-          onClick: () => option.onClick(schedule.template_id),
+          onClick: () => option.onClick(schedule.id),
         }))}
       />
     ),
