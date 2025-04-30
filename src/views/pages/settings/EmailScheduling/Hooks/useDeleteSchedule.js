@@ -6,9 +6,9 @@ const useDeleteSchedule = () => {
   const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState(null);
 
-  const deleteSchedule = async (templateId) => {
+  const deleteSchedule = async (scheduleId) => {
     const token = localStorage.getItem("token");
-    const url = `${emailTemplate}/${templateId}`;
+    const url = `${emailTemplate}/schedules/${scheduleId}`;
 
     setDeleting(true);
     setError(null);

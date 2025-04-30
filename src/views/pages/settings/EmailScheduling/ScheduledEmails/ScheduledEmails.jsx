@@ -14,8 +14,11 @@ const ScheduledEmails = () => {
   const [isDeleteOpen, setDeleteOpen] = useState(false);
   const [selectedScheduleId, setSelectedScheduleId] = useState(null);
 
-  const { schedules, loadingSchedules, refetchSchedules } =
-    useFetchScheduleEmails();
+  const {
+    schedules,
+    loading: loadingSchedules,
+    refetch: refetchSchedules,
+  } = useFetchScheduleEmails();
   const { deleteSchedule, deleting, error: deleteError } = useDeleteSchedule();
 
   const handleDelete = async () => {
@@ -30,11 +33,6 @@ const ScheduledEmails = () => {
       setDeleteOpen(false);
       setSelectedScheduleId(null);
     }
-  };
-
-  const handleEdit = (scheduleId) => {
-    console.log("Edit schedule with ID:", scheduleId);
-    // Would normally open edit modal here
   };
 
   const handleAddNewSchedule = () => {
@@ -52,12 +50,6 @@ const ScheduledEmails = () => {
   ];
 
   const dropdownOptions = [
-    {
-      label: "Edit",
-      onClick: (scheduleId) => {
-        handleEdit(scheduleId);
-      },
-    },
     {
       label: "Delete",
       onClick: (scheduleId) => {
