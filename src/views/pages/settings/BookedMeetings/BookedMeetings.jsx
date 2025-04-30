@@ -3,24 +3,50 @@ import Table from "src/Common/Table/Table";
 import Dropdown from "src/Common/Dropdown/Dropdown";
 import Loader from "src/Common/Loader/Loader";
 import useGetAllMeetings from "../EmailScheduling/Hooks/useGetAllMeetings";
+import useUpdateMeetingStatus from "./Hooks/useUpdateMeetingStatus";
 import styles from "./BookedMeetings.module.scss";
 import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const BookedMeetings = () => {
-  const { data, loading, error } = useGetAllMeetings();
+  const { data, loading, error, refetch } = useGetAllMeetings();
+  const {
+    updateStatus,
+    loading: updateLoading,
+    error: updateError,
+    success,
+  } = useUpdateMeetingStatus();
 
   const navigationItems = [
     { text: "Settings", route: "/settings" },
     { text: "Booked Meetings", route: "/booked-meetings" },
   ];
 
-  const handleMarkAsAttended = (meetingId) => {
-    console.log("Testing - Mark as attended for meeting:", meetingId);
+  const handleMarkAsAttended = async (meetingId) => {
+    const result = await updateStatus(meetingId, "ATTENDED");
+    if (result) {
+      toast.success("Meeting marked as attended");
+      // Refresh the meetings list after successful update
+      refetch();
+    }
   };
 
-  const handleMarkAsMissed = (meetingId) => {
-    console.log("Testing - Mark as missed for meeting:", meetingId);
+  const handleMarkAsMissed = async (meetingId) => {
+    const result = await updateStatus(meetingId, "MISSED");
+    if (result) {
+      toast.success("Meeting marked as missed");
+      // Refresh the meetings list after successful update
+      refetch();
+    }
   };
+
+  // Display error toast if update fails - this is the only place we show error toasts
+  React.useEffect(() => {
+    if (updateError) {
+      toast.error(updateError);
+    }
+  }, [updateError]);
 
   const headers = [
     { label: "User Email", key: "user_email" },
@@ -67,7 +93,7 @@ const BookedMeetings = () => {
 
   const getStatusDisplay = (status) => {
     if (!status) return "Scheduled";
-    return status.charAt(0).toUpperCase() + status.slice(1);
+    return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
   };
 
   const transformedData =
@@ -83,6 +109,7 @@ const BookedMeetings = () => {
             ...option,
             onClick: () => option.onClick(meeting.meeting_id),
           }))}
+          disabled={updateLoading}
         />
       ),
     })) || [];
@@ -96,7 +123,7 @@ const BookedMeetings = () => {
       </div>
 
       <div className={styles.tableContainer}>
-        {loading ? (
+        {loading || updateLoading ? (
           <div className={styles.loaderContainer}>
             <Loader />
           </div>
