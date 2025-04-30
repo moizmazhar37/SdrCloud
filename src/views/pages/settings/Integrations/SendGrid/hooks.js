@@ -51,7 +51,7 @@ export const useTenantEmail = () => {
             setIsDisabled(true);
             setApiKey("********");  // Mask API key
         } catch (error) {
-            toast.error(error.response?.data?.detail || "Failed to save API key");
+            toast.error(error.response?.data?.detail || "Failed to save API key. Please try again.");
         } finally {
             setLoading(false);
         }

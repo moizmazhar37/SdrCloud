@@ -211,7 +211,7 @@ function HVOSummary({ linkObject, reload, price, balance }) {
       reload();
     } catch (error) {
       console.error("Error deleting section:", error);
-      toast.error("Failed to delete section");
+      toast.error("Failed to delete section. Please try again.");
     } finally {
       setLoading(false);
       setDeleteOpen(false);

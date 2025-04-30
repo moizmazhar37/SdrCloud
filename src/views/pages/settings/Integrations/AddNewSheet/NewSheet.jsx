@@ -40,7 +40,7 @@ const NewSheet = ()  => {
 
     try {
       const responseData = await fetchSheet(payload);
-      toast.success("Successfully connected to Google Sheet");
+      toast.success("Connected to Google Sheet successfully.");
       console.log("API Response:", responseData);
       history.push({
         pathname: "/editSheets",
@@ -76,7 +76,7 @@ const NewSheet = ()  => {
     const handleFetchnames = async () => {
       if (!sheetId) {
         console.warn("Sheet ID is missing or invalid.");
-        toast.error("Link is not valid. Please enter a valid Google Sheet URL.");
+        toast.error("Sheet ID is missing or invalid. Please check your Google Sheet link.");
         return;
       }
       try {
@@ -86,7 +86,7 @@ const NewSheet = ()  => {
         setSheetOptions(data); // Array of sheet names
       } catch (err) {
         console.error("❌ Failed to fetch sheet tabs.");
-        toast.error("Failed to fetch sheet tabs.");
+        toast.error("Failed to fetch sheet tabs.. Please try again.");
       }
     };
   

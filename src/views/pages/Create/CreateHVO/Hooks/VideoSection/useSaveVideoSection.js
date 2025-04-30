@@ -35,7 +35,7 @@ export const useSaveVideoSection = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to save video section");
+        throw new Error(errorData.message || "Failed to save video section. Error: " + errorData.message);
       }
 
       const result = await response.json();
@@ -43,7 +43,7 @@ export const useSaveVideoSection = () => {
       return result;
     } catch (err) {
       const errorMessage =
-        err.message || "An error occurred while saving the video section";
+        err.message || "An error occurred while saving the video section. Please try again.";
       setError(errorMessage);
       toast.error(errorMessage);
       throw err;

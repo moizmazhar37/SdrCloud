@@ -62,7 +62,7 @@ const useSaveHeroSection = () => {
       return response.data;
     } catch (err) {
       setError(err.message || "Failed to save Hero section");
-      toast.error(err.message || "Failed to save Hero section");
+      toast.error(err.message || "Failed to save Hero section. Please try again.");
       throw err;
     } finally {
       setLoading(false);

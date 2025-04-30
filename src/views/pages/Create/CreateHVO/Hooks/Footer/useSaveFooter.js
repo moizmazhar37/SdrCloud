@@ -42,7 +42,7 @@ const useSaveFooter = () => {
       return response.data;
     } catch (err) {
       setError(err.message || "Failed to save footer");
-      toast.error(err.message || "Failed to save footer");
+      toast.error(err.message || "Failed to save footer. Please try again.");
       throw err;
     } finally {
       setLoading(false);

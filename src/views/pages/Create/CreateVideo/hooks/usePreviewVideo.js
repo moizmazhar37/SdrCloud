@@ -27,7 +27,7 @@ const usePreviewVideo = () => {
       console.error("Error details:", error.response?.data);
       toast.error(
         error.response?.data?.detail?.[0]?.msg ||
-          "Failed to fetch video preview."
+          "Failed to fetch video preview. Please try again."
       );
       return null;
     } finally {

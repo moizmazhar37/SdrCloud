@@ -24,7 +24,7 @@ const useDeleteSection = (reloadDataCallback) => {
         }
       }
     } catch (error) {
-      toast.error("Failed to delete section");
+      toast.error("Failed to delete section. Please try again.");
       console.error(error);
     } finally {
       setLoading(false);
