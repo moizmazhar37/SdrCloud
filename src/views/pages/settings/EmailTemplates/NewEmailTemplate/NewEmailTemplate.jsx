@@ -80,7 +80,7 @@ const NewEmailTemplate = () => {
         <div className={styles.content}>
           <div className={styles.copySection}>
             <h3 className={styles.sectionTitle}>Available Fields</h3>
-            <CopyText fields={["[First name]", "[Last name]", "[Link]"]} onInsert={handleInsert} />
+            <CopyText fields={["First name", "Last name", "Link"]} onInsert={handleInsert} />
           </div>
           <div className={styles.emailEditor}>
             <input className={styles.input} type="text" name="name" placeholder="Template Name" value={name} onChange={(e) => setName(e.target.value)} />
