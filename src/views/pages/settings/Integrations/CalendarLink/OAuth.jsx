@@ -120,7 +120,7 @@ const MeetingIntegrationsConnect = () => {
       ) : (
         <div className={styles.cardsWrapper}>
           {/* Google Integration Card */}
-          <div className={styles.card}>
+          {/* <div className={styles.card}>
             <h3 className={styles.cardTitle}>Google Calendar</h3>
             <p className={styles.cardDescription}>
               Sync meetings directly with your Google Calendar.
@@ -147,8 +147,18 @@ const MeetingIntegrationsConnect = () => {
                 {loadingState.google ? "Connecting..." : "Connect Google Calendar"}
               </button>
             )}
-          </div>
+          </div> */}
 
+<div className={styles.integrationSection}>
+          {!integrations.calendly.connected && (
+          <div className={`${styles.banner} ${styles.warning}`}>
+            Configure your Calendly integration to allow us to show stats from calendly.
+            Get your Auth Token from{" "}
+            <a href="https://calendly.com/integrations/api_webhooks" target="_blank" rel="noopener noreferrer">
+              Calendly API Integration Page
+            </a> and paste it here and click the connect button.
+          </div>
+          )}
           {/* Calendly Integration Card */}
           <div className={styles.card}>
             <h3 className={styles.cardTitle}>Calendly</h3>
@@ -209,6 +219,7 @@ const MeetingIntegrationsConnect = () => {
               </button>
             )}
           </div>
+        </div>
         </div>
       )}
 

@@ -17,7 +17,7 @@ const EmailTemplateCard = ({ emailTemplate, onDelete, deleting }) => {
     const handleEdit = () => {
         history.push({
             pathname: "/create-email-template",
-            state: { emailTemplate, templateId: emailTemplate.template_id }, 
+            state: { emailTemplate }, 
         });
     };
 

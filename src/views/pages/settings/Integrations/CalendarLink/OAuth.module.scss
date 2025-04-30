@@ -124,3 +124,26 @@
     color: #0056b3; // Darker blue on hover
   }
 }
+
+.banner {
+  background-color: #fff3cd; // Soft yellow warning background
+  color: #856404; // Dark text for readability
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #ffeeba;
+  width: 100%;
+  max-width: 800px;
+  font-size: 14px;
+  text-align: left;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); // subtle shadow like cards
+  margin: 0 auto 20px auto; // spacing and centering
+  box-sizing: border-box;
+  line-height: 1.6;
+}
+
+.integrationSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center; // centers content horizontally
+  gap: 20px; // space between banner and card
+}
