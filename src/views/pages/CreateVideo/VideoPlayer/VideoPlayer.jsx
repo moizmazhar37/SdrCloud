@@ -189,7 +189,7 @@ const VideoPlayer = () => {
   };
 
   const handleMeetButtonClick = () => {
-    const url = `https://portal.sdrcloud.ai//book-meeting/${videoData?.tenant_id}`;
+    const url = videoData?.meet_link || "https://meet.google.com/";
   window.open(url, "_blank");
   };
 

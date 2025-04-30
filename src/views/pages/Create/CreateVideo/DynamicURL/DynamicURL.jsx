@@ -123,7 +123,7 @@ const DynamicURL = ({
         onClose();
       }
     } catch (error) {
-      toast.error("Failed to save dynamic URL section");
+      toast.error("Failed to save dynamic URL section. Please try again.");
     } finally {
       setLoading(false);
     }

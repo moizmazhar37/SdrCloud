@@ -17,7 +17,7 @@ const useUserProfile = () => {
       });
       setData(response.data);
     } catch (err) {
-      setError(err.response?.data?.message || "Something went wrong");
+      setError(err.response?.data?.message || "Something went wrong on our end. Please try again.");
     } finally {
       setLoading(false);
     }

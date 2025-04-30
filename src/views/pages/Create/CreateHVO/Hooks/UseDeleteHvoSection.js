@@ -28,7 +28,7 @@ const useDeleteHvoSection = (onDeleteSuccess) => {
         }
       }
     } catch (error) {
-      toast.error("Failed to delete section");
+      toast.error("Failed to delete section. Please try again.");
       console.error("Delete section error:", error);
     } finally {
       setLoading(false);

@@ -26,7 +26,7 @@ const useGetSheets = (sheetType = "VIDEO") => {
       }
     } catch (err) {
       setError(
-        err.response?.data?.msg || err.message || "Something went wrong"
+        err.response?.data?.msg || err.message || "Something went wrong on our end. Please try again."
       );
       setData([]);
     } finally {

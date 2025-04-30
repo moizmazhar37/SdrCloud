@@ -22,7 +22,7 @@ export const useGoogleSheetTypes = (sheetId) => {
             });
             setData(res.data);
         } catch (error) {
-            toast.error(error?.response?.data?.message || "Something went wrong");
+            toast.error(error?.response?.data?.message || "Something went wrong on our end. Please try again.");
             setError(error);
         } finally {
             setLoading(false);
@@ -61,7 +61,7 @@ export const useSaveGoogleSheetTypes = () => {
                 return response.data; 
             }
         } catch (error) {
-            toast.error(error?.response?.data?.message || "Failed to save sheet types");
+            toast.error(error?.response?.data?.message || "Failed to save sheet types. Please try again.");
             setError(error);
         } finally {
             setLoading(false);

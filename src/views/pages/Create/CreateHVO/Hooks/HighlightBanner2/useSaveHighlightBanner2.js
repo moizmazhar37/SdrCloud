@@ -38,7 +38,7 @@ const useSaveHighlightBanner2 = () => {
       return response.data;
     } catch (err) {
       setError(err.message || "Failed to save banner");
-      toast.error(err.message || "Failed to save banner");
+      toast.error(err.message || "Failed to save banner. Please try again.");
       throw err;
     } finally {
       setLoading(false);

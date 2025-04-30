@@ -216,7 +216,7 @@ const GoogleSheetConnection = ({
         console.log(response);
         setSheetData(response?.data);
 
-        toast.success("Successfully connected to Google Sheet");
+        toast.success("Connected to Google Sheet successfully.");
         setLoading(false);
       }
     } catch (error) {

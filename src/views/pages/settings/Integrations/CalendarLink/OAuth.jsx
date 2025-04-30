@@ -78,7 +78,7 @@ const MeetingIntegrationsConnect = () => {
       fetchIntegrations();
     } catch (error) {
       console.error("Calendly connection failed:", error);
-      toast.error(error.message || "Failed to connect Calendly.");
+      toast.error(error.message || "Failed to connect calendar. Please check settings and try again.");
     } finally {
       setLoadingState({ ...loadingState, calendly: false });
     }

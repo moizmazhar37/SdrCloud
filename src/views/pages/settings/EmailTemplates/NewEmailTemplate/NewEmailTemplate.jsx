@@ -64,7 +64,7 @@ const NewEmailTemplate = () => {
       toast.success(`Template ${emailTemplate ? "updated" : "saved"} successfully!`);
       history.push("/email-templates");
     } catch {
-      toast.error("Failed to save template. Try again.");
+      toast.error("Failed to save template. Please try again.");
     }
   };
 
