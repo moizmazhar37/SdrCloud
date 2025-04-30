@@ -155,14 +155,14 @@ const AdminDashboard = () => {
         <Card
           heading="Active Users"
           amount={formatAmount(metrics.activeUsers)}
-          isClickable={true}
-          onClick={() => handleCardClick("Active Users")}
+          // isClickable={true}
+          // onClick={() => handleCardClick("Active Users")}
         />
         <Card
           heading="Available Seats"
           amount={formatAmount(metrics.availableSeats)}
-          isClickable={true}
-          onClick={() => handleCardClick("Available Seats")}
+          // isClickable={true}
+          // onClick={() => handleCardClick("Available Seats")}
         />
         <Card
           heading="Credits Spent"
@@ -181,8 +181,8 @@ const AdminDashboard = () => {
         <Card
           heading="Sheets Connected"
           amount={formatAmount(metrics.sheetsConnected)}
-          isClickable={true}
-          onClick={() => handleCardClick("Sheets Connected")}
+          // isClickable={true}
+          // onClick={() => handleCardClick("Sheets Connected")}
           {...(growthRates_metrics?.sheetsConnected !== null && {
             change: growthRates_metrics?.sheetsConnected,
           })}
@@ -190,8 +190,8 @@ const AdminDashboard = () => {
         <Card
           heading="Templates Generated"
           amount={formatAmount(metrics.templatesGenerated)}
-          isClickable={true}
-          onClick={() => handleCardClick("Templates Generated")}
+          // isClickable={true}
+          // onClick={() => handleCardClick("Templates Generated")}
           {...(growthRates_metrics?.templatesGenerated !== null && {
             change: growthRates_metrics?.templatesGenerated,
           })}
@@ -216,8 +216,8 @@ const AdminDashboard = () => {
           <Card
             heading="Prospects Added"
             amount={formatAmount(summaryStats.prospectsAdded)}
-            isClickable={true}
-            onClick={() => handleCardClick("Prospects Added")}
+            // isClickable={true}
+            // onClick={() => handleCardClick("Prospects Added")}
             {...(growthRates_summaryStats?.prospectsAdded !== null && {
               change: growthRates_summaryStats?.prospectsAdded,
             })}
@@ -226,8 +226,8 @@ const AdminDashboard = () => {
           <Card
             heading="Meetings Booked"
             amount={formatAmount(summaryStats.meetingsBooked)}
-            isClickable={true}
-            onClick={() => handleCardClick("Meetings Booked")}
+            // isClickable={true}
+            // onClick={() => handleCardClick("Meetings Booked")}
             {...(growthRates_summaryStats?.meetingsBooked !== null && {
               change: growthRates_summaryStats?.meetingsBooked,
             })}
@@ -236,8 +236,8 @@ const AdminDashboard = () => {
           <Card
             heading="Meeting Attended"
             amount={formatAmount(summaryStats.meetingsAttended)}
-            isClickable={true}
-            onClick={() => handleCardClick("Meeting Attended")}
+            // isClickable={true}
+            // onClick={() => handleCardClick("Meeting Attended")}
             {...(growthRates_summaryStats?.meetingsAttended !== null && {
               change: growthRates_summaryStats?.meetingsAttended,
             })}
@@ -246,8 +246,8 @@ const AdminDashboard = () => {
           <Card
             heading="Visitors Identified"
             amount={formatAmount(summaryStats.visitorsIdentified)}
-            isClickable={true}
-            onClick={() => handleCardClick("Visitors Identified")}
+            // isClickable={true}
+            // onClick={() => handleCardClick("Visitors Identified")}
             {...(growthRates_summaryStats?.visitorsIdentified !== null && {
               change: growthRates_summaryStats?.visitorsIdentified,
             })}
