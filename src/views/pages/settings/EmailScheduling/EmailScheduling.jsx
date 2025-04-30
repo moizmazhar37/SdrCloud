@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { Mail, Video, ChevronDown, Plus, Check } from "lucide-react";
 import styles from "./EmailSchedulng.module.scss";
@@ -6,14 +6,12 @@ import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
 import useTemplateList from "../../Create/Hooks/useTemplateList";
 import useTemplates from "../EmailTemplates/hooks";
 import useSaveScheduleEmails from "./Hooks/useSaveScheduleEmails";
-import useFetchScheduleEmails from "./Hooks/useFetchScheduleEmails";
 
 const EmailScheduling = () => {
   const [selectedType, setSelectedType] = useState("hvo");
   const { emailTemplatesList } = useTemplates();
   const { data: templates } = useTemplateList();
   const { saveSchedule, saving } = useSaveScheduleEmails();
-  const { schedules, loadingSchedules } = useFetchScheduleEmails();
 
   const formatDate = (date) => {
     const d = new Date(date);
@@ -23,31 +21,8 @@ const EmailScheduling = () => {
     return `${year}-${month}-${day}`;
   };
 
+  // Initialize with a default form instead of loading from API
   const [forms, setForms] = useState([]);
-
-  useEffect(() => {
-    if (schedules && emailTemplatesList && templates) {
-      const formatted = schedules.map((item) => ({
-        id: Date.now() + Math.random(), // unique ID
-        templateId: item.template_id,
-        emailTemplateId: item.email_template_id,
-        date: formatDate(item.scheduled_time),
-        removing: false,
-      }));
-      setForms(formatted);
-    } else if (!schedules?.length && emailTemplatesList && templates) {
-      // fallback form if no schedules exist
-      setForms([
-        {
-          id: Date.now(),
-          templateId: templates?.[selectedType.toUpperCase()]?.[0]?.id || "",
-          emailTemplateId: emailTemplatesList?.[0]?.id || "",
-          date: formatDate(new Date()),
-          removing: false,
-        },
-      ]);
-    }
-  }, [schedules, templates, emailTemplatesList]);
 
   const handleTypeChange = (type) => {
     setSelectedType(type);
@@ -115,11 +90,13 @@ const EmailScheduling = () => {
       toast.error(message);
     }
   };
+
   const navigationItems = [
     { text: "Settings", route: "/settings" },
     { text: "Email Scheduling", route: "/email-scheduling" },
     { text: "New Schedule", route: "/create-new-schedule" },
   ];
+
   return (
     <>
       <DynamicNavigator items={navigationItems} />
@@ -160,6 +137,14 @@ const EmailScheduling = () => {
             >
               <div className={styles.formHeader}>
                 <h3 className={styles.formTitle}>Schedule {index + 1}</h3>
+                {/* {forms.length > 1 && (
+                  <button
+                    className={styles.removeButton}
+                    onClick={() => removeForm(form.id)}
+                  >
+                    Remove
+                  </button>
+                )} */}
               </div>
 
               <div className={styles.formGroup}>
@@ -209,7 +194,7 @@ const EmailScheduling = () => {
                     {emailTemplatesList?.length === 0 ? (
                       <option disabled>No templates available</option>
                     ) : (
-                      emailTemplatesList.map((template) => (
+                      emailTemplatesList?.map((template) => (
                         <option key={template.id} value={template.id}>
                           {template.name}
                         </option>
