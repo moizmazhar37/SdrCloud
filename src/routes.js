@@ -427,6 +427,20 @@ export const routes = [
       )
     ),
   },
+
+  //Booked Meetings
+  {
+    exact: true,
+    path: "/booked-meetings",
+    guard: true,
+    layout: DashboardLayout,
+    component: lazy(() =>
+      import(
+        "src/views/pages/settings/EmailScheduling/ScheduledEmails/ScheduledEmails"
+      )
+    ),
+  },
+
   {
     exact: true,
     path: "/create-new-schedule",
