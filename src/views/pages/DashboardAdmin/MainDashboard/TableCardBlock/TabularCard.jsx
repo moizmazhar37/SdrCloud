@@ -8,13 +8,13 @@ const TabularCard = ({
   title,
   usersData,
   tableHeaders,
+  showDropdown = true,
 }) => {
-
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [isCreateUserOpen, setCreateUserOpen] = useState(false);
   const [viewState, setViewState] = useState("create");
 
-  const user2=useContext(UserContext)
+  const user2 = useContext(UserContext);
   const [isViewingAs, setIsViewingAs] = useState(
     sessionStorage.getItem("isViewingAs") === "true"
   );
@@ -33,11 +33,10 @@ const TabularCard = ({
   };
 
   const handleEditView = (user) => {
-    setSelectedUserId(user.id); // or however the user ID is stored
+    setSelectedUserId(user.id);
     setViewState("edit");
     setCreateUserOpen(true);
   };
-  
 
   if (
     !tableHeaders ||
@@ -47,6 +46,9 @@ const TabularCard = ({
     console.error("Invalid tableHeaders prop.");
     return <p>Error: No table headers available</p>;
   }
+
+  // Ensure usersData is an array
+  const dataToDisplay = Array.isArray(usersData) ? usersData : [];
 
   return (
     <div className={styles.container}>
@@ -66,16 +68,18 @@ const TabularCard = ({
             </tr>
           </thead>
           <tbody>
-            {usersData && usersData.length > 0 ? (
-              usersData.map((user, index) => (
-                
-                <tr key={index}>
+            {dataToDisplay.length > 0 ? (
+              dataToDisplay.map((user, index) => (
+                <tr key={user.id || index}>
                   {tableHeaders.map((header) => {
                     const value = user[header.key];
 
                     if (header.key === "viewAs") {
                       return (
-                        <td key={header.key} className={styles[`${header.key}Cell`]}>
+                        <td
+                          key={header.key}
+                          className={styles[`${header.key}Cell`]}
+                        >
                           <span
                             className={styles.linkAction}
                             onClick={() => handleUserSelect(user)}
@@ -88,7 +92,10 @@ const TabularCard = ({
 
                     if (header.key === "editUser") {
                       return (
-                        <td key={header.key} className={styles[`${header.key}Cell`]}>
+                        <td
+                          key={header.key}
+                          className={styles[`${header.key}Cell`]}
+                        >
                           <span
                             className={styles.linkAction}
                             onClick={() => handleEditView(user)}
@@ -100,7 +107,10 @@ const TabularCard = ({
                     }
 
                     return (
-                      <td key={header.key} className={styles[`${header.key}Cell`]}>
+                      <td
+                        key={header.key}
+                        className={styles[`${header.key}Cell`]}
+                      >
                         {header.key === "name" ? (
                           <div className={styles.userInfo}>
                             {user.image && (
@@ -110,7 +120,7 @@ const TabularCard = ({
                                 className={styles.avatar}
                               />
                             )}
-                            <span className={styles.userName}>{user.name}</span>
+                            <span className={styles.userName}>{value}</span>
                           </div>
                         ) : value !== null && value !== undefined ? (
                           <span className={styles.userName}>{value}</span>
