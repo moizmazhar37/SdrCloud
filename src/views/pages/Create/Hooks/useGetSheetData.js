@@ -29,8 +29,11 @@ const useGetSheetData = (templateId, trigger) => {
         }
       } catch (error) {
         console.error("Error fetching sheet data:", error);
-        setError(error?.response?.data?.message || "Something went wrong on our end. Please try again.");
-        toast.error(error?.response?.data?.message || "Something went wrong on our end. Please try again.");
+        setError(
+          error?.response?.data?.message ||
+            "Something went wrong on our end. Please try again."
+        );
+        // toast.error(error?.response?.data?.message || "Something went wrong on our end. Please try again.");
       } finally {
         setLoading(false);
       }
