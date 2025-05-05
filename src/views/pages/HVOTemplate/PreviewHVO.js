@@ -259,8 +259,17 @@ function PreviewHVO(location) {
           if (res?.status === 200 || res?.status === 201) {
             setLoading(false);
             const elementsList = res?.data;
-            setPageData(elementsList);
-            const filteredFooter = elementsList.filter(
+
+            // Sort the elements by sequence value
+            const sortedElements = [...elementsList].sort((a, b) => {
+              // Convert sequence strings to numbers for proper comparison
+              const seqA = parseInt(a?.values?.sequence) || 0;
+              const seqB = parseInt(b?.values?.sequence) || 0;
+              return seqA - seqB;
+            });
+
+            setPageData(sortedElements);
+            const filteredFooter = sortedElements.filter(
               (item) => item?.sectionName === "FOOTER"
             );
             setFilteredFooterSection(filteredFooter);
@@ -307,6 +316,8 @@ function PreviewHVO(location) {
   const [hoveredContact, setHoveredContact] = useState(false);
   const handleMouseEnterContact = () => setHoveredContact(true);
   const handleMouseLeaveContact = () => setHoveredContact(false);
+
+  console.log("aaaaaaaaaaaaaaaaaaaaaaaa");
 
   const getAccountData = async () => {
     try {
@@ -446,14 +457,24 @@ function PreviewHVO(location) {
                         </Button>
 
                         {item?.values?.demo_button_text && (
-                          <Typography
+                          <Button
                             className="demobtn"
                             style={{
+                              backgroundColor: hovered
+                                ? item?.values?.demo_button_text_color
+                                : item?.values?.demo_button_color,
                               color: hovered
                                 ? item?.values?.demo_button_color
                                 : item?.values?.demo_button_text_color,
                               textTransform: "none",
                               fontSize: "14px",
+                              border: `1px solid ${item?.values?.demo_button_color}`,
+                              borderRadius: "4px",
+                              padding: "13px 22px",
+                              transition: "all 0.3s ease",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "10px",
                             }}
                             onClick={() =>
                               window.open(
@@ -462,13 +483,12 @@ function PreviewHVO(location) {
                                   : item?.values?.static_url
                               )
                             }
-                            variant="text"
-                            // data-aos="fade-up"
                             onMouseEnter={handleMouseEnter}
                             onMouseLeave={handleMouseLeave}
                           >
                             {item?.values?.demo_button_text}
-                          </Typography>
+                            <IoIosArrowForward />
+                          </Button>
                         )}
                       </Box>
                     </Grid>
@@ -629,19 +649,21 @@ function PreviewHVO(location) {
                       >
                         {item?.values?.headline2}
                       </Typography>
-                      <Typography
-                        variant="body1"
-                        // data-aos="fade-up"
-                        style={{
-                          wordBreak: "break-word",
-                          fontSize: `${item?.values?.body_text_size}px`,
-                          color: item?.values?.body_text_color,
-                          lineHeight: "30px",
-                        }}
-                      >
-                        {" "}
-                        {item?.values?.body_text}
-                      </Typography>
+                      {item?.values?.body_text &&
+                        item?.values?.body_text !== "None" && (
+                          <Typography
+                            variant="body1"
+                            // data-aos="fade-up"
+                            style={{
+                              wordBreak: "break-word",
+                              fontSize: `${item?.values?.body_text_size}px`,
+                              color: item?.values?.body_text_color,
+                              lineHeight: "30px",
+                            }}
+                          >
+                            {item?.values?.body_text}
+                          </Typography>
+                        )}
                     </Grid>
                   </Grid>
                 </Container>
@@ -715,42 +737,57 @@ function PreviewHVO(location) {
                       className="d-flex column alignstart"
                       style={{ paddingRight: "30px" }}
                     >
-                      <Typography
-                        variant="h3"
-                        // data-aos="fade-up"
-                        style={{
-                          fontSize: `${item?.values?.headline1_size}px`,
-                          color: item?.values?.headline1_color,
-                          fontWeight: 900,
-                          lineHeight: "30px",
-                        }}
-                      >
-                        {item?.values?.headline1}
-                      </Typography>
-                      <Typography
-                        variant="h1"
-                        // data-aos="fade-up"
-                        style={{
-                          fontSize: `${item?.values?.headline2_size}px`,
-                          color: item?.values?.headline2_color,
-                          fontWeight: 700,
-                          paddingTop: "10px",
-                        }}
-                      >
-                        {item?.values?.headline2}
-                      </Typography>
-                      <Typography
-                        variant="body1"
-                        // data-aos="fade-up"
-                        style={{
-                          wordBreak: "break-word",
-                          fontSize: `${item?.values?.body_text_size}px`,
-                          color: item?.values?.body_text_color,
-                          lineHeight: "30px",
-                        }}
-                      >
-                        {item?.values?.body_text}
-                      </Typography>
+                      {item?.values?.headline1 &&
+                        item?.values?.headline1 !== "None" && (
+                          <Typography
+                            variant="h3"
+                            // data-aos="fade-up"
+                            style={{
+                              fontSize: `${item?.values?.headline1_size}px`,
+                              color: item?.values?.headline1_color,
+                              fontWeight: 900,
+                              lineHeight: "30px",
+                            }}
+                          >
+                            {item?.values?.headline1}
+                          </Typography>
+                        )}
+
+                      {item?.values?.headline2 &&
+                        item?.values?.headline2 !== "None" && (
+                          <Typography
+                            variant="h1"
+                            // data-aos="fade-up"
+                            style={{
+                              fontSize: `${item?.values?.headline2_size}px`,
+                              color: item?.values?.headline2_color,
+                              fontWeight: 700,
+                              paddingTop:
+                                item?.values?.headline1 &&
+                                item?.values?.headline1 !== "None"
+                                  ? "10px"
+                                  : "0",
+                            }}
+                          >
+                            {item?.values?.headline2}
+                          </Typography>
+                        )}
+
+                      {item?.values?.body_text &&
+                        item?.values?.body_text !== "None" && (
+                          <Typography
+                            variant="body1"
+                            // data-aos="fade-up"
+                            style={{
+                              wordBreak: "break-word",
+                              fontSize: `${item?.values?.body_text_size}px`,
+                              color: item?.values?.body_text_color,
+                              lineHeight: "30px",
+                            }}
+                          >
+                            {item?.values?.body_text}
+                          </Typography>
+                        )}
                     </Grid>
                     <Grid item sm={6} xs={12} align="center">
                       <img
