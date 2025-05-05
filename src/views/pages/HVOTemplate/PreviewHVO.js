@@ -470,7 +470,7 @@ function PreviewHVO(location) {
                               fontSize: "14px",
                               border: `1px solid ${item?.values?.demo_button_color}`,
                               borderRadius: "4px",
-                              padding: "8px 16px",
+                              padding: "13px 22px",
                               transition: "all 0.3s ease",
                               display: "flex",
                               alignItems: "center",
