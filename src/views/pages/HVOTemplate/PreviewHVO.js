@@ -259,8 +259,17 @@ function PreviewHVO(location) {
           if (res?.status === 200 || res?.status === 201) {
             setLoading(false);
             const elementsList = res?.data;
-            setPageData(elementsList);
-            const filteredFooter = elementsList.filter(
+
+            // Sort the elements by sequence value
+            const sortedElements = [...elementsList].sort((a, b) => {
+              // Convert sequence strings to numbers for proper comparison
+              const seqA = parseInt(a?.values?.sequence) || 0;
+              const seqB = parseInt(b?.values?.sequence) || 0;
+              return seqA - seqB;
+            });
+
+            setPageData(sortedElements);
+            const filteredFooter = sortedElements.filter(
               (item) => item?.sectionName === "FOOTER"
             );
             setFilteredFooterSection(filteredFooter);
@@ -307,6 +316,8 @@ function PreviewHVO(location) {
   const [hoveredContact, setHoveredContact] = useState(false);
   const handleMouseEnterContact = () => setHoveredContact(true);
   const handleMouseLeaveContact = () => setHoveredContact(false);
+
+  console.log("aaaaaaaaaaaaaaaaaaaaaaaa");
 
   const getAccountData = async () => {
     try {
