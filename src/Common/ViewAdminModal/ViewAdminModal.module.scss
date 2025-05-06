@@ -1,0 +1,226 @@
+// Constants
+$primary-blue: #0358ac;
+$white: #fff;
+$light-bg: #f8f9fa;
+$border-color: #e5e7eb;
+$text-dark: #1f2937;
+$text-muted: #6b7280;
+$error-color: #ef4444;
+$success-color: #10b981;
+
+// Modal Overlay
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+// Modal Content
+.modalContent {
+  background-color: $white;
+  border-radius: 6px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 600px;
+  max-height: 85vh;
+  overflow-y: auto;
+  animation: slideIn 0.2s ease-out;
+
+  @media (max-width: 768px) {
+    width: 92%;
+    max-height: 80vh;
+  }
+}
+
+// Modal Header
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid $border-color;
+  background-color: $light-bg;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+
+  h2 {
+    color: $text-dark;
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 500;
+  }
+}
+
+// Close Button
+.closeButton {
+  background: none;
+  border: none;
+  color: $text-muted;
+  font-size: 1.4rem;
+  cursor: pointer;
+  line-height: 1;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: $text-dark;
+  }
+}
+
+// Form
+.form {
+  padding: 1.25rem;
+}
+
+// Form Grid
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+    gap: 0.875rem;
+  }
+}
+
+// Form Group
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.25rem;
+}
+
+// Label
+.label {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: $text-muted;
+  margin-bottom: 0.325rem;
+}
+
+// Input
+.input {
+  padding: 0.5rem 0.625rem;
+  border: 1px solid $border-color;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  height: 2.25rem;
+
+  &:focus {
+    outline: none;
+    border-color: $primary-blue;
+    box-shadow: 0 0 0 2px rgba(3, 88, 172, 0.1);
+  }
+
+  &:disabled {
+    background-color: $light-bg;
+    cursor: not-allowed;
+  }
+}
+
+// Input Error
+.inputError {
+  border-color: $error-color;
+
+  &:focus {
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.1);
+  }
+}
+
+// Error Text
+.errorText {
+  color: $error-color;
+  font-size: 0.7rem;
+  margin-top: 0.25rem;
+}
+
+// Value Display (for view mode)
+.valueDisplay {
+  padding: 0.5rem 0.625rem;
+  background-color: $light-bg;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  color: $text-dark;
+  border: 1px solid $border-color;
+  min-height: 2.25rem;
+  display: flex;
+  align-items: center;
+}
+
+// Button Group
+.buttonGroup {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+  gap: 0.75rem;
+}
+
+// Button Base
+%button-base {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+// Edit Button
+.editButton {
+  @extend %button-base;
+  background-color: $primary-blue;
+  color: $white;
+
+  &:hover {
+    background-color: darken($primary-blue, 5%);
+  }
+}
+
+// Save Button
+.saveButton {
+  @extend %button-base;
+  background-color: $success-color;
+  color: $white;
+
+  &:hover {
+    background-color: darken($success-color, 5%);
+  }
+}
+
+// Cancel Button
+.cancelButton {
+  @extend %button-base;
+  background-color: $white;
+  color: $text-muted;
+  border: 1px solid $border-color;
+
+  &:hover {
+    background-color: $light-bg;
+  }
+}
+
+// Animation
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
