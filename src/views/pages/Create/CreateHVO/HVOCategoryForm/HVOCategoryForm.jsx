@@ -25,7 +25,9 @@ const HVOCategoryForm = ({
   const [templateName, setTemplateName] = useState("");
   const [showError, setShowError] = useState(false);
   const [templateId, setTemplateId] = useState(null);
-  const [localCategories, setLocalCategories] = useState([]);
+
+  // Remove the localCategories state as it's causing synchronization issues
+  // We'll use the categories data directly from the API
 
   const [createModeName, setCreateModeName] = useState(null);
   const [createModeId, setCreateModeId] = useState(null);
@@ -40,6 +42,7 @@ const HVOCategoryForm = ({
   const { deleteCategory, loading: deleteLoading } =
     useDeleteCategory(refetchCategories);
   const { editCategory, loading: editLoading } = useEditCategory();
+
   const categories = useMemo(
     () =>
       categoryData?.map((item) => ({
@@ -50,9 +53,6 @@ const HVOCategoryForm = ({
     [categoryData]
   );
 
-  useEffect(() => {
-    setLocalCategories(categories);
-  }, [categories]);
   const sheets = useMemo(
     () =>
       sheetData?.map((item) => ({
@@ -128,25 +128,45 @@ const HVOCategoryForm = ({
   const handleCategoryDelete = async (categoryId) => {
     try {
       await deleteCategory(categoryId);
-      setLocalCategories((prev) => prev.filter((cat) => cat.id !== categoryId));
-      if (category === categoryId) {
+      // After deleting, refetch categories
+      refetchCategories();
+
+      // Reset selection if the deleted category was selected
+      if (categoryId === categoryId) {
         setCategory(null);
+        setCategoryId(null);
       }
     } catch (error) {
       console.error("Error deleting category:", error);
     }
   };
 
-  const handleCategorySelect = (selectedValue) => {
-    const selectedCategory = localCategories.find(
-      (cat) => cat.value === selectedValue
-    );
-    if (selectedCategory) {
-      setCategory(selectedCategory.label);
-      setCategoryId(selectedCategory.id);
-      setIsEditingCategory(false);
-    }
+  const handleCategorySelect = (selectedValue, selectedLabel) => {
+    setCategory(selectedLabel);
+    setCategoryId(selectedValue);
+    setIsEditingCategory(false);
   };
+
+  // Handle when a new category is added
+  const handleCategoryAdded = (newCategoryName) => {
+    // Refetch categories to get the new category with ID
+    refetchCategories();
+
+    // We'll set the selected category name here, but the ID will be updated
+    // after the refetch completes and the categories list is updated
+    setCategory(newCategoryName);
+  };
+
+  // Effect to find the ID for a newly added category after refetch
+  useEffect(() => {
+    if (category && !categoryId && categories.length > 0) {
+      // Try to find the ID of the selected category by name
+      const foundCategory = categories.find((cat) => cat.label === category);
+      if (foundCategory) {
+        setCategoryId(foundCategory.id);
+      }
+    }
+  }, [categories, category, categoryId]);
 
   const showIngestionControls =
     !isViewMode || (isViewMode && !sectionData?.sheet?.googleSheetsId);
@@ -159,11 +179,12 @@ const HVOCategoryForm = ({
             <h2 className={styles.sectionTitle}>Category</h2>
             {!categoriesLoading && !isViewMode && (
               <CategoryDropdown
-                options={localCategories}
+                options={categories} // Use categories directly from API
                 buttonText="Select Category"
                 onSelect={handleCategorySelect}
                 onDelete={handleCategoryDelete}
                 allowAddNew={true}
+                onCategoryAdded={handleCategoryAdded} // Pass new callback
               />
             )}
             {isViewMode && !isEditingCategory && (
@@ -179,11 +200,12 @@ const HVOCategoryForm = ({
             )}
             {isViewMode && isEditingCategory && (
               <CategoryDropdown
-                options={localCategories}
+                options={categories} // Use categories directly from API
                 buttonText="Select New Category"
                 onSelect={handleCategorySelect}
                 onDelete={handleCategoryDelete}
                 allowAddNew={true}
+                onCategoryAdded={handleCategoryAdded} // Pass new callback
               />
             )}
           </div>
@@ -260,7 +282,7 @@ const HVOCategoryForm = ({
                 <CategoryDropdown
                   options={sheets}
                   buttonText="Select Ingestion Source"
-                  onSelect={setIngestionSource}
+                  onSelect={(value) => setIngestionSource(value)}
                   allowAddNew={false}
                 />
                 <button
