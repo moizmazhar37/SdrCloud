@@ -5,9 +5,12 @@ import Table from "src/Common/Table/Table";
 import AdduserImage from "src/images/AddUserImage.png";
 import Dropdown from "src/Common/Dropdown/Dropdown";
 import WarningModal from "src/Common/Modal/Modal";
+import ViewAdminModal from "src/Common/ViewAdminModal/ViewAdminModal";
 import styles from "./Accounts.module.scss";
 import Loader from "src/Common/Loader/Loader";
-import useFetchAccounts from "./hooks"; // Import the Axios hook
+import useFetchAccounts from "./hooks";
+import useGetSubAdminData from "./Hooks/useGetSubAdminData";
+import useUpdateSubAdmin from "./Hooks/useUpdateSubAdmin";
 
 const Accounts = () => {
   const { data, loading, error } = useFetchAccounts();
@@ -15,8 +18,23 @@ const Accounts = () => {
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [isCreateUserOpen, setCreateUserOpen] = useState(false);
   const [viewState, setViewState] = useState("create");
+  const [isAdminModalOpen, setAdminModalOpen] = useState(false);
+  const [adminModalMode, setAdminModalMode] = useState("view");
+  const [selectedUser, setSelectedUser] = useState(null);
 
-  const history = useHistory(); 
+  const {
+    data: userData,
+    isLoading: userDataLoading,
+    error: userDataError,
+  } = useGetSubAdminData(selectedUserId);
+
+  const {
+    updateSubAdmin,
+    loading: updateLoading,
+    error: updateError,
+  } = useUpdateSubAdmin();
+
+  const history = useHistory();
 
   const handleDelete = async () => {
     console.log(`Deleting user with ID: ${selectedUserId}`);
@@ -25,43 +43,52 @@ const Accounts = () => {
   const handleCreateUserSuccess = () => {
     setCreateUserOpen(false);
   };
-  
-  // on clicking Create New User, card route to /pp-create
+
   const handleCreateUserClick = () => {
     setCreateUserOpen(true);
     setViewState("create");
   };
-
-  // on clicking Edit User, card route to /pp-create
 
   const handleEditUserClick = () => {
     setCreateUserOpen(true);
     setViewState("edit");
   };
 
-  // on clicking View User, card route to /pp-create
   const handleViewUserClick = () => {
     setCreateUserOpen(true);
     setViewState("view");
   };
 
+  const openAdminModal = (user, mode) => {
+    setSelectedUserId(user.id);
+    setSelectedUser(user);
+    setAdminModalMode(mode);
+    setAdminModalOpen(true);
+  };
 
-  // have to work on isCreateUserOpen to route user to /pp-create depending on view or create state
-  // maybe it's useEffect hook
-  // or useNavigate hook from react-router-dom
-  // or useHistory hook from react-router-dom
+  useEffect(() => {
+    if (userData && isAdminModalOpen) {
+      setSelectedUser(userData);
+    }
+  }, [userData, isAdminModalOpen]);
 
+  const handleSaveAdminData = async (updatedData) => {
+    if (!selectedUserId) return;
 
+    try {
+      await updateSubAdmin(selectedUserId, updatedData);
+      console.log("Updated admin data:", updatedData);
+      setAdminModalOpen(false);
+    } catch (err) {
+      console.error("Error updating user:", err);
+    }
+  };
 
   useEffect(() => {
     if (isCreateUserOpen) {
-      // Logic to navigate to the create user page
-      // For example, using react-router-dom's useNavigate hook
-      // navigate("/pp-create");
       history.push("/pp-create", { state: { viewState } });
     }
-  }, [isCreateUserOpen, viewState]);
-
+  }, [isCreateUserOpen, viewState, history]);
 
   const headers = [
     { label: "Account Name", key: "user_name" },
@@ -75,18 +102,16 @@ const Accounts = () => {
   const dropdownOptions = [
     {
       label: "View",
-      onClick: (userId) => {
+      onClick: (userId, userData) => {
         setSelectedUserId(userId);
-        setViewState("edit");
-        setCreateUserOpen(true);
+        openAdminModal(userData, "view");
       },
     },
     {
       label: "Edit",
-      onClick: (userId) => {
+      onClick: (userId, userData) => {
         setSelectedUserId(userId);
-        setViewState("edit");
-        setCreateUserOpen(true);
+        openAdminModal(userData, "edit");
       },
     },
     {
@@ -105,7 +130,7 @@ const Accounts = () => {
       <Dropdown
         options={dropdownOptions.map((option) => ({
           ...option,
-          onClick: () => option.onClick(user.id),
+          onClick: () => option.onClick(user.id, user),
         }))}
       />
     ),
@@ -117,7 +142,6 @@ const Accounts = () => {
         image={AdduserImage}
         onClick={() => {
           setViewState("create");
-          // navigate to add
           setCreateUserOpen(true);
         }}
         text={"Create New Account"}
@@ -140,6 +164,19 @@ const Accounts = () => {
         }}
         onDelete={handleDelete}
         message="This action is irreversible. Are you sure you want to delete this user?"
+      />
+
+      <ViewAdminModal
+        isOpen={isAdminModalOpen}
+        onClose={() => {
+          setAdminModalOpen(false);
+          setSelectedUserId(null);
+        }}
+        userData={userData || selectedUser}
+        viewMode={adminModalMode}
+        onSave={handleSaveAdminData}
+        isLoading={userDataLoading || updateLoading}
+        error={userDataError || updateError}
       />
     </div>
   );
