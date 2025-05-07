@@ -76,7 +76,7 @@ const TopBar = ({ onMobileNavOpen }) => {
       setIsViewingAs(false);
       setViewingUser(null);
 
-      toast.info("Returned to Master account");
+      toast.info("Returned to Master account.");
       history.push("/dashboard"); // Redirect
     }
   };

@@ -81,12 +81,12 @@ const NewSheet = ()  => {
       }
       try {
         const data = await fetchnames(sheetId);
-        toast.success("Google Sheet names are fetched.");
+        toast.success("Google Sheet name fetched successfully.");
         setSheetData(data);
         setSheetOptions(data); // Array of sheet names
       } catch (err) {
         console.error("❌ Failed to fetch sheet tabs.");
-        toast.error("Failed to fetch sheet tabs.. Please try again.");
+        toast.error("Failed to fetch sheet tabs. Please try again.");
       }
     };
   

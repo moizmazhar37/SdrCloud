@@ -19,7 +19,7 @@ const useCreateHVO = () => {
 
       if (res?.status === 200) {
         console.log(res?.data, "creationstatus");
-        toast.success("HVO Created Successfully");
+        toast.success("HVO Created Successfully.");
       }
     } catch (error) {
       console.error(error, "error");

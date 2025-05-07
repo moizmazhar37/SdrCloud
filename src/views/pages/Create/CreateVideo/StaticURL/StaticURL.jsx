@@ -154,7 +154,7 @@ const StaticURL = ({
       try {
         const response = await createVideoSection(videoSectionData);
         if (response) {
-          toast.success("Static URL section saved successfully!");
+          toast.success("Static URL section saved successfully.");
           onSaveSuccess();
           onClose();
         }

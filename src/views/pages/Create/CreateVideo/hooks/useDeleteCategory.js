@@ -18,7 +18,7 @@ const useDeleteCategory = (refetch) => {
       });
 
       if (response?.status === 200) {
-        toast.success("Category Deleted Successfully");
+        toast.success("Category Deleted Successfully.");
         if (refetch) {
           refetch();
         }

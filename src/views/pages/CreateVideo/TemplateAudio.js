@@ -278,7 +278,7 @@ const TemplateAudio = (props) => {
         } else if (tempType === "HVO") {
           getHVOTemplateList();
         }
-        toast.success("Template Deleted Successfully");
+        toast.success("Template Deleted Successfully.");
       } else {
         setLoading(false);
       }

@@ -57,7 +57,7 @@ export const useSaveGoogleSheetTypes = () => {
             });
 
             if (response?.status === 200) {
-                toast.success("Sheet types saved successfully!");
+                toast.success("Sheet types saved successfully.");
                 return response.data; 
             }
         } catch (error) {

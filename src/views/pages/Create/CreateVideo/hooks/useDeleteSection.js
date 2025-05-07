@@ -18,7 +18,7 @@ const useDeleteSection = (reloadDataCallback) => {
       });
 
       if (res?.status === 200) {
-        toast.success("Element Deleted Successfully");
+        toast.success("Element Deleted Successfully.");
         if (reloadDataCallback) {
           reloadDataCallback();
         }

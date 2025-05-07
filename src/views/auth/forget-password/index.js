@@ -117,7 +117,7 @@ function Login(props) {
         setLoader(false);
         toast.warn(response?.data?.message);
       } else {
-        toast.error("Email is not registered with us.");
+        toast.error("Email is not registered with SDRCloud.ai.");
         setLoader(false);
       }
     } catch (error) {

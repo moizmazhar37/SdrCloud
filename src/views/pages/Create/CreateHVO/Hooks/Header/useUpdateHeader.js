@@ -30,7 +30,7 @@ const useUpdateHeader = (onSuccess) => {
       });
 
       if (response.status === 200) {
-        toast.success("Header section updated successfully");
+        toast.success("Header section updated successfully.");
         if (onSuccess) {
           onSuccess();
         }
