@@ -13,6 +13,7 @@ const CategoryDropdown = ({
   onDelete,
   allowAddNew = false,
   editable = true,
+  onCategoryAdded = () => {}, // Add this callback for when a category is added
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
@@ -36,12 +37,15 @@ const CategoryDropdown = ({
   }, [isExpanded, dropdownOptions.length]);
 
   const handleAddCategory = (newCategory) => {
-    setDropdownOptions((prevOptions) => [
-      ...prevOptions,
-      { label: newCategory, value: newCategory },
-    ]);
+    // Set local state
+    const tempNewCategory = { label: newCategory, value: newCategory };
+    setDropdownOptions((prevOptions) => [...prevOptions, tempNewCategory]);
     setSelectedOption(newCategory);
     setIsExpanded(false);
+
+    // Call the callback to inform parent component that a category was added
+    // This will trigger refetch in the parent component
+    onCategoryAdded(newCategory);
   };
 
   const handleOpenCategoryModal = () => {

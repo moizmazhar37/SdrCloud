@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import FullScreenLoader from "src/component/FullScreenLoader";
 import { useHistory } from "react-router-dom";
 
-const NewSheet = ()  => {
+const NewSheet = () => {
   const { data: users, loading: usersLoading } = useGetAllUsers();
   const { fetchSheet, loading: sheetLoading } = useFetchSheet();
   const { fetchnames, loading1, error1 } = useFetchSheetNames();
@@ -14,7 +14,7 @@ const NewSheet = ()  => {
   const [sheetName, setSheetName] = useState("");
   const [sheetOptions, setSheetOptions] = useState([]);
   const [sheetUrl, setSheetUrl] = useState("");
-  const [sheetId, setSheetId] = useState(""); 
+  const [sheetId, setSheetId] = useState("");
   const [sheetData, setSheetData] = useState(null); // Optional: store returned data
   const [sheetType, setSheetType] = useState("VIDEO");
   const [assignedUser, setAssignedUser] = useState("");
@@ -27,10 +27,7 @@ const NewSheet = ()  => {
       toast.error("Please fill out all fields.");
       return;
     }
-    setIsModalOpen(true);
-  };
 
-  const handleModalFetch = async () => {
     const payload = {
       rangeName: sheetName,
       sheetUrl: sheetUrl,
@@ -48,9 +45,38 @@ const NewSheet = ()  => {
       });
     } catch (error) {
       toast.error(error?.response?.data?.detail || "Error fetching sheet.");
+    }
+  };
+
+  const handleModalFetchNames = async () => {
+    if (!sheetId) {
+      console.warn("Sheet ID is missing or invalid.");
+      toast.error(
+        "Sheet ID is missing or invalid. Please check your Google Sheet link."
+      );
+      setIsModalOpen(false);
+      return;
+    }
+
+    try {
+      const data = await fetchnames(sheetId);
+      toast.success("Google Sheet names are fetched.");
+      setSheetData(data);
+      setSheetOptions(data); // Array of sheet names
+    } catch (err) {
+      console.error("❌ Failed to fetch sheet tabs.");
+      toast.error("Failed to fetch sheet tabs. Please try again.");
     } finally {
       setIsModalOpen(false);
     }
+  };
+
+  const handleOpenModal = () => {
+    if (!sheetUrl) {
+      toast.error("Please enter a Google Sheet URL.");
+      return;
+    }
+    setIsModalOpen(true);
   };
 
   const routes = [
@@ -71,25 +97,6 @@ const NewSheet = ()  => {
       setSheetId(""); // fallback if not a valid URL
     }
   };
-
-    // Called when user clicks Get names
-    const handleFetchnames = async () => {
-      if (!sheetId) {
-        console.warn("Sheet ID is missing or invalid.");
-        toast.error("Sheet ID is missing or invalid. Please check your Google Sheet link.");
-        return;
-      }
-      try {
-        const data = await fetchnames(sheetId);
-        toast.success("Google Sheet names are fetched.");
-        setSheetData(data);
-        setSheetOptions(data); // Array of sheet names
-      } catch (err) {
-        console.error("❌ Failed to fetch sheet tabs.");
-        toast.error("Failed to fetch sheet tabs.. Please try again.");
-      }
-    };
-  
 
   return (
     <>
@@ -139,7 +146,7 @@ const NewSheet = ()  => {
               value={sheetUrl}
               onChange={handleUrlChange}
             />
-            <button className={styles.button} onClick={handleFetchnames}>
+            <button className={styles.button} onClick={handleOpenModal}>
               Fetch names
             </button>
           </div>
@@ -148,26 +155,26 @@ const NewSheet = ()  => {
         <div className={styles.field}>
           <div className={styles.label}>Select Sheet</div>
           <div className={styles.inputWithButton}>
-          <div className={styles.select}>
-            <select
-              defaultValue=""
-              onChange={(e) => setSheetName(e.target.value)}
-              disabled={sheetOptions.length === 0}
-            >
-            <option value="" disabled>
-              Select a sheet name
-              </option>
-              {sheetOptions &&
-                sheetOptions.map((sheet, index) => (
-                  <option key={index} value={sheet}>
-                    {sheet}
-                  </option>
-                ))}
+            <div className={styles.select}>
+              <select
+                defaultValue=""
+                onChange={(e) => setSheetName(e.target.value)}
+                disabled={sheetOptions.length === 0}
+              >
+                <option value="" disabled>
+                  Select a sheet name
+                </option>
+                {sheetOptions &&
+                  sheetOptions.map((sheet, index) => (
+                    <option key={index} value={sheet}>
+                      {sheet}
+                    </option>
+                  ))}
               </select>
-          </div>
-          <button className={styles.button} onClick={handleFetch}>
-            Fetch
-          </button>
+            </div>
+            <button className={styles.button} onClick={handleFetch}>
+              Fetch
+            </button>
           </div>
         </div>
       </div>
@@ -179,7 +186,10 @@ const NewSheet = ()  => {
             <h2 className={styles.modalTitle}>Confirm Fetch</h2>
             <p className={styles.modalMessage}>
               Please make sure that you have shared the sheet with our service
-              account <span className={styles.highlight}>sa-for-gsp@sdr-cloud-441006.iam.gserviceaccount.com</span>{" "}
+              account{" "}
+              <span className={styles.highlight}>
+                sa-for-gsp@sdr-cloud-441006.iam.gserviceaccount.com
+              </span>{" "}
               with write access so we can connect with your sheet.
             </p>
             <div className={styles.checkboxWrapper}>
@@ -202,10 +212,10 @@ const NewSheet = ()  => {
               </button>
               <button
                 className={styles.button}
-                onClick={handleModalFetch}
+                onClick={handleModalFetchNames}
                 disabled={!isCheckboxChecked}
               >
-                Fetch
+                Fetch Names
               </button>
             </div>
           </div>

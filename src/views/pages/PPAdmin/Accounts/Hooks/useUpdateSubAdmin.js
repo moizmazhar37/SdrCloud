@@ -10,9 +10,24 @@ const useUpdateSubAdmin = () => {
     setLoading(true);
     setError(null);
     try {
+      // Retrieve token from local storage
+      const token = localStorage.getItem("token");
+
+      // Set headers with authorization token
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
+
+      // Include the user ID in the payload as subadmin_id
+      const payloadWithUserId = {
+        ...updatedData,
+        subadmin_id: userId,
+      };
+
       const response = await axios.patch(
         `${admin}/edit-subadmin/${userId}`,
-        updatedData
+        payloadWithUserId,
+        { headers }
       );
       return response.data;
     } catch (err) {

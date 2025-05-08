@@ -224,3 +224,48 @@ $success-color: #10b981;
     transform: translateY(0);
   }
 }
+
+/* Existing styles should remain above these new styles */
+
+/* Token input container styles */
+.tokenInputContainer {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.tokenInput {
+  flex: 1;
+  margin-right: 8px;
+}
+
+/* Increment button styles */
+.incrementButton {
+  height: 38px;
+  width: 38px;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 22px;
+  // font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.incrementButton:hover {
+  background-color: #357abd;
+}
+
+.incrementButton:active {
+  background-color: #2a67a3;
+  transform: scale(0.97);
+}
+
+.incrementButton:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.5);
+}
