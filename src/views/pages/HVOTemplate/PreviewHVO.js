@@ -190,6 +190,32 @@ const useStyles = makeStyles((theme) => ({
       },
     },
   },
+
+  floatingBannerContainer: {
+    width: "100%",
+    overflow: "hidden",
+    position: "relative",
+    padding: "30px 0",
+  },
+  floatingBannerScroller: {
+    display: "flex",
+    whiteSpace: "nowrap",
+    animation: "$floatRightToLeft 30s linear infinite",
+  },
+  floatingBannerItem: {
+    display: "inline-flex",
+    padding: "0 20px",
+    alignItems: "center",
+  },
+  "@keyframes floatRightToLeft": {
+    "0%": {
+      transform: "translateX(0)",
+    },
+    "100%": {
+      transform: "translateX(-50%)",
+    },
+  },
+
   LandingSlider: {
     "& .slick-track": {
       display: "flex",
@@ -516,57 +542,27 @@ function PreviewHVO(location) {
             )}
             {item?.sectionName === "HIGHLIGHT_BANNER" && (
               <>
-                {item?.values?.scroll == true ? (
-                  <Slider
-                    {...settings}
-                    style={{ background: item?.values?.banner_color }}
-                    className={classes.LandingSlider}
-                  >
+                <div
+                  className={classes.floatingBannerContainer}
+                  style={{ background: item?.values?.banner_color }}
+                >
+                  <div className={classes.floatingBannerScroller}>
                     {Array.from({ length: 18 }).map((_, index) => (
-                      <Box
-                        sx={{
-                          color: `${
-                            item?.values?.banner_text_color || "#FFF"
-                          } !important`,
+                      <div
+                        className={classes.floatingBannerItem}
+                        style={{
+                          color: `${item?.values?.banner_text_color || "#FFF"}`,
                           fontSize: `${
                             item?.values?.banner_text_size || "16"
-                          }px !important`,
-                          paddingTop: "30px",
-                          paddingBottom: "30px",
+                          }px`,
                         }}
-                        display="flex"
                         key={index}
                       >
                         {item?.values?.banner_text}
-                      </Box>
+                      </div>
                     ))}
-                  </Slider>
-                ) : (
-                  <Slider
-                    {...settings2}
-                    style={{ background: item?.values?.banner_color }}
-                    className={classes.LandingSlider}
-                  >
-                    {Array.from({ length: 18 }).map((_, index) => (
-                      <Box
-                        sx={{
-                          color: `${
-                            item?.values?.banner_text_color || "#FFF"
-                          } !important`,
-                          fontSize: `${
-                            item?.values?.banner_text_size || "16"
-                          }px !important`,
-                          paddingTop: "30px",
-                          paddingBottom: "30px",
-                        }}
-                        display="flex"
-                        key={index}
-                      >
-                        {item?.values?.banner_text}
-                      </Box>
-                    ))}
-                  </Slider>
-                )}
+                  </div>
+                </div>
 
                 {/* ADD VIDEO SECTION WITH CENTERED VIDEO */}
                 {pageData?.find(
