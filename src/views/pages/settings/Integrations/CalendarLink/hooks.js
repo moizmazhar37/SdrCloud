@@ -61,3 +61,21 @@ export const disconnectCalendlyAccount = async () => {
     });
     return res.data;
 }
+
+export const getMeetingPreference = async () => {
+    const token = localStorage.getItem("token");
+    const res = await axios.get(`${url}/tenant-meeting/preference`, {
+        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true,
+    });
+    return res.data;
+};
+
+export const updateMeetingPreference = async (preference) => {
+    const token = localStorage.getItem("token");
+    const res = await axios.patch(`${url}/tenant-meeting/preference`, preference, {
+        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true,
+    });
+    return res.data;
+};
