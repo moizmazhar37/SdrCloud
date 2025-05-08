@@ -399,6 +399,8 @@ function PreviewHVO(location) {
                       style={{ paddingRight: "30px" }}
                       className="d-flex column alignstart"
                     >
+                      {item?.values?.headline1 &&
+                        item?.values?.headline1 !== "None" && (
                       <Typography
                         style={{
                           color: item?.values?.headline1_color,
@@ -410,6 +412,10 @@ function PreviewHVO(location) {
                       >
                         {item?.values?.headline1}
                       </Typography>
+                        )}
+
+                        {item?.values?.headline2 &&
+                        item?.values?.headline2 !== "None" && (
                       <Typography
                         style={{
                           color: item?.values?.headline2_color,
@@ -423,6 +429,10 @@ function PreviewHVO(location) {
                       >
                         {item?.values?.headline2}
                       </Typography>
+                        )}
+
+                      {item?.values?.body_text &&
+                        item?.values?.body_text !== "" &&(
                       <Typography
                         style={{
                           color: item?.values?.body_text_color,
@@ -435,6 +445,7 @@ function PreviewHVO(location) {
                       >
                         {item?.values?.body_text}
                       </Typography>
+                        )}
                       <Box className="btn">
                         <Button
                           style={{
@@ -487,7 +498,6 @@ function PreviewHVO(location) {
                             onMouseLeave={handleMouseLeave}
                           >
                             {item?.values?.demo_button_text}
-                            <IoIosArrowForward />
                           </Button>
                         )}
                       </Box>
@@ -629,6 +639,8 @@ function PreviewHVO(location) {
                       xs={12}
                       className={`${classes.specificGridItem} d-flex column alignstart`}
                     >
+                      {item?.values?.headline1 &&
+                        item?.values?.headline1 !== "None" && (
                       <Typography
                         variant="h1"
                         style={{
@@ -638,6 +650,10 @@ function PreviewHVO(location) {
                       >
                         {item?.values?.headline1}
                       </Typography>
+                        )}
+
+                      {item?.values?.headline2 &&
+                        item?.values?.headline2 !== "None" && (
                       <Typography
                         variant="h2"
                         // data-aos="fade-up"
@@ -649,6 +665,8 @@ function PreviewHVO(location) {
                       >
                         {item?.values?.headline2}
                       </Typography>
+                      )}
+
                       {item?.values?.body_text &&
                         item?.values?.body_text !== "None" && (
                           <Typography
@@ -685,6 +703,9 @@ function PreviewHVO(location) {
                     }}
                   >
                     {" "}
+
+                    {item?.values?.banner_text &&
+                      item?.values?.banner_text !== "None" && (
                     <Typography
                       variant="h3"
                       style={{
@@ -699,6 +720,7 @@ function PreviewHVO(location) {
                     >
                       {item?.values?.banner_text}
                     </Typography>
+                      )}
                     <a
                       href={
                         item?.values?.static_url
@@ -764,7 +786,7 @@ function PreviewHVO(location) {
                               fontWeight: 700,
                               paddingTop:
                                 item?.values?.headline1 &&
-                                item?.values?.headline1 !== "None"
+                                item?.values?.headline1 !== ""
                                   ? "10px"
                                   : "0",
                             }}
