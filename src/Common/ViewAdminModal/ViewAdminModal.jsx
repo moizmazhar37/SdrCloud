@@ -18,11 +18,13 @@ const ViewAdminModal = ({
     tokens: 0,
   });
 
+  const [initialTokens, setInitialTokens] = useState(0);
   const [errors, setErrors] = useState({});
   const [mode, setMode] = useState(viewMode);
 
   useEffect(() => {
     if (userData) {
+      const tokens = userData.tokens || 0;
       setFormData({
         email: userData.email || "",
         first_name: userData.first_name || "",
@@ -30,8 +32,9 @@ const ViewAdminModal = ({
         linkedin_url: userData.linkedin_url || "",
         phone_no: userData.phone_no || "",
         title: userData.title || "",
-        tokens: userData.tokens || 0,
+        tokens: tokens,
       });
+      setInitialTokens(tokens);
     }
     setMode(viewMode);
   }, [userData, viewMode]);
@@ -40,9 +43,33 @@ const ViewAdminModal = ({
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    if (name === "tokens") {
+      // Prevent tokens from being set to less than initial value
+      const parsedValue = parseInt(value) || 0;
+      if (parsedValue >= initialTokens) {
+        setFormData({
+          ...formData,
+          [name]: parsedValue,
+        });
+      } else {
+        setFormData({
+          ...formData,
+          [name]: initialTokens,
+        });
+      }
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
+  };
+
+  const incrementTokens = () => {
     setFormData({
       ...formData,
-      [name]: name === "tokens" ? parseInt(value) || 0 : value,
+      tokens: formData.tokens + 1,
     });
   };
 
@@ -70,8 +97,8 @@ const ViewAdminModal = ({
       newErrors.linkedin_url = "Invalid LinkedIn URL";
     }
 
-    if (formData.tokens < 0) {
-      newErrors.tokens = "Tokens cannot be negative";
+    if (formData.tokens < initialTokens) {
+      newErrors.tokens = `Tokens cannot be less than the current amount (${initialTokens})`;
     }
 
     setErrors(newErrors);
@@ -92,6 +119,38 @@ const ViewAdminModal = ({
   const renderField = (label, name, type = "text", placeholder = "") => {
     const isEditable = mode === "edit" && name !== "email";
     const fieldValue = formData[name];
+
+    // Special case for tokens field
+    if (name === "tokens" && isEditable) {
+      return (
+        <div className={styles.formGroup}>
+          <label className={styles.label}>{label}</label>
+          <div className={styles.tokenInputContainer}>
+            <input
+              type="number"
+              name={name}
+              value={fieldValue}
+              onChange={handleChange}
+              className={`${styles.input} ${styles.tokenInput} ${
+                errors[name] ? styles.inputError : ""
+              }`}
+              placeholder={placeholder}
+            />
+            <button
+              type="button"
+              className={styles.incrementButton}
+              onClick={incrementTokens}
+              aria-label="Increment tokens"
+            >
+              +
+            </button>
+          </div>
+          {errors[name] && (
+            <div className={styles.errorText}>{errors[name]}</div>
+          )}
+        </div>
+      );
+    }
 
     return (
       <div className={styles.formGroup}>

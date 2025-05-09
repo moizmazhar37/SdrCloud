@@ -76,6 +76,7 @@ const Accounts = () => {
     if (!selectedUserId) return;
 
     try {
+      // The selectedUserId will be included in the payload by the hook
       await updateSubAdmin(selectedUserId, updatedData);
       console.log("Updated admin data:", updatedData);
       setAdminModalOpen(false);
