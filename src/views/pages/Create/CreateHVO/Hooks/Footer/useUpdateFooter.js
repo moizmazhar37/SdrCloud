@@ -14,6 +14,7 @@ const useUpdateFooter = () => {
     const payload = {
       hvoTemplateId: data.templateId || null,
       sequence: data.sequence || null,
+      footer_links: data.selectedFooterLinks || null,
       footerBackgroundColor: data.footerBackgroundColor || null,
       footerTextHeadingColor: data.footerTextHeadingColor || null,
       footerHeadingSize: data.footerHeadingSize

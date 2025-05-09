@@ -190,6 +190,32 @@ const useStyles = makeStyles((theme) => ({
       },
     },
   },
+
+  floatingBannerContainer: {
+    width: "100%",
+    overflow: "hidden",
+    position: "relative",
+    padding: "30px 0",
+  },
+  floatingBannerScroller: {
+    display: "flex",
+    whiteSpace: "nowrap",
+    animation: "$floatRightToLeft 30s linear infinite",
+  },
+  floatingBannerItem: {
+    display: "inline-flex",
+    padding: "0 20px",
+    alignItems: "center",
+  },
+  "@keyframes floatRightToLeft": {
+    "0%": {
+      transform: "translateX(0)",
+    },
+    "100%": {
+      transform: "translateX(-50%)",
+    },
+  },
+
   LandingSlider: {
     "& .slick-track": {
       display: "flex",
@@ -235,6 +261,7 @@ function PreviewHVO(location) {
   const classes = useStyles();
   const [pageData, setPageData] = useState([]);
   const [filteredFooterSection, setFilteredFooterSection] = useState();
+  const [hoveredButtonIndex, setHoveredButtonIndex] = useState(null);
   console.log("filteredFooterSection: ", filteredFooterSection);
   console.log(useParams, "useParams");
   console.log(pageData, "pageData");
@@ -471,12 +498,8 @@ function PreviewHVO(location) {
                           <Button
                             className="demobtn"
                             style={{
-                              backgroundColor: hovered
-                                ? item?.values?.demo_button_text_color
-                                : item?.values?.demo_button_color,
-                              color: hovered
-                                ? item?.values?.demo_button_color
-                                : item?.values?.demo_button_text_color,
+                              backgroundColor: item?.values?.demo_button_color,
+                              color: item?.values?.demo_button_text_color,
                               textTransform: "none",
                               fontSize: "14px",
                               border: `1px solid ${item?.values?.demo_button_color}`,
@@ -526,57 +549,27 @@ function PreviewHVO(location) {
             )}
             {item?.sectionName === "HIGHLIGHT_BANNER" && (
               <>
-                {item?.values?.scroll == true ? (
-                  <Slider
-                    {...settings}
-                    style={{ background: item?.values?.banner_color }}
-                    className={classes.LandingSlider}
-                  >
+                <div
+                  className={classes.floatingBannerContainer}
+                  style={{ background: item?.values?.banner_color }}
+                >
+                  <div className={classes.floatingBannerScroller}>
                     {Array.from({ length: 18 }).map((_, index) => (
-                      <Box
-                        sx={{
-                          color: `${
-                            item?.values?.banner_text_color || "#FFF"
-                          } !important`,
+                      <div
+                        className={classes.floatingBannerItem}
+                        style={{
+                          color: `${item?.values?.banner_text_color || "#FFF"}`,
                           fontSize: `${
                             item?.values?.banner_text_size || "16"
-                          }px !important`,
-                          paddingTop: "30px",
-                          paddingBottom: "30px",
+                          }px`,
                         }}
-                        display="flex"
                         key={index}
                       >
                         {item?.values?.banner_text}
-                      </Box>
+                      </div>
                     ))}
-                  </Slider>
-                ) : (
-                  <Slider
-                    {...settings2}
-                    style={{ background: item?.values?.banner_color }}
-                    className={classes.LandingSlider}
-                  >
-                    {Array.from({ length: 18 }).map((_, index) => (
-                      <Box
-                        sx={{
-                          color: `${
-                            item?.values?.banner_text_color || "#FFF"
-                          } !important`,
-                          fontSize: `${
-                            item?.values?.banner_text_size || "16"
-                          }px !important`,
-                          paddingTop: "30px",
-                          paddingBottom: "30px",
-                        }}
-                        display="flex"
-                        key={index}
-                      >
-                        {item?.values?.banner_text}
-                      </Box>
-                    ))}
-                  </Slider>
-                )}
+                  </div>
+                </div>
 
                 {/* ADD VIDEO SECTION WITH CENTERED VIDEO */}
                 {pageData?.find(
@@ -870,13 +863,16 @@ function PreviewHVO(location) {
                           Sales: {item?.values?.footerLinks?.footerContact}
                         </span>
 
-                        <Box className="iconsContainer">
+                        <Box
+                          className="iconsContainer"
+                          style={{ marginBottom: "20px" }}
+                        >
                           {" "}
                           <a
                             target="_blank"
                             rel="noopener noreferrer"
                             href={item?.values?.facebook_link || "#"}
-                            aria-label="Instagram"
+                            aria-label="Facebook"
                           >
                             <FaFacebookF
                               style={{
@@ -891,7 +887,7 @@ function PreviewHVO(location) {
                             target="_blank"
                             rel="noopener noreferrer"
                             href={item?.values?.linkedin_link || "#"}
-                            aria-label="Instagram"
+                            aria-label="LinkedIn"
                           >
                             <FaLinkedinIn
                               style={{
@@ -905,9 +901,7 @@ function PreviewHVO(location) {
                           <a
                             target="_blank"
                             rel="noopener noreferrer"
-                            href={
-                              item?.values?.footerLinks?.instagram_link || "#"
-                            }
+                            href={item?.values?.instagram_link || "#"}
                             aria-label="Instagram"
                           >
                             <FaInstagram
@@ -919,6 +913,42 @@ function PreviewHVO(location) {
                               className="icons"
                             />
                           </a>
+                        </Box>
+
+                        {/* Footer links as buttons in a single row */}
+                        <Box
+                          style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            flexWrap: "wrap",
+                            gap: "10px",
+                          }}
+                        >
+                          {item?.values?.footer_links?.map((link, index) => (
+                            <Button
+                              key={index}
+                              variant="contained"
+                              href={link.url}
+                              target="_blank"
+                              style={{
+                                backgroundColor:
+                                  hoveredButtonIndex === index
+                                    ? item?.values?.footer_text_hover_color
+                                    : item?.values
+                                        ?.social_icon_background_color,
+                                color: item?.values?.social_icon_color,
+                                fontSize: `${item?.values?.footer_text_size}px`,
+                                textTransform: "none",
+                                padding: "6px 12px",
+                                borderRadius: "4px",
+                                minWidth: "auto",
+                              }}
+                              onMouseEnter={() => setHoveredButtonIndex(index)}
+                              onMouseLeave={() => setHoveredButtonIndex(null)}
+                            >
+                              {link.name}
+                            </Button>
+                          ))}
                         </Box>
                       </Grid>
                       <Grid item sm={4} xs={12}>
@@ -935,6 +965,7 @@ function PreviewHVO(location) {
                           style={{ display: "flex", flexDirection: "column" }}
                           marginTop={"26px"}
                         >
+                          {/* Legacy code for footerlinks */}
                           {item?.values?.footerLinks?.footerlinks?.map(
                             (item1, index) => (
                               <span
