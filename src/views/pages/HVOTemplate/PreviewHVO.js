@@ -261,6 +261,7 @@ function PreviewHVO(location) {
   const classes = useStyles();
   const [pageData, setPageData] = useState([]);
   const [filteredFooterSection, setFilteredFooterSection] = useState();
+  const [hoveredButtonIndex, setHoveredButtonIndex] = useState(null);
   console.log("filteredFooterSection: ", filteredFooterSection);
   console.log(useParams, "useParams");
   console.log(pageData, "pageData");
@@ -840,13 +841,16 @@ function PreviewHVO(location) {
                           Sales: {item?.values?.footerLinks?.footerContact}
                         </span>
 
-                        <Box className="iconsContainer">
+                        <Box
+                          className="iconsContainer"
+                          style={{ marginBottom: "20px" }}
+                        >
                           {" "}
                           <a
                             target="_blank"
                             rel="noopener noreferrer"
                             href={item?.values?.facebook_link || "#"}
-                            aria-label="Instagram"
+                            aria-label="Facebook"
                           >
                             <FaFacebookF
                               style={{
@@ -861,7 +865,7 @@ function PreviewHVO(location) {
                             target="_blank"
                             rel="noopener noreferrer"
                             href={item?.values?.linkedin_link || "#"}
-                            aria-label="Instagram"
+                            aria-label="LinkedIn"
                           >
                             <FaLinkedinIn
                               style={{
@@ -875,9 +879,7 @@ function PreviewHVO(location) {
                           <a
                             target="_blank"
                             rel="noopener noreferrer"
-                            href={
-                              item?.values?.footerLinks?.instagram_link || "#"
-                            }
+                            href={item?.values?.instagram_link || "#"}
                             aria-label="Instagram"
                           >
                             <FaInstagram
@@ -889,6 +891,42 @@ function PreviewHVO(location) {
                               className="icons"
                             />
                           </a>
+                        </Box>
+
+                        {/* Footer links as buttons in a single row */}
+                        <Box
+                          style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            flexWrap: "wrap",
+                            gap: "10px",
+                          }}
+                        >
+                          {item?.values?.footer_links?.map((link, index) => (
+                            <Button
+                              key={index}
+                              variant="contained"
+                              href={link.url}
+                              target="_blank"
+                              style={{
+                                backgroundColor:
+                                  hoveredButtonIndex === index
+                                    ? item?.values?.footer_text_hover_color
+                                    : item?.values
+                                        ?.social_icon_background_color,
+                                color: item?.values?.social_icon_color,
+                                fontSize: `${item?.values?.footer_text_size}px`,
+                                textTransform: "none",
+                                padding: "6px 12px",
+                                borderRadius: "4px",
+                                minWidth: "auto",
+                              }}
+                              onMouseEnter={() => setHoveredButtonIndex(index)}
+                              onMouseLeave={() => setHoveredButtonIndex(null)}
+                            >
+                              {link.name}
+                            </Button>
+                          ))}
                         </Box>
                       </Grid>
                       <Grid item sm={4} xs={12}>
@@ -905,6 +943,7 @@ function PreviewHVO(location) {
                           style={{ display: "flex", flexDirection: "column" }}
                           marginTop={"26px"}
                         >
+                          {/* Legacy code for footerlinks */}
                           {item?.values?.footerLinks?.footerlinks?.map(
                             (item1, index) => (
                               <span
