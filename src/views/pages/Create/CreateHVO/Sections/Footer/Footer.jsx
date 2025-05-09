@@ -44,6 +44,8 @@ const Footer = ({
     }
   };
 
+  console.log("Data====", initialData);
+
   const handleClose = () => {
     onClose();
   };
@@ -60,27 +62,24 @@ const Footer = ({
 
   useEffect(() => {
     if (initialData) {
+      // Properly map API response fields to state
       setFooterBgColor(initialData.footer_background_color || "");
       setFooterHeadingColor(initialData.footer_text_heading_color || "");
-      setHeadingSize(initialData.headingSize?.toString() || "0");
-      setFooterTextColor(initialData.footer_text_heading_color || "");
-      setFooterHoverColor(
-        initialData.footer_text_hover_color?.toString() || ""
-      );
-      setIconBgColor(initialData.iconBgColor || "");
-      setIconColor(initialData.iconColor || "");
+      setHeadingSize(initialData.footer_heading_size?.toString() || "0"); // Fixed this line
+      setFooterTextColor(initialData.footer_text_color || ""); // Fixed this line
+      setFooterHoverColor(initialData.footer_text_hover_color || "");
+      setTextSize(initialData.footer_text_size?.toString() || "0");
+      setIconBgColor(initialData.social_icon_background_color || "");
+      setIconColor(initialData.social_icon_color || "");
       setBenchmarkColor(initialData.benchmark_color || "");
       setBenchmarkSize(initialData.benchmar_size?.toString() || "0");
       setInstagramLink(initialData.instagram_link || "");
       setFacebookLink(initialData.facebook_link || "");
       setLinkedInLink(initialData.linkedin_link || "");
-      setTextSize(initialData.footer_text_size || "");
-      setIconBgColor(initialData.social_icon_background_color || "");
-      setIconColor(initialData.social_icon_color || "");
 
       // Initialize selected footer links if available in initialData
-      if (initialData.selected_footer_links) {
-        setSelectedFooterLinks(initialData.selected_footer_links);
+      if (initialData.footer_links && Array.isArray(initialData.footer_links)) {
+        setSelectedFooterLinks(initialData.footer_links);
       }
     }
   }, [initialData]);
@@ -89,6 +88,7 @@ const Footer = ({
     const footerData = {
       templateId,
       sequence,
+      selectedFooterLinks: selectedFooterLinks,
       footerBackgroundColor: footerBgColor,
       footerTextHeadingColor: footerHeadingColor,
       footerHeadingSize: headingSize,
@@ -102,7 +102,6 @@ const Footer = ({
       instagramLink: instagramLink,
       facebookLink: facebookLink,
       linkedinLink: linkedInLink,
-      selectedFooterLinks: selectedFooterLinks,
     };
 
     try {

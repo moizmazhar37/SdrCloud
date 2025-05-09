@@ -510,7 +510,6 @@ function PreviewHVO(location) {
                             onMouseLeave={handleMouseLeave}
                           >
                             {item?.values?.demo_button_text}
-                            <IoIosArrowForward />
                           </Button>
                         )}
                       </Box>
