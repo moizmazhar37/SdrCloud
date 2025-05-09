@@ -5,7 +5,9 @@ import {
   initiateGoogleOAuth,
   disconnectGoogleAccount,
   connectCalendlyAccount,
-  disconnectCalendlyAccount
+  disconnectCalendlyAccount,
+  getMeetingPreference,
+  updateMeetingPreference,
 } from "./hooks";
 import Loader from "src/Common/Loader/Loader";
 import { toast } from "react-toastify";
@@ -20,8 +22,19 @@ const MeetingIntegrationsConnect = () => {
     google: false,
     calendly: false,
   });
+  const [preference, setPreference] = useState({ meet_link: "" });
+  const [updatingPref, setUpdatingPref] = useState(false);
 
   const token = localStorage.getItem("token");
+
+  const fetchPreferences = async () => {
+    try {
+      const prefData = await getMeetingPreference();
+      setPreference(prefData);
+    } catch (err) {
+      console.error("Failed to fetch preference", err);
+    }
+  };
 
   const fetchIntegrations = async () => {
     setLoading(true);
@@ -39,6 +52,7 @@ const MeetingIntegrationsConnect = () => {
 
   useEffect(() => {
     fetchIntegrations();
+    fetchPreferences();
   }, [token]);
 
   const handleGoogleConnect = async () => {
@@ -88,11 +102,11 @@ const MeetingIntegrationsConnect = () => {
     try {
       setLoadingState({ ...loadingState, calendly: true });
       const response = await disconnectCalendlyAccount(token);
-      toast.success(response.message || "Calendly disconnected successfully.");
+      toast.success(response.message || "Calendar disconnected successfully.");
       fetchIntegrations();
     } catch (error) {
       console.error("Calendly disconnection failed:", error);
-      toast.error(error.message || "Failed to disconnect Calendly.");
+      toast.error(error.message || "Failed to disconnect Calendar.");
     } finally {
       setLoadingState({ ...loadingState, calendly: false });
     }
@@ -118,9 +132,19 @@ const MeetingIntegrationsConnect = () => {
           </button>
         </div>
       ) : (
+        <div>
+        {!integrations.calendly.connected && (
+          <div className={`${styles.banner} ${styles.warning}`}>
+            Configure your Calendly integration to allow us to show stats from calendly.
+            Get your Auth Token from{" "}
+            <a href="https://calendly.com/integrations/api_webhooks" target="_blank" rel="noopener noreferrer">
+              Calendly API Integration Page
+            </a> and paste it here and click the connect button.
+          </div>
+        )}
         <div className={styles.cardsWrapper}>
           {/* Google Integration Card */}
-          {/* <div className={styles.card}>
+          <div className={styles.card}>
             <h3 className={styles.cardTitle}>Google Calendar</h3>
             <p className={styles.cardDescription}>
               Sync meetings directly with your Google Calendar.
@@ -147,79 +171,103 @@ const MeetingIntegrationsConnect = () => {
                 {loadingState.google ? "Connecting..." : "Connect Google Calendar"}
               </button>
             )}
-          </div> */}
-
-<div className={styles.integrationSection}>
-          {!integrations.calendly.connected && (
-          <div className={`${styles.banner} ${styles.warning}`}>
-            Configure your Calendly integration to allow us to show stats from calendly.
-            Get your Auth Token from{" "}
-            <a href="https://calendly.com/integrations/api_webhooks" target="_blank" rel="noopener noreferrer">
-              Calendly API Integration Page
-            </a> and paste it here and click the connect button.
           </div>
-          )}
-          {/* Calendly Integration Card */}
-          <div className={styles.card}>
-            <h3 className={styles.cardTitle}>Calendly</h3>
-            <p className={styles.cardDescription}>
-              Connect your Calendly to automate booking workflows.
-            </p>
-            {integrations.calendly.connected ? (
-              <>
-                <div className={styles.connectedInfo}>
-                  Connected as{" "}
-                  <a
-                    href={integrations.calendly.user_link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={styles.link}
+
+          <div className={styles.integrationSection}>
+            {/* Calendly Integration Card */}
+            <div className={styles.card}>
+              <h3 className={styles.cardTitle}>Calendly</h3>
+              <p className={styles.cardDescription}>
+                Connect your Calendly to automate booking workflows.
+              </p>
+              {integrations.calendly.connected ? (
+                <>
+                  <div className={styles.connectedInfo}>
+                    Connected as{" "}
+                    <a
+                      href={integrations.calendly.user_link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.link}
+                    >
+                      {integrations.calendly.user_link}
+                    </a>
+                  </div>
+                  <button
+                    className={styles.disconnectBtn}
+                    onClick={handleCalendlyDisconnect}
+                    disabled={loadingState.calendly}
                   >
-                    {integrations.calendly.user_link}
-                  </a>
+                    {loadingState.calendly ? "Disconnecting..." : "Disconnect"}
+                  </button>
+                </>
+              ) : showCalendlyInput ? (
+                <div className={styles.inputWrapper}>
+                  <input
+                    type="password"
+                    placeholder="Enter your Calendly Access Token"
+                    value={calendlyToken}
+                    onChange={(e) => {
+                      const newValue = e.target.value;
+                      if (newValue.length <= 5000) {
+                        setCalendlyToken(newValue);
+                      }
+                    }}
+                    maxLength={5000}
+                    className={styles.tokenInput}
+                  />
+                  <button
+                    className={styles.connectBtn}
+                    onClick={handleCalendlyConnect}
+                    disabled={loadingState.calendly}
+                  >
+                    {loadingState.calendly ? "Connecting..." : "Connect Calendly"}
+                  </button>
                 </div>
+              ) : (
                 <button
-                  className={styles.disconnectBtn}
-                  onClick={handleCalendlyDisconnect}
-                  disabled={loadingState.calendly}
-                >
-                  {loadingState.calendly ? "Disconnecting..." : "Disconnect"}
-                </button>
-              </>
-            ) : showCalendlyInput ? (
-              <div className={styles.inputWrapper}>
-                <input
-                  type="password"
-                  placeholder="Enter your Calendly Access Token"
-                  value={calendlyToken}
-                  onChange={(e) => {
-                    const newValue = e.target.value;
-                    if (newValue.length <= 5000) {
-                      setCalendlyToken(newValue);
-                    }
-                  }}
-                  maxLength={5000}
-                  className={styles.tokenInput}
-                />
-                <button
+                  onClick={() => setShowCalendlyInput(true)}
                   className={styles.connectBtn}
-                  onClick={handleCalendlyConnect}
                   disabled={loadingState.calendly}
                 >
                   {loadingState.calendly ? "Connecting..." : "Connect Calendly"}
                 </button>
-              </div>
-            ) : (
-              <button
-                onClick={() => setShowCalendlyInput(true)}
-                className={styles.connectBtn}
-                disabled={loadingState.calendly}
-              >
-                {loadingState.calendly ? "Connecting..." : "Connect Calendly"}
-              </button>
-            )}
+              )}
+            </div>
           </div>
-        </div>
+          <div className={styles.preferenceWrapper}>
+            <h3 className={styles.cardTitle}>Preferred Integration</h3>
+            <p className={styles.cardDescription}>Choose which platform to use by default for meetings.</p>
+            <select
+              className={styles.selectInput}
+              value={preference.meet_link || ""}
+              onChange={async (e) => {
+                const newPref = e.target.value;
+                setUpdatingPref(true);
+                try {
+                  await updateMeetingPreference({ meet_link: newPref });
+                  setPreference({ meet_link: newPref });
+                  toast.success("Preference updated!");
+                } catch (err) {
+                  toast.error("Failed to update preference");
+                } finally {
+                  setUpdatingPref(false);
+                }
+              }}
+              disabled={updatingPref}
+            >
+              <option disabled value="">Select an option</option>
+              {integrations.google.connected && <option value="google">Google Calendar</option>}
+              {integrations.calendly.connected && <option value="calendly">Calendly</option>}
+            </select>
+            {preference.meet_link && (
+              <p className={styles.preferenceNote}>
+                ✅ <strong>{preference.meet_link === "google" ? "Google Calendar" : "Calendly"}</strong> is currently selected as your default meeting platform.
+              </p>
+            )}
+
+          </div>
+      </div>
         </div>
       )}
 

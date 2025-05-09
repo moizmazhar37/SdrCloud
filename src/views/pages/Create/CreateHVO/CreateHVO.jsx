@@ -52,8 +52,6 @@ const CreateHVO = () => {
   const [dataFetchTrigger, setDataFetchTrigger] = useState(0);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
 
-
-
   const { data: sheetData, loading: sheetsLoading } = useGetSheets("HVO");
   // Now we'll refetch when dataFetchTrigger changes
   const { data, loading, error, refetch } = useGetSheetData(
@@ -134,11 +132,17 @@ const CreateHVO = () => {
   };
 
   const handleEdit = (section) => {
-    console.log("Selected==,", section.section_name);
     setIsEditMode(true);
     setEditingSection(section);
     setSectionNum(section.sequence);
     setSelectedSection(section.section_name);
+    //scroll to form
+    setTimeout(() => {
+      const formElement = document.querySelector(`.${styles.leftComponent}`);
+      if (formElement) {
+        formElement.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 100);
   };
 
   const handleSectionTypeChange = (selectedValue, sectionNumber) => {
@@ -167,8 +171,6 @@ const CreateHVO = () => {
       toast.error("Please create a template first");
     }
   };
-  
-  
 
   const isEditable = Boolean(isViewMode || isSheetConnected);
 
@@ -339,7 +341,6 @@ const CreateHVO = () => {
         <ConfirmationModal
           isOpen={isConfirmationOpen}
           showInputField={false}
-
           onClose={() => setIsConfirmationOpen(false)}
           title="Confirm HVO Creation"
           confirmationText="Are you sure you want to create a HVO with this template? This also means that the emails will be sent!"

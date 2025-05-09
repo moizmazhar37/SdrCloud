@@ -78,7 +78,7 @@ const useSaveAlerts = () => {
       });
 
       setSuccess(true);
-      toast.success("Alerts saved successfully");
+      toast.success("Alerts saved successfully.");
       return response.data;
     } catch (err) {
       const errorMessage =

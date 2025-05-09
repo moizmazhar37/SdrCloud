@@ -155,11 +155,11 @@ const getNavSections = (userType) => {
           //     },
           //   ],
           // },
-          {
-            title: "Create",
-            icon: "images/template/play.svg",
-            href: "/CreateTemplate",
-          },
+          // {
+          //   title: "Create",
+          //   icon: "images/template/play.svg",
+          //   href: "/CreateTemplate",
+          // },
           {
             title: "Prospects",
             icon: "images/template/clipboard-text.svg",

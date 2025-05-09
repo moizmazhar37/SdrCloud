@@ -22,7 +22,7 @@ const useDeleteHvoSection = (onDeleteSuccess) => {
       });
 
       if (response?.status === 200) {
-        toast.success("Section Deleted Successfully");
+        toast.success("Section Deleted Successfully.");
         if (onDeleteSuccess) {
           onDeleteSuccess();
         }

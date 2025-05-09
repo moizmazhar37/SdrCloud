@@ -20,7 +20,7 @@ export const useConnectSheet = () => {
         data: payload,
       });
 
-      toast.success(response?.data?.message || "Sheet connected successfully!");
+      toast.success(response?.data?.message || "Sheet connected successfully.");
     } catch (err) {
       console.error("Error connecting sheet:", err);
 

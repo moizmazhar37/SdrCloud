@@ -22,6 +22,7 @@ const useSaveFooter = () => {
         data: {
           hvoTemplateId: data.templateId || "",
           sequence: data.sequence || 0,
+          footer_links: data.selectedFooterLinks || [],
           footerBackgroundColor: data.footerBackgroundColor || "",
           footerTextHeadingColor: data.footerTextHeadingColor || "",
           footerHeadingSize: parseInt(data.footerHeadingSize) || 0,
@@ -34,11 +35,11 @@ const useSaveFooter = () => {
           benchmarkSize: parseInt(data.benchmarkSize) || 0,
           instagramLink: data.instagramLink || "",
           facebookLink: data.facebookLink || "",
-          linkedinLink: data.linkedinLink || ""
-        }
+          linkedinLink: data.linkedinLink || "",
+        },
       });
 
-      toast.success("Footer saved successfully!");
+      toast.success("Footer saved successfully.");
       return response.data;
     } catch (err) {
       setError(err.message || "Failed to save footer");

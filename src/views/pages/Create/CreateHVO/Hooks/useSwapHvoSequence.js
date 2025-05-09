@@ -15,7 +15,7 @@ const useSwapHvoSequence = () => {
     try {
       const token = localStorage.getItem("token");
       if (!token) {
-        toast.error("Something went wrong.");
+        toast.error("Something went wrong on our end. Please try again.");
       }
 
       if (!Array.isArray(sections) || sections.length === 0) {
@@ -34,7 +34,7 @@ const useSwapHvoSequence = () => {
       );
 
       setData(response.data);
-      toast.success("Sequence swapped successfully!");
+      toast.success("Sequence swapped successfully.");
       return response.data;
     } catch (err) {
       const errorMessage =
