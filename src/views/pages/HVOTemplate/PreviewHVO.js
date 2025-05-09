@@ -426,8 +426,6 @@ function PreviewHVO(location) {
                       style={{ paddingRight: "30px" }}
                       className="d-flex column alignstart"
                     >
-                      {item?.values?.headline1 &&
-                        item?.values?.headline1 !== "None" && (
                       <Typography
                         style={{
                           color: item?.values?.headline1_color,
@@ -439,10 +437,6 @@ function PreviewHVO(location) {
                       >
                         {item?.values?.headline1}
                       </Typography>
-                        )}
-
-                        {item?.values?.headline2 &&
-                        item?.values?.headline2 !== "None" && (
                       <Typography
                         style={{
                           color: item?.values?.headline2_color,
@@ -456,10 +450,6 @@ function PreviewHVO(location) {
                       >
                         {item?.values?.headline2}
                       </Typography>
-                        )}
-
-                      {item?.values?.body_text &&
-                        item?.values?.body_text !== "" &&(
                       <Typography
                         style={{
                           color: item?.values?.body_text_color,
@@ -472,7 +462,6 @@ function PreviewHVO(location) {
                       >
                         {item?.values?.body_text}
                       </Typography>
-                        )}
                       <Box className="btn">
                         <Button
                           style={{
@@ -521,6 +510,7 @@ function PreviewHVO(location) {
                             onMouseLeave={handleMouseLeave}
                           >
                             {item?.values?.demo_button_text}
+                            <IoIosArrowForward />
                           </Button>
                         )}
                       </Box>
@@ -632,8 +622,6 @@ function PreviewHVO(location) {
                       xs={12}
                       className={`${classes.specificGridItem} d-flex column alignstart`}
                     >
-                      {item?.values?.headline1 &&
-                        item?.values?.headline1 !== "None" && (
                       <Typography
                         variant="h1"
                         style={{
@@ -643,10 +631,6 @@ function PreviewHVO(location) {
                       >
                         {item?.values?.headline1}
                       </Typography>
-                        )}
-
-                      {item?.values?.headline2 &&
-                        item?.values?.headline2 !== "None" && (
                       <Typography
                         variant="h2"
                         // data-aos="fade-up"
@@ -658,8 +642,6 @@ function PreviewHVO(location) {
                       >
                         {item?.values?.headline2}
                       </Typography>
-                      )}
-
                       {item?.values?.body_text &&
                         item?.values?.body_text !== "None" && (
                           <Typography
@@ -696,9 +678,6 @@ function PreviewHVO(location) {
                     }}
                   >
                     {" "}
-
-                    {item?.values?.banner_text &&
-                      item?.values?.banner_text !== "None" && (
                     <Typography
                       variant="h3"
                       style={{
@@ -713,7 +692,6 @@ function PreviewHVO(location) {
                     >
                       {item?.values?.banner_text}
                     </Typography>
-                      )}
                     <a
                       href={
                         item?.values?.static_url
@@ -779,7 +757,7 @@ function PreviewHVO(location) {
                               fontWeight: 700,
                               paddingTop:
                                 item?.values?.headline1 &&
-                                item?.values?.headline1 !== ""
+                                item?.values?.headline1 !== "None"
                                   ? "10px"
                                   : "0",
                             }}
@@ -819,11 +797,13 @@ function PreviewHVO(location) {
                 </Container>
               </>
             )}
+
             {item?.sectionName === "FOOTER" && (
               <>
                 <Box
                   style={{
-                    backgroundColor: item?.values?.footer_background_color,
+                    backgroundColor:
+                      item?.values?.footer_background_color || "#ffffff",
                     padding: "10px 0px",
                   }}
                 >
@@ -840,8 +820,12 @@ function PreviewHVO(location) {
                         <Typography
                           variant="h2"
                           style={{
-                            fontSize: `${item?.values?.footer_heading_size}px`,
-                            color: item?.values?.footer_text_heading_color,
+                            fontSize: `${
+                              item?.values?.footer_heading_size || "18"
+                            }px`,
+                            color:
+                              item?.values?.footer_text_heading_color ||
+                              "#000000",
                             marginBottom: "30px",
                           }}
                         >
@@ -851,16 +835,20 @@ function PreviewHVO(location) {
                           variant="body1"
                           style={{
                             color: hoveredContact
-                              ? item?.values?.footer_text_hover_color
-                              : item?.values?.footer_text_color,
+                              ? item?.values?.footer_text_hover_color ||
+                                "#666666"
+                              : item?.values?.footer_text_color || "#333333",
                             marginTop: "32px",
-                            fontSize: `${item?.values?.footer_text_size}px`,
+                            fontSize: `${
+                              item?.values?.footer_text_size || "14"
+                            }px`,
                             cursor: "default",
                           }}
                           onMouseEnter={handleMouseEnterContact}
                           onMouseLeave={handleMouseLeaveContact}
                         >
-                          Sales: {item?.values?.footerLinks?.footerContact}
+                          Sales:{" "}
+                          {item?.values?.footerLinks?.footerContact || ""}
                         </span>
 
                         <Box
@@ -868,51 +856,69 @@ function PreviewHVO(location) {
                           style={{ marginBottom: "20px" }}
                         >
                           {" "}
-                          <a
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            href={item?.values?.facebook_link || "#"}
-                            aria-label="Facebook"
-                          >
-                            <FaFacebookF
-                              style={{
-                                backgroundColor:
-                                  item?.values?.social_icon_background_color,
-                                color: item?.values?.social_icon_color,
-                              }}
-                              className="icons"
-                            />
-                          </a>
-                          <a
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            href={item?.values?.linkedin_link || "#"}
-                            aria-label="LinkedIn"
-                          >
-                            <FaLinkedinIn
-                              style={{
-                                backgroundColor:
-                                  item?.values?.social_icon_background_color,
-                                color: item?.values?.social_icon_color,
-                              }}
-                              className="icons"
-                            />
-                          </a>
-                          <a
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            href={item?.values?.instagram_link || "#"}
-                            aria-label="Instagram"
-                          >
-                            <FaInstagram
-                              style={{
-                                backgroundColor:
-                                  item?.values?.social_icon_background_color,
-                                color: item?.values?.social_icon_color,
-                              }}
-                              className="icons"
-                            />
-                          </a>
+                          {item?.values?.facebook_link && (
+                            <a
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              href={item?.values?.facebook_link}
+                              aria-label="Facebook"
+                            >
+                              <FaFacebookF
+                                style={{
+                                  backgroundColor:
+                                    item?.values
+                                      ?.social_icon_background_color ||
+                                    "#000000",
+                                  color:
+                                    item?.values?.social_icon_color ||
+                                    "#ffffff",
+                                }}
+                                className="icons"
+                              />
+                            </a>
+                          )}
+                          {item?.values?.linkedin_link && (
+                            <a
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              href={item?.values?.linkedin_link}
+                              aria-label="LinkedIn"
+                            >
+                              <FaLinkedinIn
+                                style={{
+                                  backgroundColor:
+                                    item?.values
+                                      ?.social_icon_background_color ||
+                                    "#000000",
+                                  color:
+                                    item?.values?.social_icon_color ||
+                                    "#ffffff",
+                                }}
+                                className="icons"
+                              />
+                            </a>
+                          )}
+                          {item?.values?.instagram_link && (
+                            <a
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              href={item?.values?.instagram_link}
+                              aria-label="Instagram"
+                            >
+                              <FaInstagram
+                                style={{
+                                  backgroundColor:
+                                    item?.values
+                                      ?.social_icon_background_color ||
+                                    "#000000",
+                                  color:
+                                    item?.values?.social_icon_color ||
+                                    "#ffffff",
+                                }}
+                                className="icons"
+                              />
+                            </a>
+                          )}
                         </Box>
 
                         {/* Footer links as buttons in a single row */}
@@ -924,39 +930,74 @@ function PreviewHVO(location) {
                             gap: "10px",
                           }}
                         >
-                          {item?.values?.footer_links?.map((link, index) => (
-                            <Button
-                              key={index}
-                              variant="contained"
-                              href={link.url}
-                              target="_blank"
-                              style={{
-                                backgroundColor:
-                                  hoveredButtonIndex === index
-                                    ? item?.values?.footer_text_hover_color
-                                    : item?.values
-                                        ?.social_icon_background_color,
-                                color: item?.values?.social_icon_color,
-                                fontSize: `${item?.values?.footer_text_size}px`,
-                                textTransform: "none",
-                                padding: "6px 12px",
-                                borderRadius: "4px",
-                                minWidth: "auto",
-                              }}
-                              onMouseEnter={() => setHoveredButtonIndex(index)}
-                              onMouseLeave={() => setHoveredButtonIndex(null)}
-                            >
-                              {link.name}
-                            </Button>
-                          ))}
+                          {(() => {
+                            // Handle both string JSON and direct array formats
+                            let footerLinks = [];
+                            try {
+                              if (item?.values?.footer_links) {
+                                if (
+                                  typeof item.values.footer_links === "string"
+                                ) {
+                                  footerLinks = JSON.parse(
+                                    item.values.footer_links
+                                  );
+                                } else if (
+                                  Array.isArray(item.values.footer_links)
+                                ) {
+                                  footerLinks = item.values.footer_links;
+                                }
+                              }
+                            } catch (e) {
+                              console.error("Error parsing footer links:", e);
+                              footerLinks = [];
+                            }
+
+                            return footerLinks.map((link, index) => (
+                              <Button
+                                key={index}
+                                variant="contained"
+                                href={link.url}
+                                target="_blank"
+                                style={{
+                                  backgroundColor:
+                                    hoveredButtonIndex === index
+                                      ? item?.values?.footer_text_hover_color ||
+                                        "#666666"
+                                      : item?.values
+                                          ?.social_icon_background_color ||
+                                        "#000000",
+                                  color:
+                                    item?.values?.social_icon_color ||
+                                    "#ffffff",
+                                  fontSize: `${
+                                    item?.values?.footer_text_size || "14"
+                                  }px`,
+                                  textTransform: "none",
+                                  padding: "6px 12px",
+                                  borderRadius: "4px",
+                                  minWidth: "auto",
+                                }}
+                                onMouseEnter={() =>
+                                  setHoveredButtonIndex(index)
+                                }
+                                onMouseLeave={() => setHoveredButtonIndex(null)}
+                              >
+                                {link.name}
+                              </Button>
+                            ));
+                          })()}
                         </Box>
                       </Grid>
                       <Grid item sm={4} xs={12}>
                         <Typography
                           variant="h2"
                           style={{
-                            fontSize: `${item?.values?.footer_heading_size}px`,
-                            color: item?.values?.footer_text_heading_color,
+                            fontSize: `${
+                              item?.values?.footer_heading_size || "18"
+                            }px`,
+                            color:
+                              item?.values?.footer_text_heading_color ||
+                              "#000000",
                           }}
                         >
                           LEGAL
@@ -966,45 +1007,65 @@ function PreviewHVO(location) {
                           marginTop={"26px"}
                         >
                           {/* Legacy code for footerlinks */}
-                          {item?.values?.footerLinks?.footerlinks?.map(
-                            (item1, index) => (
-                              <span
-                                key={index}
-                                style={{
-                                  marginBottom: "8px",
-                                  lineHeight: "1.5",
-                                }}
-                              >
-                                <a
-                                  href={item1?.trackingLinkName}
-                                  target="_blank"
+                          {(() => {
+                            const footerlinks =
+                              item?.values?.footerLinks?.footerlinks;
+                            if (
+                              Array.isArray(footerlinks) &&
+                              footerlinks.length > 0
+                            ) {
+                              return footerlinks.map((item1, index) => (
+                                <span
+                                  key={index}
                                   style={{
-                                    color:
-                                      hoveredIndex === index
-                                        ? item?.values?.footer_text_hover_color
-                                        : item?.values?.footer_text_color,
-                                    fontSize: `${item?.values?.footer_text_size}px`,
-                                    textDecoration: "none",
+                                    marginBottom: "8px",
+                                    lineHeight: "1.5",
                                   }}
-                                  onMouseEnter={() => handleMouseEnter1(index)}
-                                  onMouseLeave={handleMouseLeave1}
                                 >
-                                  {item1?.link}
-                                </a>
-                              </span>
-                            )
-                          )}
+                                  <a
+                                    href={item1?.trackingLinkName}
+                                    target="_blank"
+                                    style={{
+                                      color:
+                                        hoveredIndex === index
+                                          ? item?.values
+                                              ?.footer_text_hover_color ||
+                                            "#666666"
+                                          : item?.values?.footer_text_color ||
+                                            "#333333",
+                                      fontSize: `${
+                                        item?.values?.footer_text_size || "14"
+                                      }px`,
+                                      textDecoration: "none",
+                                    }}
+                                    onMouseEnter={() =>
+                                      handleMouseEnter1(index)
+                                    }
+                                    onMouseLeave={handleMouseLeave1}
+                                  >
+                                    {item1?.link}
+                                  </a>
+                                </span>
+                              ));
+                            }
+                            return null;
+                          })()}
                         </Box>
 
                         <Typography
                           variant="body1"
                           style={{
-                            color: item?.values?.benchmark_color,
-                            fontSize: `${item?.values?.benchmar_size}px`,
+                            color: item?.values?.benchmark_color || "#333333",
+                            fontSize: `${
+                              item?.values?.benchmar_size || "14"
+                            }px`,
                             fontWeight: 400,
                           }}
                         >
-                          {item?.values?.accountName}. All rights reserved.
+                          {item?.values?.accountName ||
+                            item?.values?.account_name ||
+                            "Company"}
+                          . All rights reserved.
                         </Typography>
                       </Grid>
                       <Grid item sm={4} xs={12}>
