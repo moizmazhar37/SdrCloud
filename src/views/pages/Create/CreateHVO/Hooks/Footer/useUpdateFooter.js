@@ -52,7 +52,7 @@ const useUpdateFooter = () => {
         data: payload,
       });
 
-      toast.success("Footer updated successfully!");
+      toast.success("Footer updated successfully.");
       return response.data;
     } catch (err) {
       setError(err.message || "Failed to update footer");

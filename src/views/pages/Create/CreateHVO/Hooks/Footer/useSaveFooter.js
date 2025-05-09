@@ -39,7 +39,7 @@ const useSaveFooter = () => {
         },
       });
 
-      toast.success("Footer saved successfully!");
+      toast.success("Footer saved successfully.");
       return response.data;
     } catch (err) {
       setError(err.message || "Failed to save footer");

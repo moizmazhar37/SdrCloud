@@ -20,7 +20,7 @@ export const useAddCateogry = () => {
                 data: payload,
             });
 
-            toast.success(response?.data?.message || "Category added successfully!");
+            toast.success(response?.data?.message || "Category added successfully.");
         } catch (err) {
             console.error("Error adding category:", err);
 

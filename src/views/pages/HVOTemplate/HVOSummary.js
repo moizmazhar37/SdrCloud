@@ -207,7 +207,7 @@ function HVOSummary({ linkObject, reload, price, balance }) {
         params: { templateId, sectionId },
       });
       setSections((prev) => prev.filter((section) => section.id !== sectionId));
-      toast.success("Section deleted successfully");
+      toast.success("Section deleted successfully.");
       reload();
     } catch (error) {
       console.error("Error deleting section:", error);
@@ -232,7 +232,7 @@ function HVOSummary({ linkObject, reload, price, balance }) {
       const status = res?.status;
 
       if (status === 200 || status === 201) {
-        toast.success("HVO Created Successfully");
+        toast.success("HVO Created Successfully.");
         console.log(res?.data);
         // Refresh the HVO template status
         getHVOTemplate();

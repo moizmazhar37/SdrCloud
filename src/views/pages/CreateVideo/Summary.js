@@ -215,7 +215,7 @@ function Summary({
         setLoading(false);
         setDeleteOpen(false);
         reloadData();
-        toast.success("Element Deleted Successfully");
+        toast.success("Element Deleted Successfully.");
       }
     } catch (error) {
       console.log(error, "error");

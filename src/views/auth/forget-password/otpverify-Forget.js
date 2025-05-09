@@ -246,11 +246,11 @@ function VerifyOTP(props) {
     } catch (error) {
       setLoader(false);
       if (error) {
-        toast.error("Invalid OTP");
+        toast.error("Invalid one-time password. Please try again.");
         setOtpFields(["", "", "", ""]);
       } else {
         setLoader(false);
-        toast.error("Something Went Wrong");
+        toast.error("Something went wrong on our end. Please try again.");
       }
     }
   };
@@ -281,7 +281,7 @@ function VerifyOTP(props) {
     } catch (error) {
       setLoading(false);
       if (error.response) {
-        toast.error("Please enter the correct Email.");
+        toast.error("Please Enter a valid email address.");
       } else {
         setLoading(false);
         toast.error(error.message);

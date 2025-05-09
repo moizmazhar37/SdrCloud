@@ -217,7 +217,7 @@ function VerifyOTP(props) {
     } catch (error) {
       setLoading(false);
       if (error.response) {
-        toast.error("Please enter the correct Email");
+        toast.error("Please Enter a valid email address.");
       } else {
         toast.error(error.message);
       }

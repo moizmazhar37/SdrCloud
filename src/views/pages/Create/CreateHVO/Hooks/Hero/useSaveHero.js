@@ -58,7 +58,7 @@ const useSaveHeroSection = () => {
         data: formData, // Sending the FormData object
       });
 
-      toast.success("Hero section saved successfully!");
+      toast.success("Hero section saved successfully.");
       return response.data;
     } catch (err) {
       setError(err.message || "Failed to save Hero section");

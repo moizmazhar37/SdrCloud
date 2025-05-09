@@ -23,7 +23,7 @@ const useChangePassword = () => {
           },
         }
       );
-      toast.success(response.data.message || "Password changed successfully!");
+      toast.success(response.data.message || "Password changed successfully.");
       return response.data;
     } catch (error) {
       const errorMessage =
