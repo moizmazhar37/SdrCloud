@@ -970,7 +970,10 @@ function PreviewHVO(location) {
                                     item?.values?.social_icon_color ||
                                     "#ffffff",
                                   fontSize: `${
-                                    item?.values?.footer_text_size || "14"
+                                    item?.values?.footer_text_size &&
+                                    parseInt(item?.values?.footer_text_size) > 0
+                                      ? item?.values?.footer_text_size
+                                      : "10"
                                   }px`,
                                   textTransform: "none",
                                   padding: "6px 12px",
@@ -1034,7 +1037,12 @@ function PreviewHVO(location) {
                                           : item?.values?.footer_text_color ||
                                             "#333333",
                                       fontSize: `${
-                                        item?.values?.footer_text_size || "14"
+                                        item?.values?.footer_text_size &&
+                                        parseInt(
+                                          item?.values?.footer_text_size
+                                        ) > 0
+                                          ? item?.values?.footer_text_size
+                                          : "10"
                                       }px`,
                                       textDecoration: "none",
                                     }}
