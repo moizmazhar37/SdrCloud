@@ -749,7 +749,7 @@ const CreateHVOTemplate = (props) => {
           },
         });
         if (res?.status === 200 || res?.status === 201) {
-          toast.success("Template Created Successfully");
+          toast.success("Template Created Successfully.");
           setLoading(false);
           updateQueryParams(res?.data?.id);
           setSaveName(true);

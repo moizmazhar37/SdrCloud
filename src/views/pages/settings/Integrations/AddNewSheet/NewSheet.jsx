@@ -98,6 +98,26 @@ const NewSheet = () => {
     }
   };
 
+  // Called when user clicks Get names
+  const handleFetchnames = async () => {
+    if (!sheetId) {
+      console.warn("Sheet ID is missing or invalid.");
+      toast.error(
+        "Sheet ID is missing or invalid. Please check your Google Sheet link."
+      );
+      return;
+    }
+    try {
+      const data = await fetchnames(sheetId);
+      toast.success("Google Sheet name fetched successfully.");
+      setSheetData(data);
+      setSheetOptions(data); // Array of sheet names
+    } catch (err) {
+      console.error("❌ Failed to fetch sheet tabs.");
+      toast.error("Failed to fetch sheet tabs. Please try again.");
+    }
+  };
+
   return (
     <>
       <DynamicNavigator items={routes} />

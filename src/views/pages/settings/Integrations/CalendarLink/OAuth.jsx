@@ -102,11 +102,11 @@ const MeetingIntegrationsConnect = () => {
     try {
       setLoadingState({ ...loadingState, calendly: true });
       const response = await disconnectCalendlyAccount(token);
-      toast.success(response.message || "Calendly disconnected successfully.");
+      toast.success(response.message || "Calendar disconnected successfully.");
       fetchIntegrations();
     } catch (error) {
       console.error("Calendly disconnection failed:", error);
-      toast.error(error.message || "Failed to disconnect Calendly.");
+      toast.error(error.message || "Failed to disconnect Calendar.");
     } finally {
       setLoadingState({ ...loadingState, calendly: false });
     }

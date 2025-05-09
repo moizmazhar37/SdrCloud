@@ -18,7 +18,7 @@ const useDeleteTemplate = (refetch) => {
       });
 
       if (response?.status === 200) {
-        toast.success("Template Deleted Successfully");
+        toast.success("Template Deleted Successfully.");
         if (refetch) {
           refetch();
         }

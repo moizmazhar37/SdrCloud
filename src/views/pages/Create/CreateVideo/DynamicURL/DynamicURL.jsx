@@ -116,8 +116,8 @@ const DynamicURL = ({
       if (response) {
         toast.success(
           editData
-            ? "Dynamic URL section updated successfully!"
-            : "Dynamic URL section saved successfully!"
+            ? "Dynamic URL section updated successfully."
+            : "Dynamic URL section saved successfully."
         );
         onSaveSuccess();
         onClose();

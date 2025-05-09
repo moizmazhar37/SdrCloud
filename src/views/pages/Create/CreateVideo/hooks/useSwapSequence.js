@@ -36,7 +36,7 @@ const useSwapSequence = () => {
       );
 
       setData(response.data);
-      toast.success("Sequence swapped successfully!");
+      toast.success("Sequence swapped successfully.");
       return response.data;
     } catch (err) {
       const errorMessage =
