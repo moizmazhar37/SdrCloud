@@ -5,6 +5,7 @@ import InputField from "src/Common/InputField/InputField";
 import styles from "./Footer.module.scss";
 import useSaveFooter from "../../Hooks/Footer/useSaveFooter";
 import useUpdateFooter from "../../Hooks/Footer/useUpdateFooter";
+import useGetFooters from "../../../../settings/IntentTracking/hooks/useGetFooter";
 
 const Footer = ({
   onSectionSave,
@@ -27,6 +28,10 @@ const Footer = ({
   const [instagramLink, setInstagramLink] = useState("");
   const [facebookLink, setFacebookLink] = useState("");
   const [linkedInLink, setLinkedInLink] = useState("");
+  const [selectedFooterLinks, setSelectedFooterLinks] = useState([]);
+
+  // Fetch footer links from API
+  const { data: footerLinks, loading: loadingFooters } = useGetFooters();
 
   const { saveFooter, loading: saveLoading } = useSaveFooter();
   const { updateFooter, loading: updateLoading } = useUpdateFooter();
@@ -43,6 +48,15 @@ const Footer = ({
     onClose();
   };
 
+  const toggleFooterLink = (linkId) => {
+    setSelectedFooterLinks((prev) => {
+      if (prev.includes(linkId)) {
+        return prev.filter((id) => id !== linkId);
+      } else {
+        return [...prev, linkId];
+      }
+    });
+  };
 
   useEffect(() => {
     if (initialData) {
@@ -63,6 +77,11 @@ const Footer = ({
       setTextSize(initialData.footer_text_size || "");
       setIconBgColor(initialData.social_icon_background_color || "");
       setIconColor(initialData.social_icon_color || "");
+
+      // Initialize selected footer links if available in initialData
+      if (initialData.selected_footer_links) {
+        setSelectedFooterLinks(initialData.selected_footer_links);
+      }
     }
   }, [initialData]);
 
@@ -83,6 +102,7 @@ const Footer = ({
       instagramLink: instagramLink,
       facebookLink: facebookLink,
       linkedinLink: linkedInLink,
+      selectedFooterLinks: selectedFooterLinks,
     };
 
     try {
@@ -110,7 +130,7 @@ const Footer = ({
     <div className={styles.wrapper}>
       <div className={styles.container}>
         <div className={styles.header}>
-          <button className={styles.backButton}>
+          <button className={styles.backButton} onClick={handleClose}>
             <ArrowLeft size={16} />
             Footer | Section 1
           </button>
@@ -219,6 +239,32 @@ const Footer = ({
               />
             </div>
           </div>
+
+          {/* Footer Links Section */}
+          <div className={styles.footerLinksSection}>
+            <h3 className={styles.footerLinksTitle}>Footer Links</h3>
+            <div className={styles.footerLinksContainer}>
+              {loadingFooters ? (
+                <p>Loading footer links...</p>
+              ) : footerLinks && footerLinks.length > 0 ? (
+                footerLinks.map((link) => (
+                  <button
+                    key={link.id}
+                    className={`${styles.footerLinkButton} ${
+                      selectedFooterLinks.includes(link.id)
+                        ? styles.selected
+                        : ""
+                    }`}
+                    onClick={() => toggleFooterLink(link.id)}
+                  >
+                    {link.name}
+                  </button>
+                ))
+              ) : (
+                <p>No footer links available</p>
+              )}
+            </div>
+          </div>
         </div>
 
         <div className={styles.footer}>
@@ -230,12 +276,12 @@ const Footer = ({
             {loading ? "Saving..." : "Save"}
           </button>
           <button
-          onClick={handleClose}
-          className={styles.cancelButton}
-          disabled={loading}
-        >
-          Cancel
-        </button>
+            onClick={handleClose}
+            className={styles.cancelButton}
+            disabled={loading}
+          >
+            Cancel
+          </button>
         </div>
       </div>
     </div>

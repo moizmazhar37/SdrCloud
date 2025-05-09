@@ -486,12 +486,8 @@ function PreviewHVO(location) {
                           <Button
                             className="demobtn"
                             style={{
-                              backgroundColor: hovered
-                                ? item?.values?.demo_button_text_color
-                                : item?.values?.demo_button_color,
-                              color: hovered
-                                ? item?.values?.demo_button_color
-                                : item?.values?.demo_button_text_color,
+                              backgroundColor: item?.values?.demo_button_color,
+                              color: item?.values?.demo_button_text_color,
                               textTransform: "none",
                               fontSize: "14px",
                               border: `1px solid ${item?.values?.demo_button_color}`,
