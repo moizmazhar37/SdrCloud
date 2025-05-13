@@ -58,6 +58,7 @@ const HvoSectionCardContainer = ({
   onSectionUpdate,
   handleEdit,
   templateId,
+  sectionRefs,
 }) => {
   const { swapSequence } = useSwapHvoSequence();
   const { data: apiData } = useGetFirstRowData(templateId);
@@ -115,7 +116,15 @@ const HvoSectionCardContainer = ({
                 >
                   {(provided, snapshot) => (
                     <div
-                      ref={provided.innerRef}
+                      ref={(el) => {
+                        // Store ref for scrolling functionality
+                        if (sectionRefs && el) {
+                          sectionRefs.current[`section-${element.sequence}`] =
+                            el;
+                        }
+                        // Also maintain drag-drop ref
+                        provided.innerRef(el);
+                      }}
                       {...provided.draggableProps}
                       {...provided.dragHandleProps}
                       className={`${styles.draggableCard} ${
