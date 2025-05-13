@@ -1,16 +1,25 @@
 import React from "react";
 import styles from "./SectionView.module.scss";
 
-const SectionView = ({ sectionData, type }) => {
+const SectionView = ({ sectionData, type, onViewSection }) => {
   const { duration, scroll, audio_embedded, sequence, section_name } =
     sectionData;
+
+  const handleViewClick = () => {
+    if (onViewSection) {
+      onViewSection(sequence, section_name);
+    }
+  };
+
   return (
     <div className={styles.viewCard}>
       <div className={styles.cardHeader}>
         <span className={styles.sectionName}>
           Section {sequence} | {section_name}
         </span>
-        <button className={styles.viewButton}>View</button>
+        <button className={styles.viewButton} onClick={handleViewClick}>
+          View
+        </button>
       </div>
       <div className={styles.metaInfo}>
         <span>Scroll - {scroll ? "Yes" : "No"}</span>
