@@ -30,8 +30,6 @@ const LeadsDashboard = () => {
   const visitors_data = data.visitor_trends;
   const visitors = data.visitors;
 
-  console.log("Visitors Data: ", visitors_data);
-
   // Transform income data to remove commas from net worth values while preserving $ signs
   const incomeData = data.income_data.map((item) => {
     if (typeof item.label === "string" && item.label.includes(",")) {
