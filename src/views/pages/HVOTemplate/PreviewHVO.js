@@ -1082,21 +1082,23 @@ function PreviewHVO(location) {
                           })()}
                         </Box>
 
-                        <Typography
-                          variant="body1"
-                          style={{
-                            color: item?.values?.benchmark_color || "#333333",
-                            fontSize: `${
-                              item?.values?.benchmar_size || "14"
-                            }px`,
-                            fontWeight: 400,
-                          }}
-                        >
-                          {item?.values?.accountName ||
-                            item?.values?.account_name ||
-                            "Company"}
-                          . All rights reserved.
-                        </Typography>
+                        {(item?.values?.accountName || item?.values?.account_name) &&
+                          item?.values?.account_name !== "None" && (
+                            <Typography
+                              variant="body1"
+                              style={{
+                                color: item?.values?.benchmark_color || "#333333",
+                                fontSize: `${item?.values?.benchmar_size || "14"}px`,
+                                fontWeight: 400,
+                              }}
+                            >
+                              {item?.values?.accountName ||
+                              item?.values?.account_name ||
+                              "Company"}
+                              . All rights reserved.
+                            </Typography>
+                          )}
+                          
                       </Grid>
                       <Grid item sm={4} xs={12}>
                         <Hidden xsDown>

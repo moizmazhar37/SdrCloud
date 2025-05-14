@@ -56,36 +56,42 @@ function EditGoogleSheet() {
   };
 
   const handleEditToggle = async () => {
-    if (isEditing) {
-      const requiredFields =
-        type === "HVO"
-          ? hvoTypes.filter((t) => t.includes("(Required)"))
-          : videoTypes.filter((t) => t.includes("(Required)"));
-  
-      const selectedFields = updatedData.map((item) => item.dataType);
-      const missingFields = requiredFields.filter(
-        (req) => !selectedFields.includes(req)
-      );
-  
-      if (missingFields.length > 0) {
-        missingFields.forEach((field) => {
-          const msg = `Please select required field: ${field}`;
-          console.error(msg);
-          toast.error(msg, {
-            position: "top-right",
-            autoClose: 4000,
-            pauseOnHover: true,
-            draggable: true,
-          });
-        });
-        return; // prevent save
-      }
-  
-      await saveSheetTypes(sheetId, updatedData);
+  if (isEditing) {
+    const requiredFields =
+      type === "HVO"
+        ? hvoTypes.filter((t) => t.includes("(Required)"))
+        : videoTypes.filter((t) => t.includes("(Required)"));
+
+    // Explicitly ensure "Last Name" is required
+    if (type !== "HVO" && !requiredFields.includes("Last name")) {
+      requiredFields.push("Last name");
     }
-  
-    setIsEditing((prevState) => !prevState);
-  };
+
+    const selectedFields = updatedData.map((item) => item.dataType);
+    const missingFields = requiredFields.filter(
+      (req) => !selectedFields.includes(req)
+    );
+
+    if (missingFields.length > 0) {
+      missingFields.forEach((field) => {
+        const msg = `Please select required field: ${field}`;
+        console.error(msg);
+        toast.error(msg, {
+          position: "top-right",
+          autoClose: 4000,
+          pauseOnHover: true,
+          draggable: true,
+        });
+      });
+      return; // prevent save
+    }
+
+    await saveSheetTypes(sheetId, updatedData);
+  }
+
+  setIsEditing((prevState) => !prevState);
+};
+
   
 
   const navs = [

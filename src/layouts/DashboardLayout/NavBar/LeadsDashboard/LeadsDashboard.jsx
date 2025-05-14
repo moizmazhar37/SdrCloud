@@ -13,10 +13,12 @@ import {
   handleViewAllVisitors,
   handleBarChartRowClick,
   getCurrentMonthDateRange,
+  EMPTY_RESPONSE,
 } from "./helpers";
 
 const LeadsDashboard = () => {
-  const { data, loading } = useLeadsDashboard();
+  const { data: apiData, loading, error } = useLeadsDashboard();
+  const data = error ? EMPTY_RESPONSE : apiData;
   const [showSearchLeads, setShowSearchLeads] = useState(false);
   const [searchFilters, setSearchFilters] = useState(null);
   const [selectedVisitor, setSelectedVisitor] = useState(null);
