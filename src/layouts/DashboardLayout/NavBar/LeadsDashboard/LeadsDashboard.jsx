@@ -13,10 +13,12 @@ import {
   handleViewAllVisitors,
   handleBarChartRowClick,
   getCurrentMonthDateRange,
+  EMPTY_RESPONSE,
 } from "./helpers";
 
 const LeadsDashboard = () => {
-  const { data, loading } = useLeadsDashboard();
+  const { data: apiData, loading, error } = useLeadsDashboard();
+  const data = error ? EMPTY_RESPONSE : apiData;
   const [showSearchLeads, setShowSearchLeads] = useState(false);
   const [searchFilters, setSearchFilters] = useState(null);
   const [selectedVisitor, setSelectedVisitor] = useState(null);
@@ -27,6 +29,8 @@ const LeadsDashboard = () => {
 
   const visitors_data = data.visitor_trends;
   const visitors = data.visitors;
+
+  console.log("Visitors Data: ", visitors_data);
 
   // Transform income data to remove commas from net worth values while preserving $ signs
   const incomeData = data.income_data.map((item) => {

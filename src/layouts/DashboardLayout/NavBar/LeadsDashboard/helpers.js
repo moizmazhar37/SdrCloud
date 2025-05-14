@@ -75,3 +75,30 @@ export const getCurrentMonthDateRange = () => {
     endDate: formatDate(today),
   };
 };
+
+export const EMPTY_RESPONSE = {
+identified_by_month: {
+    identified: 0,
+    percentage: 100,
+    previousPeriod: 0,
+    budgetedIdentifications: 300,
+  },
+  monthly_spend: {
+    spend: 0,
+    percentage: null,
+    budget: 0,
+  },
+  visitors: [],
+  direct_vs_referral: {
+    Direct: 0,
+    Referral: 0,
+  },
+  visitor_trends: [],
+  income_data: [],
+  age_data: [],
+  location_data: [],
+  gender_data: {
+    Male: 0,
+    Female: 0,
+  },
+};
