@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import ApiConfig from "src/config/APIConfig";
 import axios from "axios";
 
-const useGetMiniGraphData = (headline) => {
+const useGetMiniGraphData = (headline, startDate, endDate) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -17,11 +17,15 @@ const useGetMiniGraphData = (headline) => {
         // Get auth token from local storage
         const token = localStorage.getItem("token");
 
-        // Make API request with token in headers
+        // Make API request with token in headers and date parameters
         const response = await axios.get(
           `${ApiConfig.mainDashboard}/sheets-connected-by-month`,
           {
-            params: { headline },
+            params: {
+              headline,
+              start_date: startDate,
+              end_date: endDate,
+            },
             headers: {
               Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",
@@ -38,7 +42,7 @@ const useGetMiniGraphData = (headline) => {
     };
 
     fetchData();
-  }, [headline]);
+  }, [headline, startDate, endDate]);
 
   return { data, loading, error };
 };
