@@ -256,9 +256,7 @@ export const routes = [
     path: `/preview-url/:customerId`,
     // guard: true,
     // layout: DashboardLayout,
-    component: lazy(() =>
-      import("src/views/pages/HVOTemplate/CustomerPreview")
-    ),
+    component: lazy(() => import("src/views/pages/HVOTemplate/PreviewHVO")),
   },
 
   {
