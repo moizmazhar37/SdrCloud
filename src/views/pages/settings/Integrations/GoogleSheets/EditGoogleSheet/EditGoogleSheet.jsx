@@ -57,32 +57,12 @@ function EditGoogleSheet() {
 
   const handleEditToggle = async () => {
   if (isEditing) {
-    const requiredFields =
-      type === "HVO"
-        ? hvoTypes.filter((t) => t.includes("(Required)"))
-        : videoTypes.filter((t) => t.includes("(Required)"));
-
-    // Explicitly ensure "Last Name" is required
-    if (type !== "HVO" && !requiredFields.includes("Last name")) {
-      requiredFields.push("Last name");
-    }
-
+    const requiredFields = getRequiredFields(type);
     const selectedFields = updatedData.map((item) => item.dataType);
-    const missingFields = requiredFields.filter(
-      (req) => !selectedFields.includes(req)
-    );
+    const missingFields = getMissingRequiredFields(requiredFields, selectedFields);
 
     if (missingFields.length > 0) {
-      missingFields.forEach((field) => {
-        const msg = `Please select required field: ${field}`;
-        console.error(msg);
-        toast.error(msg, {
-          position: "top-right",
-          autoClose: 4000,
-          pauseOnHover: true,
-          draggable: true,
-        });
-      });
+      notifyMissingFields(missingFields);
       return; // prevent save
     }
 
@@ -91,6 +71,49 @@ function EditGoogleSheet() {
 
   setIsEditing((prevState) => !prevState);
 };
+
+// --- Helper Functions ---
+
+  const getRequiredFields = (type) => {
+    let baseRequired =
+      type === "HVO"
+        ? hvoTypes.filter((t) => t.includes("(Required)"))
+        : videoTypes.filter((t) => t.includes("(Required)"));
+
+    // Apply manual field requirements based on type
+    if (type === "HVO") {
+      ["First name", "Last name"].forEach((field) => {
+        if (!baseRequired.includes(field)) {
+          baseRequired.push(field);
+        }
+      });
+    } else {
+      if (!baseRequired.includes("Last name")) {
+        baseRequired.push("Last name");
+      }
+    }
+
+    return baseRequired;
+  };
+
+
+  const getMissingRequiredFields = (required, selected) => {
+    return required.filter((field) => !selected.includes(field));
+  };
+
+  const notifyMissingFields = (missingFields) => {
+    missingFields.forEach((field) => {
+      const msg = `Please select required field: ${field}`;
+      console.error(msg);
+      toast.error(msg, {
+        position: "top-right",
+        autoClose: 4000,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    });
+  };
+
 
   
 
