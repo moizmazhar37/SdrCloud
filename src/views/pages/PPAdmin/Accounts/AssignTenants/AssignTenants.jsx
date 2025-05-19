@@ -250,10 +250,10 @@ const AssignTenants = ({ isFromUserList = false, userData = null }) => {
         <div className={styles.userInfoCard}>
           <h2>User Details</h2>
           <div className={styles.userDetails}>
-            <div className={styles.userDetail}>
+            {/* <div className={styles.userDetail}>
               <span className={styles.label}>ID:</span>
               <span>{userData.id}</span>
-            </div>
+            </div> */}
             <div className={styles.userDetail}>
               <span className={styles.label}>Name:</span>
               <span>{userData.name}</span>
