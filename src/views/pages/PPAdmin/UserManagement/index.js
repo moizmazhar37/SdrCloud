@@ -31,7 +31,7 @@ const PPuserlist = () => {
 
   const dropdownOptions = [
     {
-      label: "Assign Tenant",
+      label: "View",
       onClick: (userData) => {
         console.log("Assign Tenant clicked for user:", userData.id);
         handleAssignTenant(userData);
