@@ -6,12 +6,15 @@ import Dropdown from "src/Common/Dropdown/Dropdown";
 import Loader from "src/Common/Loader/Loader";
 import useGetSdrcAdmins from "./Hooks/useGetSdrcAdmins";
 import styles from "./PPuserlist.module.scss";
+import AddUser from "src/views/pages/PPAdmin/AddUser/AddUser";
+import AssignTenants from "../Accounts/AssignTenants/AssignTenants";
 
 const PPuserlist = () => {
-  const [selectedUserId, setSelectedUserId] = useState(null);
+  const [showPopup, setShowPopup] = useState(false);
+  const [showAssignTenants, setShowAssignTenants] = useState(false);
+  const [selectedUserData, setSelectedUserData] = useState(null);
   const { data, loading, error } = useGetSdrcAdmins();
 
-  // Define headers based on the actual API data structure
   const headers = [
     { label: "Name", key: "name" },
     { label: "Email", key: "email" },
@@ -21,11 +24,17 @@ const PPuserlist = () => {
     { label: "Actions", key: "actions" },
   ];
 
+  const handleAssignTenant = (userData) => {
+    setSelectedUserData(userData);
+    setShowAssignTenants(true);
+  };
+
   const dropdownOptions = [
     {
-      label: "Add Tenant",
-      onClick: (userId) => {
-        console.log("Add Tenant clicked for user:", userId);
+      label: "Assign Tenant",
+      onClick: (userData) => {
+        console.log("Assign Tenant clicked for user:", userData.id);
+        handleAssignTenant(userData);
       },
     },
   ];
@@ -40,18 +49,24 @@ const PPuserlist = () => {
           <Dropdown
             options={dropdownOptions.map((option) => ({
               ...option,
-              onClick: () => option.onClick(user.id),
+              onClick: () => option.onClick(user),
             }))}
           />
         ),
       }))
     : [];
 
+  // If AssignTenants view is shown, render it as a full page
+  if (showAssignTenants) {
+    return <AssignTenants isFromUserList={true} userData={selectedUserData} />;
+  }
+
   return (
     <div className={styles.container}>
       <Card
         image={AddUserImage}
         onClick={() => {
+          setShowPopup(true);
           console.log("Add User card clicked");
         }}
         text={"Add User"}
@@ -67,6 +82,7 @@ const PPuserlist = () => {
           <Table headers={headers} data={transformedData} />
         )}
       </div>
+      <AddUser show={showPopup} onClose={() => setShowPopup(false)} />
     </div>
   );
 };
