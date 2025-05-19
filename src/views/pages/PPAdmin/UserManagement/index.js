@@ -4,9 +4,11 @@ import Table from "src/Common/Table/Table";
 import AddUserImage from "src/images/AddUserImage.png";
 import Dropdown from "src/Common/Dropdown/Dropdown";
 import styles from "./PPuserlist.module.scss";
+import AddUser from "src/views/pages/PPAdmin/AddUser/AddUser";
 
 const PPuserlist = () => {
   const [selectedUserId, setSelectedUserId] = useState(null);
+  const [showPopup, setShowPopup] = useState(false);
 
   const headers = [
     { label: "Full Name", key: "full_name" },
@@ -101,6 +103,7 @@ const PPuserlist = () => {
       <Card
         image={AddUserImage}
         onClick={() => {
+          setShowPopup(true)
           console.log("Add User card clicked");
         }}
         text={"Add User"}
@@ -108,6 +111,7 @@ const PPuserlist = () => {
       <div>
         <Table headers={headers} data={transformedData} />
       </div>
+      <AddUser show={showPopup} onClose={() => setShowPopup(false)} />
     </div>
   );
 };
