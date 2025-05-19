@@ -1,86 +1,78 @@
-import React, { useState, useEffect } from 'react';
-import styles from './CreateAccount.module.scss';
-import PhoneInput from 'react-phone-input-2';
-import 'react-phone-input-2/lib/style.css';
-import useAccountForm from './hooks';
-import ColorInput from 'src/Common/ColorInput/ColorInput';
+import React, { useState, useEffect } from "react";
+import styles from "./CreateAccount.module.scss";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
+import useAccountForm from "./hooks";
+import useGetSdrcAdmins from "../Hooks/useSdrcAdmins";
+import ColorInput from "src/Common/ColorInput/ColorInput";
+import {
+  handleLogoUpload,
+  handleContractUpload,
+  calculateContractEndDate,
+  createPhoneChangeHandler,
+  createColorChangeHandler,
+} from "./helpers";
 
 const AccountManagementPage = () => {
-  const { formData, handleInputChange, handleFileChange, handleSubmit } = useAccountForm();
-  const [logoFileName, setLogoFileName] = useState('');
-  const [contractFileName, setContractFileName] = useState('');
+  const { formData, handleInputChange, handleFileChange, handleSubmit } =
+    useAccountForm();
+  const {
+    admins,
+    loading: adminsLoading,
+    error: adminsError,
+  } = useGetSdrcAdmins();
+  const [logoFileName, setLogoFileName] = useState("");
+  const [contractFileName, setContractFileName] = useState("");
 
-  const handleLogoUpload = () => {
-    const fileInput = document.createElement('input');
-    fileInput.type = 'file';
-    fileInput.accept = 'image/*';
-    fileInput.onchange = (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        handleFileChange(e, 'logo');
-        setLogoFileName(file.name);
-      }
-    };
-    fileInput.click();
-  };
+  // File upload handlers
+  const onLogoUpload = () =>
+    handleLogoUpload(handleFileChange, setLogoFileName);
+  const onContractUpload = () =>
+    handleContractUpload(handleFileChange, setContractFileName);
 
-  const handleContractUpload = () => {
-    const fileInput = document.createElement('input');
-    fileInput.type = 'file';
-    fileInput.accept = '.pdf';
-    fileInput.onchange = (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        handleFileChange(e, 'contractPdf');
-        setContractFileName(file.name);
-      }
-    };
-    fileInput.click();
-  };
+  // Phone input handlers
+  const accountPhoneHandler = createPhoneChangeHandler(
+    handleInputChange,
+    "accountPhoneNo"
+  );
+  const adminPhoneHandler = createPhoneChangeHandler(
+    handleInputChange,
+    "phoneNo"
+  );
 
+  // Color input handlers
+  const primaryRgbHandler = createColorChangeHandler(
+    handleInputChange,
+    "primaryRgb"
+  );
+  const primaryHexHandler = createColorChangeHandler(
+    handleInputChange,
+    "primaryHex"
+  );
+  const secondaryRgbHandler = createColorChangeHandler(
+    handleInputChange,
+    "secondaryRgb"
+  );
+  const secondaryHexHandler = createColorChangeHandler(
+    handleInputChange,
+    "secondaryHex"
+  );
+
+  // Calculate contract end date
   useEffect(() => {
-    if (formData.contractedDate && formData.contractTerm) {
-      const startDate = new Date(formData.contractedDate);
-      let endDate = new Date(startDate);
-      
-      switch (formData.contractTerm) {
-        case 'Trial':
-          endDate.setDate(startDate.getDate() + 7); // One week for trial
-          break;
-        case '3 Months':
-          endDate.setMonth(startDate.getMonth() + 3);
-          break;
-        case '6 Months':
-          endDate.setMonth(startDate.getMonth() + 6);
-          break;
-        case '1 Year':
-          endDate.setFullYear(startDate.getFullYear() + 1);
-          break;
-        case '2 Years':
-          endDate.setFullYear(startDate.getFullYear() + 2);
-          break;
-        case '3 Years':
-          endDate.setFullYear(startDate.getFullYear() + 3);
-          break;
-        case '4 Years':
-          endDate.setFullYear(startDate.getFullYear() + 4);
-          break;
-        default:
-          break;
-      }
-      
-      // Format the date as YYYY-MM-DD for the input field
-      const formattedEndDate = endDate.toISOString().split('T')[0];
-      
-      // Update the end date in the form data
-      handleInputChange({ 
-        target: { 
-          name: 'contractEndDate', 
-          value: formattedEndDate 
-        } 
+    const endDate = calculateContractEndDate(
+      formData.contractedDate,
+      formData.contractTerm
+    );
+    if (endDate) {
+      handleInputChange({
+        target: {
+          name: "contractEndDate",
+          value: endDate,
+        },
       });
     }
-  }, [formData.contractedDate, formData.contractTerm]);
+  }, [formData.contractedDate, formData.contractTerm, handleInputChange]);
 
   return (
     <div className={styles.container}>
@@ -105,24 +97,11 @@ const AccountManagementPage = () => {
               <PhoneInput
                 country="us"
                 value={formData.accountPhoneNo}
-                onChange={(phone) => handleInputChange({ target: { name: 'accountPhoneNo', value: phone } })}
+                onChange={accountPhoneHandler}
                 containerClass={styles.phoneInputContainer}
                 inputClass={styles.phoneInputField}
               />
             </div>
-
-            {/* <div className={styles.formGroup}>
-              <label>Assign SDRCloud.ai Admin to this Account</label>
-              <select 
-                name="role" 
-                value={formData.role} 
-                onChange={handleInputChange}
-              >
-                <option value="" disabled>Select PP Admin</option>
-                <option value="admin">Admin</option>
-                <option value="superAdmin">Super Admin</option>
-              </select>
-            </div> */}
           </div>
         </div>
 
@@ -132,34 +111,34 @@ const AccountManagementPage = () => {
           <div className={styles.sectionContent}>
             <div className={styles.formGroup}>
               <label>Admin First Name</label>
-              <input 
-                type="text" 
-                name="firstName" 
-                placeholder="Enter Admin First Name" 
-                value={formData.firstName} 
-                onChange={handleInputChange} 
+              <input
+                type="text"
+                name="firstName"
+                placeholder="Enter Admin First Name"
+                value={formData.firstName}
+                onChange={handleInputChange}
               />
             </div>
 
             <div className={styles.formGroup}>
               <label>Admin Last Name</label>
-              <input 
-                type="text" 
-                name="lastName" 
-                placeholder="Enter Admin Last Name" 
-                value={formData.lastName} 
-                onChange={handleInputChange} 
+              <input
+                type="text"
+                name="lastName"
+                placeholder="Enter Admin Last Name"
+                value={formData.lastName}
+                onChange={handleInputChange}
               />
             </div>
 
             <div className={styles.formGroup}>
               <label>Account Admin Email</label>
-              <input 
-                type="email" 
-                name="email" 
-                placeholder="Enter Email" 
-                value={formData.email} 
-                onChange={handleInputChange} 
+              <input
+                type="email"
+                name="email"
+                placeholder="Enter Email"
+                value={formData.email}
+                onChange={handleInputChange}
               />
             </div>
 
@@ -168,7 +147,7 @@ const AccountManagementPage = () => {
               <PhoneInput
                 country="us"
                 value={formData.phoneNo}
-                onChange={(phone) => handleInputChange({ target: { name: 'phoneNo', value: phone } })}
+                onChange={adminPhoneHandler}
                 containerClass={styles.phoneInputContainer}
                 inputClass={styles.phoneInputField}
               />
@@ -190,13 +169,38 @@ const AccountManagementPage = () => {
                   readOnly
                   className={styles.uploadInput}
                 />
-                <button
-                  className={styles.uploadButton}
-                  onClick={handleLogoUpload}
-                >
+                <button className={styles.uploadButton} onClick={onLogoUpload}>
                   Upload Logo
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+
+        {/* SDRC Admins Section */}
+        <div className={styles.section}>
+          <div className={styles.sectionHeader}>SDRC Admins</div>
+          <div className={styles.sectionContent}>
+            <div className={styles.formGroup}>
+              <label>Select SDRC Admin</label>
+              <select
+                name="sdrcAdmin"
+                value={formData.sdrcAdmin || ""}
+                onChange={handleInputChange}
+                disabled={adminsLoading}
+              >
+                <option value="" disabled>
+                  {adminsLoading ? "Loading..." : "Select SDRC Admin"}
+                </option>
+                {admins.map((admin) => (
+                  <option key={admin.id} value={admin.id}>
+                    {admin.name}
+                  </option>
+                ))}
+              </select>
+              {adminsError && (
+                <span className={styles.error}>{adminsError}</span>
+              )}
             </div>
           </div>
         </div>
@@ -210,18 +214,18 @@ const AccountManagementPage = () => {
               <div className={styles.colorInputs}>
                 <div className={styles.colorGroup}>
                   <div className={styles.colorLabel}>RGB</div>
-                  <ColorInput 
-                    label="Enter Your RGB Color" 
-                    value={formData.primaryRgb} 
-                    onChange={(color) => handleInputChange({ target: { name: 'primaryRgb', value: color } })} 
+                  <ColorInput
+                    label="Enter Your RGB Color"
+                    value={formData.primaryRgb}
+                    onChange={primaryRgbHandler}
                   />
                 </div>
                 <div className={styles.colorGroup}>
                   <div className={styles.colorLabel}>HEX</div>
-                  <ColorInput 
-                    label="Enter Your HEX Color" 
-                    value={formData.primaryHex} 
-                    onChange={(color) => handleInputChange({ target: { name: 'primaryHex', value: color } })} 
+                  <ColorInput
+                    label="Enter Your HEX Color"
+                    value={formData.primaryHex}
+                    onChange={primaryHexHandler}
                   />
                 </div>
               </div>
@@ -232,18 +236,18 @@ const AccountManagementPage = () => {
               <div className={styles.colorInputs}>
                 <div className={styles.colorGroup}>
                   <div className={styles.colorLabel}>RGB</div>
-                  <ColorInput 
-                    label="Enter Your RGB Color" 
-                    value={formData.secondaryRgb} 
-                    onChange={(color) => handleInputChange({ target: { name: 'secondaryRgb', value: color } })} 
+                  <ColorInput
+                    label="Enter Your RGB Color"
+                    value={formData.secondaryRgb}
+                    onChange={secondaryRgbHandler}
                   />
                 </div>
                 <div className={styles.colorGroup}>
                   <div className={styles.colorLabel}>HEX</div>
-                  <ColorInput 
-                    label="Enter Your HEX Color" 
-                    value={formData.secondaryHex} 
-                    onChange={(color) => handleInputChange({ target: { name: 'secondaryHex', value: color } })} 
+                  <ColorInput
+                    label="Enter Your HEX Color"
+                    value={formData.secondaryHex}
+                    onChange={secondaryHexHandler}
                   />
                 </div>
               </div>
@@ -252,22 +256,22 @@ const AccountManagementPage = () => {
             <div className={styles.linkSection}>
               <div className={styles.formGroup}>
                 <label>Book Demo URL</label>
-                <input 
-                  type="text" 
-                  name="bookDemoButton" 
-                  placeholder="Enter Link" 
-                  value={formData.bookDemoButton} 
-                  onChange={handleInputChange} 
+                <input
+                  type="text"
+                  name="bookDemoButton"
+                  placeholder="Enter Link"
+                  value={formData.bookDemoButton}
+                  onChange={handleInputChange}
                 />
               </div>
               <div className={styles.formGroup}>
                 <label>Redirect Link</label>
-                <input 
-                  type="text" 
-                  name="redirectLinks" 
-                  placeholder="Enter Link" 
-                  value={formData.redirectLinks} 
-                  onChange={handleInputChange} 
+                <input
+                  type="text"
+                  name="redirectLinks"
+                  placeholder="Enter Link"
+                  value={formData.redirectLinks}
+                  onChange={handleInputChange}
                 />
               </div>
             </div>
@@ -282,12 +286,12 @@ const AccountManagementPage = () => {
           <div className={styles.sectionContent}>
             <div className={styles.formGroup}>
               <label>Package Name</label>
-              <input 
-                type="text" 
-                name="packageName" 
-                placeholder="Enter Package Name" 
-                value={formData.packageName} 
-                onChange={handleInputChange} 
+              <input
+                type="text"
+                name="packageName"
+                placeholder="Enter Package Name"
+                value={formData.packageName}
+                onChange={handleInputChange}
               />
             </div>
 
@@ -309,7 +313,9 @@ const AccountManagementPage = () => {
                 value={formData.contractTerm}
                 onChange={handleInputChange}
               >
-                <option value="" disabled>Select</option>
+                <option value="" disabled>
+                  Select
+                </option>
                 <option value="Trial">Trial</option>
                 <option value="3 Months">3 Months</option>
                 <option value="6 Months">6 Months</option>
@@ -345,7 +351,9 @@ const AccountManagementPage = () => {
                 value={formData.customerType}
                 onChange={handleInputChange}
               >
-                <option value="" disabled>Select Category</option>
+                <option value="" disabled>
+                  Select Category
+                </option>
                 <option value="Startup">Startup</option>
                 <option value="ENT">ENT</option>
                 <option value="MM">MM</option>
@@ -413,20 +421,15 @@ const AccountManagementPage = () => {
         <div className={styles.uploadContractButton}>
           <button
             className={styles.uploadFullButton}
-            onClick={handleContractUpload}
+            onClick={onContractUpload}
           >
-            {contractFileName ? contractFileName : 'Upload Contract'}
+            {contractFileName ? contractFileName : "Upload Contract"}
           </button>
         </div>
 
         <div className={styles.actionButtons}>
-          <button className={styles.cancelButton}>
-            Cancel
-          </button>
-          <button 
-            className={styles.submitButton}
-            onClick={handleSubmit}
-          >
+          <button className={styles.cancelButton}>Cancel</button>
+          <button className={styles.submitButton} onClick={handleSubmit}>
             Create & Send Invite To New Admin
           </button>
         </div>

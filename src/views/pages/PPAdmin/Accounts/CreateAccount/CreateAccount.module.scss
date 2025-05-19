@@ -1,242 +1,292 @@
 .container {
-    display: flex;
-    flex-direction: row;
-    gap: 24px;
-    padding: 24px;
-    max-width: 1440px;
-    margin: 0 auto;
-  
-    @media (max-width: 1024px) {
-      flex-direction: column;
-    }
-  }
-  
-  .leftColumn,
-  .rightColumn {
-    flex: 1;
-    display: flex;
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  padding: 24px;
+  max-width: 1440px;
+  margin: 0 auto;
+
+  @media (max-width: 1024px) {
     flex-direction: column;
-    gap: 24px;
-    min-width: 0;
   }
-  
-  .section {
-    background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-  }
-  
-  .sectionHeader {
-    background-color: #f5f5f5;
-    padding: 16px 20px;
-    font-size: 16px;
-    font-weight: 600;
-    color: #333;
-    border-bottom: 1px solid #e0e0e0;
-  }
-  
-  .sectionContent {
-    padding: 20px;
-  }
-  
-  .formGroup {
-    margin-bottom: 16px;
-  
-    label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 500;
-      color: #333;
-    }
-  
-    input,
-    select {
-      width: 100%;
-      padding: 12px 6px;
-      border: 1px solid #e0e0e0;
-      border-radius: 4px;
-      font-size: 14px;
-      color: #333;
-  
-      &::placeholder {
-        color: #999;
-      }
-  
-      &:focus {
-        outline: none;
-        border-color: #0149b4;
-      }
-    }
-  }
-  
-  .error {
-    color: #ff0000;
-    font-size: 12px;
-    margin-top: 4px;
+}
+
+.leftColumn,
+.rightColumn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-width: 0;
+}
+
+.section {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.sectionHeader {
+  background-color: #f5f5f5;
+  padding: 16px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.sectionContent {
+  padding: 20px;
+}
+
+.formGroup {
+  margin-bottom: 16px;
+
+  label {
     display: block;
-  }
-  
-  .phoneInputContainer {
-    width: 100%;
-  
-    .phoneInputField {
-      width: 100%;
-      padding: 12px;
-      padding-left: 52px;
-      border: 1px solid #e0e0e0;
-      border-radius: 4px;
-      font-size: 14px;
-    }
-  }
-  
-  .uploadContainer {
-    display: flex;
-    gap: 12px;
-  
-    .uploadInput {
-      flex: 1;
-    }
-  
-    .uploadButton {
-      background-color: #0149b4;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      padding: 0 20px;
-      cursor: pointer;
-      white-space: nowrap;
-      font-weight: 500;
-  
-      &:hover {
-        background-color: #01327a;
-      }
-    }
-  }
-  
-  .colorSection {
-    margin-bottom: 20px;
-  
-    .colorHeader {
-      font-weight: 500;
-      margin-bottom: 12px;
-      color: #333;
-    }
-  
-    .colorInputs {
-      display: flex;
-      gap: 16px;
-  
-      @media (max-width: 768px) {
-        flex-direction: column;
-      }
-    }
-  
-    .colorGroup {
-      flex: 1;
-  
-      .colorLabel {
-        font-size: 14px;
-        color: #666;
-        margin-bottom: 8px;
-      }
-    }
-  }
-  
-  .linkSection {
-    display: flex;
-    gap: 16px;
-  
-    @media (max-width: 768px) {
-      flex-direction: column;
-    }
-  
-    .formGroup {
-      flex: 1;
-    }
-  }
-  
-  .uploadContractButton {
-    margin-top: 8px;
-  }
-  
-  .uploadFullButton {
-    background-color: #0149b4;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 14px;
-    cursor: pointer;
-    width: 100%;
-    font-size: 16px;
+    margin-bottom: 8px;
     font-weight: 500;
-  
-    &:hover {
-      background-color: #01327a;
-    }
-  }
-  
-  .actionButtons {
-    display: flex;
-    gap: 16px;
-    margin-top: 16px;
-  
-    @media (max-width: 768px) {
-      flex-direction: column;
-    }
-  }
-  
-  .cancelButton {
-    flex: 1;
-    background-color: #f5f5f5;
     color: #333;
+  }
+
+  input,
+  select {
+    width: 100%;
+    padding: 12px 16px;
     border: 1px solid #e0e0e0;
     border-radius: 4px;
-    padding: 14px;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: 500;
-    text-align: center;
-  
-    &:hover {
-      background-color: #e0e0e0;
+    font-size: 14px;
+    color: #333;
+    background-color: #ffffff;
+    box-sizing: border-box;
+
+    &::placeholder {
+      color: #999;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: #0149b4;
+      box-shadow: 0 0 0 2px rgba(1, 73, 180, 0.1);
+    }
+
+    &:disabled {
+      background-color: #f5f5f5;
+      color: #999;
+      cursor: not-allowed;
     }
   }
-  
-  .submitButton {
-    flex: 1;
-    background-color: #0149b4;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 14px;
+
+  select {
+    padding-right: 40px;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path fill='%23666' d='M6 8L0 2h12z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 12px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
     cursor: pointer;
-    font-size: 16px;
-    font-weight: 500;
-    text-align: center;
-  
-    &:hover {
-      background-color: #01327a;
+
+    &::-ms-expand {
+      display: none;
+    }
+
+    &:focus {
+      background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path fill='%230149b4' d='M6 8L0 2h12z'/></svg>");
+    }
+
+    option {
+      padding: 8px 12px;
+      background-color: #ffffff;
+      color: #333;
+
+      &:disabled {
+        color: #999;
+        background-color: #f5f5f5;
+      }
+
+      &:hover {
+        background-color: #f0f8ff;
+      }
     }
   }
-  
-  // Phone input specific styles
-  :global(.react-tel-input) {
+}
+
+.error {
+  color: #ff0000;
+  font-size: 12px;
+  margin-top: 4px;
+  display: block;
+}
+
+.phoneInputContainer {
+  width: 100%;
+
+  .phoneInputField {
     width: 100%;
-  }
-  
-  :global(.react-tel-input .form-control) {
-    width: 100%;
-    height: auto;
-    padding-top: 12px;
-    padding-bottom: 12px;
-    border-color: #e0e0e0;
+    padding: 12px;
+    padding-left: 52px;
+    border: 1px solid #e0e0e0;
     border-radius: 4px;
     font-size: 14px;
   }
-  
-  :global(.react-tel-input .flag-dropdown) {
-    border-color: #e0e0e0;
-    border-radius: 4px 0 0 4px;
-    background-color: #f5f5f5;
+}
+
+.uploadContainer {
+  display: flex;
+  gap: 12px;
+
+  .uploadInput {
+    flex: 1;
   }
+
+  .uploadButton {
+    background-color: #0149b4;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0 20px;
+    cursor: pointer;
+    white-space: nowrap;
+    font-weight: 500;
+
+    &:hover {
+      background-color: #01327a;
+    }
+  }
+}
+
+.colorSection {
+  margin-bottom: 20px;
+
+  .colorHeader {
+    font-weight: 500;
+    margin-bottom: 12px;
+    color: #333;
+  }
+
+  .colorInputs {
+    display: flex;
+    gap: 16px;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+    }
+  }
+
+  .colorGroup {
+    flex: 1;
+
+    .colorLabel {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 8px;
+    }
+  }
+}
+
+.linkSection {
+  display: flex;
+  gap: 16px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+
+  .formGroup {
+    flex: 1;
+  }
+}
+
+.uploadContractButton {
+  margin-top: 8px;
+}
+
+.uploadFullButton {
+  background-color: #0149b4;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 14px;
+  cursor: pointer;
+  width: 100%;
+  font-size: 16px;
+  font-weight: 500;
+
+  &:hover {
+    background-color: #01327a;
+  }
+}
+
+.actionButtons {
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+}
+
+.cancelButton {
+  flex: 1;
+  background-color: #f5f5f5;
+  color: #333;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 14px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  text-align: center;
+
+  &:hover {
+    background-color: #e0e0e0;
+  }
+}
+
+.submitButton {
+  flex: 1;
+  background-color: #0149b4;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 14px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  text-align: center;
+
+  &:hover {
+    background-color: #01327a;
+  }
+}
+
+.disabledInput {
+  background-color: #f5f5f5 !important;
+  color: #999 !important;
+  cursor: not-allowed !important;
+}
+
+// Phone input specific styles
+:global(.react-tel-input) {
+  width: 100%;
+}
+
+:global(.react-tel-input .form-control) {
+  width: 100%;
+  height: auto;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  border-color: #e0e0e0;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+:global(.react-tel-input .flag-dropdown) {
+  border-color: #e0e0e0;
+  border-radius: 4px 0 0 4px;
+  background-color: #f5f5f5;
+}
