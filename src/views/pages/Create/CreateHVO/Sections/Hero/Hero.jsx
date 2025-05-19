@@ -42,10 +42,16 @@ const HeroSection = ({
   const fileInputRef = useRef(null);
   const { saveHeroSection, loading: saveLoading } = useSaveHeroSection();
   const { updateHeroSection, loading: updateLoading } = useUpdateHeroSection();
+  const [isEditMode, setIsEditMode] = useState(false);
 
-  const loading = saveLoading || updateLoading;
+  //  const { saveHero, loading: saveLoading } = useSaveHeroSection(handleSave);
+  // const { updateHero, loading: updateLoading } = useUpdateHeader(handleSave);
+
+
+  const loading = isEditMode ? updateLoading : saveLoading;
   useEffect(() => {
     if (initialData) {
+      setIsEditMode(true);
       setHeroImg(initialData.hero_img || "");
       setHeadline1(initialData.headline1 || "");
       setHeadline1Color(initialData.headline1_color || "");
@@ -115,6 +121,17 @@ const HeroSection = ({
     onClose();
   };
 
+  const normalizeUrl = (url) => {
+    let input = url.trim();
+    // If input already starts with http:// or https://, return as is
+    if (/^https?:\/\//i.test(input)) {
+      return input;
+    }
+    // Otherwise, prepend https://
+    return 'https://' + input;
+  };
+
+
   const handleSave = useCallback(async () => {
     const heroSectionData = {
       templateId,
@@ -141,7 +158,7 @@ const HeroSection = ({
     };
 
     try {
-      if (initialData?.id) {
+      if (initialData?.id && isEditMode) {
         await updateHeroSection(initialData.id, heroSectionData);
       } else {
         await saveHeroSection(heroSectionData);
@@ -186,6 +203,9 @@ const HeroSection = ({
     onClose,
   ]);
 
+ 
+  
+ 
   return (
     <div className={styles.wrapper}>
       <div className={styles.container}>
@@ -333,12 +353,16 @@ const HeroSection = ({
                 onChange={setCtaButtonTextColor}
               />
               <InputField
-                placeholder="Enter Static URL"
-                value={ctaUrl}
-                onChange={(e) => {
-                  setCtaUrl(e.target.value);
-                }}
-              />
+                  placeholder="Enter Static URL"
+                  value={ctaUrl}
+                  onChange={(e) => {
+                    setCtaUrl(e.target.value);
+                  }}
+                  onBlur={(e) => {
+                    const normalized = normalizeUrl(e.target.value);
+                    setCtaUrl(normalized);
+                  }}
+                />
               <CategoryDropdown
                 options={dynamicURL.map((field) => ({
                   label: field,
@@ -375,8 +399,12 @@ const HeroSection = ({
                 placeholder="Enter Static URL"
                 value={demoUrl}
                 onChange={(e) => {
-                  setDemoUrl(e.target.value);
-                }}
+                    setDemoUrl(e.target.value);
+                  }}
+                  onBlur={(e) => {
+                    const normalized = normalizeUrl(e.target.value);
+                    setDemoUrl(normalized);
+                  }}
               />
               <CategoryDropdown
                 options={dynamicURL.map((field) => ({
@@ -405,7 +433,7 @@ const HeroSection = ({
             onClick={handleSave}
             disabled={loading}
           >
-            {loading ? "Saving..." : "Save"}
+            {loading ? "Saving..." : isEditMode ? "Update" : "Save"}
           </button>
 
           <button
