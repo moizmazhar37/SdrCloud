@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
+import { toast } from "react-toastify";
 import styles from "./AddUser.module.scss";
 import useCreateSdrcAdmin from "../UserManagement/Hooks/useCreateSDRC";
 
@@ -12,7 +13,6 @@ const AddUser = ({ show, onClose }) => {
     phone: "",
   });
 
-  const [errors, setErrors] = useState({});
   const {
     createAdmin,
     loading,
@@ -20,36 +20,36 @@ const AddUser = ({ show, onClose }) => {
     success,
   } = useCreateSdrcAdmin();
 
+  useEffect(() => {
+    if (success) {
+      toast.success("Admin created successfully!");
+      onClose();
+    }
+    if (apiError) {
+      toast.error(apiError.message || "Failed to create admin");
+    }
+  }, [success, apiError, onClose]);
+
   if (!show) return null;
 
   const validateForm = () => {
     const { firstName, lastName, email } = formData;
-    const newErrors = {};
+    const nameRegex = /^[a-zA-Z0-9]{2,50}$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (
-      !firstName ||
-      firstName.length < 2 ||
-      firstName.length > 50 ||
-      !/^[a-zA-Z0-9]+$/.test(firstName)
-    )
-      newErrors.firstName =
-        "Admin first name is required and must be between 2 and 50 characters, containing only alphabetic or alphanumeric characters.";
-
-    if (
-      !lastName ||
-      lastName.length < 2 ||
-      lastName.length > 50 ||
-      !/^[a-zA-Z0-9]+$/.test(lastName)
-    )
-      newErrors.lastName =
-        "Admin last name is required and must be between 2 and 50 characters, containing only alphabetic or alphanumeric characters.";
-
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
-      newErrors.email =
-        "A valid email address is required (e.g., user@example.com).";
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    if (!nameRegex.test(firstName)) {
+      toast.error("First name must be 2-50 characters, alphanumeric only");
+      return false;
+    }
+    if (!nameRegex.test(lastName)) {
+      toast.error("Last name must be 2-50 characters, alphanumeric only");
+      return false;
+    }
+    if (!emailRegex.test(email)) {
+      toast.error("Please enter a valid email address");
+      return false;
+    }
+    return true;
   };
 
   const handleChange = (e) => {
@@ -60,9 +60,6 @@ const AddUser = ({ show, onClose }) => {
     e.preventDefault();
     if (validateForm()) {
       await createAdmin(formData);
-      if (success) {
-        onClose();
-      }
     }
   };
 
@@ -87,10 +84,8 @@ const AddUser = ({ show, onClose }) => {
               placeholder="Enter SDRCloud.ai Admin First Name"
               value={formData.firstName}
               onChange={handleChange}
+              required
             />
-            {errors.firstName && (
-              <span className={styles.error}>{errors.firstName}</span>
-            )}
           </div>
 
           <div className={styles.formGroup}>
@@ -101,10 +96,8 @@ const AddUser = ({ show, onClose }) => {
               placeholder="Enter SDRCloud.ai Admin Last Name"
               value={formData.lastName}
               onChange={handleChange}
+              required
             />
-            {errors.lastName && (
-              <span className={styles.error}>{errors.lastName}</span>
-            )}
           </div>
 
           <div className={styles.formGroup}>
@@ -115,10 +108,8 @@ const AddUser = ({ show, onClose }) => {
               placeholder="Enter SDRCloud.ai Admin Email"
               value={formData.email}
               onChange={handleChange}
+              required
             />
-            {errors.email && (
-              <span className={styles.error}>{errors.email}</span>
-            )}
           </div>
 
           <div className={styles.formGroup}>
@@ -130,11 +121,6 @@ const AddUser = ({ show, onClose }) => {
               inputClass={styles.phoneInput}
             />
           </div>
-
-          {loading && <p className={styles.loading}>Creating admin...</p>}
-          {success && (
-            <p className={styles.success}>Admin created successfully!</p>
-          )}
 
           <div className={styles.buttons}>
             <button
@@ -149,7 +135,7 @@ const AddUser = ({ show, onClose }) => {
               className={styles.submitBtn}
               disabled={loading}
             >
-              Create & Send Invite
+              {loading ? "Creating..." : "Create & Send Invite"}
             </button>
           </div>
         </form>

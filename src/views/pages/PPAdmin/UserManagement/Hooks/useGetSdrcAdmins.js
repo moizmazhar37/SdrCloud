@@ -7,7 +7,6 @@ const useGetSdrcAdmins = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  console.log("-0-0-0-0--0", admin);
   useEffect(() => {
     const fetchData = async () => {
       const token = localStorage.getItem("token");
