@@ -76,8 +76,6 @@ const PPuserlist = () => {
           <div>
             <Loader />
           </div>
-        ) : error ? (
-          <p>Error loading users: {error.message}</p>
         ) : (
           <Table headers={headers} data={transformedData} />
         )}
