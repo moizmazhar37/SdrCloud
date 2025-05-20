@@ -1,0 +1,11 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+}
+
+.usernameLink {
+  color: blue;
+  cursor: pointer;
+  text-decoration: underline;
+}

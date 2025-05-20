@@ -533,6 +533,15 @@ export const routes = [
   },
   {
     exact: true,
+    path: "/SDRC-dashboard",
+    guard: true,
+    layout: DashboardLayout,
+    component: lazy(() =>
+      import("src/views/pages/PPAdmin/LandingPage/LandingPage")
+    ),
+  },
+  {
+    exact: true,
     path: "/View-PP-createaccount",
     // guard: true,
     layout: DashboardLayout,
