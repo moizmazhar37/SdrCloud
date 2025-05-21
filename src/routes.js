@@ -3,6 +3,11 @@ import { Redirect } from "react-router-dom";
 import DashboardLayout from "src/layouts/DashboardLayout";
 import LoginLayout from "./layouts/LoginLayout";
 import AuthLayout from "./layouts/AuthLayout";
+import withRoleGuard from "./withRoleGuard";
+
+const AdminDashboard = lazy(() =>
+  import("src/views/pages/DashboardAdmin/AdminDashboard/AdminDashboard")
+);
 
 export const routes = [
   {
@@ -52,24 +57,6 @@ export const routes = [
     component: lazy(() => import("src/views/pages/ResetPassword/Index")),
   },
 
-  // New URL for Routes
-  // {
-  //   exact: true,
-  //   path: "/dashboard",
-  //   guard: true,
-  //   layout: DashboardLayout,
-  //   component: lazy(() => import("src/views/pages/DashboardAdmin/index")),
-  // },
-
-  {
-    exact: true,
-    path: "/old-dashboard",
-    guard: true,
-    layout: DashboardLayout,
-    component: lazy(() =>
-      import("src/views/pages/DashboardAdmin/MainDashboard/MainDashboard")
-    ),
-  },
   {
     exact: true,
     path: "/leads",
@@ -606,27 +593,12 @@ export const routes = [
     component: lazy(() => import("src/views/pages/PPAdmin/ChangePassword")),
   },
 
-  // For Users
-  // {
-  //   exact: true,
-  //   path: "/user-dashboard",
-  //   guard: true,
-  //   layout: DashboardLayout,
-  //   // component: lazy(() => import("src/views/pages/DashboardUser/index")),
-  //   component: lazy(() =>
-  //     import("src/views/pages/DashboardAdmin/MainDashboard/MainDashboard")
-  //   ),
-  // },
-  //updated admin dashboard
   {
     exact: true,
     path: "/dashboard",
     guard: true,
     layout: DashboardLayout,
-    // component: lazy(() => import("src/views/pages/DashboardUser/index")),
-    component: lazy(() =>
-      import("src/views/pages/DashboardAdmin/AdminDashboard/AdminDashboard")
-    ),
+    component: withRoleGuard(AdminDashboard, ["SUBADMIN", "SDRC_ADMIN"]),
   },
 
   {

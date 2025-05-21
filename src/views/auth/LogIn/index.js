@@ -145,14 +145,14 @@ const Login = () => {
     if (auth.userLoggedIn === true) {
       const userType = localStorage.getItem("userType");
       if (userType === "USER") {
-        history.push("/CreateTemplate"); // Changed from navigate to history.push
+        history.push("/CreateTemplate");
       } else if (userType === "ADMIN") {
-        history.push("/PP-createaccount"); // Changed from navigate to history.push
+        history.push("/PP-createaccount");
       } else if (userType === "SUBADMIN") {
-        history.push("/dashboard"); // Changed from navigate to history.push
+        history.push("/dashboard");
       }
     }
-  }, [auth.userLoggedIn, history]); // Changed navigate to history in dependency array
+  }, [auth.userLoggedIn, history]);
 
   return (
     <div className={styles.loginContainer}>
