@@ -98,6 +98,9 @@ const Login = () => {
           } else if (userType === "SUBADMIN") {
             history.push("/dashboard");
             toast.success(response?.data?.message);
+          } else if ((userType = "SDRC_ADMIN")) {
+            toast.success(response?.data?.message);
+            history.push("/sdrc-dashboard");
           }
         }
 
@@ -150,6 +153,8 @@ const Login = () => {
         history.push("/PP-createaccount");
       } else if (userType === "SUBADMIN") {
         history.push("/dashboard");
+      } else if (userType === "SDRC_ADMIN") {
+        history.push("/sdrc-dashboard");
       }
     }
   }, [auth.userLoggedIn, history]);

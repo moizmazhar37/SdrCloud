@@ -161,8 +161,9 @@ export default function AuthProvider(props) {
       });
       if (res?.status === 200) {
         const data = res?.data;
-
-        localStorage.setItem("tenant_id", data?.tenant_id);
+        const userType = localStorage.getItem("userType");
+        if (userType == "SUBADMIN" || userType == "USER")
+          localStorage.setItem("tenant_id", data?.tenant_id);
 
         setProfileData(data);
       }
@@ -177,38 +178,16 @@ export default function AuthProvider(props) {
       }
     }
   };
-  // Function to get logo or cover data
-  // const getHandlerLogoOrCover = async () => {
-  //   const token = localStorage.getItem("token");
-  //   try {
-  //     const id = localStorage.getItem("coverId");
-  //     const response = await axios({
-  //       method: "GET",
-  //       url: ApiConfig.getLogoOrCover,
-  //       headers: {
-  //         Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //         userId: localStorage.getItem("_id"),
-  //       },
-  //     });
-  //     if (response.data.responseCode === 200) {
-  //       setCoverData(response.data.result);
-  //     }
-  //   } catch (error) {
-  //     console.log(error, "error");
-  //   }
-  // };
-  // Use effect to fetch data when the user is logged in
-  useEffect(() => {
-    if (auth.userLoggedIn === true) {
-      getProfilehandler();
-      // getHandlerLogoOrCover();
-      getVdoCategories();
-    }
-    // else {
-    //   history.push("/");
-    //   // toast.success("Session Logout");
 
-    // }
+  useEffect(() => {
+    const userType = localStorage.getItem("userType");
+
+    if (auth.userLoggedIn === true) {
+      if (userType == "SUBADMIN" || userType == "USER") {
+        getVdoCategories();
+      }
+      getProfilehandler();
+    }
   }, [auth?.userLoggedIn]);
   // Update search results
   const updateSearchResults = (results) => {

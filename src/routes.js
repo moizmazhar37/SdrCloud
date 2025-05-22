@@ -9,6 +9,10 @@ const AdminDashboard = lazy(() =>
   import("src/views/pages/DashboardAdmin/AdminDashboard/AdminDashboard")
 );
 
+const SdrcDashboardWrapper = lazy(() =>
+  import("src/views/pages/SdrcAdmin/SdrcDashboardWrapper")
+);
+
 export const routes = [
   {
     exact: true,
@@ -524,7 +528,7 @@ export const routes = [
     guard: true,
     layout: DashboardLayout,
     component: lazy(() =>
-      import("src/views/pages/PPAdmin/LandingPage/LandingPage")
+      import("src/views/pages/SdrcAdmin/LandingPage/LandingPage")
     ),
   },
   {
@@ -598,7 +602,11 @@ export const routes = [
     path: "/dashboard",
     guard: true,
     layout: DashboardLayout,
-    component: withRoleGuard(AdminDashboard, ["SUBADMIN", "SDRC_ADMIN"]),
+    component: withRoleGuard(AdminDashboard, [
+      "SUBADMIN",
+      "SDRC_ADMIN",
+      "USER",
+    ]),
   },
 
   {
@@ -686,6 +694,16 @@ export const routes = [
       )
     ),
   },
+
+  //=========================================SDRC ADMIN=======================================
+  {
+    exact: true,
+    path: "/sdrc-tenant-insights",
+    guard: true,
+    layout: DashboardLayout,
+    component: withRoleGuard(SdrcDashboardWrapper, ["SDRC_ADMIN"]),
+  },
+
   {
     exact: true,
     path: "/company-setting",

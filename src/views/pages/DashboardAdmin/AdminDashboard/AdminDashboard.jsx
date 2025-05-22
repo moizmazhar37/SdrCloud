@@ -18,50 +18,76 @@ import ToastManager from "src/Common/AlertToast/ToastManager/ToastManager";
 import ProspectDashboardTable from "../ProspectDashboardTable/ProspectDashboardTable";
 import MeetingsTable from "./MeetingsTable/MeetingsTable";
 
-const AdminDashboard = () => {
+const AdminDashboard = ({
+  externalData = null,
+  onDateRangeChange: externalDateRangeChange = null,
+  initialDateRange = { startDate: null, endDate: null },
+}) => {
+  const userType = localStorage.getItem("userType");
   const [toastMessages, setToastMessages] = useState([]);
-  const [dateRange, setDateRange] = useState({
-    startDate: null,
-    endDate: null,
-  });
+  const [dateRange, setDateRange] = useState(initialDateRange);
   const [isPopUpOpen, setIsPopUpOpen] = useState(false);
   const [popupHeading, setPopupHeading] = useState("");
   const { downloadCSV, loading: csvLoading } = useDownloadCSV();
+
+  // Only make API calls if external data is not provided
+  const shouldMakeApiCalls = !externalData;
 
   // Get mini graph data for popup - pass date range parameters
   const {
     data: miniGraphData,
     loading: miniGraphLoading,
     error: miniGraphError,
-  } = useGetMiniGraphData(popupHeading, dateRange.startDate, dateRange.endDate);
+  } = useGetMiniGraphData(
+    shouldMakeApiCalls ? popupHeading : null,
+    shouldMakeApiCalls ? dateRange.startDate : null,
+    shouldMakeApiCalls ? dateRange.endDate : null
+  );
 
   const {
     data: dashboardData,
     loading: dashboardLoading,
     error: dashboardError,
-  } = useGetAdminDashboard(dateRange.startDate, dateRange.endDate);
-  console.log(dashboardData);
-  //Get Alerts for user
+  } = useGetAdminDashboard(
+    shouldMakeApiCalls ? dateRange.startDate : null,
+    shouldMakeApiCalls ? dateRange.endDate : null
+  );
+
+  // Use external data if provided, otherwise use API data
+  const currentDashboardData = externalData || dashboardData;
+  const currentLoading = externalData ? false : dashboardLoading;
+
+  console.log(currentDashboardData);
+
+  //Get Alerts for user - only if making API calls
   const {
     data: alerts = [],
     loading: alertsLoading,
     error: alertsError,
-  } = useGetRealTimeAlerts();
+  } = useGetRealTimeAlerts(shouldMakeApiCalls);
 
   useEffect(() => {
-    if (alerts && alerts.length > 0 && !alertsLoading) {
+    if (alerts && alerts.length > 0 && !alertsLoading && shouldMakeApiCalls) {
       setToastMessages(alerts);
     }
-  }, [alerts, alertsLoading]);
+  }, [alerts, alertsLoading, shouldMakeApiCalls]);
 
   const handleDateRangeChange = (newDateRange) => {
     console.log("Date range updated:", newDateRange);
     setDateRange(newDateRange);
+
+    // Call external date range change handler if provided
+    if (externalDateRangeChange) {
+      externalDateRangeChange(newDateRange);
+    }
   };
 
   const handleCardClick = (heading) => {
-    setPopupHeading(heading);
-    setIsPopUpOpen(true);
+    // Only handle card clicks if making API calls (popup functionality)
+    if (shouldMakeApiCalls) {
+      setPopupHeading(heading);
+      setIsPopUpOpen(true);
+    }
   };
 
   const closePopup = () => {
@@ -69,7 +95,7 @@ const AdminDashboard = () => {
     setPopupHeading(""); // Reset heading when closing popup
   };
 
-  if (dashboardLoading)
+  if (currentLoading)
     return (
       <div className={styles.loader}>
         <Loader size={160} />
@@ -77,7 +103,7 @@ const AdminDashboard = () => {
     );
 
   // Only render the dashboard when data is available
-  if (!dashboardData) {
+  if (!currentDashboardData) {
     return null;
   }
 
@@ -98,7 +124,7 @@ const AdminDashboard = () => {
     topUsersData,
     topTemplatesData,
     prospect_list_data = [], // Default to empty array if not provided
-  } = dashboardData;
+  } = currentDashboardData;
 
   const growthRates_metrics = metrics?.growth_rates;
   const growthRates_summaryStats = summaryStats?.growth_rates;
@@ -127,6 +153,7 @@ const AdminDashboard = () => {
     }
     return value;
   };
+
   return (
     <div className={styles.dashboardContainer}>
       {/* Header Section with Support Contact and Action Buttons */}
@@ -158,13 +185,13 @@ const AdminDashboard = () => {
         <Card
           heading="Active Users"
           amount={formatAmount(metrics.activeUsers)}
-          isClickable={true}
+          isClickable={shouldMakeApiCalls}
           onClick={() => handleCardClick("Active Users")}
         />
         <Card
           heading="Available Seats"
           amount={formatAmount(metrics.availableSeats)}
-          isClickable={true}
+          isClickable={shouldMakeApiCalls}
           onClick={() => handleCardClick("Available Seats")}
         />
         <Card
@@ -184,7 +211,7 @@ const AdminDashboard = () => {
         <Card
           heading="Sheets Connected"
           amount={formatAmount(metrics.sheetsConnected)}
-          isClickable={true}
+          isClickable={shouldMakeApiCalls}
           onClick={() => handleCardClick("Sheets Connected")}
           {...(growthRates_metrics?.sheetsConnected !== null && {
             change: growthRates_metrics?.sheetsConnected,
@@ -193,7 +220,7 @@ const AdminDashboard = () => {
         <Card
           heading="Templates Generated"
           amount={formatAmount(metrics.templatesGenerated)}
-          isClickable={true}
+          isClickable={shouldMakeApiCalls}
           onClick={() => handleCardClick("Templates Generated")}
           {...(growthRates_metrics?.templatesGenerated !== null && {
             change: growthRates_metrics?.templatesGenerated,
@@ -219,7 +246,7 @@ const AdminDashboard = () => {
           <Card
             heading="Prospects Added"
             amount={formatAmount(summaryStats.prospectsAdded)}
-            isClickable={true}
+            isClickable={shouldMakeApiCalls}
             onClick={() => handleCardClick("Prospects Added")}
             {...(growthRates_summaryStats?.prospectsAdded !== null && {
               change: growthRates_summaryStats?.prospectsAdded,
@@ -249,7 +276,7 @@ const AdminDashboard = () => {
           <Card
             heading="Visitors Identified"
             amount={formatAmount(summaryStats.visitorsIdentified)}
-            isClickable={true}
+            isClickable={shouldMakeApiCalls}
             onClick={() => handleCardClick("Visitors Identified")}
             {...(growthRates_summaryStats?.visitorsIdentified !== null && {
               change: growthRates_summaryStats?.visitorsIdentified,
@@ -317,19 +344,20 @@ const AdminDashboard = () => {
           )}
         </div>
       </div>
+      {userType != "SDRC_ADMIN" && <MeetingsTable />}
 
-      <MeetingsTable />
-
-      {/* Popup component */}
-      <CardPopUpGraph
-        isOpen={isPopUpOpen}
-        onClose={closePopup}
-        heading={popupHeading}
-        graphData={miniGraphData}
-        loading={miniGraphLoading}
-        error={miniGraphError}
-        dateRange={dateRange}
-      />
+      {/* Popup component - only render if making API calls */}
+      {shouldMakeApiCalls && (
+        <CardPopUpGraph
+          isOpen={isPopUpOpen}
+          onClose={closePopup}
+          heading={popupHeading}
+          graphData={miniGraphData}
+          loading={miniGraphLoading}
+          error={miniGraphError}
+          dateRange={dateRange}
+        />
+      )}
 
       <ToastManager toastMessages={toastMessages} />
     </div>
