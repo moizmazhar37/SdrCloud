@@ -33,7 +33,7 @@ const ImageUpload = ({
   const { createVideoSection, loading: createLoading } =
     useCreateVideoSection();
   const { updateVideoSection, loading: updateLoading } =
-    useUpdateVideoSection(); // Loading state for update
+    useUpdateVideoSection();
   const imageInputRef = useRef(null);
   const audioInputRef = useRef(null);
 
