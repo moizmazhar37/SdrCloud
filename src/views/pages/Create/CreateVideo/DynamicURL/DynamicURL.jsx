@@ -26,6 +26,9 @@ const DynamicURL = ({
   const [audioDescription, setAudioDescription] = useState(
     editData?.audioDescription || ""
   );
+  const [selectedVoiceModel, setSelectedVoiceModel] = useState(
+    editData?.selectedVoiceModel || null
+  );
   const [loading, setLoading] = useState(false);
   const [showAudioDescModal, setShowAudioDescModal] = useState(false);
 
@@ -42,6 +45,7 @@ const DynamicURL = ({
       setAudioFile(editData.audio || null);
       setAudioTitle(editData.audio?.name || "");
       setAudioDescription(editData.audioDescription || "");
+      setSelectedVoiceModel(editData.selectedVoiceModel || null);
     }
   }, [editData]);
 
@@ -67,8 +71,9 @@ const DynamicURL = ({
     setShowAudioDescModal(true);
   };
 
-  const handleAudioDescriptionSave = (description) => {
-    setAudioDescription(description);
+  const handleAudioDescriptionSave = (descriptionData) => {
+    setAudioDescription(descriptionData.audioDesc);
+    setSelectedVoiceModel(descriptionData.selectedVoiceModel);
     setShowAudioDescModal(false);
   };
 
@@ -98,6 +103,7 @@ const DynamicURL = ({
       audioEmbedded: !!audioFile,
       scroll: selectedType === "Yes",
       audioDescription: audioDescription,
+      audioAccent: selectedVoiceModel?.dev_name || null,
       firstRowValue: null,
       isDynamic: true,
       value: selectedURL,
@@ -245,6 +251,8 @@ const DynamicURL = ({
       {showAudioDescModal && (
         <AudioDescModal
           dynamicFields={audioCategories}
+          initialAudioDesc={audioDescription}
+          initialVoiceModel={selectedVoiceModel}
           onSave={handleAudioDescriptionSave}
           onClose={() => setShowAudioDescModal(false)}
         />

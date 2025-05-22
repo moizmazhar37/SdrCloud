@@ -23,6 +23,7 @@ const StaticURL = ({
   const [audioFile, setAudioFile] = useState(null);
   const [audioTitle, setAudioTitle] = useState("");
   const [audioDescription, setAudioDescription] = useState("");
+  const [selectedVoiceModel, setSelectedVoiceModel] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [dropdownKey, setDropdownKey] = useState(0);
   const [showAudioDescModal, setShowAudioDescModal] = useState(false);
@@ -42,6 +43,7 @@ const StaticURL = ({
       setAudioFile(editData.audio || null);
       setAudioTitle(editData.audio?.name || "");
       setAudioDescription(editData.audioDescription || "");
+      setSelectedVoiceModel(editData.selectedVoiceModel || null);
       setSelectedCategory(editData.sectionName || null);
       setDropdownKey((prev) => prev + 1);
     } else {
@@ -51,6 +53,7 @@ const StaticURL = ({
       setAudioFile(null);
       setAudioTitle("");
       setAudioDescription("");
+      setSelectedVoiceModel(null);
       setSelectedCategory(null);
     }
   }, [editData]);
@@ -96,8 +99,9 @@ const StaticURL = ({
     setShowAudioDescModal(true);
   };
 
-  const handleAudioDescriptionSave = (description) => {
-    setAudioDescription(description);
+  const handleAudioDescriptionSave = (descriptionData) => {
+    setAudioDescription(descriptionData.audioDesc);
+    setSelectedVoiceModel(descriptionData.selectedVoiceModel);
     setShowAudioDescModal(false);
   };
 
@@ -129,6 +133,7 @@ const StaticURL = ({
       audioEmbedded: !!audioFile,
       scroll: selectedType === "Yes",
       audioDescription: audioDescription,
+      audioAccent: selectedVoiceModel?.dev_name || null,
       firstRowValue: null,
       isDynamic: !!selectedCategory,
       value: url,
@@ -300,6 +305,8 @@ const StaticURL = ({
       {showAudioDescModal && (
         <AudioDescModal
           dynamicFields={audioCategories}
+          initialAudioDesc={audioDescription}
+          initialVoiceModel={selectedVoiceModel}
           onSave={handleAudioDescriptionSave}
           onClose={() => setShowAudioDescModal(false)}
         />

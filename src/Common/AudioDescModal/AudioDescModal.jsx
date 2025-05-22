@@ -1,10 +1,17 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styles from "./AudioDescModal.module.scss";
 
-const AudioDescModal = ({ dynamicFields, onSave, onClose }) => {
-  const [audioDesc, setAudioDesc] = useState("");
+const AudioDescModal = ({
+  dynamicFields,
+  onSave,
+  onClose,
+  initialAudioDesc = "",
+  initialVoiceModel = null,
+}) => {
+  const [audioDesc, setAudioDesc] = useState(initialAudioDesc);
   const [selectedFields, setSelectedFields] = useState([]);
-  const [selectedVoiceModel, setSelectedVoiceModel] = useState(null);
+  const [selectedVoiceModel, setSelectedVoiceModel] =
+    useState(initialVoiceModel);
   const audioRef = useRef(null);
 
   const voiceModels = [
@@ -34,6 +41,12 @@ const AudioDescModal = ({ dynamicFields, onSave, onClose }) => {
       url: "https://storage.googleapis.com/static-data-for-sdrc/uploads/e0653e5d-a70a-41e0-9706-4764f27ae886/en-US-AriaNeural_20250522071610.mp3",
     },
   ];
+
+  // Initialize state with initial values
+  useEffect(() => {
+    setAudioDesc(initialAudioDesc);
+    setSelectedVoiceModel(initialVoiceModel);
+  }, [initialAudioDesc, initialVoiceModel]);
 
   const handleFieldSelect = (field) => {
     setSelectedFields([...selectedFields, `[${field}]`]);

@@ -23,6 +23,7 @@ const ImageUpload = ({
   const [duration, setDuration] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [audioDescription, setAudioDescription] = useState("");
+  const [selectedVoiceModel, setSelectedVoiceModel] = useState(null);
   const [audioFileName, setAudioFileName] = useState("");
   const [scroll, setScroll] = useState(null);
   const [dropdownKey, setDropdownKey] = useState(0);
@@ -50,6 +51,7 @@ const ImageUpload = ({
       setDuration(editData.duration || "");
       setScroll(editData.scroll || false);
       setAudioDescription(editData.audioDescription || "");
+      setSelectedVoiceModel(editData.selectedVoiceModel || null);
       setCurrentEditData(editData);
     } else {
       setImageFile(null);
@@ -59,6 +61,7 @@ const ImageUpload = ({
       setDuration("");
       setSelectedCategory(null);
       setAudioDescription("");
+      setSelectedVoiceModel(null);
       setScroll(null);
       setCurrentEditData(null);
     }
@@ -74,6 +77,7 @@ const ImageUpload = ({
       setDuration("");
       setSelectedCategory(null);
       setAudioDescription("");
+      setSelectedVoiceModel(null);
       setScroll(null);
       setDropdownKey((prev) => prev + 1);
     }
@@ -122,8 +126,9 @@ const ImageUpload = ({
     setShowAudioDescModal(true);
   };
 
-  const handleAudioDescriptionSave = (description) => {
-    setAudioDescription(description);
+  const handleAudioDescriptionSave = (descriptionData) => {
+    setAudioDescription(descriptionData.audioDesc);
+    setSelectedVoiceModel(descriptionData.selectedVoiceModel);
     setShowAudioDescModal(false);
   };
 
@@ -139,6 +144,7 @@ const ImageUpload = ({
       audioEmbedded: !!audioFile,
       scroll: scroll,
       audioDescription: audioDescription,
+      audioAccent: selectedVoiceModel?.dev_name || null,
       firstRowValue: null,
       isDynamic: !!selectedCategory, // True if category selected, false if URL or file
       file: imageFile,
@@ -296,6 +302,11 @@ const ImageUpload = ({
               <span>{audioFileName}</span>
             </div>
           )}
+          {selectedVoiceModel && (
+            <div className={styles.selectedVoiceModel}>
+              <span>Selected Voice: {selectedVoiceModel.name}</span>
+            </div>
+          )}
 
           <div className={styles.actionButtons}>
             <button
@@ -323,7 +334,8 @@ const ImageUpload = ({
       {showAudioDescModal && (
         <AudioDescModal
           dynamicFields={audioCategories}
-          initialValue={audioDescription}
+          initialAudioDesc={audioDescription}
+          initialVoiceModel={selectedVoiceModel}
           onSave={handleAudioDescriptionSave}
           onClose={() => setShowAudioDescModal(false)}
         />
