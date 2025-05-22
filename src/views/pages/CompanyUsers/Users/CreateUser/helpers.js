@@ -1,4 +1,3 @@
-
 export const resetForm = (setFormData, setErrors) => {
   setFormData({
     firstName: "",
@@ -8,7 +7,7 @@ export const resetForm = (setFormData, setErrors) => {
     title: "",
     linkedinUrl: "",
     meetingLink: "",
-    tokens: ""
+    tokens: "",
   });
   setErrors({});
 };
@@ -19,7 +18,12 @@ export const validateField = (name, value) => {
       if (!value || value.trim() === "") {
         return "First name is required.";
       }
-      if (!/^[^\d\W]/.test(value) || value.length < 2 || value.length > 50 || !/^[a-zA-Z0-9\s-_]+$/.test(value)) {
+      if (
+        !/^[^\d\W]/.test(value) ||
+        value.length < 2 ||
+        value.length > 50 ||
+        !/^[a-zA-Z0-9\s-_]+$/.test(value)
+      ) {
         return "First name must start with a letter, be between 2 and 50 characters, and contain only alphanumeric or special characters.";
       }
       break;
@@ -27,7 +31,12 @@ export const validateField = (name, value) => {
       if (!value || value.trim() === "") {
         return "Last name is required.";
       }
-      if (!/^[^\d\W]/.test(value) || value.length < 2 || value.length > 50 || !/^[a-zA-Z0-9\s-_]+$/.test(value)) {
+      if (
+        !/^[^\d\W]/.test(value) ||
+        value.length < 2 ||
+        value.length > 50 ||
+        !/^[a-zA-Z0-9\s-_]+$/.test(value)
+      ) {
         return "Last name must start with a letter, be between 2 and 50 characters, and contain only alphanumeric or special characters.";
       }
       break;
@@ -63,9 +72,6 @@ export const validateField = (name, value) => {
       }
       break;
     case "tokens":
-      if (!value) {
-        return "Tokens are required.";
-      }
       if (isNaN(value) || parseInt(value) < 0) {
         return "Please enter a valid number of tokens.";
       }
@@ -89,9 +95,17 @@ export const handleBlur = (e, setErrors) => {
   setErrors((prev) => ({ ...prev, [name]: error }));
 };
 
-export const handleSubmit = async (formData, validateField, setErrors, createUser, toast, resetForm, onSuccess) => {
+export const handleSubmit = async (
+  formData,
+  validateField,
+  setErrors,
+  createUser,
+  toast,
+  resetForm,
+  onSuccess
+) => {
   const validationErrors = {};
-  Object.keys(formData).forEach(field => {
+  Object.keys(formData).forEach((field) => {
     const error = validateField(field, formData[field]);
     if (error) validationErrors[field] = error;
   });
@@ -103,14 +117,13 @@ export const handleSubmit = async (formData, validateField, setErrors, createUse
 
   try {
     await createUser(formData);
-    toast.success('User created successfully');
+    toast.success("User created successfully");
     resetForm();
     if (onSuccess) {
       onSuccess();
     }
   } catch (err) {
-    toast.error(err.response?.data?.detail || 'Failed to create user');
-    console.error('Failed to create user:', err);
+    toast.error(err.response?.data?.detail || "Failed to create user");
+    console.error("Failed to create user:", err);
   }
 };
-
