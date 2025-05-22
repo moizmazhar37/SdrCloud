@@ -204,13 +204,17 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
 }
 
-.loading {
+.loaderContainer {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 300px;
-  font-size: 18px;
-  color: #64748b;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #fff;
+  z-index: 9999;
 }
 
 .error {

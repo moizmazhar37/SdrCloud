@@ -3,6 +3,7 @@ import { useHistory } from "react-router-dom";
 import styles from "./LandingPage.module.scss";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Loader from "src/Common/Loader/Loader";
 import useGetSdrcAdminTenants from "./Hooks/useGetSdrcAdminTenants";
 
 const LandingPage = () => {
@@ -15,7 +16,11 @@ const LandingPage = () => {
   };
 
   if (loading) {
-    return <div className={styles.loading}>Loading...</div>;
+    return (
+      <div className={styles.loaderContainer}>
+        <Loader size={160} />
+      </div>
+    );
   }
 
   return (
