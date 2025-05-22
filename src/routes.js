@@ -3,6 +3,15 @@ import { Redirect } from "react-router-dom";
 import DashboardLayout from "src/layouts/DashboardLayout";
 import LoginLayout from "./layouts/LoginLayout";
 import AuthLayout from "./layouts/AuthLayout";
+import withRoleGuard from "./withRoleGuard";
+
+const AdminDashboard = lazy(() =>
+  import("src/views/pages/DashboardAdmin/AdminDashboard/AdminDashboard")
+);
+
+const SdrcDashboardWrapper = lazy(() =>
+  import("src/views/pages/SdrcAdmin/SdrcDashboardWrapper")
+);
 
 export const routes = [
   {
@@ -52,24 +61,6 @@ export const routes = [
     component: lazy(() => import("src/views/pages/ResetPassword/Index")),
   },
 
-  // New URL for Routes
-  // {
-  //   exact: true,
-  //   path: "/dashboard",
-  //   guard: true,
-  //   layout: DashboardLayout,
-  //   component: lazy(() => import("src/views/pages/DashboardAdmin/index")),
-  // },
-
-  {
-    exact: true,
-    path: "/old-dashboard",
-    guard: true,
-    layout: DashboardLayout,
-    component: lazy(() =>
-      import("src/views/pages/DashboardAdmin/MainDashboard/MainDashboard")
-    ),
-  },
   {
     exact: true,
     path: "/leads",
@@ -533,6 +524,15 @@ export const routes = [
   },
   {
     exact: true,
+    path: "/SDRC-dashboard",
+    guard: true,
+    layout: DashboardLayout,
+    component: lazy(() =>
+      import("src/views/pages/SdrcAdmin/LandingPage/LandingPage")
+    ),
+  },
+  {
+    exact: true,
     path: "/View-PP-createaccount",
     // guard: true,
     layout: DashboardLayout,
@@ -597,27 +597,16 @@ export const routes = [
     component: lazy(() => import("src/views/pages/PPAdmin/ChangePassword")),
   },
 
-  // For Users
-  // {
-  //   exact: true,
-  //   path: "/user-dashboard",
-  //   guard: true,
-  //   layout: DashboardLayout,
-  //   // component: lazy(() => import("src/views/pages/DashboardUser/index")),
-  //   component: lazy(() =>
-  //     import("src/views/pages/DashboardAdmin/MainDashboard/MainDashboard")
-  //   ),
-  // },
-  //updated admin dashboard
   {
     exact: true,
     path: "/dashboard",
     guard: true,
     layout: DashboardLayout,
-    // component: lazy(() => import("src/views/pages/DashboardUser/index")),
-    component: lazy(() =>
-      import("src/views/pages/DashboardAdmin/AdminDashboard/AdminDashboard")
-    ),
+    component: withRoleGuard(AdminDashboard, [
+      "SUBADMIN",
+      "SDRC_ADMIN",
+      "USER",
+    ]),
   },
 
   {
@@ -705,6 +694,16 @@ export const routes = [
       )
     ),
   },
+
+  //=========================================SDRC ADMIN=======================================
+  {
+    exact: true,
+    path: "/sdrc-tenant-insights",
+    guard: true,
+    layout: DashboardLayout,
+    component: withRoleGuard(SdrcDashboardWrapper, ["SDRC_ADMIN"]),
+  },
+
   {
     exact: true,
     path: "/company-setting",

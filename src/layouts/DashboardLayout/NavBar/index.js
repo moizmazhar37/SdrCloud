@@ -52,6 +52,17 @@ const getNavSections = (userType) => {
         ],
       },
     ],
+    SDRC_ADMIN: [
+      {
+        items: [
+          {
+            title: "Dashboard",
+            icon: "images/template/dashboard.svg",  
+            href: "/SDRC-dashboard",
+          },
+        ]
+      }
+    ],
     SUBADMIN: [
       {
         items: [
