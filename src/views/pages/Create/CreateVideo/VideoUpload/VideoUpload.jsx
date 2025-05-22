@@ -24,6 +24,7 @@ const VideoUpload = ({
   const [duration, setDuration] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [audioDescription, setAudioDescription] = useState("");
+  const [selectedVoiceModel, setSelectedVoiceModel] = useState(null);
   const [scroll, setScroll] = useState(null);
   const [dropdownKey, setDropdownKey] = useState(0);
   const [showAudioDescModal, setShowAudioDescModal] = useState(false);
@@ -48,6 +49,7 @@ const VideoUpload = ({
 
       setDuration(editData.duration || "");
       setAudioDescription(editData.audioDescription || "");
+      setSelectedVoiceModel(editData.selectedVoiceModel || null);
       setScroll(editData.scroll || false);
       setAudioFile(editData.audio || null);
     } else {
@@ -59,6 +61,7 @@ const VideoUpload = ({
       setDuration("");
       setSelectedCategory(null);
       setAudioDescription("");
+      setSelectedVoiceModel(null);
       setScroll(null);
       setDropdownKey((prev) => prev + 1);
     }
@@ -107,8 +110,9 @@ const VideoUpload = ({
     setShowAudioDescModal(true);
   };
 
-  const handleAudioDescriptionSave = (description) => {
-    setAudioDescription(description);
+  const handleAudioDescriptionSave = (descriptionData) => {
+    setAudioDescription(descriptionData.audioDesc);
+    setSelectedVoiceModel(descriptionData.selectedVoiceModel);
     setShowAudioDescModal(false);
   };
 
@@ -124,6 +128,7 @@ const VideoUpload = ({
       audioEmbedded: !!audioFile,
       scroll: scroll,
       audioDescription: audioDescription,
+      audioAccent: selectedVoiceModel?.dev_name || null,
       firstRowValue: null,
       isDynamic: !!selectedCategory,
       file: videoFile,
@@ -302,6 +307,8 @@ const VideoUpload = ({
       {showAudioDescModal && (
         <AudioDescModal
           dynamicFields={audioCategories}
+          initialAudioDesc={audioDescription}
+          initialVoiceModel={selectedVoiceModel}
           onSave={handleAudioDescriptionSave}
           onClose={() => setShowAudioDescModal(false)}
         />
