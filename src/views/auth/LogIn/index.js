@@ -89,10 +89,15 @@ const Login = () => {
         } else {
           const userType = response?.data?.user_details?.role;
 
-          if (userType === "USER") {
+          if (userType === "MARKETING_USER") {
             history.push("/CreateTemplate");
             toast.success(response?.data?.message);
-          } else if (userType === "ADMIN") {
+          } 
+          else if (userType === "SALES_USER") {
+            history.push("/prospects");
+            toast.success(response?.data?.message);
+          } 
+          else if (userType === "ADMIN") {
             history.push("/PP-createaccount");
             toast.success(response?.data?.message);
           } else if (userType === "SUBADMIN") {

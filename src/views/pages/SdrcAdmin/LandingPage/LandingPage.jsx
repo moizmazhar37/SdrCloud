@@ -26,7 +26,7 @@ const LandingPage = () => {
   return (
     <div className={styles.container}>
       <div className={styles.headerSection}>
-        <h1 className={styles.pageTitle}>Your Companies</h1>
+        <h1 className={styles.pageTitle}>My Companies</h1>
         <div className={styles.subtitle}>
           <span className={styles.subtitleText}>
             Click a company to see insights

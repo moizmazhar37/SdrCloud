@@ -5,7 +5,7 @@ import LoginLayout from "./layouts/LoginLayout";
 import AuthLayout from "./layouts/AuthLayout";
 import withRoleGuard from "./withRoleGuard";
 
-const AdminDashboard = lazy(() =>
+const SubAdminDashboard = lazy(() =>
   import("src/views/pages/DashboardAdmin/AdminDashboard/AdminDashboard")
 );
 
@@ -13,6 +13,94 @@ const SdrcDashboardWrapper = lazy(() =>
   import("src/views/pages/SdrcAdmin/SdrcDashboardWrapper")
 );
 
+//=========================================Admin=======================================
+const AdminAccount = lazy(() =>
+  import("src/views/pages/PPAdmin/Accounts/Accounts")
+);
+
+const AdminCreateAccount = lazy(() =>
+  import("src/views/pages/PPAdmin/Accounts/CreateAccount/CreateAccount")
+);
+
+const AdminUserManagement = lazy(() =>
+  import("src/views/pages/PPAdmin/UserManagement/index")
+);
+
+  //=========================================SDRC ADMIN=======================================
+  const Settings = lazy(() =>
+    import("src/views/pages/settings/Settings")
+  );
+
+  const SDRCAdmin = lazy(() =>
+    import("src/views/pages/SdrcAdmin/LandingPage/LandingPage")
+  );
+
+
+
+  //========================================SUB ADMIN=========================================
+  const CompanyInformation = lazy(() =>
+    import("src/views/pages/settings/Company/Company")
+  );
+
+  const Intent = lazy(() => 
+    import("src/views/pages/settings/IntentTracking/IntentTracking")
+  );
+
+  const Alerts = lazy(() =>
+    import("src/views/pages/settings/Alerts/Alerts")
+  );
+
+  const Integrations = lazy(() =>
+    import("src/views/pages/settings/Integrations/Integration")
+  );
+
+  const GoogleSheet = lazy(() =>
+    import("src/views/pages/settings/GoogleSheets/Googlesheets")
+  );
+
+  const EmailTemplates = lazy(() =>
+    import("src/views/pages/settings/EmailTemplates/EmailTemplates")
+  );
+  
+  const BookedMeetings = lazy(() =>
+    import("src/views/pages/settings/BookedMeetings/BookedMeetings")
+  );
+
+  const EmailScheduling = lazy(() =>
+    import("src/views/pages/settings/EmailScheduling/ScheduledEmails/ScheduledEmails")
+  );
+
+  const ViewGoogleSheet = lazy(() =>
+    import( "src/views/pages/settings/Integrations/GoogleSheets/ViewGoogleSheet/ViewGoogleSheet")
+  );
+
+  const EditGoogleSheet = lazy(() =>
+    import(
+        "src/views/pages/settings/Integrations/GoogleSheets/EditGoogleSheet/EditGoogleSheet"
+      )
+  );
+
+  const CalendarLink = lazy(() =>
+    import("src/views/pages/settings/Integrations/CalendarLink/OAuth")
+  );
+
+  const Prospect = lazy(() =>
+    import("src/views/pages/MyProjects/Prospects/Prospects")
+  );
+
+  const CompanyUsers = lazy(() =>
+    import("src/views/pages/CompanyUsers/Users/Users"),
+  );
+
+  const SendGrid = lazy(() =>
+    import("src/views/pages/settings/Integrations/SendGrid/SendGrid")
+  );
+
+  const Calandarlink = lazy(() =>
+    import("src/views/pages/settings/Integrations/CalenderLink/CalenderLink")
+  );
+  
+  
 export const routes = [
   {
     exact: true,
@@ -98,16 +186,6 @@ export const routes = [
       import("src/layouts/DashboardLayout/NavBar/SearchLeads/SearchLeads.jsx")
     ),
   },
-
-  {
-    exact: true,
-    path: "/view-myproject",
-    guard: true,
-    layout: DashboardLayout,
-    component: lazy(() =>
-      import("src/views/pages/DashboardUser/MyProject/Viewprojects")
-    ),
-  },
   {
     exact: true,
     path: "/edit-myproject",
@@ -158,15 +236,6 @@ export const routes = [
       import("src/views/pages/Create/CreateVideo/CreateVideo")
     ),
   },
-  {
-    exact: true,
-    path: "/ui-settings",
-    guard: true,
-    layout: DashboardLayout,
-    component: lazy(() =>
-      import("src/views/pages/settings/UISettings/UISettings")
-    ),
-  },
 
   // New URL for Routes
 
@@ -175,28 +244,14 @@ export const routes = [
     path: "/companyUsers-List",
     guard: true,
     layout: DashboardLayout,
-    component: lazy(() => import("src/views/pages/CompanyUsers/Users/Users")),
-
-    // component: lazy(() => import("src/views/pages/CompanyUsers/index")),
-  },
-
-  {
-    exact: true,
-    path: "/Myprojects",
-    guard: true,
-    layout: DashboardLayout,
-    component: lazy(() =>
-      import("src/views/pages/MyProjects/Prospects/Prospects")
-    ),
+    component: withRoleGuard(CompanyUsers, ["SUBADMIN"])
   },
   {
     exact: true,
     path: "/prospects",
     guard: true,
     layout: DashboardLayout,
-    component: lazy(() =>
-      import("src/views/pages/MyProjects/Prospects/Prospects")
-    ),
+    component: withRoleGuard(Prospect, ["SUBADMIN", "MARKETING_USER"]),
   },
   {
     exact: true,
@@ -282,18 +337,10 @@ export const routes = [
 
   {
     exact: true,
-    path: "/settings",
-    guard: true,
-    layout: DashboardLayout,
-    component: lazy(() => import("src/views/pages/settings/Settings")),
-  },
-
-  {
-    exact: true,
     path: "/alerts",
     guard: true,
     layout: DashboardLayout,
-    component: lazy(() => import("src/views/pages/settings/Alerts/Alerts")),
+    component: withRoleGuard(Alerts, ["SUBADMIN"]),
   },
 
   {
@@ -301,7 +348,7 @@ export const routes = [
     path: "/company-information",
     guard: true,
     layout: DashboardLayout,
-    component: lazy(() => import("src/views/pages/settings/Company/Company")),
+    component: withRoleGuard(CompanyInformation, ["SUBADMIN"]),
   },
 
   {
@@ -309,29 +356,15 @@ export const routes = [
     path: "/intent",
     guard: true,
     layout: DashboardLayout,
-    component: lazy(() =>
-      import("src/views/pages/settings/IntentTracking/IntentTracking")
-    ),
+    component: withRoleGuard(Intent, ["SUBADMIN", "MARKETING_USER"]),
   },
-
-  // {
-  //   exact: true,
-  //   path: "/myprofile",
-  //   guard: true,
-  //   layout: DashboardLayout,
-  //   component: lazy(() =>
-  //     import("src/views/pages/settings/MyProfile/profile.js")
-  //   ),
-  // },
 
   {
     exact: true,
     path: "/integrations",
     guard: true,
     layout: DashboardLayout,
-    component: lazy(() =>
-      import("src/views/pages/settings/Integrations/Integration")
-    ),
+    component: withRoleGuard(Integrations, ["SUBADMIN"]),
   },
 
   {
@@ -339,9 +372,7 @@ export const routes = [
     path: "/googlesheets",
     guard: true,
     layout: DashboardLayout,
-    component: lazy(() =>
-      import("src/views/pages/settings/GoogleSheets/Googlesheets")
-    ),
+    component: withRoleGuard(GoogleSheet, ["SUBADMIN"])
   },
 
   {
@@ -349,9 +380,7 @@ export const routes = [
     path: "/email-templates",
     guard: true,
     layout: DashboardLayout,
-    component: lazy(() =>
-      import("src/views/pages/settings/EmailTemplates/EmailTemplates")
-    ),
+    component: withRoleGuard(EmailTemplates, ["SUBADMIN"]),
   },
 
   {
@@ -371,9 +400,7 @@ export const routes = [
     path: "/sendgrid",
     guard: true,
     layout: DashboardLayout,
-    component: lazy(() =>
-      import("src/views/pages/settings/Integrations/SendGrid/SendGrid")
-    ),
+    component: withRoleGuard(SendGrid, ["SUBADMIN"]),
   },
 
   {
@@ -381,9 +408,7 @@ export const routes = [
     path: "/calenderlink",
     guard: true,
     layout: DashboardLayout,
-    component: lazy(() =>
-      import("src/views/pages/settings/Integrations/CalenderLink/CalenderLink")
-    ),
+    component: withRoleGuard(Calandarlink, ["SUBADMIN"]),
   },
 
   {
@@ -410,11 +435,7 @@ export const routes = [
     path: "/email-scheduling",
     guard: true,
     layout: DashboardLayout,
-    component: lazy(() =>
-      import(
-        "src/views/pages/settings/EmailScheduling/ScheduledEmails/ScheduledEmails"
-      )
-    ),
+    component: withRoleGuard(EmailScheduling, ["SUBADMIN"]),
   },
 
   //Booked Meetings
@@ -423,9 +444,7 @@ export const routes = [
     path: "/booked-meetings",
     guard: true,
     layout: DashboardLayout,
-    component: lazy(() =>
-      import("src/views/pages/settings/BookedMeetings/BookedMeetings")
-    ),
+    component: withRoleGuard(BookedMeetings, ["SUBADMIN"]),
   },
 
   {
@@ -448,15 +467,6 @@ export const routes = [
   },
   {
     exact: true,
-    path: "/ui-settings",
-    guard: true,
-    layout: DashboardLayout,
-    component: lazy(() =>
-      import("src/views/pages/settings/UISettings/UISettings")
-    ),
-  },
-  {
-    exact: true,
     path: "/change-password",
     guard: true,
     layout: AuthLayout,
@@ -464,15 +474,7 @@ export const routes = [
       import("src/views/pages/settings/MyProfile/ChangePassword/changePassword")
     ),
   },
-  {
-    exact: true,
-    path: "/user-management",
-    guard: true,
-    layout: DashboardLayout,
-    component: lazy(() =>
-      import("src/views/pages/settings/MyProfile/ChangePassword/changePassword")
-    ),
-  },
+  
 
   // Google Sheet
   {
@@ -480,11 +482,7 @@ export const routes = [
     path: "/viewSheets",
     guard: true,
     layout: DashboardLayout,
-    component: lazy(() =>
-      import(
-        "src/views/pages/settings/Integrations/GoogleSheets/ViewGoogleSheet/ViewGoogleSheet"
-      )
-    ),
+    component: withRoleGuard(ViewGoogleSheet, ["SUBADMIN"]),
   },
 
   {
@@ -492,11 +490,7 @@ export const routes = [
     path: "/editSheets",
     guard: true,
     layout: DashboardLayout,
-    component: lazy(() =>
-      import(
-        "src/views/pages/settings/Integrations/GoogleSheets/EditGoogleSheet/EditGoogleSheet"
-      )
-    ),
+    component: withRoleGuard(EditGoogleSheet, ["SUBADMIN"]),
   },
 
   {
@@ -509,27 +503,34 @@ export const routes = [
   {
     exact: true,
     path: "/PP-createaccount",
-    // guard: true,
+    guard: true,
     layout: DashboardLayout,
-    component: lazy(() => import("src/views/pages/PPAdmin/Accounts/Accounts")),
+    component: withRoleGuard(AdminAccount, ["ADMIN"]),
   },
   {
     exact: true,
     path: "/PP-create",
-    // guard: true,
+    guard: true,
     layout: DashboardLayout,
-    component: lazy(() =>
-      import("src/views/pages/PPAdmin/Accounts/CreateAccount/CreateAccount")
-    ),
+    component: withRoleGuard(AdminCreateAccount, ["ADMIN"]),
   },
+  // {
+  //   exact: true,
+  //   path: "/user-management",
+  //   guard: true,
+  //   layout: DashboardLayout,
+  //   component: lazy(() =>
+  //     import("src/views/pages/settings/MyProfile/ChangePassword/changePassword")
+  //   ),
+  // },
+
+  //==========================================SDRC ADMIN=======================================
   {
     exact: true,
     path: "/SDRC-dashboard",
     guard: true,
     layout: DashboardLayout,
-    component: lazy(() =>
-      import("src/views/pages/SdrcAdmin/LandingPage/LandingPage")
-    ),
+    component: withRoleGuard(SDRCAdmin, ["SDRC_ADMIN"]),
   },
   {
     exact: true,
@@ -552,61 +553,48 @@ export const routes = [
   {
     exact: true,
     path: "/PP-user-management",
-    // guard: true,
+    guard: true,
     layout: DashboardLayout,
-    component: lazy(() =>
-      import("src/views/pages/PPAdmin/UserManagement/index")
-    ),
+    component: withRoleGuard(AdminUserManagement, ["ADMIN"]),
   },
-  {
-    exact: true,
-    path: "/edit-PPAdmin",
-    // guard: true,
-    layout: DashboardLayout,
-    component: lazy(() =>
-      import("src/views/pages/PPAdmin/UserManagement/View")
-    ),
-  },
-  {
-    exact: true,
-    path: "/pp-settings",
-    // guard: true,
-    layout: DashboardLayout,
-    component: lazy(() => import("src/views/pages/PPAdmin/Settings")),
-  },
-  {
-    exact: true,
-    path: "/user-settings",
-    // guard: true,
-    layout: DashboardLayout,
-    component: lazy(() => import("src/views/pages/PPAdmin/UserSetting")),
-  },
-  {
-    exact: true,
-    path: "/edit-profile",
-    // guard: true,
-    layout: DashboardLayout,
-    component: lazy(() => import("src/views/pages/PPAdmin/EditProfile")),
-  },
+  // {
+  //   exact: true,
+  //   path: "/edit-PPAdmin",
+  //   // guard: true,
+  //   layout: DashboardLayout,
+  //   component: lazy(() =>
+  //     import("src/views/pages/PPAdmin/UserManagement/View")
+  //   ),
+  // },
+  // {
+  //   exact: true,
+  //   path: "/user-settings",
+  //   // guard: true,
+  //   layout: DashboardLayout,
+  //   component: lazy(() => import("src/views/pages/PPAdmin/UserSetting")),
+  // },
+  // {
+  //   exact: true,
+  //   path: "/edit-profile",
+  //   // guard: true,
+  //   layout: DashboardLayout,
+  //   component: lazy(() => import("src/views/pages/PPAdmin/EditProfile")),
+  // },
 
-  {
-    exact: true,
-    path: "/change-your-password",
-    // guard: true,
-    layout: AuthLayout,
-    component: lazy(() => import("src/views/pages/PPAdmin/ChangePassword")),
-  },
+  // {
+  //   exact: true,
+  //   path: "/change-your-password",
+  //   // guard: true,
+  //   layout: AuthLayout,
+  //   component: lazy(() => import("src/views/pages/PPAdmin/ChangePassword")),
+  // },
 
   {
     exact: true,
     path: "/dashboard",
     guard: true,
     layout: DashboardLayout,
-    component: withRoleGuard(AdminDashboard, [
-      "SUBADMIN",
-      "SDRC_ADMIN",
-      "USER",
-    ]),
+    component: withRoleGuard(SubAdminDashboard, ["SUBADMIN",])
   },
 
   {
@@ -614,58 +602,17 @@ export const routes = [
     path: "/calendar-link",
     guard: true,
     layout: DashboardLayout,
-    component: lazy(() =>
-      import("src/views/pages/settings/Integrations/CalendarLink/OAuth")
-    ),
+    component: withRoleGuard(CalendarLink, ["SUBADMIN",])
   },
-
   {
     exact: true,
     path: "/book-meeting",
-    guard: true,
+    // guard: true,
     layout: DashboardLayout,
     component: lazy(() =>
       import("src/views/pages/settings/ScheduleMeetings/ScheduleMeetings")
     ),
   },
-
-  {
-    exact: true,
-    path: "/user-myprojects",
-    guard: true,
-    layout: DashboardLayout,
-    component: lazy(() =>
-      import("src/views/pages/DashboardUser/MyProject/index")
-    ),
-  },
-  {
-    exact: true,
-    path: "/myprojects-list",
-    guard: true,
-    layout: DashboardLayout,
-    component: lazy(() =>
-      import("src/views/pages/MyProjects/Prospects/Prospects")
-    ),
-  },
-  {
-    exact: true,
-    path: "/user-Viewproject",
-    guard: true,
-    layout: DashboardLayout,
-    component: lazy(() =>
-      import("src/views/pages/DashboardUser/MyProject/Viewprojects")
-    ),
-  },
-  {
-    exact: true,
-    path: "/userProfile",
-    guard: true,
-    layout: DashboardLayout,
-    component: lazy(() =>
-      import("src/views/pages/DashboardUser/UserProfile/index")
-    ),
-  },
-
   {
     exact: true,
     path: "/changePasswordUser",
@@ -706,10 +653,10 @@ export const routes = [
 
   {
     exact: true,
-    path: "/company-setting",
-    // guard: true,
+    path: "/settings",
+    guard: true,
     layout: DashboardLayout,
-    component: lazy(() => import("src/views/pages/PPAdmin/CompanySetting")),
+    component: withRoleGuard(Settings, ["ADMIN", "SDRC_ADMIN", "SUBADMIN", "SALES_USER", "MARKETING_USER"]),
   },
 
   {
