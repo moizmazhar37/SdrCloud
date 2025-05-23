@@ -24,7 +24,7 @@ const NewSettings = () => {
         infoText={"View and edit personal information here."}
       />
 
-      {(userType !== "SDRC_ADMIN" && userType !== "ADMIN" && userType !== "SALES_USER" && userType !== "SUBADMIN") && (
+      {(userType !== "SDRC_ADMIN" && userType !== "ADMIN" && userType !== "SALES_USER") && (
       <Card
           image={add_intent}
           route={"/intent"}
@@ -35,6 +35,12 @@ const NewSettings = () => {
 
       {(userType !== "SDRC_ADMIN" && userType !== "ADMIN" && userType !== "SALES_USER" && userType !== "MARKETING_USER") && (
         <>
+      <Card
+        image={company}
+        route={"/company-information"}
+        text={"Company"}
+        infoText={"View and edit company information here."}
+      />
       <Card
         image={add_integration}
         route={"/integrations"}

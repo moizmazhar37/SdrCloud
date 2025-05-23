@@ -47,7 +47,7 @@ const getNavSections = (userType) => {
           {
             title: "Settings",
             icon: "images/template/setting.svg",
-            href: "/pp-settings",
+            href: "/settings",
           },
         ],
       },

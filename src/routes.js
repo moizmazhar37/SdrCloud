@@ -587,13 +587,6 @@ export const routes = [
   },
   {
     exact: true,
-    path: "/pp-settings",
-    // guard: true,
-    layout: DashboardLayout,
-    component: lazy(() => import("src/views/pages/PPAdmin/Settings")),
-  },
-  {
-    exact: true,
     path: "/user-settings",
     // guard: true,
     layout: DashboardLayout,
