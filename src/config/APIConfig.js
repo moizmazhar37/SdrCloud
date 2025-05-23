@@ -1,5 +1,5 @@
-//export const url = "https://backend-283763506150.us-central1.run.app";
-export const url = "http://192.168.18.93:8000";
+export const url = "https://backend-283763506150.us-central1.run.app";
+//export const url = "http://192.168.18.93:8000";
 export const auth = `${url}/auth`;
 export const users = `${url}/users`;
 const urls = `${url}/url`;
