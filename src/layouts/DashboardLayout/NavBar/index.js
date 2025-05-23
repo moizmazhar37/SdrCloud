@@ -108,7 +108,7 @@ const getNavSections = (userType) => {
           {
             title: "Prospects",
             icon: "images/template/clipboard-text.svg",
-            href: "/Myprojects",
+            href: "/prospects",
           },
           {
             title: "Settings",
@@ -130,7 +130,7 @@ const getNavSections = (userType) => {
           {
             title: "Prospects",
             icon: "images/template/clipboard-text.svg",
-            href: "/Myprojects",
+            href: "/prospects",
           },
           {
             title: "Settings",
@@ -146,7 +146,7 @@ const getNavSections = (userType) => {
           {
             title: "Prospects",
             icon: "images/template/clipboard-text.svg",
-            href: "/Myprojects",
+            href: "/prospects",
           },
           {
             title: "Settings",
