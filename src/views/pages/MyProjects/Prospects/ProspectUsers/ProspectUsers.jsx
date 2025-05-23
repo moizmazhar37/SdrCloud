@@ -3,6 +3,7 @@ import Table from "src/Common/Table/Table";
 import styles from "./Prospectusers.module.scss";
 import useProspectUserList from "../Hooks/useProspectUserList";
 import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
+import Loader from "src/Common/Loader/Loader";
 
 const Prospectusers = ({ templateId, tempType }) => {
   const { data, loading, error } = useProspectUserList(templateId, tempType);
@@ -41,9 +42,11 @@ const Prospectusers = ({ templateId, tempType }) => {
   };
   const navigationItems = [
     { text: "Prospects", route: "/prospects" },
-    { text: "Prospect Users", route: "/Myprojects" }
+    { text: "Prospect Users", route: "/prospects" }
   ];
-  if (loading) return <div>Loading...</div>;
+  if (loading) return  <div className={styles.loader}>
+        <Loader size={160} />
+      </div>;
   if (error) return <div>Error loading data: {error.message}</div>;
 
   const headers = tempType === 'hvo' ? hvoHeaders : videoHeaders;
