@@ -11,32 +11,35 @@ import meetings from "src/images/Setting/meetings.png";
 import emailSchedule from "src/images/Setting/emailSchedule.png";
 
 const NewSettings = () => {
+
+  const userType = localStorage.getItem("userType");
+
   return (
     <div className={styles.container}>
-      <Card
-        image={company}
-        route={"/company-information"}
-        text={"Company"}
-        infoText={"View and edit company information here."}
-      />
-      <Card
-        image={add_integration}
-        route={"/integrations"}
-        text={"Integrations"}
-        infoText={"Integrate sheets and API's here."}
-      />
-      <Card
-        image={add_intent}
-        route={"/intent"}
-        text={"Intent Tracking"}
-        infoText={"Track pixels and footer links here."}
-      />
 
       <Card
         image={add_archive_user}
         route={"/myprofile"}
         text={"My Profile"}
         infoText={"View and edit personal information here."}
+      />
+
+      {(userType !== "SDRC_ADMIN" && userType !== "ADMIN" && userType !== "SALES_USER" && userType !== "SUBADMIN") && (
+      <Card
+          image={add_intent}
+          route={"/intent"}
+          text={"Intent Tracking"}
+          infoText={"Track pixels and footer links here."}
+        />
+      )}
+
+      {(userType !== "SDRC_ADMIN" && userType !== "ADMIN" && userType !== "SALES_USER" && userType !== "MARKETING_USER") && (
+        <>
+      <Card
+        image={add_integration}
+        route={"/integrations"}
+        text={"Integrations"}
+        infoText={"Integrate sheets and API's here."}
       />
       <Card
         image={add_alerts}
@@ -68,6 +71,8 @@ const NewSettings = () => {
         text={"Schedule Emails"}
         infoText={"Schedule emails to be sent at a later time"}
       />
+      </>
+      )}
     </div>
   );
 };
