@@ -20,7 +20,7 @@ const useViewAsUser = () => {
       });
 
       if (response.status === 200) {
-        return response.data.token; // Return Slave’s token
+        return response.data
       } else {
         throw new Error("Unexpected response from server");
       }
