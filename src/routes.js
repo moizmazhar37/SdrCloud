@@ -130,6 +130,13 @@ const AdminUserManagement = lazy(() =>
     import("src/layouts/DashboardLayout/NavBar/LeadsDashboard/LeadsDashboard")
   );
 
+  const CreateEmailTemplate = lazy(() =>
+    import("src/views/pages/settings/EmailTemplates/NewEmailTemplate/NewEmailTemplate")
+  );
+
+  const AddSheet = lazy(() =>
+    import("src/views/pages/settings/Integrations/AddNewSheet/NewSheet")
+  );
   
 export const routes = [
   {
@@ -217,13 +224,6 @@ export const routes = [
       import("src/views/pages/DashboardUser/MyProject/EditProjects")
     ),
   },
-  // {
-  //   exact: true,
-  //   path: "/CreateTemplates",
-  //   guard: true,
-  //   layout: DashboardLayout,
-  //   component: lazy(() => import("src/views/pages/CreateVideo/index")),
-  // },
 
   // Dummy Route for create
   {
@@ -282,16 +282,6 @@ export const routes = [
       import("src/views/pages/MyProjects/Prospects/ProspectUsers/ProspectUsers")
     ),
   },
-
-  // {
-  //   exact: true,
-  //   path: "/Create-hvo-template",
-  //   guard: true,
-  //   layout: DashboardLayout,
-  //   component: lazy(() =>
-  //     import("src/views/pages/HVOTemplate/CreateHVOTemplate")
-  //   ),
-  // },
 
   //DummyRoute
   {
@@ -408,11 +398,7 @@ export const routes = [
     path: "/create-email-template",
     guard: true,
     layout: DashboardLayout,
-    component: lazy(() =>
-      import(
-        "src/views/pages/settings/EmailTemplates/NewEmailTemplate/NewEmailTemplate"
-      )
-    ),
+    component: withRoleGuard(CreateEmailTemplate, ["SUBADMIN"]),
   },
 
   {
@@ -436,18 +422,8 @@ export const routes = [
     path: "/addsheet",
     guard: true,
     layout: DashboardLayout,
-    component: lazy(() =>
-      import("src/views/pages/settings/Integrations/AddNewSheet/NewSheet")
-    ),
+    component: withRoleGuard(AddSheet, ["SUBADMIN"]),
   },
-
-  // {
-  //   exact: true,
-  //   path: "/integrations/google-sheet",
-  //   guard: true,
-  //   layout: DashboardLayout,
-  //   component: lazy(() => import("src/views/pages/settings/GoogleSheet")),
-  // },
 
   // Email Scheduling
   {
@@ -532,15 +508,6 @@ export const routes = [
     layout: DashboardLayout,
     component: withRoleGuard(AdminCreateAccount, ["ADMIN"]),
   },
-  // {
-  //   exact: true,
-  //   path: "/user-management",
-  //   guard: true,
-  //   layout: DashboardLayout,
-  //   component: lazy(() =>
-  //     import("src/views/pages/settings/MyProfile/ChangePassword/changePassword")
-  //   ),
-  // },
 
   //==========================================SDRC ADMIN=======================================
   {
@@ -575,37 +542,6 @@ export const routes = [
     layout: DashboardLayout,
     component: withRoleGuard(AdminUserManagement, ["ADMIN"]),
   },
-  // {
-  //   exact: true,
-  //   path: "/edit-PPAdmin",
-  //   // guard: true,
-  //   layout: DashboardLayout,
-  //   component: lazy(() =>
-  //     import("src/views/pages/PPAdmin/UserManagement/View")
-  //   ),
-  // },
-  // {
-  //   exact: true,
-  //   path: "/user-settings",
-  //   // guard: true,
-  //   layout: DashboardLayout,
-  //   component: lazy(() => import("src/views/pages/PPAdmin/UserSetting")),
-  // },
-  // {
-  //   exact: true,
-  //   path: "/edit-profile",
-  //   // guard: true,
-  //   layout: DashboardLayout,
-  //   component: lazy(() => import("src/views/pages/PPAdmin/EditProfile")),
-  // },
-
-  // {
-  //   exact: true,
-  //   path: "/change-your-password",
-  //   // guard: true,
-  //   layout: AuthLayout,
-  //   component: lazy(() => import("src/views/pages/PPAdmin/ChangePassword")),
-  // },
 
   {
     exact: true,
