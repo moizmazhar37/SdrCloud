@@ -53,12 +53,6 @@ const NewSettings = () => {
         text={"Alerts"}
         infoText={"Manage custom alerts here."}
       />
-      <Card
-        image={add_email}
-        route={"/email-templates"}
-        text={"Email Templates"}
-        infoText={"Create or edit email templates here"}
-      />
       {/* <Card
         image={add_email}
         route={"/book-meeting"}

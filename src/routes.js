@@ -57,10 +57,6 @@ const AdminUserManagement = lazy(() =>
   const GoogleSheet = lazy(() =>
     import("src/views/pages/settings/GoogleSheets/Googlesheets")
   );
-
-  const EmailTemplates = lazy(() =>
-    import("src/views/pages/settings/EmailTemplates/EmailTemplates")
-  );
   
   const BookedMeetings = lazy(() =>
     import("src/views/pages/settings/BookedMeetings/BookedMeetings")
@@ -124,10 +120,6 @@ const AdminUserManagement = lazy(() =>
 
   const LeadsDashboard = lazy(() =>
     import("src/layouts/DashboardLayout/NavBar/LeadsDashboard/LeadsDashboard")
-  );
-
-  const CreateEmailTemplate = lazy(() =>
-    import("src/views/pages/settings/EmailTemplates/NewEmailTemplate/NewEmailTemplate")
   );
 
   const AddSheet = lazy(() =>
@@ -379,22 +371,6 @@ export const routes = [
     guard: true,
     layout: DashboardLayout,
     component: withRoleGuard(GoogleSheet, ["SUBADMIN"])
-  },
-
-  {
-    exact: true,
-    path: "/email-templates",
-    guard: true,
-    layout: DashboardLayout,
-    component: withRoleGuard(EmailTemplates, ["SUBADMIN"]),
-  },
-
-  {
-    exact: true,
-    path: "/create-email-template",
-    guard: true,
-    layout: DashboardLayout,
-    component: withRoleGuard(CreateEmailTemplate, ["SUBADMIN"]),
   },
 
   {
