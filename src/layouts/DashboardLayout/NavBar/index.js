@@ -58,7 +58,7 @@ const getNavSections = (userType) => {
           {
             title: "Companies",
             icon: "images/template/dashboard.svg",  
-            href: "/SDRC-dashboard",
+            href: "/sdrc-dashboard",
           },
           {
             title: "Settings",
