@@ -71,12 +71,6 @@ const NewSettings = () => {
         text={"Booked Meetings"}
         infoText={"View the currently booked meetings"}
       />
-      <Card
-        image={emailSchedule}
-        route={"/email-scheduling"}
-        text={"Schedule Emails"}
-        infoText={"Schedule emails to be sent at a later time"}
-      />
       </>
       )}
     </div>

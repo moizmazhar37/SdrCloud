@@ -66,10 +66,6 @@ const AdminUserManagement = lazy(() =>
     import("src/views/pages/settings/BookedMeetings/BookedMeetings")
   );
 
-  const EmailScheduling = lazy(() =>
-    import("src/views/pages/settings/EmailScheduling/ScheduledEmails/ScheduledEmails")
-  );
-
   const ViewGoogleSheet = lazy(() =>
     import( "src/views/pages/settings/Integrations/GoogleSheets/ViewGoogleSheet/ViewGoogleSheet")
   );
@@ -425,15 +421,6 @@ export const routes = [
     component: withRoleGuard(AddSheet, ["SUBADMIN"]),
   },
 
-  // Email Scheduling
-  {
-    exact: true,
-    path: "/email-scheduling",
-    guard: true,
-    layout: DashboardLayout,
-    component: withRoleGuard(EmailScheduling, ["SUBADMIN"]),
-  },
-
   //Booked Meetings
   {
     exact: true,
@@ -443,15 +430,6 @@ export const routes = [
     component: withRoleGuard(BookedMeetings, ["SUBADMIN"]),
   },
 
-  {
-    exact: true,
-    path: "/create-new-schedule",
-    guard: true,
-    layout: DashboardLayout,
-    component: lazy(() =>
-      import("src/views/pages/settings/EmailScheduling/EmailScheduling")
-    ),
-  },
   {
     exact: true,
     path: "/myprofile",
