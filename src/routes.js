@@ -57,17 +57,9 @@ const AdminUserManagement = lazy(() =>
   const GoogleSheet = lazy(() =>
     import("src/views/pages/settings/GoogleSheets/Googlesheets")
   );
-
-  const EmailTemplates = lazy(() =>
-    import("src/views/pages/settings/EmailTemplates/EmailTemplates")
-  );
   
   const BookedMeetings = lazy(() =>
     import("src/views/pages/settings/BookedMeetings/BookedMeetings")
-  );
-
-  const EmailScheduling = lazy(() =>
-    import("src/views/pages/settings/EmailScheduling/ScheduledEmails/ScheduledEmails")
   );
 
   const ViewGoogleSheet = lazy(() =>
@@ -128,10 +120,6 @@ const AdminUserManagement = lazy(() =>
 
   const LeadsDashboard = lazy(() =>
     import("src/layouts/DashboardLayout/NavBar/LeadsDashboard/LeadsDashboard")
-  );
-
-  const CreateEmailTemplate = lazy(() =>
-    import("src/views/pages/settings/EmailTemplates/NewEmailTemplate/NewEmailTemplate")
   );
 
   const AddSheet = lazy(() =>
@@ -387,22 +375,6 @@ export const routes = [
 
   {
     exact: true,
-    path: "/email-templates",
-    guard: true,
-    layout: DashboardLayout,
-    component: withRoleGuard(EmailTemplates, ["SUBADMIN"]),
-  },
-
-  {
-    exact: true,
-    path: "/create-email-template",
-    guard: true,
-    layout: DashboardLayout,
-    component: withRoleGuard(CreateEmailTemplate, ["SUBADMIN"]),
-  },
-
-  {
-    exact: true,
     path: "/sendgrid",
     guard: true,
     layout: DashboardLayout,
@@ -425,15 +397,6 @@ export const routes = [
     component: withRoleGuard(AddSheet, ["SUBADMIN"]),
   },
 
-  // Email Scheduling
-  {
-    exact: true,
-    path: "/email-scheduling",
-    guard: true,
-    layout: DashboardLayout,
-    component: withRoleGuard(EmailScheduling, ["SUBADMIN"]),
-  },
-
   //Booked Meetings
   {
     exact: true,
@@ -443,15 +406,6 @@ export const routes = [
     component: withRoleGuard(BookedMeetings, ["SUBADMIN"]),
   },
 
-  {
-    exact: true,
-    path: "/create-new-schedule",
-    guard: true,
-    layout: DashboardLayout,
-    component: lazy(() =>
-      import("src/views/pages/settings/EmailScheduling/EmailScheduling")
-    ),
-  },
   {
     exact: true,
     path: "/myprofile",
