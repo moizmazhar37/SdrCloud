@@ -3,6 +3,7 @@ import EmailSetup from "./EmailSetup/EmailSetup";
 import React from "react";
 import { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
+import CopyText from "src/Common/CopyText/CopyText";
 import styles from "./EmailSettings.module.scss";
 import Header from "./Header/Header";
 import EmailSidebar from "./EmailSidebar/EmailSidebar";
@@ -102,6 +103,12 @@ const EmailSettings = ({ activeStep = 2 }) => {
             onOptionClick={handleOptionClick}
           />
           <div className={styles.settingsContent}>{renderContent()}</div>
+          <div className={styles.copyTextContainer}>
+            <CopyText
+              fields={["First name", "Last name", "Link"]}
+              onInsert={() => {}}
+            />
+          </div>
         </div>
       </div>
     </div>

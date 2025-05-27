@@ -1,6 +1,7 @@
 .emailSettingsContainer {
   padding: 40px;
 }
+
 .emailSettings {
   border: 1px solid rgb(240, 239, 239);
   margin: 0;
@@ -20,7 +21,12 @@
 
 .settingsContent {
   flex: 2.5;
-  min-width: 0; // Prevents flex item from overflowing
+  min-width: 0;
+}
+
+.copyTextContainer {
+  flex: 0.8;
+  min-width: 280px;
 }
 
 .placeholder {
@@ -53,5 +59,10 @@
   .contentContainer {
     flex-direction: column;
     gap: 16px;
+  }
+
+  .copyTextContainer {
+    flex: none;
+    min-width: auto;
   }
 }
