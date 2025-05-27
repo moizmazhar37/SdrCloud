@@ -7,10 +7,32 @@ import styles from "./EmailSettings.module.scss";
 import Header from "./Header/Header";
 import EmailSidebar from "./EmailSidebar/EmailSidebar";
 import DeliverySettings from "./DeliverySettings/DeliverySettings";
+import SetupConfiguration from "./SetupConfiguration/SetupConfiguration";
 
-const EmailSettings = ({ activeStep = 2 }) => {
-  const [activeOption, setActiveOption] = useState(activeStep === 2 ? 0 : 1);
+  const getInitialActiveOption = (step) => {
+  switch (step) {
+    case 1:
+      return 1;
+    case 2:
+      return 2;
+    case 3:
+      return 3;
+    default:
+      return 0;
+  }
+};
+
+const EmailSettings = ({ activeStep = 1 }) => {
+  const [activeOption, setActiveOption] = useState(getInitialActiveOption(activeStep));
   const [deliveryData, setDeliveryData] = useState({});
+  const history = useHistory();
+
+  useEffect(() => {
+    if (activeStep === 3) {
+      //history.push("/setup-configuration");
+    }
+  }, [activeStep, history]);
+
 
   // Define options based on activeStep
   const getOptions = () => {
@@ -63,7 +85,7 @@ const EmailSettings = ({ activeStep = 2 }) => {
         default:
           return <EmailSetup />;
       }
-    } else {
+    } else if (activeStep === 1) {
       switch (activeOption) {
         case 0:
           return (
@@ -85,27 +107,48 @@ const EmailSettings = ({ activeStep = 2 }) => {
           return <DeliverySettings onDataChange={handleDeliveryDataChange} />;
       }
     }
+    else if (activeStep === 3){
+      return (
+        <div>
+          {/* <h3>Setup Configuration</h3>
+          <p>This is the Setup Configuration Page.</p> */}
+          <SetupConfiguration />
+        </div>
+      );
+    }
+
+    else {
+      return (
+        <div className={styles.placeholder}>
+          <h3>Something went wrong</h3>
+        </div>
+      );
+    }
+
   };
 
   const getSidebarHeading = () => {
     return activeStep === 2 ? "Email Setup" : "Email Settings";
   };
 
-  return (
-    <div className={styles.emailSettingsContainer}>
-      <div className={styles.emailSettings}>
-        <Header activeStep={activeStep} />
-        <div className={styles.contentContainer}>
+return (
+  <div className={styles.emailSettingsContainer}>
+    <div className={styles.emailSettings}>
+      <Header activeStep={activeStep} />
+      <div className={styles.contentContainer}>
+        {activeStep !== 3 && (
           <EmailSidebar
             heading={getSidebarHeading()}
             options={options}
             onOptionClick={handleOptionClick}
           />
-          <div className={styles.settingsContent}>{renderContent()}</div>
-        </div>
+        )}
+        <div className={styles.settingsContent}>{renderContent()}</div>
       </div>
     </div>
-  );
+  </div>
+);
+
 };
 
 export default EmailSettings;
