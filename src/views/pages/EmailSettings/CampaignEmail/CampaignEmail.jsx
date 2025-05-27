@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import styles from "./EmailSetup.module.scss";
+import styles from "./CampaignEmail.module.scss";
 
 const EmailSetup = ({ emailType = "Email Template" }) => {
   const [subject, setSubject] = useState("");

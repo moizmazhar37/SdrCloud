@@ -1,5 +1,4 @@
-import EmailSetup from "./EmailSetup/EmailSetup";
-
+import EmailSetup from "./CampaignEmail/CampaignEmail";
 import React from "react";
 import { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
@@ -7,13 +6,14 @@ import CopyText from "src/Common/CopyText/CopyText";
 import styles from "./EmailSettings.module.scss";
 import Header from "./Header/Header";
 import EmailSidebar from "./EmailSidebar/EmailSidebar";
+import ReminderEmail from "./ReminderEmail/ReminderEmail";
 import DeliverySettings from "./DeliverySettings/DeliverySettings";
 
 const EmailSettings = ({ activeStep = 2 }) => {
   const [activeOption, setActiveOption] = useState(activeStep === 2 ? 0 : 1);
   const [deliveryData, setDeliveryData] = useState({});
+  const [campaignEmailData, setCampaignEmailData] = useState({});
 
-  // Define options based on activeStep
   const getOptions = () => {
     if (activeStep === 2) {
       return [
@@ -42,16 +42,20 @@ const EmailSettings = ({ activeStep = 2 }) => {
     console.log("Delivery Settings Data:", data);
   };
 
+  const handleCampaignEmailDataChange = (data) => {
+    setCampaignEmailData(data);
+    console.log("Campaign Email Data in Parent:", data);
+  };
+
   const renderContent = () => {
     if (activeStep === 2) {
       switch (activeOption) {
         case 0:
-          return <EmailSetup />;
+          return <EmailSetup onDataChange={handleCampaignEmailDataChange} />;
         case 1:
           return (
             <div className={styles.placeholder}>
-              <h3>Reminder Email</h3>
-              <p>Reminder email setup content will go here.</p>
+              <ReminderEmail onDataChange={handleCampaignEmailDataChange} />
             </div>
           );
         case 2:
@@ -61,8 +65,6 @@ const EmailSettings = ({ activeStep = 2 }) => {
               <p>Followup email setup content will go here.</p>
             </div>
           );
-        default:
-          return <EmailSetup />;
       }
     } else {
       switch (activeOption) {
