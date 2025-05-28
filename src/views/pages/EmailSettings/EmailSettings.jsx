@@ -1,11 +1,12 @@
-import EmailSetup from "./EmailSetup/EmailSetup";
-
+import EmailSetup from "./CampaignEmail/CampaignEmail";
 import React from "react";
 import { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
+import CopyText from "src/Common/CopyText/CopyText";
 import styles from "./EmailSettings.module.scss";
 import Header from "./Header/Header";
 import EmailSidebar from "./EmailSidebar/EmailSidebar";
+import ReminderEmail from "./ReminderEmail/ReminderEmail";
 import DeliverySettings from "./DeliverySettings/DeliverySettings";
 import SetupConfiguration from "./SetupConfiguration/SetupConfiguration";
 
@@ -25,16 +26,8 @@ import SetupConfiguration from "./SetupConfiguration/SetupConfiguration";
 const EmailSettings = ({ activeStep = 1 }) => {
   const [activeOption, setActiveOption] = useState(getInitialActiveOption(activeStep));
   const [deliveryData, setDeliveryData] = useState({});
-  const history = useHistory();
+  const [campaignEmailData, setCampaignEmailData] = useState({});
 
-  useEffect(() => {
-    if (activeStep === 3) {
-      //history.push("/setup-configuration");
-    }
-  }, [activeStep, history]);
-
-
-  // Define options based on activeStep
   const getOptions = () => {
     if (activeStep === 2) {
       return [
@@ -63,16 +56,20 @@ const EmailSettings = ({ activeStep = 1 }) => {
     console.log("Delivery Settings Data:", data);
   };
 
+  const handleCampaignEmailDataChange = (data) => {
+    setCampaignEmailData(data);
+    console.log("Campaign Email Data in Parent:", data);
+  };
+
   const renderContent = () => {
     if (activeStep === 2) {
       switch (activeOption) {
         case 0:
-          return <EmailSetup />;
+          return <EmailSetup onDataChange={handleCampaignEmailDataChange} />;
         case 1:
           return (
             <div className={styles.placeholder}>
-              <h3>Reminder Email</h3>
-              <p>Reminder email setup content will go here.</p>
+              <ReminderEmail onDataChange={handleCampaignEmailDataChange} />
             </div>
           );
         case 2:
@@ -82,8 +79,6 @@ const EmailSettings = ({ activeStep = 1 }) => {
               <p>Followup email setup content will go here.</p>
             </div>
           );
-        default:
-          return <EmailSetup />;
       }
     } else if (activeStep === 1) {
       switch (activeOption) {
@@ -144,11 +139,18 @@ return (
           />
         )}
         <div className={styles.settingsContent}>{renderContent()}</div>
+        <div className={styles.copyTextContainer}>
+            <CopyText
+              fields={["First name", "Last name", "Link"]}
+              onInsert={() => {}}
+            />
+          </div>
       </div>
     </div>
   </div>
 );
 
+          
 };
 
 export default EmailSettings;
