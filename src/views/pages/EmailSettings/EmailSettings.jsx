@@ -1,4 +1,4 @@
-import EmailSetup from "./CampaignEmail/CampaignEmail";
+import EmailSetup from "./EmailSetupSections/CampaignEmail/CampaignEmail";
 import React from "react";
 import { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
@@ -6,10 +6,10 @@ import CopyText from "src/Common/CopyText/CopyText";
 import styles from "./EmailSettings.module.scss";
 import Header from "./Header/Header";
 import EmailSidebar from "./EmailSidebar/EmailSidebar";
-import ReminderEmail from "./ReminderEmail/ReminderEmail";
-import DeliverySettings from "./DeliverySettings/DeliverySettings";
+import ReminderEmail from "./EmailSetupSections/ReminderEmail/ReminderEmail";
+import DeliverySettings from "./EmailSetupSections/DeliverySettings/DeliverySettings";
 
-const EmailSettings = ({ activeStep = 2 }) => {
+const EmailSettings = ({ activeStep = 1 }) => {
   const [activeOption, setActiveOption] = useState(activeStep === 2 ? 0 : 1);
   const [deliveryData, setDeliveryData] = useState({});
   const [campaignEmailData, setCampaignEmailData] = useState({});
