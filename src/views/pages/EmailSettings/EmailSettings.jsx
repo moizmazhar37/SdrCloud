@@ -23,7 +23,7 @@ import SetupConfiguration from "./SetupConfiguration/SetupConfiguration";
   }
 };
 
-const EmailSettings = ({ activeStep = 1 }) => {
+const EmailSettings = ({ activeStep = 2 }) => {
   const [activeOption, setActiveOption] = useState(getInitialActiveOption(activeStep));
   const [deliveryData, setDeliveryData] = useState({});
   const [campaignEmailData, setCampaignEmailData] = useState({});
