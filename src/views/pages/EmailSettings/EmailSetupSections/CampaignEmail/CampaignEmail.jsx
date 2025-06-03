@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styles from "./CampaignEmail.module.scss";
+import useSaveCampaignEmail from "../Hooks/useSaveCampaignEmail";
 import {
   defaultMessage,
   defaultHtmlContent,
@@ -18,14 +19,15 @@ const EmailSetup = ({ emailType = "Email Template" }) => {
   const [attachedFiles, setAttachedFiles] = useState([]);
   const [attachedImages, setAttachedImages] = useState([]);
 
-  const handleSave = () => {
-    console.log("Saving email template:", {
+  const { saveCampaignEmail, loading, error, success } = useSaveCampaignEmail();
+
+  const handleSave = async () => {
+    const content = useHtmlTemplate ? htmlContent : message;
+
+    await saveCampaignEmail({
       subject,
-      message,
-      htmlContent,
-      useHtmlTemplate,
-      attachedFiles,
-      attachedImages,
+      message: content,
+      isHtml: useHtmlTemplate,
     });
   };
 

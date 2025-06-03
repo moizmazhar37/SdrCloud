@@ -9,7 +9,7 @@ import EmailSidebar from "./EmailSidebar/EmailSidebar";
 import ReminderEmail from "./EmailSetupSections/ReminderEmail/ReminderEmail";
 import DeliverySettings from "./EmailSetupSections/DeliverySettings/DeliverySettings";
 
-const EmailSettings = ({ activeStep = 1 }) => {
+const EmailSettings = ({ activeStep = 2 }) => {
   const [activeOption, setActiveOption] = useState(activeStep === 2 ? 0 : 1);
   const [deliveryData, setDeliveryData] = useState({});
   const [campaignEmailData, setCampaignEmailData] = useState({});
