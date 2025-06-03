@@ -33,6 +33,7 @@ const EmailSetup = ({ onSave }) => {
     console.log("Saving data:", data);
     if (onSave) onSave(data); // emit data to parent
   };
+
   return (
     <div className={styles.emailSetup}>
       <div className={styles.container}>
@@ -66,7 +67,7 @@ const EmailSetup = ({ onSave }) => {
                   type="file"
                   id="fileInput"
                   multiple
-                  onChange={handleFileUpload}
+                  onChange={(e) => handleFileUpload(e, setAttachedFiles)}
                   style={{ display: "none" }}
                 />
                 <button
@@ -92,7 +93,7 @@ const EmailSetup = ({ onSave }) => {
                   id="imageInput"
                   multiple
                   accept="image/*"
-                  onChange={handleImageUpload}
+                  onChange={(e) => handleImageUpload(e, setAttachedImages)}
                   style={{ display: "none" }}
                 />
                 <button
@@ -157,6 +158,7 @@ const EmailSetup = ({ onSave }) => {
               </div>
             </div>
           )}
+
           {attachedFiles.length > 0 && (
             <div className={styles.attachmentSection}>
               <h4 className={styles.attachmentTitle}>Attached Files</h4>
@@ -184,7 +186,7 @@ const EmailSetup = ({ onSave }) => {
                     </div>
                     <button
                       className={styles.removeButton}
-                      onClick={() => removeFile(file.id)}
+                      onClick={() => removeFile(file.id, setAttachedFiles)}
                       title="Remove file"
                     >
                       <svg
@@ -204,7 +206,6 @@ const EmailSetup = ({ onSave }) => {
               </div>
             </div>
           )}
-          {/* File Previews */}
 
           {/* Image Previews */}
           {attachedImages.length > 0 && (
@@ -228,7 +229,7 @@ const EmailSetup = ({ onSave }) => {
                     </div>
                     <button
                       className={styles.removeButton}
-                      onClick={() => removeImage(image.id)}
+                      onClick={() => removeImage(image.id, setAttachedImages)}
                       title="Remove image"
                     >
                       <svg

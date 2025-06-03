@@ -1,4 +1,4 @@
-import EmailSetup from "./CampaignEmail/CampaignEmail";
+import EmailSetup from "./EmailSetupSections/CampaignEmail/CampaignEmail";
 import React from "react";
 import { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
