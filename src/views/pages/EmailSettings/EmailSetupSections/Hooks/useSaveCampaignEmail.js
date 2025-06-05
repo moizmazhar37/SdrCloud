@@ -1,16 +1,15 @@
-// src/hooks/useSaveCampaignEmail.js
 import { useState } from "react";
 import axios from "axios";
 import { campaignEmail } from "src/config/APIConfig";
 
-const TEMPLATE_ID = "3fa85f64-5717-4562-b3fc-2c963f66afa6";
+const TEMPLATE_ID = "b8e2a652-350b-42d5-b09e-9a0e4d345ccf";
 
 const useSaveCampaignEmail = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
 
-  const saveCampaignEmail = async ({ subject, message, isHtml }) => {
+  const saveCampaignEmail = async ({ subject, message, isHtml, }) => {
     setLoading(true);
     setError(null);
     setSuccess(false);
@@ -35,7 +34,12 @@ const useSaveCampaignEmail = () => {
       return response.data;
     } catch (err) {
       console.error("Failed to save campaign email:", err);
-      setError(err);
+
+      const backendMessage =
+        err?.response?.data?.detail || "Failed to save campaign email.";
+
+      setError(backendMessage);
+      throw new Error(backendMessage);
     } finally {
       setLoading(false);
     }
@@ -43,5 +47,6 @@ const useSaveCampaignEmail = () => {
 
   return { saveCampaignEmail, loading, error, success };
 };
+
 
 export default useSaveCampaignEmail;

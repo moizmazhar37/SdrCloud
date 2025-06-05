@@ -1,28 +1,27 @@
 import { useState } from "react";
 import axios from "axios";
-import { followupEmail } from "src/config/APIConfig";
+import { updateFollowupEmail as buildUpdateUrl } from "src/config/APIConfig";
 
-const TEMPLATE_ID = "b8e2a652-350b-42d5-b09e-9a0e4d345ccf";
-
-const useSaveFollowupEmail = () => {
+const useUpdateFollowupEmail = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
 
-  const saveFollowupEmail = async ({ subject, message, isHtml, action }) => {
+  const updateFollowupEmail = async ({ subject, message, isHtml, templateId, action }) => {
     setLoading(true);
     setError(null);
     setSuccess(false);
 
     try {
-      const response = await axios.post(
-        followupEmail,
+      const url = buildUpdateUrl(templateId);
+      const response = await axios.patch(
+        url,
         {
           subject,
           body: message,
           is_html: isHtml,
-          template_id: TEMPLATE_ID,
           action: action,
+          teemplate_id: templateId,
         },
         {
           headers: {
@@ -34,10 +33,10 @@ const useSaveFollowupEmail = () => {
       setSuccess(true);
       return response.data;
     } catch (err) {
-      console.error("Failed to save follow-up email:", err);
+      console.error("Failed to update follow up email:", err);
 
       const backendMessage =
-        err?.response?.data?.detail || "Failed to save follow-up email.";
+        err?.response?.data?.detail || "Failed to update follow up email.";
 
       setError(backendMessage);
       throw new Error(backendMessage);
@@ -46,7 +45,7 @@ const useSaveFollowupEmail = () => {
     }
   };
 
-  return { saveFollowupEmail, loading, error, success };
+  return { updateFollowupEmail, loading, error, success };
 };
 
-export default useSaveFollowupEmail;
+export default useUpdateFollowupEmail;

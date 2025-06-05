@@ -1,5 +1,6 @@
+import { template } from "lodash";
 export const url = "https://backend-283763506150.us-central1.run.app";
-//export const url = "http://192.168.18.93:8000";
+//export const url = "http://192.168.18.98:5600";
 export const auth = `${url}/auth`;
 export const users = `${url}/users`;
 const urls = `${url}/url`;
@@ -26,6 +27,13 @@ export const tenantMeeting = `${url}/tenant-meeting`;
 
 //======================================Campaign Builder
 export const campaignEmail = `${url}/campaign/campaign-email`;
+export const updateCampaignEmail = (templateId) => `${url}/campaign/campaign-email/${templateId}`;
+export const deleteCampaignEmail = (templateId) => `${url}/campaign/campaign-email/${templateId}`;
+export const followupEmail = `${url}/campaign/followup-email`;
+export const updateFollowupEmail = (templateId) => `${url}/campaign/followup-email/${templateId}`;
+export const deleteFollowupEmail = (templateId) => `${url}/campaign/followup-email/${templateId}`;
+export const getEmailTemplates = (templateId) => `${url}/campaign/emails/${templateId}`;
+
 //======================================
 const ApiConfig = {
   getUrls: `${url}/url`,

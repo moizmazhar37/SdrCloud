@@ -1,276 +1,154 @@
-import React from "react";
+import React, { useState, useEffect, useRef  } from "react";
 import styles from "./CampaignEmail.module.scss";
-import useEmailSetup from "../Helpers/helpers"; // adjust path if needed
+import useSaveCampaignEmail from "../Hooks/useSaveCampaignEmail";
+import useUpdateEmailTemplates from "../Hooks/useUpdateCampainEmail";
+import useDeleteCampaignEmail from "../Hooks/useDeleteCampaignEmail";
+import { toast } from "react-toastify";
+import { defaultMessage, defaultHtmlContent } from "../helpers";
+import CampaignEmailForm from "../EmailForm/EmailForm";
+import ConfirmationModal from "src/Common/ConfirmationModal/ConfirmationModal";
 
-const EmailSetup = ({ onSave }) => {
-  const {
-    subject,
-    setSubject,
-    message,
-    setMessage,
-    htmlContent,
-    setHtmlContent,
-    useHtmlTemplate,
-    setUseHtmlTemplate,
-    attachedFiles,
-    handleFileUpload,
-    removeFile,
-    attachedImages,
-    handleImageUpload,
-    removeImage,
-    formatFileSize,
-  } = useEmailSetup();
+const EmailSetup = ({ onSave, data = {}, isReadOnly = false }) => {
+  const [subject, setSubject] = useState(data.subject || "");
+  const [message, setMessage] = useState(data.body || defaultMessage);
+  const [htmlContent, setHtmlContent] = useState(data.htmlContent || defaultHtmlContent);
+  const [IsHtmlTemplate, setHtmlTemplate] = useState(data.isHtml || false);
+  const [isFirstSave, setIsFirstSave] = useState(!data?.subject);
+  const [isEditing, setIsEditing] = useState(!isReadOnly);
+  const [saveButtonText, setsaveButtonText] = useState(isFirstSave ? "Save" : "Edit");
+  const [deleteButtonText, setdeleteButtonText] = useState("Delete");
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const firstRenderRef = useRef(true);
 
-  const handleSave = () => {
-    const data = {
+  const { saveCampaignEmail } = useSaveCampaignEmail();
+  const { updateCampaignEmail } = useUpdateEmailTemplates();
+  const { deleteCampaignEmail } = useDeleteCampaignEmail();
+
+  useEffect(() => {
+  if (firstRenderRef.current) {
+    setSubject(data.subject || "");
+    setMessage(data.body || defaultMessage);
+    setHtmlContent(data.htmlContent || defaultHtmlContent);
+    setHtmlTemplate(data.isHtml || false);
+
+    const isNew = !(data.subject || data.body || data.htmlContent);
+    setIsFirstSave(isNew);
+    setsaveButtonText(isNew ? "Save" : "Edit");
+
+    firstRenderRef.current = false;
+  }
+}, []);
+
+  const handleSave = async () => {
+    if (!isEditing && !isFirstSave) {
+      setIsEditing(true);
+      setsaveButtonText("Update");
+      return;
+    }
+
+    const payload = {
       subject,
-      message,
-      htmlContent,
-      useHtmlTemplate,
-      attachedFiles,
-      attachedImages,
+      message: IsHtmlTemplate ? htmlContent : message,
+      isHtml: IsHtmlTemplate,
     };
-    console.log("Saving data:", data);
-    if (onSave) onSave(data); // emit data to parent
+
+    try {
+      setsaveButtonText(isFirstSave ? "Saving..." : "Updating...");
+
+      if (isFirstSave) {
+        await saveCampaignEmail(payload);
+        toast.success("Campaign email saved successfully.");
+      } else {
+        const templateId = data.id;
+        if (!templateId) {
+          toast.error("Template ID is missing for update.");
+          return;
+        }
+
+        await updateCampaignEmail({
+          templateId,
+          subject: payload.subject,
+          message: payload.message,
+          isHtml: payload.isHtml,
+        });
+        toast.success("Campaign email updated successfully.");
+      }
+
+      setIsEditing(false);
+      setIsFirstSave(false);
+      setsaveButtonText("Edit");
+
+      onSave?.();
+    } catch (err) {
+      toast.error(err.message);
+      setsaveButtonText(isFirstSave ? "Save" : isEditing ? "Update" : "Edit");
+    }
+  };
+
+  const handleDeleteClick = () => {
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!data.id) {
+      toast.error("Template ID is missing.");
+      return;
+    }
+
+    try {
+      await deleteCampaignEmail(data.id);
+      toast.success("Template deleted successfully.");
+
+      // Only reset on success
+      setSubject("");
+      setMessage(defaultMessage);
+      setHtmlContent(defaultHtmlContent);
+      setHtmlTemplate(false);
+      setIsFirstSave(true);
+      setIsEditing(true);
+      setsaveButtonText("Save");
+
+      setIsDeleteModalOpen(false); 
+
+      onSave?.();
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  const handleModalClose = () => {
+    setIsDeleteModalOpen(false);
   };
 
   return (
-    <div className={styles.emailSetup}>
-      <div className={styles.container}>
-        <div className={styles.formCard}>
-          <div className={styles.subjectSection}>
-            <label htmlFor="subject" className={styles.label}>
-              Subject
-            </label>
-            <input
-              type="text"
-              id="subject"
-              placeholder="Subject"
-              value={subject}
-              onChange={(e) => setSubject(e.target.value)}
-              className={styles.subjectInput}
-            />
-          </div>
-
-          <div className={styles.messageSection}>
-            <textarea
-              placeholder="Enter your message..."
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              className={styles.messageTextarea}
-              rows={12}
-            />
-
-            <div className={styles.toolbar}>
-              <div className={styles.toolbarLeft}>
-                <input
-                  type="file"
-                  id="fileInput"
-                  multiple
-                  onChange={(e) => handleFileUpload(e, setAttachedFiles)}
-                  style={{ display: "none" }}
-                />
-                <button
-                  type="button"
-                  className={styles.toolButton}
-                  title="Attach file"
-                  onClick={() => document.getElementById("fileInput").click()}
-                >
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66L9.64 16.2a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
-                  </svg>
-                </button>
-
-                <input
-                  type="file"
-                  id="imageInput"
-                  multiple
-                  accept="image/*"
-                  onChange={(e) => handleImageUpload(e, setAttachedImages)}
-                  style={{ display: "none" }}
-                />
-                <button
-                  type="button"
-                  className={styles.toolButton}
-                  title="Insert image"
-                  onClick={() => document.getElementById("imageInput").click()}
-                >
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <rect
-                      width="18"
-                      height="18"
-                      x="3"
-                      y="3"
-                      rx="2"
-                      ry="2"
-                    ></rect>
-                    <circle cx="9" cy="9" r="2"></circle>
-                    <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"></path>
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* HTML Template Section */}
-          {useHtmlTemplate && (
-            <div className={styles.htmlSection}>
-              <div className={styles.htmlInputContainer}>
-                <label htmlFor="htmlContent" className={styles.label}>
-                  HTML Content
-                </label>
-                <textarea
-                  id="htmlContent"
-                  placeholder="Enter your HTML content..."
-                  value={htmlContent}
-                  onChange={(e) => setHtmlContent(e.target.value)}
-                  className={styles.htmlTextarea}
-                  rows={12}
-                />
-              </div>
-
-              <div className={styles.htmlPreviewContainer}>
-                <div className={styles.previewHeader}>
-                  <span className={styles.previewTitle}>HTML Preview</span>
-                </div>
-                <div className={styles.htmlPreview}>
-                  <iframe
-                    srcDoc={htmlContent}
-                    className={styles.previewFrame}
-                    title="HTML Preview"
-                    sandbox="allow-same-origin"
-                  />
-                </div>
-              </div>
-            </div>
-          )}
-
-          {attachedFiles.length > 0 && (
-            <div className={styles.attachmentSection}>
-              <h4 className={styles.attachmentTitle}>Attached Files</h4>
-              <div className={styles.attachmentGrid}>
-                {attachedFiles.map((file) => (
-                  <div key={file.id} className={styles.filePreview}>
-                    <div className={styles.fileIcon}>
-                      <svg
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                      >
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                        <polyline points="14,2 14,8 20,8"></polyline>
-                      </svg>
-                    </div>
-                    <div className={styles.fileInfo}>
-                      <div className={styles.fileName}>{file.name}</div>
-                      <div className={styles.fileSize}>
-                        {formatFileSize(file.size)}
-                      </div>
-                    </div>
-                    <button
-                      className={styles.removeButton}
-                      onClick={() => removeFile(file.id, setAttachedFiles)}
-                      title="Remove file"
-                    >
-                      <svg
-                        width="14"
-                        height="14"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                      >
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                      </svg>
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Image Previews */}
-          {attachedImages.length > 0 && (
-            <div className={styles.attachmentSection}>
-              <h4 className={styles.attachmentTitle}>Attached Images</h4>
-              <div className={styles.attachmentGrid}>
-                {attachedImages.map((image) => (
-                  <div key={image.id} className={styles.imagePreview}>
-                    <div className={styles.imageContainer}>
-                      <img
-                        src={image.preview}
-                        alt={image.name}
-                        className={styles.previewImage}
-                      />
-                    </div>
-                    <div className={styles.fileInfo}>
-                      <div className={styles.fileName}>{image.name}</div>
-                      <div className={styles.fileSize}>
-                        {formatFileSize(image.size)}
-                      </div>
-                    </div>
-                    <button
-                      className={styles.removeButton}
-                      onClick={() => removeImage(image.id, setAttachedImages)}
-                      title="Remove image"
-                    >
-                      <svg
-                        width="14"
-                        height="14"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                      >
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                      </svg>
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          <div className={styles.bottomSection}>
-            <div className={styles.checkboxContainer}>
-              <input
-                type="checkbox"
-                id="htmlTemplate"
-                checked={useHtmlTemplate}
-                onChange={(e) => setUseHtmlTemplate(e.target.checked)}
-                className={styles.checkbox}
-              />
-              <label htmlFor="htmlTemplate" className={styles.checkboxLabel}>
-                Use HTML Template
-              </label>
-            </div>
-
-            <button onClick={handleSave} className={styles.saveButton}>
-              Save
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+    <>
+      <CampaignEmailForm
+        subject={subject}
+        setSubject={setSubject}
+        message={message}
+        setMessage={setMessage}
+        htmlContent={htmlContent}
+        setHtmlContent={setHtmlContent}
+        IsHtmlTemplate={IsHtmlTemplate}
+        setHtmlTemplate={setHtmlTemplate}
+        isEditing={isEditing}
+        saveButtonText={saveButtonText}
+        deleteButtonText={deleteButtonText}
+        handleSave={handleSave}
+        handleDelete={handleDeleteClick}
+        subjectLabel={<label htmlFor="subject" className={styles.label}>Subject</label>}
+      />
+      <ConfirmationModal
+        isOpen={isDeleteModalOpen}
+        onClose={handleModalClose}
+        title="Confirm Deletion"
+        confirmationText="Are you sure you want to delete this template?"
+        cancelButtonText="Cancel"
+        actionButtonText="Delete"
+        onAction={handleDeleteConfirm}
+        showInputField={false}
+      />
+    </>
   );
 };
 

@@ -1,14 +1,15 @@
 import EmailSetup from "./EmailSetupSections/CampaignEmail/CampaignEmail";
 import React from "react";
 import { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
 import CopyText from "src/Common/CopyText/CopyText";
 import styles from "./EmailSettings.module.scss";
 import Header from "./Header/Header";
 import EmailSidebar from "./EmailSidebar/EmailSidebar";
-import ReminderEmail from "./ReminderEmail/ReminderEmail";
-import DeliverySettings from "./DeliverySettings/DeliverySettings";
+import ReminderEmail from "./EmailSetupSections/ReminderEmail/ReminderEmail";
+import FollowupEmail from "./EmailSetupSections/FollowupEmail/FollowupEmail";
+import DeliverySettings from "./EmailSetupSections/DeliverySettings/DeliverySettings";
 import SetupConfiguration from "./SetupConfiguration/SetupConfiguration";
+import useGetEmailTemplates from "./EmailSetupSections/Hooks/useGetEmailTemplates";
 
   const getInitialActiveOption = (step) => {
   switch (step) {
@@ -28,10 +29,17 @@ const EmailSettings = ({ activeStep = 2 }) => {
   const [deliveryData, setDeliveryData] = useState({});
   const [campaignEmailData, setCampaignEmailData] = useState({});
 
+  const templateId = "b8e2a652-350b-42d5-b09e-9a0e4d345ccf";
+ 
+  // const templateId = localStorage.getItem("template_id") || "default_template_id";
+  const { campaignEmail, reminderEmails, followupEmails, loading, error, refetch } = useGetEmailTemplates(templateId);
+
+  useEffect(() => {}, [campaignEmail, reminderEmails, followupEmails, loading, error]);
+
   const getOptions = () => {
     if (activeStep === 2) {
       return [
-        { label: "Campaign Email 1", active: activeOption === 0 },
+        { label: "Campaign Email", active: activeOption === 0 },
         { label: "Reminder Email", active: activeOption === 1 },
         { label: "Followup Email", active: activeOption === 2 },
       ];
@@ -48,35 +56,31 @@ const EmailSettings = ({ activeStep = 2 }) => {
 
   const handleOptionClick = (option, index) => {
     setActiveOption(index);
-    console.log("Clicked:", option.label);
   };
 
   const handleDeliveryDataChange = (data) => {
     setDeliveryData(data);
-    console.log("Delivery Settings Data:", data);
   };
 
   const handleCampaignEmailDataChange = (data) => {
     setCampaignEmailData(data);
-    console.log("Campaign Email Data in Parent:", data);
   };
 
   const renderContent = () => {
     if (activeStep === 2) {
       switch (activeOption) {
         case 0:
-          return <EmailSetup onDataChange={handleCampaignEmailDataChange} />;
+          return <EmailSetup onSave={refetch} onDataChange={handleCampaignEmailDataChange} data={campaignEmail?.[0] || {}} isReadOnly={!!campaignEmail?.[0]} />;
         case 1:
           return (
             <div className={styles.placeholder}>
-              <ReminderEmail onDataChange={handleCampaignEmailDataChange} />
+              <ReminderEmail onSave={refetch} onDataChange={handleCampaignEmailDataChange} data={reminderEmails || []} />
             </div>
           );
         case 2:
           return (
             <div className={styles.placeholder}>
-              <h3>Followup Email</h3>
-              <p>Followup email setup content will go here.</p>
+              <FollowupEmail onSave={refetch} onDataChange={handleCampaignEmailDataChange} data={followupEmails || []} isReadOnly={followupEmails && followupEmails.length > 0}/>
             </div>
           );
       }
