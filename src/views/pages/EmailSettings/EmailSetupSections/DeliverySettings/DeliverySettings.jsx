@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styles from "./DeliverySettings.module.scss";
 
-const DeliverySettings = ({ onDataChange }) => {
+const DeliverySettings = ({ onNext, onDataChange }) => {
   const [deliveryTypes, setDeliveryTypes] = useState(["Email"]);
   const [maxReminders, setMaxReminders] = useState("5");
   const [scheduleType, setScheduleType] = useState("Recurring");
@@ -84,42 +84,6 @@ const DeliverySettings = ({ onDataChange }) => {
   return (
     <div className={styles.deliverySettings}>
       {/* Delivery Type Section */}
-      <div className={styles.section}>
-        <h3 className={styles.sectionTitle}>Delivery Type</h3>
-        <div className={styles.deliveryTypeContainer}>
-          <div className={styles.deliveryTypeInput}>
-            {deliveryTypes.map((type, index) => (
-              <div key={index} className={styles.tag}>
-                <span>{type}</span>
-                <button
-                  className={styles.removeTag}
-                  onClick={() => handleRemoveDeliveryType(type)}
-                >
-                  ×
-                </button>
-              </div>
-            ))}
-          </div>
-          <div className={styles.deliveryTypeButtons}>
-            <button
-              className={`${styles.typeButton} ${
-                deliveryTypes.includes("SMS") ? styles.active : ""
-              }`}
-              onClick={() => handleDeliveryTypeToggle("SMS")}
-            >
-              SMS
-            </button>
-            <button
-              className={`${styles.typeButton} ${
-                deliveryTypes.includes("Email") ? styles.active : ""
-              }`}
-              onClick={() => handleDeliveryTypeToggle("Email")}
-            >
-              Email
-            </button>
-          </div>
-        </div>
-      </div>
 
       {/* Maximum Numbers Section */}
       <div className={styles.section}>
@@ -154,14 +118,7 @@ const DeliverySettings = ({ onDataChange }) => {
           >
             Recurring
           </button>
-          <button
-            className={`${styles.scheduleButton} ${
-              scheduleType === "Send Now" ? styles.active : ""
-            }`}
-            onClick={() => handleScheduleTypeChange("Send Now")}
-          >
-            Send Now
-          </button>
+
           <button
             className={`${styles.scheduleButton} ${
               scheduleType === "Schedule Later" ? styles.active : ""
@@ -248,6 +205,14 @@ const DeliverySettings = ({ onDataChange }) => {
             </div>
           </div>
         </div>
+      </div>
+      <div className={styles.buttonSection}>
+        <button className={styles.saveButton} onClick={() => {}}>
+          Save
+        </button>
+        <button className={styles.nextButton} onClick={onNext}>
+          Next
+        </button>
       </div>
     </div>
   );

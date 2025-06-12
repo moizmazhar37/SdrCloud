@@ -1,0 +1,183 @@
+.generalSettings {
+  background-color: #fff;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  padding: 32px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.section {
+  margin-bottom: 32px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.toggleContainer {
+  margin-bottom: 16px;
+}
+
+.toggleLabel {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  color: #495057;
+}
+
+.toggleInput {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggleSwitch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+  background-color: #ccc;
+  border-radius: 24px;
+  margin-right: 12px;
+  transition: background-color 0.3s ease;
+
+  &::after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: white;
+    top: 2px;
+    left: 2px;
+    transition: transform 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.toggleInput:checked + .toggleSwitch {
+  background-color: #0358ac;
+
+  &::after {
+    transform: translateX(26px);
+  }
+}
+
+.toggleText {
+  font-size: 16px;
+  color: #495057;
+}
+
+// Max Input Container
+.maxInputContainer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: 62px;
+  margin-top: 12px;
+}
+
+.inputLabel {
+  font-size: 14px;
+  color: #6c757d;
+  font-weight: 500;
+  min-width: 120px;
+}
+
+.numberInput {
+  width: 80px;
+  padding: 8px 12px;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  font-size: 14px;
+  text-align: center;
+
+  &:focus {
+    outline: none;
+    border-color: #0358ac;
+    box-shadow: 0 0 0 3px rgba(3, 88, 172, 0.1);
+  }
+}
+
+// Button Section
+.buttonSection {
+  display: flex;
+  gap: 16px;
+  justify-content: flex-end;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid #e9ecef;
+}
+
+.saveButton {
+  padding: 12px 24px;
+  border: 1px solid #e9ecef;
+  background-color: #fff;
+  color: #495057;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(3, 88, 172, 0.1);
+  }
+}
+
+.nextButton {
+  padding: 12px 24px;
+  border: none;
+  background-color: #0358ac;
+  color: white;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: #024a92;
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(3, 88, 172, 0.3);
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .generalSettings {
+    padding: 16px;
+  }
+
+  .maxInputContainer {
+    margin-left: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .inputLabel {
+    min-width: auto;
+  }
+
+  .buttonSection {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .saveButton,
+  .nextButton {
+    width: 100%;
+  }
+}

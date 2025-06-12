@@ -8,33 +8,50 @@ import EmailSidebar from "./EmailSidebar/EmailSidebar";
 import ReminderEmail from "./EmailSetupSections/ReminderEmail/ReminderEmail";
 import FollowupEmail from "./EmailSetupSections/FollowupEmail/FollowupEmail";
 import DeliverySettings from "./EmailSetupSections/DeliverySettings/DeliverySettings";
+import GeneralSettings from "./EmailSetupSections/GenaralSettings/GenaralSettings";
 import SetupConfiguration from "./SetupConfiguration/SetupConfiguration";
 import useGetEmailTemplates from "./EmailSetupSections/Hooks/useGetEmailTemplates";
 
-  const getInitialActiveOption = (step) => {
+const getInitialActiveOption = (step) => {
   switch (step) {
     case 1:
-      return 1;
+      return 0; // Start with General Settings for step 1
     case 2:
-      return 2;
+      return 0; // Start with Campaign Email for step 2
     case 3:
-      return 3;
+      return 0;
     default:
       return 0;
   }
 };
 
-const EmailSettings = ({ activeStep = 2 }) => {
-  const [activeOption, setActiveOption] = useState(getInitialActiveOption(activeStep));
+const EmailSettings = ({ activeStep = 1 }) => {
+  const [activeOption, setActiveOption] = useState(
+    getInitialActiveOption(activeStep)
+  );
   const [deliveryData, setDeliveryData] = useState({});
+  const [generalData, setGeneralData] = useState({});
   const [campaignEmailData, setCampaignEmailData] = useState({});
 
   const templateId = "b8e2a652-350b-42d5-b09e-9a0e4d345ccf";
- 
-  // const templateId = localStorage.getItem("template_id") || "default_template_id";
-  const { campaignEmail, reminderEmails, followupEmails, loading, error, refetch } = useGetEmailTemplates(templateId);
 
-  useEffect(() => {}, [campaignEmail, reminderEmails, followupEmails, loading, error]);
+  // const templateId = localStorage.getItem("template_id") || "default_template_id";
+  const {
+    campaignEmail,
+    reminderEmails,
+    followupEmails,
+    loading,
+    error,
+    refetch,
+  } = useGetEmailTemplates(templateId);
+
+  useEffect(() => {}, [
+    campaignEmail,
+    reminderEmails,
+    followupEmails,
+    loading,
+    error,
+  ]);
 
   const getOptions = () => {
     if (activeStep === 2) {
@@ -62,51 +79,104 @@ const EmailSettings = ({ activeStep = 2 }) => {
     setDeliveryData(data);
   };
 
+  const handleGeneralDataChange = (data) => {
+    setGeneralData(data);
+  };
+
   const handleCampaignEmailDataChange = (data) => {
     setCampaignEmailData(data);
   };
 
+  const handleGeneralSettingsNext = () => {
+    // Move to Delivery Settings (activeOption 1)
+    setActiveOption(1);
+  };
+
+  const handleGeneralSettingsNext2 = () => {
+    // Move to Delivery Settings (activeOption 1)
+    setActiveOption(2);
+  };
   const renderContent = () => {
     if (activeStep === 2) {
       switch (activeOption) {
         case 0:
-          return <EmailSetup onSave={refetch} onDataChange={handleCampaignEmailDataChange} data={campaignEmail?.[0] || {}} isReadOnly={!!campaignEmail?.[0]} />;
+          return (
+            <EmailSetup
+              onSave={refetch}
+              onDataChange={handleCampaignEmailDataChange}
+              data={campaignEmail?.[0] || {}}
+              isReadOnly={!!campaignEmail?.[0]}
+            />
+          );
         case 1:
           return (
             <div className={styles.placeholder}>
-              <ReminderEmail onSave={refetch} onDataChange={handleCampaignEmailDataChange} data={reminderEmails || []} />
+              <ReminderEmail
+                onSave={refetch}
+                onDataChange={handleCampaignEmailDataChange}
+                data={reminderEmails || []}
+              />
             </div>
           );
         case 2:
           return (
             <div className={styles.placeholder}>
-              <FollowupEmail onSave={refetch} onDataChange={handleCampaignEmailDataChange} data={followupEmails || []} isReadOnly={followupEmails && followupEmails.length > 0}/>
+              <FollowupEmail
+                onSave={refetch}
+                onDataChange={handleCampaignEmailDataChange}
+                data={followupEmails || []}
+                isReadOnly={followupEmails && followupEmails.length > 0}
+              />
             </div>
+          );
+        default:
+          return (
+            <EmailSetup
+              onSave={refetch}
+              onDataChange={handleCampaignEmailDataChange}
+              data={campaignEmail?.[0] || {}}
+              isReadOnly={!!campaignEmail?.[0]}
+            />
           );
       }
     } else if (activeStep === 1) {
       switch (activeOption) {
         case 0:
           return (
-            <div className={styles.placeholder}>
-              <h3>General Settings</h3>
-              <p>General settings content will go here.</p>
-            </div>
+            <GeneralSettings
+              onNext={handleGeneralSettingsNext}
+              onDataChange={handleGeneralDataChange}
+            />
           );
         case 1:
-          return <DeliverySettings onDataChange={handleDeliveryDataChange} />;
+          return (
+            <DeliverySettings
+              onNext={handleGeneralSettingsNext2}
+              onDataChange={handleDeliveryDataChange}
+            />
+          );
         case 2:
           return (
             <div className={styles.placeholder}>
               <h3>Review Settings</h3>
               <p>Review settings content will go here.</p>
+              <div className={styles.reviewData}>
+                <h4>General Settings:</h4>
+                <pre>{JSON.stringify(generalData, null, 2)}</pre>
+                <h4>Delivery Settings:</h4>
+                <pre>{JSON.stringify(deliveryData, null, 2)}</pre>
+              </div>
             </div>
           );
         default:
-          return <DeliverySettings onDataChange={handleDeliveryDataChange} />;
+          return (
+            <GeneralSettings
+              onNext={handleGeneralSettingsNext}
+              onDataChange={handleGeneralDataChange}
+            />
+          );
       }
-    }
-    else if (activeStep === 3){
+    } else if (activeStep === 3) {
       return (
         <div>
           {/* <h3>Setup Configuration</h3>
@@ -114,47 +184,42 @@ const EmailSettings = ({ activeStep = 2 }) => {
           <SetupConfiguration />
         </div>
       );
-    }
-
-    else {
+    } else {
       return (
         <div className={styles.placeholder}>
           <h3>Something went wrong</h3>
         </div>
       );
     }
-
   };
 
   const getSidebarHeading = () => {
     return activeStep === 2 ? "Email Setup" : "Email Settings";
   };
 
-return (
-  <div className={styles.emailSettingsContainer}>
-    <div className={styles.emailSettings}>
-      <Header activeStep={activeStep} />
-      <div className={styles.contentContainer}>
-        {activeStep !== 3 && (
-          <EmailSidebar
-            heading={getSidebarHeading()}
-            options={options}
-            onOptionClick={handleOptionClick}
-          />
-        )}
-        <div className={styles.settingsContent}>{renderContent()}</div>
-        <div className={styles.copyTextContainer}>
+  return (
+    <div className={styles.emailSettingsContainer}>
+      <div className={styles.emailSettings}>
+        <Header activeStep={activeStep} />
+        <div className={styles.contentContainer}>
+          {activeStep !== 3 && (
+            <EmailSidebar
+              heading={getSidebarHeading()}
+              options={options}
+              onOptionClick={handleOptionClick}
+            />
+          )}
+          <div className={styles.settingsContent}>{renderContent()}</div>
+          <div className={styles.copyTextContainer}>
             <CopyText
               fields={["First name", "Last name", "Link"]}
               onInsert={() => {}}
             />
           </div>
+        </div>
       </div>
     </div>
-  </div>
-);
-
-          
+  );
 };
 
 export default EmailSettings;
