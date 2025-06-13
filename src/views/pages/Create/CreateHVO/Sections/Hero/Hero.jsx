@@ -73,12 +73,13 @@ const HeroSection = ({
 
   console.log("HEROooo===-=---=-=", initialData);
 
-  const handleImageChange = useCallback((e) => {
+  const handleFileChange = useCallback((e) => {
     const file = e.target.files?.[0];
     if (file) {
       setFile(file);
-      setHeroImg(file.name);
-      setHeroImgPreview(URL.createObjectURL(file));
+      setHeroImg(file.name); // Name for backend
+      const url = URL.createObjectURL(file);
+      setHeroImgPreview(url);
     }
   }, []);
 
@@ -119,8 +120,8 @@ const HeroSection = ({
     const heroSectionData = {
       templateId,
       sequence,
-      hero_img: file ? "" : heroImg, // If file selected, send in 'file', else send URL
-      file: file || null, // Send file if selected
+      hero_img: !file && heroImg ? heroImg : "",
+      file: file || null,
       headline1,
       headline1_size: parseInt(headline1Size) || null,
       headline1_color: headline1Color,
@@ -139,6 +140,12 @@ const HeroSection = ({
       demo_button_text_color: demoButtonTextColor,
       dynamic_url_demo: demoUrl, // Demo Button URL
     };
+
+    console.log("🚀 Final Payload:", {
+      hero_img: !file && heroImg ? heroImg : "",
+      file: file || null,
+    });
+
 
     try {
       if (initialData?.id) {
@@ -199,41 +206,66 @@ const HeroSection = ({
         <div className={styles.content}>
           <div className={styles.mainSection}>
             <div className={styles.uploadSection}>
-              <label>Upload Static Image or Select Dynamic Image</label>
+              <label>Upload or Paste Image/Video Link</label>
               <div className={styles.uploadGroup}>
                 <InputField
                   value={heroImg}
                   onChange={handleUrlChange}
-                  placeholder="Enter Image URL or Upload Image"
+                  placeholder="Paste Image or Video URL"
                 />
                 <button
                   className={styles.chooseButton}
                   onClick={handleChooseClick}
                 >
-                  Choose
+                  Choose File
                 </button>
                 <input
                   ref={fileInputRef}
                   type="file"
-                  accept="image/*"
-                  onChange={(e) => {
-                    handleImageChange(e);
-                    handleChooseClick();
-                  }}
+                  accept="image/*,video/*"
+                  onChange={handleFileChange}
                   className={styles.hiddenInput}
                 />
               </div>
+
+              {/* 🔍 Conditional preview for image or video */}
               {heroImgPreview && (
                 <div className={styles.previewContainer}>
-                  <img
-                    src={heroImgPreview}
-                    alt="Preview"
-                    className={styles.preview}
-                  />
+                  {(file?.type?.startsWith("video/") ||
+                    (!file && /\.(mp4|webm|ogg)$/i.test(heroImgPreview))) ? (
+                    <video
+                      src={heroImgPreview}
+                      controls
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      className={styles.preview}
+                      style={{
+                        maxWidth: "100%",
+                        maxHeight: "400px",
+                        width: "100%",
+                        height: "auto",
+                        borderRadius: "10px",
+                      }}
+                    />
+                  ) : (
+                    <img
+                      src={heroImgPreview}
+                      alt="Preview"
+                      className={styles.preview}
+                      style={{
+                        maxWidth: "100%",
+                        maxHeight: "400px",
+                        width: "100%",
+                        objectFit: "cover",
+                        borderRadius: "10px",
+                      }}
+                    />
+                  )}
                 </div>
               )}
             </div>
-
             <div className={styles.selectSection}>
               <CategoryDropdown
                 key={heroImg}
