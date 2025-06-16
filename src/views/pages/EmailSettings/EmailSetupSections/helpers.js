@@ -31,3 +31,56 @@ export const defaultHtmlContent = `<!DOCTYPE html>
     </div>
 </body>
 </html>`;
+
+export const handleFileUpload = (e, setAttachedFiles) => {
+  const files = Array.from(e.target.files);
+  files.forEach((file) => {
+    const fileData = {
+      id: Date.now() + Math.random(),
+      name: file.name,
+      size: file.size,
+      type: file.type,
+      file: file,
+    };
+    setAttachedFiles((prev) => [...prev, fileData]);
+  });
+  e.target.value = "";
+};
+
+export const handleImageUpload = (e, setAttachedImages) => {
+  const files = Array.from(e.target.files);
+  files.forEach((file) => {
+    if (file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const imageData = {
+          id: Date.now() + Math.random(),
+          name: file.name,
+          size: file.size,
+          type: file.type,
+          file: file,
+          preview: event.target.result,
+        };
+        setAttachedImages((prev) => [...prev, imageData]);
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+  e.target.value = "";
+};
+
+export const removeFile = (id, setAttachedFiles) => {
+  setAttachedFiles((prev) => prev.filter((file) => file.id !== id));
+};
+
+export const removeImage = (id, setAttachedImages) => {
+  setAttachedImages((prev) => prev.filter((image) => image.id !== id));
+};
+
+export const formatFileSize = (bytes) => {
+  if (bytes === 0) return "0 Bytes";
+  const k = 1024;
+  const sizes = ["Bytes", "KB", "MB", "GB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+};

@@ -32,6 +32,9 @@ export const deleteCampaignEmail = (templateId) => `${url}/campaign/campaign-ema
 export const followupEmail = `${url}/campaign/followup-email`;
 export const updateFollowupEmail = (templateId) => `${url}/campaign/followup-email/${templateId}`;
 export const deleteFollowupEmail = (templateId) => `${url}/campaign/followup-email/${templateId}`;
+export const reminderEmail = `${url}/campaign/reminder-email`;
+export const updateReminderEmail = (templateId) => `${url}/campaign/reminder-email/${templateId}`;
+export const deleteReminderEmail = (templateId) => `${url}/campaign/reminder-email/${templateId}`;
 export const getEmailTemplates = (templateId) => `${url}/campaign/emails/${templateId}`;
 
 //======================================
