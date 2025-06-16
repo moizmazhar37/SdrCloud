@@ -1,11 +1,15 @@
 import React, { useState } from "react";
 import styles from "./GenaralSettings.module.scss";
+import useSaveGeneralSettings from "../Hooks/useSaveGeneralSettings";
 
 const GeneralSettings = ({ onNext, onDataChange }) => {
   const [smsEnabled, setSmsEnabled] = useState(false);
   const [emailEnabled, setEmailEnabled] = useState(true);
   const [maxSmsPerDay, setMaxSmsPerDay] = useState("5");
   const [maxEmailPerDay, setMaxEmailPerDay] = useState("5");
+
+  const TEMPLATE_ID = localStorage.getItem("template_id");
+  const { saveGeneralSettings, loading, error } = useSaveGeneralSettings();
 
   const handleDataChange = (newData) => {
     const allData = {
@@ -40,13 +44,21 @@ const GeneralSettings = ({ onNext, onDataChange }) => {
     handleDataChange({ maxEmailPerDay: value });
   };
 
-  const handleSave = () => {
-    console.log("Logging dAta=:", {
+  const handleSave = async () => {
+    const settings = {
       smsEnabled,
       emailEnabled,
       maxSmsPerDay,
       maxEmailPerDay,
-    });
+    };
+
+    console.log("Logging data:", settings);
+
+    try {
+      const result = await saveGeneralSettings(TEMPLATE_ID, settings);
+    } catch (err) {
+      console.error("Error saving settings:", err);
+    }
   };
 
   const handleNext = () => {
@@ -116,8 +128,12 @@ const GeneralSettings = ({ onNext, onDataChange }) => {
 
       {/* Action Buttons */}
       <div className={styles.buttonSection}>
-        <button className={styles.saveButton} onClick={handleSave}>
-          Save
+        <button
+          className={styles.saveButton}
+          onClick={handleSave}
+          disabled={loading}
+        >
+          {loading ? "Saving..." : "Save"}
         </button>
         <button className={styles.nextButton} onClick={handleNext}>
           Next

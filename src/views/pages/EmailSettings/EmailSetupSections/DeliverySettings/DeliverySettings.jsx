@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styles from "./DeliverySettings.module.scss";
+import useSaveDeliverySettings from "../Hooks/useSaveDeliverySettings";
 
 const DeliverySettings = ({ onNext, onDataChange }) => {
   const [deliveryTypes, setDeliveryTypes] = useState(["Email"]);
@@ -15,6 +16,10 @@ const DeliverySettings = ({ onNext, onDataChange }) => {
     start: "08:00",
     end: "08:00",
   });
+
+  const TEMPLATE_ID = localStorage.getItem("template_id");
+
+  const { saveDeliverySettings, loading, error } = useSaveDeliverySettings();
 
   const handleDataChange = (newData) => {
     const allData = {
@@ -81,10 +86,30 @@ const DeliverySettings = ({ onNext, onDataChange }) => {
     }
   };
 
+  const handleSave = async () => {
+    try {
+      // Determine which time to use based on enabled days
+      // For simplicity, using start time. You might want to adjust this logic
+      let weekdaysTime = weekdaysEnabled ? weekdaysTimes.start : null;
+      let weekendTime = weekendsEnabled ? weekendsTimes.start : null;
+
+      const settings = {
+        maxReminders,
+        weekdaysTime,
+        weekendTime,
+      };
+
+      console.log("Saving delivery settings:", settings);
+
+      await saveDeliverySettings(TEMPLATE_ID, settings);
+      console.log("Delivery settings saved successfully");
+    } catch (err) {
+      console.error("Error saving delivery settings:", err);
+    }
+  };
+
   return (
     <div className={styles.deliverySettings}>
-      {/* Delivery Type Section */}
-
       {/* Maximum Numbers Section */}
       <div className={styles.section}>
         <div className={styles.maxRemindersContainer}>
@@ -206,9 +231,14 @@ const DeliverySettings = ({ onNext, onDataChange }) => {
           </div>
         </div>
       </div>
+
       <div className={styles.buttonSection}>
-        <button className={styles.saveButton} onClick={() => {}}>
-          Save
+        <button
+          className={styles.saveButton}
+          onClick={handleSave}
+          disabled={loading}
+        >
+          {loading ? "Saving..." : "Save"}
         </button>
         <button className={styles.nextButton} onClick={onNext}>
           Next
