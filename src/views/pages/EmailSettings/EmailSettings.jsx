@@ -15,9 +15,9 @@ import useGetEmailTemplates from "./EmailSetupSections/Hooks/useGetEmailTemplate
 const getInitialActiveOption = (step) => {
   switch (step) {
     case 1:
-      return 0; // Start with General Settings for step 1
+      return 0;
     case 2:
-      return 0; // Start with Campaign Email for step 2
+      return 0;
     case 3:
       return 0;
     default:
@@ -33,9 +33,7 @@ const EmailSettings = ({ activeStep = 1 }) => {
   const [generalData, setGeneralData] = useState({});
   const [campaignEmailData, setCampaignEmailData] = useState({});
 
-  const templateId = "b8e2a652-350b-42d5-b09e-9a0e4d345ccf";
-
-  // const templateId = localStorage.getItem("template_id") || "default_template_id";
+  const templateId = localStorage.getItem("template_id");
   const {
     campaignEmail,
     reminderEmails,
