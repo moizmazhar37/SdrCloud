@@ -33,7 +33,7 @@ const EmailSettings = ({ activeStep = 1 }) => {
   const [generalData, setGeneralData] = useState({});
   const [campaignEmailData, setCampaignEmailData] = useState({});
   const {
-    data,
+    data: campaignData,
     loading: loadingCampaignData,
     error: errorLoadingCampaignData,
   } = useGetCampaignData();
@@ -91,12 +91,10 @@ const EmailSettings = ({ activeStep = 1 }) => {
   };
 
   const handleGeneralSettingsNext = () => {
-    // Move to Delivery Settings (activeOption 1)
     setActiveOption(1);
   };
 
   const handleGeneralSettingsNext2 = () => {
-    // Move to Delivery Settings (activeOption 1)
     setActiveOption(2);
   };
   const renderContent = () => {
@@ -149,6 +147,7 @@ const EmailSettings = ({ activeStep = 1 }) => {
             <GeneralSettings
               onNext={handleGeneralSettingsNext}
               onDataChange={handleGeneralDataChange}
+              initialData={campaignData}
             />
           );
         case 1:
@@ -156,6 +155,7 @@ const EmailSettings = ({ activeStep = 1 }) => {
             <DeliverySettings
               onNext={handleGeneralSettingsNext2}
               onDataChange={handleDeliveryDataChange}
+              initialData={campaignData}
             />
           );
         case 2:
@@ -176,14 +176,13 @@ const EmailSettings = ({ activeStep = 1 }) => {
             <GeneralSettings
               onNext={handleGeneralSettingsNext}
               onDataChange={handleGeneralDataChange}
+              initialData={campaignData} // Pass campaign data
             />
           );
       }
     } else if (activeStep === 3) {
       return (
         <div>
-          {/* <h3>Setup Configuration</h3>
-          <p>This is the Setup Configuration Page.</p> */}
           <SetupConfiguration />
         </div>
       );

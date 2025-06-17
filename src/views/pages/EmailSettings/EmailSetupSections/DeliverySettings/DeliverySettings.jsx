@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styles from "./DeliverySettings.module.scss";
 import useSaveDeliverySettings from "../Hooks/useSaveDeliverySettings";
 
-const DeliverySettings = ({ onNext, onDataChange }) => {
+const DeliverySettings = ({ onNext, onDataChange, initialData }) => {
   const [deliveryTypes, setDeliveryTypes] = useState(["Email"]);
   const [maxReminders, setMaxReminders] = useState("5");
   const [scheduleType, setScheduleType] = useState("Recurring");
@@ -16,10 +16,72 @@ const DeliverySettings = ({ onNext, onDataChange }) => {
     start: "08:00",
     end: "08:00",
   });
+  const isInitialized = useRef(false);
 
   const TEMPLATE_ID = localStorage.getItem("template_id");
-
   const { saveDeliverySettings, loading, error } = useSaveDeliverySettings();
+
+  const extractTime = (timeString) => {
+    if (!timeString) return "08:00";
+    return timeString.split(":").slice(0, 2).join(":");
+  };
+
+  useEffect(() => {
+    if (initialData && !isInitialized.current) {
+      // Set max reminders
+      setMaxReminders(String(initialData.max_reminders || 5));
+
+      const hasWeekdaysTime = initialData.weekdays_time;
+      const hasWeekendTime = initialData.weekend_time;
+
+      setWeekdaysEnabled(!!hasWeekdaysTime);
+      setWeekendsEnabled(!!hasWeekendTime);
+
+      if (hasWeekdaysTime) {
+        const time = extractTime(initialData.weekdays_time);
+        setWeekdaysTimes({
+          start: time,
+          end: time,
+        });
+      }
+
+      if (hasWeekendTime) {
+        const time = extractTime(initialData.weekend_time);
+        setWeekendsTimes({
+          start: time,
+          end: time,
+        });
+      }
+
+      const types = [];
+      if (initialData.email_enabled) types.push("Email");
+      if (initialData.sms_enabled) types.push("SMS");
+      setDeliveryTypes(types.length > 0 ? types : ["Email"]);
+
+      isInitialized.current = true;
+
+      const allData = {
+        deliveryTypes: types.length > 0 ? types : ["Email"],
+        maxReminders: String(initialData.max_reminders || 5),
+        scheduleType: "Recurring", // Default as this isn't stored in API
+        weekdaysEnabled: !!hasWeekdaysTime,
+        weekendsEnabled: !!hasWeekendTime,
+        weekdaysTimes: hasWeekdaysTime
+          ? {
+              start: extractTime(initialData.weekdays_time),
+              end: extractTime(initialData.weekdays_time),
+            }
+          : { start: "08:00", end: "08:00" },
+        weekendsTimes: hasWeekendTime
+          ? {
+              start: extractTime(initialData.weekend_time),
+              end: extractTime(initialData.weekend_time),
+            }
+          : { start: "08:00", end: "08:00" },
+      };
+      onDataChange && onDataChange(allData);
+    }
+  }, [initialData, onDataChange]);
 
   const handleDataChange = (newData) => {
     const allData = {
@@ -88,8 +150,6 @@ const DeliverySettings = ({ onNext, onDataChange }) => {
 
   const handleSave = async () => {
     try {
-      // Determine which time to use based on enabled days
-      // For simplicity, using start time. You might want to adjust this logic
       let weekdaysTime = weekdaysEnabled ? weekdaysTimes.start : null;
       let weekendTime = weekendsEnabled ? weekendsTimes.start : null;
 

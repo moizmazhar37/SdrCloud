@@ -1,15 +1,37 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styles from "./GenaralSettings.module.scss";
 import useSaveGeneralSettings from "../Hooks/useSaveGeneralSettings";
 
-const GeneralSettings = ({ onNext, onDataChange }) => {
+const GeneralSettings = ({ onNext, onDataChange, initialData }) => {
   const [smsEnabled, setSmsEnabled] = useState(false);
   const [emailEnabled, setEmailEnabled] = useState(true);
   const [maxSmsPerDay, setMaxSmsPerDay] = useState("5");
   const [maxEmailPerDay, setMaxEmailPerDay] = useState("5");
+  const isInitialized = useRef(false);
 
   const TEMPLATE_ID = localStorage.getItem("template_id");
   const { saveGeneralSettings, loading, error } = useSaveGeneralSettings();
+
+  // Populate initial data from API - only once when data first arrives
+  useEffect(() => {
+    if (initialData && !isInitialized.current) {
+      setSmsEnabled(initialData.sms_enabled || false);
+      setEmailEnabled(initialData.email_enabled || true);
+      setMaxSmsPerDay(String(initialData.max_sms_per_day || 5));
+      setMaxEmailPerDay(String(initialData.max_emails_per_day || 5));
+
+      isInitialized.current = true;
+
+      // Update parent component with initial data
+      const allData = {
+        smsEnabled: initialData.sms_enabled || false,
+        emailEnabled: initialData.email_enabled || true,
+        maxSmsPerDay: String(initialData.max_sms_per_day || 5),
+        maxEmailPerDay: String(initialData.max_emails_per_day || 5),
+      };
+      onDataChange && onDataChange(allData);
+    }
+  }, [initialData, onDataChange]);
 
   const handleDataChange = (newData) => {
     const allData = {
