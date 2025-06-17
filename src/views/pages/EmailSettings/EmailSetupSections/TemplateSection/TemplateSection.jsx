@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./TemplateSection.module.scss";
 
-const TemplateSection = ({ templates = [], selectedId, onSelect }) => {
+const TemplateSection = ({ templates = [], selectedId, onSelect, onAddNew }) => {
   return (
     <div className={styles.templateSection}>
       {templates.length === 0 ? (
@@ -16,16 +16,20 @@ const TemplateSection = ({ templates = [], selectedId, onSelect }) => {
             <div className={styles.index}>{index + 1}</div>
             <div className={styles.details}>
               <div className={styles.title}>
-                Section {index + 1} | {template.name || "Untitled"}
-              </div>
-              <div className={styles.scroll}>
-                Scroll - {template.scroll ? "Yes" : "No"}
+                Reminder {index + 1} | {template.subject || "Untitled"}
               </div>
             </div>
             <button className={styles.viewButton}>View</button>
           </div>
         ))
       )}
+
+      {/* Add New Section Button */}
+      <div className={styles.addNewTemplateButtonWrapper}>
+        <button className={styles.addNewTemplateButton} onClick={onAddNew}>
+          + Add New Section
+        </button>
+      </div>
     </div>
   );
 };
