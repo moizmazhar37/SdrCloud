@@ -40,6 +40,12 @@ export const getEmailTemplates = (templateId) =>
   `${url}/campaign/emails/${templateId}`;
 export const campaignSettings = `${url}/campaign/settings`;
 
+export const reminderEmail = `${url}/campaign/reminder-email`;
+export const updateReminderEmail = (templateId) =>
+  `${url}/campaign/reminder-email/${templateId}`;
+export const deleteReminderEmail = (templateId) =>
+  `${url}/campaign/reminder-email/${templateId}`;
+
 //======================================
 const ApiConfig = {
   getUrls: `${url}/url`,
