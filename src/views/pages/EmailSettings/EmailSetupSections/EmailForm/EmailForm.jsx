@@ -16,6 +16,7 @@ const EmailForm = ({
   deleteButtonText,
   handleSave,
   handleDelete,
+  handleNext,
 }) => {
   return (
     <div className={styles.emailSetup}>
@@ -100,6 +101,9 @@ const EmailForm = ({
                 </button>
                 <button onClick={handleSave} className={styles.saveButton}>
                     {saveButtonText}
+                </button>
+                <button onClick={handleNext} className={styles.nextButton}>
+                    Next
                 </button>
             </div>
           </div>

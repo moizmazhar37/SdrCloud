@@ -111,11 +111,6 @@ const getNavSections = (userType) => {
             href: "/prospects",
           },
           {
-            title: "Email Builder",
-            icon: "images/template/EmailBuilder.svg",
-            href: "/email-settings",
-          },
-          {
             title: "Settings",
             icon: "images/template/setting.svg",
             href: "/settings",

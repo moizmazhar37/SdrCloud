@@ -8,7 +8,7 @@ import { defaultMessage, defaultHtmlContent } from "../helpers";
 import CampaignEmailForm from "../EmailForm/EmailForm";
 import ConfirmationModal from "src/Common/ConfirmationModal/ConfirmationModal";
 
-const EmailSetup = ({ onSave, data = {}, isReadOnly = false }) => {
+const EmailSetup = ({ onSave, onNext, data = {}, isReadOnly = false, templateId  }) => {
   const [subject, setSubject] = useState(data.subject || "");
   const [message, setMessage] = useState(data.body || defaultMessage);
   const [htmlContent, setHtmlContent] = useState(data.htmlContent || defaultHtmlContent);
@@ -50,14 +50,16 @@ const EmailSetup = ({ onSave, data = {}, isReadOnly = false }) => {
       subject,
       message: IsHtmlTemplate ? htmlContent : message,
       isHtml: IsHtmlTemplate,
+      templateId,
+      
     };
 
     try {
       setsaveButtonText(isFirstSave ? "Saving..." : "Updating...");
 
       if (isFirstSave) {
-        await saveCampaignEmail(payload);
-        toast.success("Campaign email saved successfully.");
+        const response = await saveCampaignEmail(payload);
+        toast.success(response.message || "Campaign email saved successfully.");
       } else {
         const templateId = data.id;
         if (!templateId) {
@@ -79,8 +81,8 @@ const EmailSetup = ({ onSave, data = {}, isReadOnly = false }) => {
       setsaveButtonText("Edit");
 
       onSave?.();
-    } catch (err) {
-      toast.error(err.message);
+    }catch (err) {
+      toast.error(err.message || "Something went wrong.");
       setsaveButtonText(isFirstSave ? "Save" : isEditing ? "Update" : "Edit");
     }
   };
@@ -96,8 +98,8 @@ const EmailSetup = ({ onSave, data = {}, isReadOnly = false }) => {
     }
 
     try {
-      await deleteCampaignEmail(data.id);
-      toast.success("Template deleted successfully.");
+      const response = await deleteCampaignEmail(data.id);
+      toast.success(response.message || "Template deleted successfully.");
 
       // Only reset on success
       setSubject("");
@@ -136,6 +138,7 @@ const EmailSetup = ({ onSave, data = {}, isReadOnly = false }) => {
         deleteButtonText={deleteButtonText}
         handleSave={handleSave}
         handleDelete={handleDeleteClick}
+        handleNext={onNext}
         subjectLabel={<label htmlFor="subject" className={styles.label}>Subject</label>}
       />
       <ConfirmationModal

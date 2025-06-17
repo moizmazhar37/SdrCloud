@@ -2,14 +2,13 @@ import { useState } from "react";
 import axios from "axios";
 import { followupEmail } from "src/config/APIConfig";
 
-const TEMPLATE_ID = "b8e2a652-350b-42d5-b09e-9a0e4d345ccf";
 
 const useSaveFollowupEmail = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
 
-  const saveFollowupEmail = async ({ subject, message, isHtml, action }) => {
+  const saveFollowupEmail = async ({ subject, message, isHtml, action, templateId}) => {
     setLoading(true);
     setError(null);
     setSuccess(false);
@@ -21,7 +20,7 @@ const useSaveFollowupEmail = () => {
           subject,
           body: message,
           is_html: isHtml,
-          template_id: TEMPLATE_ID,
+          template_id: templateId,
           action: action,
         },
         {

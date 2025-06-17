@@ -10,31 +10,24 @@ import { toast } from "react-toastify";
 import {
   defaultMessage,
   defaultHtmlContent,
-  handleFileUpload,
-  handleImageUpload,
-  removeFile,
-  removeImage,
-  formatFileSize,
 } from "../helpers";
 
-const ReminderEmail = ({ onDataChange, data = [] }) => {
-  const [templates, setTemplates] = useState(data);
-  const [selectedTemplateId, setSelectedTemplateId] = useState(null);
+const ReminderEmail = ({ onSave, onDataChange, onNext, data = [], templateId }) => {
+  const [selectedSectionId, setSelectedSectionId] = useState(null);
   const [showForm, setShowForm] = useState(data.length === 0);
-
-  const selectedTemplate = templates.find(t => t.id === selectedTemplateId) || null;
-
+  const [lastSavedPayload, setLastSavedPayload] = useState(null);
+  const [isNewSection, setIsNewSection] = useState(false);
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState(defaultMessage);
   const [htmlContent, setHtmlContent] = useState(defaultHtmlContent);
   const [useHtmlTemplate, setUseHtmlTemplate] = useState(false);
-  const [attachedFiles, setAttachedFiles] = useState([]);
-  const [attachedImages, setAttachedImages] = useState([]);
   const [sendAfterValue, setSendAfterValue] = useState("");
-  const [deleteButtonText] = useState("Delete");
   const [saveButtonText, setSaveButtonText] = useState("Save");
+  const [deleteButtonText] = useState("Delete");
   const [isEditing, setIsEditing] = useState(true);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  const selectedSection = data.find(section => section.id === selectedSectionId) || null;
 
   const saveInProgress = useRef(false);
   const { saveReminderEmail } = useSaveReminderEmail();
@@ -42,12 +35,12 @@ const ReminderEmail = ({ onDataChange, data = [] }) => {
   const { deleteReminderEmail } = useDeleteReminderEmail();
 
   useEffect(() => {
-    if (selectedTemplate) {
-      setSubject(selectedTemplate.subject || "");
-      setMessage(selectedTemplate.body || defaultMessage);
-      setHtmlContent(selectedTemplate.htmlContent || defaultHtmlContent);
-      setUseHtmlTemplate(selectedTemplate.isHtml || false);
-      setSendAfterValue(selectedTemplate.send_after_days || "");
+    if (selectedSection) {
+      setSubject(selectedSection.subject || "");
+      setMessage(selectedSection.body || defaultMessage);
+      setHtmlContent(selectedSection.htmlContent || defaultHtmlContent);
+      setUseHtmlTemplate(selectedSection.isHtml || false);
+      setSendAfterValue(selectedSection.send_after_days || "");
       setIsEditing(false);
       setSaveButtonText("Edit");
       setShowForm(true);
@@ -60,12 +53,28 @@ const ReminderEmail = ({ onDataChange, data = [] }) => {
       setIsEditing(true);
       setSaveButtonText("Save");
     }
-  }, [selectedTemplateId]);
+  }, [selectedSectionId, isNewSection]);
+
+  useEffect(() => {
+    if (lastSavedPayload) {
+      const match = data.find(
+        section =>
+          section.subject === lastSavedPayload.subject &&
+          section.message === lastSavedPayload.message &&
+          section.sequence === lastSavedPayload.sequence
+      );
+      if (match?.id) {
+        setSelectedSectionId(match.id);
+        setShowForm(true);
+        setLastSavedPayload(null);
+      }
+    }
+  }, [data]);
 
   const handleSave = async () => {
     if (saveInProgress.current) return;
 
-    const isUpdating = !!selectedTemplateId;
+    const isUpdating = !!selectedSectionId;
 
     if (!isEditing && isUpdating) {
       setIsEditing(true);
@@ -79,33 +88,31 @@ const ReminderEmail = ({ onDataChange, data = [] }) => {
       subject,
       message: useHtmlTemplate ? htmlContent : message,
       isHtml: useHtmlTemplate,
-      send_days: parseInt(sendAfterValue) || 0,
-      sequence: isUpdating ? selectedTemplate.sequence : templates.length + 1,
+      send_after_days: parseInt(sendAfterValue) || 0,
+      sequence: isUpdating ? selectedSection.sequence : data.length + 1,
+      templateId,
     };
 
     try {
       setSaveButtonText(isUpdating ? "Updating..." : "Saving...");
 
       if (isUpdating) {
-        await updateReminderEmail({ ...payload, templateId: selectedTemplateId });
-        const updatedTemplates = templates.map(t =>
-          t.id === selectedTemplateId ? { ...t, ...payload } : t
+        await updateReminderEmail({ ...payload, templateId: selectedSectionId });
+        const updatedData = data.map(section =>
+          section.id === selectedSectionId ? { ...section, ...payload } : section
         );
-        setTemplates(updatedTemplates);
-        toast.success("Reminder email updated successfully.");
+        toast.success("Reminder section updated successfully.");
+        onDataChange?.(updatedData);
       } else {
-        const response = await saveReminderEmail({ ...payload, existingTemplates: templates });
-        const newTemplate = { id: response?.id || Date.now().toString(), ...payload };
-        const updatedTemplates = [...templates, newTemplate];
-        setTemplates(updatedTemplates);
-        toast.success("Reminder email saved successfully.");
-        setShowForm(false); // hide form after first template is saved
+        await saveReminderEmail({ ...payload, existingTemplates: data });
+        setLastSavedPayload(payload);
+        setIsNewSection(false);
+        setShowForm(false); 
+        onSave?.(); 
       }
 
-      setSelectedTemplateId(null);
       setSaveButtonText("Edit");
       setIsEditing(false);
-      onDataChange?.(templates);
     } catch (err) {
       toast.error(err.message || "An error occurred while saving.");
       setSaveButtonText(isUpdating ? "Edit" : "Save");
@@ -115,21 +122,22 @@ const ReminderEmail = ({ onDataChange, data = [] }) => {
   };
 
   const handleDeleteConfirm = async () => {
-    if (!selectedTemplate?.id) {
-      toast.error("Template ID is missing.");
+    if (!selectedSection?.id) {
+      toast.error("Section ID is missing.");
       return;
     }
 
     try {
-      await deleteReminderEmail(selectedTemplate.id);
-      const updated = templates.filter(t => t.id !== selectedTemplateId);
-      setTemplates(updated);
-      setSelectedTemplateId(null);
+      await deleteReminderEmail(selectedSection.id);
+      const updatedData = data.filter(section => section.id !== selectedSectionId);
+      setSelectedSectionId(null);
       setIsEditing(true);
       setSaveButtonText("Save");
-      setShowForm(updated.length === 0);
-      toast.success("Template deleted successfully.");
-      onDataChange?.(updated);
+      setShowForm(updatedData.length === 0);
+      toast.success("Reminder section deleted successfully.");
+      setIsDeleteModalOpen(false);
+      onDataChange?.(updatedData);
+      onSave?.();
     } catch (error) {
       toast.error(error.message);
     }
@@ -141,16 +149,17 @@ const ReminderEmail = ({ onDataChange, data = [] }) => {
     <>
       <div className={styles.emailSetup}>
         <TemplateSection
-          templates={templates}
-          selectedId={selectedTemplateId}
+          templates={data}
+          selectedId={selectedSectionId}
           onSelect={id => {
-            setSelectedTemplateId(id);
+            setSelectedSectionId(id);
             setShowForm(true);
           }}
-          onAddNew={() => {
-            setSelectedTemplateId(null);
+          onAddNew={data.length > 0 ? () => {
+            setSelectedSectionId(null);
+            setIsNewSection(true); 
             setShowForm(true);
-          }}
+          } : undefined}
         />
 
         {showForm && (
@@ -164,7 +173,6 @@ const ReminderEmail = ({ onDataChange, data = [] }) => {
                     value={sendAfterValue}
                     onChange={(e) => setSendAfterValue(e.target.value)}
                     className={styles.sendAfterInput}
-                    placeholder=""
                     min="1"
                     readOnly={!isEditing}
                   />
@@ -186,10 +194,11 @@ const ReminderEmail = ({ onDataChange, data = [] }) => {
                 saveButtonText={saveButtonText}
                 deleteButtonText={deleteButtonText}
                 handleSave={handleSave}
+                handleNext={onNext}
                 handleDelete={() => setIsDeleteModalOpen(true)}
               />
 
-              <div className={styles.toolbar}>
+              {/* <div className={styles.toolbar}>
                 <div className={styles.toolbarLeft}>
                   <input
                     type="file"
@@ -198,14 +207,23 @@ const ReminderEmail = ({ onDataChange, data = [] }) => {
                     onChange={(e) => handleFileUpload(e, setAttachedFiles)}
                     style={{ display: "none" }}
                   />
-                  <button
-                    type="button"
-                    className={styles.toolButton}
-                    title="Attach file"
-                    onClick={() => document.getElementById("fileInput").click()}
+                   <button
+                  type="button"
+                  className={styles.toolButton}
+                  title="Attach file"
+                  onClick={() => document.getElementById("fileInput").click()}
+                >
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
                   >
-                    📎
-                  </button>
+                    <path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66L9.64 16.2a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
+                  </svg>
+                </button>
 
                   <input
                     type="file"
@@ -216,17 +234,35 @@ const ReminderEmail = ({ onDataChange, data = [] }) => {
                     style={{ display: "none" }}
                   />
                   <button
-                    type="button"
-                    className={styles.toolButton}
-                    title="Insert image"
-                    onClick={() => document.getElementById("imageInput").click()}
+                  type="button"
+                  className={styles.toolButton}
+                  title="Insert image"
+                  onClick={() => document.getElementById("imageInput").click()}
+                >
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
                   >
-                    🖼️
-                  </button>
+                    <rect
+                      width="18"
+                      height="18"
+                      x="3"
+                      y="3"
+                      rx="2"
+                      ry="2"
+                    ></rect>
+                    <circle cx="9" cy="9" r="2"></circle>
+                    <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"></path>
+                  </svg>
+                </button>
                 </div>
-              </div>
+              </div> */}
 
-              {attachedFiles.length > 0 && (
+              {/* {attachedFiles.length > 0 && (
                 <div className={styles.attachmentSection}>
                   <h4 className={styles.attachmentTitle}>Attached Files</h4>
                   <div className={styles.attachmentGrid}>
@@ -239,14 +275,14 @@ const ReminderEmail = ({ onDataChange, data = [] }) => {
                         <button
                           className={styles.removeButton}
                           onClick={() => removeFile(file.id, setAttachedFiles)}
-                        >❌</button>
+                        ></button>
                       </div>
                     ))}
                   </div>
                 </div>
-              )}
+              )} */}
 
-              {attachedImages.length > 0 && (
+              {/* {attachedImages.length > 0 && (
                 <div className={styles.attachmentSection}>
                   <h4 className={styles.attachmentTitle}>Attached Images</h4>
                   <div className={styles.attachmentGrid}>
@@ -258,12 +294,12 @@ const ReminderEmail = ({ onDataChange, data = [] }) => {
                         <button
                           className={styles.removeButton}
                           onClick={() => removeImage(image.id, setAttachedImages)}
-                        >❌</button>
+                        ></button>
                       </div>
                     ))}
                   </div>
                 </div>
-              )}
+              )} */}
             </div>
           </div>
         )}
@@ -273,7 +309,7 @@ const ReminderEmail = ({ onDataChange, data = [] }) => {
         isOpen={isDeleteModalOpen}
         onClose={handleModalClose}
         title="Confirm Deletion"
-        confirmationText="Are you sure you want to delete this reminder template?"
+        confirmationText="Are you sure you want to delete this reminder section?"
         cancelButtonText="Cancel"
         actionButtonText="Delete"
         onAction={handleDeleteConfirm}

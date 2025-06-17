@@ -2,14 +2,13 @@ import { useState } from "react";
 import axios from "axios";
 import { campaignEmail } from "src/config/APIConfig";
 
-const TEMPLATE_ID = "b8e2a652-350b-42d5-b09e-9a0e4d345ccf";
 
 const useSaveCampaignEmail = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
 
-  const saveCampaignEmail = async ({ subject, message, isHtml, }) => {
+  const saveCampaignEmail = async ({ subject, message, isHtml, templateId }) => {
     setLoading(true);
     setError(null);
     setSuccess(false);
@@ -21,7 +20,7 @@ const useSaveCampaignEmail = () => {
           subject,
           body: message,
           is_html: isHtml,
-          template_id: TEMPLATE_ID,
+          template_id: templateId,
         },
         {
           headers: {

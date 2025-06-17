@@ -24,12 +24,13 @@ const TemplateSection = ({ templates = [], selectedId, onSelect, onAddNew }) => 
         ))
       )}
 
-      {/* Add New Section Button */}
-      <div className={styles.addNewTemplateButtonWrapper}>
-        <button className={styles.addNewTemplateButton} onClick={onAddNew}>
-          + Add New Section
-        </button>
-      </div>
+      {templates.length > 0 && (
+        <div className={styles.addNewTemplateButtonWrapper}>
+          <button className={styles.addNewTemplateButton} onClick={onAddNew}>
+            + Add New Section
+          </button>
+        </div>
+      )}
     </div>
   );
 };

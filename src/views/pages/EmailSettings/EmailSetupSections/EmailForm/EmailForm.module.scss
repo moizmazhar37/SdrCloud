@@ -490,4 +490,34 @@
       font-size: 1rem;
     }
   }
+
+    .nextButton {
+    background-color: #1e40af;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 100px;
+
+    &:hover {
+      background-color: #1d4ed8;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
+    }
+
+    &:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 4px rgba(30, 64, 175, 0.3);
+    }
+
+    @media (max-width: 580px) {
+      width: 100%;
+      padding: 0.875rem;
+      font-size: 1rem;
+    }
+  }
 }

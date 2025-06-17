@@ -13,7 +13,7 @@ const typeOptions = [
   { label: "Played Video", value: "video" },
 ];
 
-const FollowupEmail = ({ onSave, data = {}, isReadOnly = false }) => {
+const FollowupEmail = ({ onSave, onNext, data = {}, isReadOnly = false, templateId  }) => {
   const groupedTemplates = useMemo(() => {
     if (Array.isArray(data)) {
       return data.reduce((acc, item) => {
@@ -105,8 +105,6 @@ const FollowupEmail = ({ onSave, data = {}, isReadOnly = false }) => {
     });
   }, [groupedTemplates]);
 
-  const templateId = currentData.id;
-
   const handleSave = async () => {
     if (saveInProgress.current) return;
 
@@ -129,6 +127,7 @@ const FollowupEmail = ({ onSave, data = {}, isReadOnly = false }) => {
       message: IsHtmlTemplate ? htmlContent : message,
       isHtml: IsHtmlTemplate,
       action: selectedAction,
+      templateId,
     };
 
     try {
@@ -137,6 +136,7 @@ const FollowupEmail = ({ onSave, data = {}, isReadOnly = false }) => {
         await saveFollowupEmail(payload);
         toast.success("Follow up email saved successfully.");
       } else {
+        const templateId = currentData.id;
         if (!templateId) {
           toast.error("Template ID is missing for update.");
           setsaveButtonText(getSaveButtonText());
@@ -251,6 +251,7 @@ const FollowupEmail = ({ onSave, data = {}, isReadOnly = false }) => {
           deleteButtonText={deleteButtonText}
           handleSave={handleSave}
           handleDelete={handleDeleteClick}
+          handleNext={onNext}
           isReadOnly={isReadOnly}
         />
       </div>
