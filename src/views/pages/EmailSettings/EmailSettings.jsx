@@ -11,6 +11,7 @@ import DeliverySettings from "./EmailSetupSections/DeliverySettings/DeliverySett
 import GeneralSettings from "./EmailSetupSections/GenaralSettings/GenaralSettings";
 import SetupConfiguration from "./SetupConfiguration/SetupConfiguration";
 import useGetEmailTemplates from "./EmailSetupSections/Hooks/useGetEmailTemplates";
+import useGetCampaignData from "./EmailSetupSections/Hooks/useGetCampaignData";
 
 const getInitialActiveOption = (step) => {
   switch (step) {
@@ -24,7 +25,6 @@ const getInitialActiveOption = (step) => {
       return 0;
   }
 };
-
 const EmailSettings = ({ activeStep = 1 }) => {
   const [activeOption, setActiveOption] = useState(
     getInitialActiveOption(activeStep)
@@ -32,6 +32,11 @@ const EmailSettings = ({ activeStep = 1 }) => {
   const [deliveryData, setDeliveryData] = useState({});
   const [generalData, setGeneralData] = useState({});
   const [campaignEmailData, setCampaignEmailData] = useState({});
+  const {
+    data,
+    loading: loadingCampaignData,
+    error: errorLoadingCampaignData,
+  } = useGetCampaignData();
 
   const templateId = localStorage.getItem("template_id");
   const {
