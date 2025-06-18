@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import Dropdown from "../DropDownofEmailConfiguration/DropdownEmailConfiguration";
 import styles from "./SetupConfiguration.module.scss";
+import useGetTriggerFields from "./Hooks/useGetTriggerFields";
 
 const SetupConfiguration = ({ tempalteId }) => {
+  const { date, loading, error } = useGetTriggerFields(tempalteId);
   const [followUps, setFollowUps] = useState([{ type: "", template: "" }]);
   const [triggers, setTriggers] = useState([
-    { condition1: "", condition2: "", condition3: "" },
+    { field: "", condition: "", value: "" },
   ]);
 
   const typeOptions = [
@@ -18,9 +20,14 @@ const SetupConfiguration = ({ tempalteId }) => {
     { label: "Reminder Email", value: "reminderEmail" },
   ];
 
-  const actionOptions = [
+  const fieldOptions = [
     { label: "Clicked Link", value: "clicked" },
     { label: "Opened Email", value: "opened" },
+  ];
+
+  const conditionOptions = [
+    { label: "INCLUDE", value: "INCLUDE" },
+    { label: "EXCLUDE", value: "EXCLUDE" },
   ];
 
   const handleFollowUpChange = (index, field, value) => {
@@ -48,10 +55,7 @@ const SetupConfiguration = ({ tempalteId }) => {
   };
 
   const addTrigger = () => {
-    setTriggers([
-      ...triggers,
-      { condition1: "", condition2: "", condition3: "" },
-    ]);
+    setTriggers([...triggers, { field: "", condition: "", value: "" }]);
   };
 
   const removeTrigger = (index) => {
@@ -60,6 +64,16 @@ const SetupConfiguration = ({ tempalteId }) => {
       updated.splice(index, 1);
       setTriggers(updated);
     }
+  };
+
+  // Function to generate the payload in the required format
+  const generatePayload = () => {
+    return triggers.map((trigger) => ({
+      template_id: tempalteId || "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      field: trigger.field,
+      condition: trigger.condition,
+      value: trigger.value,
+    }));
   };
 
   return (
@@ -104,18 +118,33 @@ const SetupConfiguration = ({ tempalteId }) => {
         <h3>Trigger Conditions</h3>
         {triggers.map((item, index) => (
           <div key={index} className={styles.row}>
-            {[1, 2, 3].map((num) => (
-              <div key={num} className={styles.dropdownWrapper}>
-                <Dropdown
-                  options={actionOptions}
-                  value={item[`condition${num}`]}
-                  onChange={(val) =>
-                    handleTriggerChange(index, `condition${num}`, val)
-                  }
-                  placeholder={`User Action`}
-                />
-              </div>
-            ))}
+            <div className={styles.dropdownWrapper}>
+              <Dropdown
+                options={fieldOptions}
+                value={item.field}
+                onChange={(val) => handleTriggerChange(index, "field", val)}
+                placeholder="Field"
+              />
+            </div>
+            <div className={styles.dropdownWrapper}>
+              <Dropdown
+                options={conditionOptions}
+                value={item.condition}
+                onChange={(val) => handleTriggerChange(index, "condition", val)}
+                placeholder="Condition"
+              />
+            </div>
+            <div className={styles.dropdownWrapper}>
+              <input
+                type="text"
+                className={styles.textInput}
+                value={item.value}
+                onChange={(e) =>
+                  handleTriggerChange(index, "value", e.target.value)
+                }
+                placeholder="Enter value"
+              />
+            </div>
             <div className={styles.buttonGroup}>
               <button className={styles.addBtn} onClick={addTrigger}>
                 + Add

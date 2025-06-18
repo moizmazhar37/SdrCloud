@@ -39,6 +39,7 @@ export const deleteFollowupEmail = (templateId) =>
 export const getEmailTemplates = (templateId) =>
   `${url}/campaign/emails/${templateId}`;
 export const campaignSettings = `${url}/campaign/settings`;
+export const campaign = `${url}/campaign`;
 
 export const reminderEmail = `${url}/campaign/reminder-email`;
 export const updateReminderEmail = (templateId) =>
