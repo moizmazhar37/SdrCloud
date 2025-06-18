@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef  } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styles from "./CampaignEmail.module.scss";
 import useSaveCampaignEmail from "../Hooks/useSaveCampaignEmail";
 import useUpdateEmailTemplates from "../Hooks/useUpdateCampainEmail";
@@ -8,14 +8,26 @@ import { defaultMessage, defaultHtmlContent } from "../helpers";
 import CampaignEmailForm from "../EmailForm/EmailForm";
 import ConfirmationModal from "src/Common/ConfirmationModal/ConfirmationModal";
 
-const EmailSetup = ({ onSave, onNext, data = {}, isReadOnly = false, templateId  }) => {
+const EmailSetup = ({
+  onSave,
+  onNext,
+  data = {},
+  isReadOnly = false,
+  templateId,
+}) => {
   const [subject, setSubject] = useState(data.subject || "");
   const [message, setMessage] = useState(data.body || defaultMessage);
-  const [htmlContent, setHtmlContent] = useState(data.htmlContent || defaultHtmlContent);
-  const [IsHtmlTemplate, setHtmlTemplate] = useState(data.isHtml || false);
+  const [htmlContent, setHtmlContent] = useState(
+    data.htmlContent || data.body || defaultHtmlContent
+  );
+  const [IsHtmlTemplate, setHtmlTemplate] = useState(
+    data.isHtml || data.is_html || false
+  );
   const [isFirstSave, setIsFirstSave] = useState(!data?.subject);
   const [isEditing, setIsEditing] = useState(!isReadOnly);
-  const [saveButtonText, setsaveButtonText] = useState(isFirstSave ? "Save" : "Edit");
+  const [saveButtonText, setsaveButtonText] = useState(
+    isFirstSave ? "Save" : "Edit"
+  );
   const [deleteButtonText, setdeleteButtonText] = useState("Delete");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const firstRenderRef = useRef(true);
@@ -23,21 +35,31 @@ const EmailSetup = ({ onSave, onNext, data = {}, isReadOnly = false, templateId 
   const { saveCampaignEmail } = useSaveCampaignEmail();
   const { updateCampaignEmail } = useUpdateEmailTemplates();
   const { deleteCampaignEmail } = useDeleteCampaignEmail();
+  console.log(data);
 
   useEffect(() => {
-  if (firstRenderRef.current) {
-    setSubject(data.subject || "");
-    setMessage(data.body || defaultMessage);
-    setHtmlContent(data.htmlContent || defaultHtmlContent);
-    setHtmlTemplate(data.isHtml || false);
+    if (firstRenderRef.current) {
+      setSubject(data.subject || "");
+      setMessage(data.body || defaultMessage);
 
-    const isNew = !(data.subject || data.body || data.htmlContent);
-    setIsFirstSave(isNew);
-    setsaveButtonText(isNew ? "Save" : "Edit");
+      // Fix: Check for both camelCase and snake_case properties
+      const isHtmlFromData = data.isHtml || data.is_html || false;
+      setHtmlTemplate(isHtmlFromData);
 
-    firstRenderRef.current = false;
-  }
-}, []);
+      // Fix: If it's HTML template and has body content, use body as htmlContent
+      if (isHtmlFromData && data.body) {
+        setHtmlContent(data.body);
+      } else {
+        setHtmlContent(data.htmlContent || defaultHtmlContent);
+      }
+
+      const isNew = !(data.subject || data.body || data.htmlContent);
+      setIsFirstSave(isNew);
+      setsaveButtonText(isNew ? "Save" : "Edit");
+
+      firstRenderRef.current = false;
+    }
+  }, [data]);
 
   const handleSave = async () => {
     if (!isEditing && !isFirstSave) {
@@ -51,7 +73,6 @@ const EmailSetup = ({ onSave, onNext, data = {}, isReadOnly = false, templateId 
       message: IsHtmlTemplate ? htmlContent : message,
       isHtml: IsHtmlTemplate,
       templateId,
-      
     };
 
     try {
@@ -81,7 +102,7 @@ const EmailSetup = ({ onSave, onNext, data = {}, isReadOnly = false, templateId 
       setsaveButtonText("Edit");
 
       onSave?.();
-    }catch (err) {
+    } catch (err) {
       toast.error(err.message || "Something went wrong.");
       setsaveButtonText(isFirstSave ? "Save" : isEditing ? "Update" : "Edit");
     }
@@ -110,7 +131,7 @@ const EmailSetup = ({ onSave, onNext, data = {}, isReadOnly = false, templateId 
       setIsEditing(true);
       setsaveButtonText("Save");
 
-      setIsDeleteModalOpen(false); 
+      setIsDeleteModalOpen(false);
 
       onSave?.();
     } catch (error) {
@@ -139,7 +160,11 @@ const EmailSetup = ({ onSave, onNext, data = {}, isReadOnly = false, templateId 
         handleSave={handleSave}
         handleDelete={handleDeleteClick}
         handleNext={onNext}
-        subjectLabel={<label htmlFor="subject" className={styles.label}>Subject</label>}
+        subjectLabel={
+          <label htmlFor="subject" className={styles.label}>
+            Subject
+          </label>
+        }
       />
       <ConfirmationModal
         isOpen={isDeleteModalOpen}

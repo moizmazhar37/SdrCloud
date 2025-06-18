@@ -7,12 +7,15 @@ import useSaveReminderEmail from "../Hooks/useSaveReminderEmail";
 import useUpdateReminderEmail from "../Hooks/useUpdateReminderEmail";
 import useDeleteReminderEmail from "../Hooks/useDeleteReminderEmail";
 import { toast } from "react-toastify";
-import {
-  defaultMessage,
-  defaultHtmlContent,
-} from "../helpers";
+import { defaultMessage, defaultHtmlContent } from "../helpers";
 
-const ReminderEmail = ({ onSave, onDataChange, onNext, data = [], templateId }) => {
+const ReminderEmail = ({
+  onSave,
+  onDataChange,
+  onNext,
+  data = [],
+  templateId,
+}) => {
   const [selectedSectionId, setSelectedSectionId] = useState(null);
   const [showForm, setShowForm] = useState(data.length === 0);
   const [lastSavedPayload, setLastSavedPayload] = useState(null);
@@ -27,7 +30,8 @@ const ReminderEmail = ({ onSave, onDataChange, onNext, data = [], templateId }) 
   const [isEditing, setIsEditing] = useState(true);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  const selectedSection = data.find(section => section.id === selectedSectionId) || null;
+  const selectedSection =
+    data.find((section) => section.id === selectedSectionId) || null;
 
   const saveInProgress = useRef(false);
   const { saveReminderEmail } = useSaveReminderEmail();
@@ -38,8 +42,15 @@ const ReminderEmail = ({ onSave, onDataChange, onNext, data = [], templateId }) 
     if (selectedSection) {
       setSubject(selectedSection.subject || "");
       setMessage(selectedSection.body || defaultMessage);
-      setHtmlContent(selectedSection.htmlContent || defaultHtmlContent);
-      setUseHtmlTemplate(selectedSection.isHtml || false);
+      const isHtmlFromData =
+        selectedSection.isHtml || selectedSection.is_html || false;
+      setUseHtmlTemplate(isHtmlFromData);
+      if (isHtmlFromData && selectedSection.body) {
+        setHtmlContent(selectedSection.body);
+      } else {
+        setHtmlContent(selectedSection.htmlContent || defaultHtmlContent);
+      }
+
       setSendAfterValue(selectedSection.send_after_days || "");
       setIsEditing(false);
       setSaveButtonText("Edit");
@@ -58,7 +69,7 @@ const ReminderEmail = ({ onSave, onDataChange, onNext, data = [], templateId }) 
   useEffect(() => {
     if (lastSavedPayload) {
       const match = data.find(
-        section =>
+        (section) =>
           section.subject === lastSavedPayload.subject &&
           section.message === lastSavedPayload.message &&
           section.sequence === lastSavedPayload.sequence
@@ -97,9 +108,14 @@ const ReminderEmail = ({ onSave, onDataChange, onNext, data = [], templateId }) 
       setSaveButtonText(isUpdating ? "Updating..." : "Saving...");
 
       if (isUpdating) {
-        await updateReminderEmail({ ...payload, templateId: selectedSectionId });
-        const updatedData = data.map(section =>
-          section.id === selectedSectionId ? { ...section, ...payload } : section
+        await updateReminderEmail({
+          ...payload,
+          templateId: selectedSectionId,
+        });
+        const updatedData = data.map((section) =>
+          section.id === selectedSectionId
+            ? { ...section, ...payload }
+            : section
         );
         toast.success("Reminder section updated successfully.");
         onDataChange?.(updatedData);
@@ -107,8 +123,8 @@ const ReminderEmail = ({ onSave, onDataChange, onNext, data = [], templateId }) 
         await saveReminderEmail({ ...payload, existingTemplates: data });
         setLastSavedPayload(payload);
         setIsNewSection(false);
-        setShowForm(false); 
-        onSave?.(); 
+        setShowForm(false);
+        onSave?.();
       }
 
       setSaveButtonText("Edit");
@@ -129,7 +145,9 @@ const ReminderEmail = ({ onSave, onDataChange, onNext, data = [], templateId }) 
 
     try {
       await deleteReminderEmail(selectedSection.id);
-      const updatedData = data.filter(section => section.id !== selectedSectionId);
+      const updatedData = data.filter(
+        (section) => section.id !== selectedSectionId
+      );
       setSelectedSectionId(null);
       setIsEditing(true);
       setSaveButtonText("Save");
@@ -151,15 +169,19 @@ const ReminderEmail = ({ onSave, onDataChange, onNext, data = [], templateId }) 
         <TemplateSection
           templates={data}
           selectedId={selectedSectionId}
-          onSelect={id => {
+          onSelect={(id) => {
             setSelectedSectionId(id);
             setShowForm(true);
           }}
-          onAddNew={data.length > 0 ? () => {
-            setSelectedSectionId(null);
-            setIsNewSection(true); 
-            setShowForm(true);
-          } : undefined}
+          onAddNew={
+            data.length > 0
+              ? () => {
+                  setSelectedSectionId(null);
+                  setIsNewSection(true);
+                  setShowForm(true);
+                }
+              : undefined
+          }
         />
 
         {showForm && (
