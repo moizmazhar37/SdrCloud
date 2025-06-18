@@ -1,8 +1,12 @@
+// Update your existing Header.module.scss with this modification
+
 .header {
   background-color: #ffffff;
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 100%; // Ensure header takes full available width
+  flex: 1; // Allow header to expand within the navigation container
 }
 
 .stepContainer {
@@ -11,8 +15,10 @@
   gap: 0;
   max-width: 800px;
   width: 100%;
+  justify-content: center; // Center the steps within the container
 }
 
+// Rest of your existing styles remain the same
 .step {
   display: flex;
   flex-direction: column;

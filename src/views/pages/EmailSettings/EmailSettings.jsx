@@ -25,6 +25,7 @@ const getInitialActiveOption = (step) => {
       return 0;
   }
 };
+
 const EmailSettings = ({ activeStep: initialStep = 1 }) => {
   const [activeStep, setActiveStep] = useState(initialStep);
   const [activeOption, setActiveOption] = useState(
@@ -98,6 +99,20 @@ const EmailSettings = ({ activeStep: initialStep = 1 }) => {
   const handleNextStep = () => {
     setActiveStep((prev) => prev + 1);
     setActiveOption(0);
+  };
+
+  const handlePreviousStep = () => {
+    if (activeStep > 1) {
+      setActiveStep((prev) => prev - 1);
+      setActiveOption(0);
+    }
+  };
+
+  const handleForwardStep = () => {
+    if (activeStep < 3) {
+      setActiveStep((prev) => prev + 1);
+      setActiveOption(0);
+    }
   };
 
   const renderContent = () => {
@@ -198,7 +213,44 @@ const EmailSettings = ({ activeStep: initialStep = 1 }) => {
   return (
     <div className={styles.emailSettingsContainer}>
       <div className={styles.emailSettings}>
-        <Header activeStep={activeStep} />
+        <div className={styles.headerNavigation}>
+          <button
+            className={`${styles.navArrow} ${styles.backArrow}`}
+            onClick={handlePreviousStep}
+            disabled={activeStep === 1}
+            aria-label="Previous step"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M15 18L9 12L15 6"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+
+          <Header activeStep={activeStep} />
+
+          <button
+            className={`${styles.navArrow} ${styles.forwardArrow}`}
+            onClick={handleForwardStep}
+            disabled={activeStep === 3}
+            aria-label="Next step"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M9 18L15 12L9 6"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+        </div>
+
         <div className={styles.contentContainer}>
           {activeStep !== 3 && (
             <EmailSidebar

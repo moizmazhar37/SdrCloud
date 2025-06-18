@@ -47,7 +47,7 @@ function EditGoogleSheet() {
           value: item.value,
           dataType: item.dataType || "",
           column: item.column,
-          trigger_fields: item.trigger_fields || item.trigger_field || false, // Check trigger_fields first, then trigger_field as fallback
+          trigger_field: item.trigger_fields || item.trigger_field || false,
         }))
       );
     }
@@ -65,9 +65,8 @@ function EditGoogleSheet() {
 
   const handleTriggerChange = (value, isEnabled) => {
     setUpdatedData((prev) =>
-      prev.map(
-        (item) =>
-          item.value === value ? { ...item, trigger_fields: isEnabled } : item // Changed from enableTrigger to trigger_fields
+      prev.map((item) =>
+        item.value === value ? { ...item, trigger_fields: isEnabled } : item
       )
     );
   };
