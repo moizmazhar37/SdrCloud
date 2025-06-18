@@ -1,15 +1,25 @@
 trigger:
   - main  # Trigger on changes to the 'main' branch
+  - development
 
 variables:
   - group: GCP-Secrets  # Reference to the variable group
 
-
 jobs:
-- job: CallWebhook
+- job: CallWebhookMain
+  condition: eq(variables['Build.SourceBranchName'], 'main')
   steps:
   - script: |
-      curl -X POST "https://cloudbuild.googleapis.com/v1/projects/sdr-cloud-441006/triggers/Frontend-ADR-To-Firebase-Hosting:webhook?key=$(KEY)&secret=$(SECRET)" \
+      curl -X POST "https://cloudbuild.googleapis.com/v1/projects/sdr-cloud-441006/triggers/Staging-Frontend-ADR-To-Firebase-Hosting:webhook?key=$(KEY)&secret=$(SECRET)" \
       -H "Content-Type: application/json" \
       -d '{}'
-    displayName: 'Call Webhook'
+    displayName: 'Call Webhook for Production'
+
+- job: CallDevFunction
+  condition: eq(variables['Build.SourceBranchName'], 'development')
+  steps:
+  - script: |
+      curl -X POST "https://cloudbuild.googleapis.com/v1/projects/sdr-cloud-441006/triggers/Staging-Frontend-ADR-To-Firebase-Hosting:webhook?key=$(KEY)&secret=$(SECRET)" \
+      -H "Content-Type: application/json" \
+      -d '{}'
+    displayName: 'Call Webhook for Staging'
