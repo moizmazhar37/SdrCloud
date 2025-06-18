@@ -68,10 +68,9 @@
   }
 }
 
-// Existing styles with small adjustments
 .emailSettingsContainer {
   padding: 40px;
-  // Add some extra padding to accommodate arrows
+
   padding-left: 60px;
   padding-right: 60px;
 }
@@ -167,7 +166,7 @@
 
   &:hover:not(:disabled) {
     background: #f8f9fa;
-    border-color: #007bff;
+    border-color: #2c5aa0;
     transform: translateY(-1px);
     box-shadow: 0 2px 8px rgba(0, 123, 255, 0.15);
   }

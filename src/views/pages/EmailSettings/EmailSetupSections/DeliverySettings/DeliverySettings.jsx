@@ -1,11 +1,22 @@
 import React, { useState, useEffect, useRef } from "react";
 import styles from "./DeliverySettings.module.scss";
 import useSaveDeliverySettings from "../Hooks/useSaveDeliverySettings";
+import {
+  extractTime,
+  initializeDeliveryData,
+  toggleDeliveryType,
+  removeDeliveryType,
+  updateTimeForDayType,
+  prepareSettingsForSave,
+  createDataChangePayload,
+} from "./helpers";
 
 const DeliverySettings = ({ onNext, onDataChange, initialData }) => {
   const [deliveryTypes, setDeliveryTypes] = useState(["Email"]);
   const [maxReminders, setMaxReminders] = useState("5");
   const [scheduleType, setScheduleType] = useState("Recurring");
+  const [scheduledDate, setScheduledDate] = useState(""); // New state for scheduled date
+  const [scheduledTime, setScheduledTime] = useState("08:00"); // New state for scheduled time
   const [weekdaysEnabled, setWeekdaysEnabled] = useState(false);
   const [weekendsEnabled, setWeekendsEnabled] = useState(true);
   const [weekdaysTimes, setWeekdaysTimes] = useState({
@@ -21,70 +32,46 @@ const DeliverySettings = ({ onNext, onDataChange, initialData }) => {
   const TEMPLATE_ID = localStorage.getItem("template_id");
   const { saveDeliverySettings, loading, error } = useSaveDeliverySettings();
 
-  const extractTime = (timeString) => {
-    if (!timeString) return "08:00";
-    return timeString.split(":").slice(0, 2).join(":");
+  // Get today's date in YYYY-MM-DD format for min date
+  const getTodayDate = () => {
+    const today = new Date();
+    return today.toISOString().split("T")[0];
   };
 
   useEffect(() => {
     if (initialData && !isInitialized.current) {
-      // Set max reminders
-      setMaxReminders(String(initialData.max_reminders || 5));
+      const initializedData = initializeDeliveryData(initialData);
 
-      const hasWeekdaysTime = initialData.weekdays_time;
-      const hasWeekendTime = initialData.weekend_time;
+      if (initializedData) {
+        // Set max reminders
+        setMaxReminders(initializedData.maxReminders);
 
-      setWeekdaysEnabled(!!hasWeekdaysTime);
-      setWeekendsEnabled(!!hasWeekendTime);
+        // Set schedule type and related data
+        setScheduleType(initializedData.scheduleType || "Recurring");
+        setScheduledDate(initializedData.scheduledDate || "");
+        setScheduledTime(initializedData.scheduledTime || "08:00");
 
-      if (hasWeekdaysTime) {
-        const time = extractTime(initialData.weekdays_time);
-        setWeekdaysTimes({
-          start: time,
-          end: time,
-        });
+        // Set enabled states
+        setWeekdaysEnabled(initializedData.weekdaysEnabled);
+        setWeekendsEnabled(initializedData.weekendsEnabled);
+
+        // Set times
+        setWeekdaysTimes(initializedData.weekdaysTimes);
+        setWeekendsTimes(initializedData.weekendsTimes);
+
+        // Set delivery types
+        setDeliveryTypes(initializedData.deliveryTypes);
+
+        isInitialized.current = true;
+
+        // Notify parent of initialized data
+        onDataChange && onDataChange(initializedData);
       }
-
-      if (hasWeekendTime) {
-        const time = extractTime(initialData.weekend_time);
-        setWeekendsTimes({
-          start: time,
-          end: time,
-        });
-      }
-
-      const types = [];
-      if (initialData.email_enabled) types.push("Email");
-      if (initialData.sms_enabled) types.push("SMS");
-      setDeliveryTypes(types.length > 0 ? types : ["Email"]);
-
-      isInitialized.current = true;
-
-      const allData = {
-        deliveryTypes: types.length > 0 ? types : ["Email"],
-        maxReminders: String(initialData.max_reminders || 5),
-        scheduleType: "Recurring", // Default as this isn't stored in API
-        weekdaysEnabled: !!hasWeekdaysTime,
-        weekendsEnabled: !!hasWeekendTime,
-        weekdaysTimes: hasWeekdaysTime
-          ? {
-              start: extractTime(initialData.weekdays_time),
-              end: extractTime(initialData.weekdays_time),
-            }
-          : { start: "08:00", end: "08:00" },
-        weekendsTimes: hasWeekendTime
-          ? {
-              start: extractTime(initialData.weekend_time),
-              end: extractTime(initialData.weekend_time),
-            }
-          : { start: "08:00", end: "08:00" },
-      };
-      onDataChange && onDataChange(allData);
     }
   }, [initialData, onDataChange]);
 
   const handleDataChange = (newData) => {
-    const allData = {
+    const allData = createDataChangePayload(
       deliveryTypes,
       maxReminders,
       scheduleType,
@@ -92,24 +79,23 @@ const DeliverySettings = ({ onNext, onDataChange, initialData }) => {
       weekendsEnabled,
       weekdaysTimes,
       weekendsTimes,
-      ...newData,
-    };
+      {
+        ...newData,
+        scheduledDate,
+        scheduledTime,
+      }
+    );
     onDataChange && onDataChange(allData);
   };
 
   const handleDeliveryTypeToggle = (type) => {
-    let newTypes;
-    if (deliveryTypes.includes(type)) {
-      newTypes = deliveryTypes.filter((t) => t !== type);
-    } else {
-      newTypes = [...deliveryTypes, type];
-    }
+    const newTypes = toggleDeliveryType(deliveryTypes, type);
     setDeliveryTypes(newTypes);
     handleDataChange({ deliveryTypes: newTypes });
   };
 
   const handleRemoveDeliveryType = (type) => {
-    const newTypes = deliveryTypes.filter((t) => t !== type);
+    const newTypes = removeDeliveryType(deliveryTypes, type);
     setDeliveryTypes(newTypes);
     handleDataChange({ deliveryTypes: newTypes });
   };
@@ -121,7 +107,22 @@ const DeliverySettings = ({ onNext, onDataChange, initialData }) => {
 
   const handleScheduleTypeChange = (type) => {
     setScheduleType(type);
+    // Clear scheduled date/time when switching to Recurring
+    if (type === "Recurring") {
+      setScheduledDate("");
+      setScheduledTime("08:00");
+    }
     handleDataChange({ scheduleType: type });
+  };
+
+  const handleScheduledDateChange = (date) => {
+    setScheduledDate(date);
+    handleDataChange({ scheduledDate: date });
+  };
+
+  const handleScheduledTimeChange = (time) => {
+    setScheduledTime(time);
+    handleDataChange({ scheduledTime: time });
   };
 
   const handleWeekdaysToggle = () => {
@@ -138,11 +139,11 @@ const DeliverySettings = ({ onNext, onDataChange, initialData }) => {
 
   const handleTimeChange = (dayType, timeType, value) => {
     if (dayType === "weekdays") {
-      const newTimes = { ...weekdaysTimes, [timeType]: value };
+      const newTimes = updateTimeForDayType(weekdaysTimes, timeType, value);
       setWeekdaysTimes(newTimes);
       handleDataChange({ weekdaysTimes: newTimes });
     } else {
-      const newTimes = { ...weekendsTimes, [timeType]: value };
+      const newTimes = updateTimeForDayType(weekendsTimes, timeType, value);
       setWeekendsTimes(newTimes);
       handleDataChange({ weekendsTimes: newTimes });
     }
@@ -150,14 +151,16 @@ const DeliverySettings = ({ onNext, onDataChange, initialData }) => {
 
   const handleSave = async () => {
     try {
-      let weekdaysTime = weekdaysEnabled ? weekdaysTimes.start : null;
-      let weekendTime = weekendsEnabled ? weekendsTimes.start : null;
-
-      const settings = {
+      const settings = prepareSettingsForSave(
         maxReminders,
-        weekdaysTime,
-        weekendTime,
-      };
+        weekdaysEnabled,
+        weekendsEnabled,
+        weekdaysTimes,
+        weekendsTimes,
+        scheduleType,
+        scheduledDate,
+        scheduledTime
+      );
 
       console.log("Saving delivery settings:", settings);
 
@@ -215,82 +218,113 @@ const DeliverySettings = ({ onNext, onDataChange, initialData }) => {
         </div>
       </div>
 
-      {/* Deliver Email Section */}
-      <div className={styles.section}>
-        <h3 className={styles.sectionTitle}>Deliver Email on</h3>
-
-        {/* Weekdays */}
-        <div className={styles.timeRow}>
-          <div className={styles.daySection}>
-            <label className={styles.checkbox}>
+      {/* Schedule Later Date/Time Section */}
+      {scheduleType === "Schedule Later" && (
+        <div className={styles.section}>
+          <h3 className={styles.sectionTitle}>Select Date & Time</h3>
+          <div className={styles.scheduleDateTimeContainer}>
+            <div className={styles.datePickerContainer}>
+              <label className={styles.inputLabel}>Date</label>
               <input
-                type="checkbox"
-                checked={weekdaysEnabled}
-                onChange={handleWeekdaysToggle}
-              />
-              <span className={styles.checkmark}></span>
-              <span className={styles.dayLabel}>Weekdays</span>
-            </label>
-          </div>
-          <div className={styles.timeInputs}>
-            <div className={styles.timeInput}>
-              <input
-                type="time"
-                value={weekdaysTimes.start}
-                onChange={(e) =>
-                  handleTimeChange("weekdays", "start", e.target.value)
-                }
+                type="date"
+                value={scheduledDate}
+                min={getTodayDate()}
+                onChange={(e) => handleScheduledDateChange(e.target.value)}
+                className={styles.dateInput}
+                required
               />
             </div>
-            <span className={styles.timeSeparator}>–</span>
-            <div className={styles.timeInput}>
+            <div className={styles.timePickerContainer}>
+              <label className={styles.inputLabel}>Time</label>
               <input
                 type="time"
-                value={weekdaysTimes.end}
-                onChange={(e) =>
-                  handleTimeChange("weekdays", "end", e.target.value)
-                }
+                value={scheduledTime}
+                onChange={(e) => handleScheduledTimeChange(e.target.value)}
+                className={styles.timePickerInput}
               />
             </div>
           </div>
         </div>
+      )}
 
-        {/* Weekends */}
-        <div className={styles.timeRow}>
-          <div className={styles.daySection}>
-            <label className={styles.checkbox}>
-              <input
-                type="checkbox"
-                checked={weekendsEnabled}
-                onChange={handleWeekendsToggle}
-              />
-              <span className={styles.checkmark}></span>
-              <span className={styles.dayLabel}>Weekends</span>
-            </label>
-          </div>
-          <div className={styles.timeInputs}>
-            <div className={styles.timeInput}>
-              <input
-                type="time"
-                value={weekendsTimes.start}
-                onChange={(e) =>
-                  handleTimeChange("weekends", "start", e.target.value)
-                }
-              />
+      {/* Deliver Email Section - Only show for Recurring */}
+      {scheduleType === "Recurring" && (
+        <div className={styles.section}>
+          <h3 className={styles.sectionTitle}>Deliver Email on</h3>
+
+          {/* Weekdays */}
+          <div className={styles.timeRow}>
+            <div className={styles.daySection}>
+              <label className={styles.checkbox}>
+                <input
+                  type="checkbox"
+                  checked={weekdaysEnabled}
+                  onChange={handleWeekdaysToggle}
+                />
+                <span className={styles.checkmark}></span>
+                <span className={styles.dayLabel}>Weekdays</span>
+              </label>
             </div>
-            <span className={styles.timeSeparator}>–</span>
-            <div className={styles.timeInput}>
-              <input
-                type="time"
-                value={weekendsTimes.end}
-                onChange={(e) =>
-                  handleTimeChange("weekends", "end", e.target.value)
-                }
-              />
+            <div className={styles.timeInputs}>
+              <div className={styles.timeInput}>
+                <input
+                  type="time"
+                  value={weekdaysTimes.start}
+                  onChange={(e) =>
+                    handleTimeChange("weekdays", "start", e.target.value)
+                  }
+                />
+              </div>
+              <span className={styles.timeSeparator}>–</span>
+              <div className={styles.timeInput}>
+                <input
+                  type="time"
+                  value={weekdaysTimes.end}
+                  onChange={(e) =>
+                    handleTimeChange("weekdays", "end", e.target.value)
+                  }
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Weekends */}
+          <div className={styles.timeRow}>
+            <div className={styles.daySection}>
+              <label className={styles.checkbox}>
+                <input
+                  type="checkbox"
+                  checked={weekendsEnabled}
+                  onChange={handleWeekendsToggle}
+                />
+                <span className={styles.checkmark}></span>
+                <span className={styles.dayLabel}>Weekends</span>
+              </label>
+            </div>
+            <div className={styles.timeInputs}>
+              <div className={styles.timeInput}>
+                <input
+                  type="time"
+                  value={weekendsTimes.start}
+                  onChange={(e) =>
+                    handleTimeChange("weekends", "start", e.target.value)
+                  }
+                />
+              </div>
+              <span className={styles.timeSeparator}>–</span>
+              <div className={styles.timeInput}>
+                <input
+                  type="time"
+                  value={weekendsTimes.end}
+                  onChange={(e) =>
+                    handleTimeChange("weekends", "end", e.target.value)
+                  }
+                />
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       <div className={styles.buttonSection}>
         <button

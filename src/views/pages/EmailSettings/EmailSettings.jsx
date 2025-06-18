@@ -194,7 +194,7 @@ const EmailSettings = ({ activeStep: initialStep = 1 }) => {
     } else if (activeStep === 3) {
       return (
         <div>
-          <SetupConfiguration />
+          <SetupConfiguration tempalteId={templateId} />
         </div>
       );
     } else {

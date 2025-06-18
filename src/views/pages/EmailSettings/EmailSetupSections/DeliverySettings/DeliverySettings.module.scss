@@ -163,6 +163,62 @@
   }
 }
 
+// Schedule Later Date/Time Section
+.scheduleDateTimeContainer {
+  display: flex;
+  gap: 24px;
+  align-items: end;
+}
+
+.datePickerContainer,
+.timePickerContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.inputLabel {
+  font-size: 14px;
+  font-weight: 500;
+  color: #495057;
+  margin-bottom: 4px;
+}
+
+.dateInput,
+.timePickerInput {
+  padding: 12px 16px;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  background-color: #fff;
+  font-size: 16px;
+  color: #495057;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 150px;
+
+  &:focus {
+    outline: none;
+    border-color: #0358ac;
+    box-shadow: 0 0 0 3px rgba(3, 88, 172, 0.1);
+  }
+
+  &::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+.dateInput {
+  &:invalid {
+    border-color: #dc3545;
+  }
+}
+
 // Time Rows Section
 .timeRow {
   display: flex;
@@ -257,38 +313,7 @@
   font-weight: 500;
 }
 
-// Responsive Design
-@media (max-width: 768px) {
-  .deliverySettings {
-    padding: 20px;
-    margin-top: 16px;
-  }
-
-  .maxRemindersContainer {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
-  }
-
-  .scheduleButtons {
-    width: 100%;
-  }
-
-  .scheduleButton {
-    flex: 1;
-  }
-
-  .timeRow {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
-  }
-
-  .timeInputs {
-    justify-content: center;
-  }
-}
-
+// Button Section
 .buttonSection {
   display: flex;
   gap: 16px;
@@ -318,6 +343,11 @@
     outline: none;
     box-shadow: 0 0 0 3px rgba(3, 88, 172, 0.1);
   }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
 }
 
 .nextButton {
@@ -338,5 +368,59 @@
   &:focus {
     outline: none;
     box-shadow: 0 0 0 3px rgba(3, 88, 172, 0.3);
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .deliverySettings {
+    padding: 20px;
+    margin-top: 16px;
+  }
+
+  .maxRemindersContainer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .scheduleButtons {
+    width: 100%;
+  }
+
+  .scheduleButton {
+    flex: 1;
+  }
+
+  .scheduleDateTimeContainer {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+  }
+
+  .dateInput,
+  .timePickerInput {
+    min-width: auto;
+    width: 100%;
+  }
+
+  .timeRow {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .timeInputs {
+    justify-content: center;
+  }
+
+  .buttonSection {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .saveButton,
+  .nextButton {
+    width: 100%;
   }
 }
