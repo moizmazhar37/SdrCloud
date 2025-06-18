@@ -2,11 +2,10 @@
   position: relative;
   display: block;
   width: 100%;
-  max-width: 90%; // or 80%, depending on your layout
+  max-width: 90%;
   font-size: 1rem;
 }
 
- 
 .button {
   height: 2.75rem;
   height: 44px;
@@ -17,10 +16,9 @@
   width: 100%;
   text-align: left;
 
-  // Font styling
-  font-family: 'Inter', sans-serif;
-  font-weight: 500;
-  font-size: 14.63px;
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  font-size: 14px;
   line-height: 21.46px;
   letter-spacing: -0.1px;
   color: #111827;
@@ -33,38 +31,38 @@
 
   cursor: pointer;
   transition: all 0.2s ease;
- 
+
   &:hover {
     background-color: #f9fafb;
   }
- 
+
   &:focus {
     outline: none;
     box-shadow: 0 0 0 2px white, 0 0 0 4px #3b82f6;
   }
- 
+
   &.placeholder {
     color: #000000;
   }
 }
- 
+
 .text {
   flex: 1;
   text-align: left;
 }
- 
+
 .arrow {
   margin-left: 0.5rem;
   transition: transform 0.3s ease;
   flex-shrink: 0;
   width: 1.25rem;
   height: 1.25rem;
- 
+
   &.arrowOpen {
     transform: rotate(180deg);
   }
 }
- 
+
 .menu {
   position: absolute;
   top: 100%;
@@ -80,7 +78,7 @@
   margin-top: 0.25rem;
   border: 1px solid #e5e7eb;
 }
- 
+
 .item {
   position: relative;
   display: block;
@@ -91,51 +89,51 @@
   transition: background-color 0.15s ease;
   background-color: white;
   color: #111827;
- 
+
   &:hover {
     background-color: #f9fafb;
   }
- 
+
   &:focus {
     outline: none;
     background-color: #f9fafb;
   }
- 
+
   &.itemSelected {
     background-color: #f3f4f6;
- 
+
     &:hover {
       background-color: #f9fafb;
     }
   }
- 
+
   &.itemFirst {
     border-top-left-radius: 0.375rem;
     border-top-right-radius: 0.375rem;
   }
- 
+
   &.itemLast {
     border-bottom-left-radius: 0.375rem;
     border-bottom-right-radius: 0.375rem;
   }
 }
- 
+
 /* Responsive styles */
 @media (max-width: 480px) {
   .dropdown {
     max-width: 100%;
   }
- 
+
   .button {
     font-size: 0.9rem;
     padding: 0.4rem 0.75rem;
   }
- 
+
   .item {
     font-size: 0.9rem;
     padding: 0.4rem 0.75rem;
   }
- 
+
   .arrow {
     width: 1rem;
     height: 1rem;
