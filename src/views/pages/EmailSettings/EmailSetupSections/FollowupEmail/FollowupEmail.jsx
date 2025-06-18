@@ -13,7 +13,13 @@ const typeOptions = [
   { label: "Played Video", value: "video" },
 ];
 
-const FollowupEmail = ({ onSave, onNext, data = {}, isReadOnly = false, templateId  }) => {
+const FollowupEmail = ({
+  onSave,
+  onNext,
+  data = {},
+  isReadOnly = false,
+  templateId,
+}) => {
   const groupedTemplates = useMemo(() => {
     if (Array.isArray(data)) {
       return data.reduce((acc, item) => {
@@ -32,14 +38,11 @@ const FollowupEmail = ({ onSave, onNext, data = {}, isReadOnly = false, template
       return !!(template.subject || template.body || template.htmlContent);
     });
   }, [groupedTemplates]);
-
-  // Selected action: default to "email" or first available action
-  const initialAction =
-    groupedTemplates["email"] ? "email" : Object.keys(groupedTemplates)[0] || "";
+  const initialAction = groupedTemplates["email"]
+    ? "email"
+    : Object.keys(groupedTemplates)[0] || "";
 
   const [selectedAction, setSelectedAction] = useState(initialAction);
-
-  // Maintain edit state per action (true = editing enabled, false = editing disabled)
   const [editStates, setEditStates] = useState(() => {
     const states = {};
     typeOptions.forEach(({ value }) => {
@@ -76,17 +79,23 @@ const FollowupEmail = ({ onSave, onNext, data = {}, isReadOnly = false, template
   useEffect(() => {
     setSubject(currentData.subject || "");
     setMessage(currentData.body || defaultMessage);
-    setHtmlContent(currentData.htmlContent || defaultHtmlContent);
-    setHtmlTemplate(currentData.isHtml || false);
+    const isHtmlFromData = currentData.isHtml || currentData.is_html || false;
+    setHtmlTemplate(isHtmlFromData);
+    if (isHtmlFromData && currentData.body) {
+      setHtmlContent(currentData.body);
+    } else {
+      setHtmlContent(currentData.htmlContent || defaultHtmlContent);
+    }
+
     setsaveButtonText(getSaveButtonText());
   }, [selectedAction, groupedTemplates]);
-
-  // When groupedTemplates changes (i.e. new data from parent), update existingActions and editStates accordingly
   useEffect(() => {
-    const newExistingActions = Object.keys(groupedTemplates).filter((action) => {
-      const template = groupedTemplates[action];
-      return !!(template.subject || template.body || template.htmlContent);
-    });
+    const newExistingActions = Object.keys(groupedTemplates).filter(
+      (action) => {
+        const template = groupedTemplates[action];
+        return !!(template.subject || template.body || template.htmlContent);
+      }
+    );
 
     setEditStates((prevStates) => {
       const updatedStates = { ...prevStates };
@@ -149,7 +158,7 @@ const FollowupEmail = ({ onSave, onNext, data = {}, isReadOnly = false, template
 
       setEditStates((prev) => ({ ...prev, [selectedAction]: false }));
       setsaveButtonText("Edit");
-      onSave?.(); 
+      onSave?.();
     } catch (err) {
       toast.error(err.message);
       setsaveButtonText(getSaveButtonText());
@@ -209,12 +218,19 @@ const FollowupEmail = ({ onSave, onNext, data = {}, isReadOnly = false, template
               onClick={() => setIsOpen(!isOpen)}
             >
               <svg
-                className={`${styles.arrowIcon} ${isOpen ? styles.arrowOpen : ""}`}
+                className={`${styles.arrowIcon} ${
+                  isOpen ? styles.arrowOpen : ""
+                }`}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
               </svg>
             </button>
           </div>
