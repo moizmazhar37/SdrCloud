@@ -3,9 +3,11 @@ import Dropdown from "../DropDownofEmailConfiguration/DropdownEmailConfiguration
 import styles from "./SetupConfiguration.module.scss";
 import useGetTriggerFields from "./Hooks/useGetTriggerFields";
 import useSaveConfigurations from "./Hooks/useSaveConfigurations";
+import { toast } from "react-toastify";
 
 const SetupConfiguration = ({ tempalteId }) => {
-  const { date, loading, error } = useGetTriggerFields(tempalteId);
+  const { data, loading, error } = useGetTriggerFields(tempalteId);
+  console.log("Trigger Fields Data:", data);
   const {
     saveConfigurations,
     loading: saveLoading,
@@ -28,10 +30,10 @@ const SetupConfiguration = ({ tempalteId }) => {
     { label: "Reminder Email", value: "reminderEmail" },
   ];
 
-  const fieldOptions = [
-    { label: "Clicked Link", value: "clicked" },
-    { label: "Opened Email", value: "opened" },
-  ];
+  const fieldOptions = Array.isArray(data?.trigger_fields)
+    ? data.trigger_fields.map((field) => ({ label: field, value: field }))
+    : [];
+
 
   const conditionOptions = [
     { label: "INCLUDE", value: "INCLUDE" },
@@ -74,7 +76,6 @@ const SetupConfiguration = ({ tempalteId }) => {
     }
   };
 
-  // Function to generate the payload in the required format
   const generatePayload = () => {
     return triggers.map((trigger) => ({
       template_id: tempalteId || "3fa85f64-5717-4562-b3fc-2c963f66afa6",
@@ -84,10 +85,14 @@ const SetupConfiguration = ({ tempalteId }) => {
     }));
   };
 
-  // Handle save button click
   const handleSave = async () => {
     const payload = generatePayload();
-    await saveConfigurations(payload);
+    const res = await saveConfigurations(payload);
+    if (res) {
+    toast.success(res.message || "Configurations saved successfully");
+  } else {
+    toast.error("Failed to save configurations");
+  }
   };
 
   return (
@@ -185,11 +190,11 @@ const SetupConfiguration = ({ tempalteId }) => {
           {saveLoading ? "Saving..." : "Save Configuration"}
         </button>
 
-        {response && (
+        {/* {response && (
           <div className={styles.successMessage}>
             Configuration saved successfully!
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );

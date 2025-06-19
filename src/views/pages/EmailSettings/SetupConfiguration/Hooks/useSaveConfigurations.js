@@ -23,8 +23,10 @@ const useSaveConfigurations = () => {
       });
 
       setResponse(res.data);
+      return res.data;
     } catch (err) {
       setError(err);
+      return null;
     } finally {
       setLoading(false);
     }
