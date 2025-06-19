@@ -28,7 +28,7 @@ const useGetTriggerFields = (templateId) => {
     };
 
     fetchData();
-  }, [templateId]); // Re-run effect whenever templateId changes
+  }, [templateId]);
 
   return { data, loading, error };
 };

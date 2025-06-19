@@ -2,9 +2,17 @@ import React, { useState } from "react";
 import Dropdown from "../DropDownofEmailConfiguration/DropdownEmailConfiguration";
 import styles from "./SetupConfiguration.module.scss";
 import useGetTriggerFields from "./Hooks/useGetTriggerFields";
+import useSaveConfigurations from "./Hooks/useSaveConfigurations";
 
 const SetupConfiguration = ({ tempalteId }) => {
   const { date, loading, error } = useGetTriggerFields(tempalteId);
+  const {
+    saveConfigurations,
+    loading: saveLoading,
+    error: saveError,
+    response,
+  } = useSaveConfigurations();
+
   const [followUps, setFollowUps] = useState([{ type: "", template: "" }]);
   const [triggers, setTriggers] = useState([
     { field: "", condition: "", value: "" },
@@ -74,6 +82,12 @@ const SetupConfiguration = ({ tempalteId }) => {
       condition: trigger.condition,
       value: trigger.value,
     }));
+  };
+
+  // Handle save button click
+  const handleSave = async () => {
+    const payload = generatePayload();
+    await saveConfigurations(payload);
   };
 
   return (
@@ -159,6 +173,23 @@ const SetupConfiguration = ({ tempalteId }) => {
             </div>
           </div>
         ))}
+      </div>
+
+      {/* Save Button Section */}
+      <div className={styles.saveSection}>
+        <button
+          className={styles.saveBtn}
+          onClick={handleSave}
+          disabled={saveLoading}
+        >
+          {saveLoading ? "Saving..." : "Save Configuration"}
+        </button>
+
+        {response && (
+          <div className={styles.successMessage}>
+            Configuration saved successfully!
+          </div>
+        )}
       </div>
     </div>
   );
