@@ -18,6 +18,9 @@ const useSaveGeneralSettings = () => {
         template_id: templateId,
         sms_enabled: settings.smsEnabled,
         email_enabled: settings.emailEnabled,
+        from_email: settings.fromEmail,
+        from_name: settings.fromName,
+        reply_to: settings.replyToEmail,  
         max_sms_per_day: parseInt(settings.maxSmsPerDay) || 0,
         max_emails_per_day: parseInt(settings.maxEmailPerDay) || 0,
       };

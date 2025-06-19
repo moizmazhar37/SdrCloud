@@ -8,6 +8,10 @@ const GeneralSettings = ({ onNext, onDataChange, initialData }) => {
   const [maxSmsPerDay, setMaxSmsPerDay] = useState("5");
   const [maxEmailPerDay, setMaxEmailPerDay] = useState("5");
   const isInitialized = useRef(false);
+  const [fromEmail, setFromEmail] = useState("");
+  const [fromName, setFromName] = useState("");
+  const [replyToEmail, setReplyToEmail] = useState("");
+
 
   const TEMPLATE_ID = localStorage.getItem("template_id");
   const { saveGeneralSettings, loading, error } = useSaveGeneralSettings();
@@ -19,6 +23,10 @@ const GeneralSettings = ({ onNext, onDataChange, initialData }) => {
       setEmailEnabled(initialData.email_enabled || true);
       setMaxSmsPerDay(String(initialData.max_sms_per_day || 5));
       setMaxEmailPerDay(String(initialData.max_emails_per_day || 5));
+      setFromEmail(initialData.from_email || "");
+      setFromName(initialData.from_name || "");
+      setReplyToEmail(initialData.reply_to || "");
+
 
       isInitialized.current = true;
 
@@ -28,6 +36,9 @@ const GeneralSettings = ({ onNext, onDataChange, initialData }) => {
         emailEnabled: initialData.email_enabled || true,
         maxSmsPerDay: String(initialData.max_sms_per_day || 5),
         maxEmailPerDay: String(initialData.max_emails_per_day || 5),
+        fromEmail: initialData.from_email || "",
+        fromName: initialData.from_name || "",
+        replyToEmail: initialData.reply_to || "",
       };
       onDataChange && onDataChange(allData);
     }
@@ -39,6 +50,9 @@ const GeneralSettings = ({ onNext, onDataChange, initialData }) => {
       emailEnabled,
       maxSmsPerDay,
       maxEmailPerDay,
+      fromEmail,
+      fromName,
+      replyToEmail,
       ...newData,
     };
     onDataChange && onDataChange(allData);
@@ -72,12 +86,17 @@ const GeneralSettings = ({ onNext, onDataChange, initialData }) => {
       emailEnabled,
       maxSmsPerDay,
       maxEmailPerDay,
+      fromEmail,
+      fromName,
+      replyToEmail,
     };
 
-    console.log("Logging data:", settings);
+    console.log("Saving settings:", settings);
 
     try {
+      console.log("Template ID:", TEMPLATE_ID);
       const result = await saveGeneralSettings(TEMPLATE_ID, settings);
+      console.log("Template ID:", TEMPLATE_ID);
     } catch (err) {
       console.error("Error saving settings:", err);
     }
@@ -134,6 +153,7 @@ const GeneralSettings = ({ onNext, onDataChange, initialData }) => {
         </div>
 
         {emailEnabled && (
+           <>
           <div className={styles.maxInputContainer}>
             <label className={styles.inputLabel}>Max Email per day:</label>
             <input
@@ -145,6 +165,49 @@ const GeneralSettings = ({ onNext, onDataChange, initialData }) => {
               className={styles.numberInput}
             />
           </div>
+
+          <div className={styles.inputGroup}>
+          <label className={styles.inputLabel}>From Email:</label>
+          <input
+            type="email"
+            value={fromEmail}
+            onChange={(e) => {
+              setFromEmail(e.target.value);
+              handleDataChange({ fromEmail: e.target.value });
+            }}
+            className={styles.textInput}
+            placeholder="e.g. example@domain.com"
+          />
+        </div>
+
+        <div className={styles.inputGroup}>
+          <label className={styles.inputLabel}>From Name:</label>
+          <input
+            type="text"
+            value={fromName}
+            onChange={(e) => {
+              setFromName(e.target.value);
+              handleDataChange({ fromName: e.target.value });
+            }}
+            className={styles.textInput}
+            placeholder="e.g. John Doe"
+          />
+        </div>
+
+        <div className={styles.inputGroup}>
+          <label className={styles.inputLabel}>Reply To Email:</label>
+          <input
+            type="email"
+            value={replyToEmail}
+            onChange={(e) => {
+              setReplyToEmail(e.target.value);
+              handleDataChange({ replyToEmail: e.target.value });
+            }}
+            className={styles.textInput}
+            placeholder="e.g. reply@domain.com"
+          />
+          </div>
+          </>
         )}
       </div>
 
