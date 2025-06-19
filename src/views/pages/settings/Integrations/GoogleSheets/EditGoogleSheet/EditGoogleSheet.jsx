@@ -47,7 +47,7 @@ function EditGoogleSheet() {
           value: item.value,
           dataType: item.dataType || "",
           column: item.column,
-          trigger_field: item.trigger_fields || item.trigger_field || false,
+          trigger_field: Boolean(item.trigger_field || item.trigger_fields),
         }))
       );
     }
@@ -66,7 +66,7 @@ function EditGoogleSheet() {
   const handleTriggerChange = (value, isEnabled) => {
     setUpdatedData((prev) =>
       prev.map((item) =>
-        item.value === value ? { ...item, trigger_fields: isEnabled } : item
+        item.value === value ? { ...item, trigger_field: isEnabled } : item
       )
     );
   };
@@ -222,7 +222,7 @@ function EditGoogleSheet() {
                                     id={`trigger-${item.value}`}
                                     className={styles.toggleInput}
                                     disabled={!isEditing}
-                                    checked={item.trigger_fields} // Changed from enableTrigger to trigger_fields
+                                    checked={Boolean(item.trigger_field)}
                                     onChange={(e) =>
                                       handleTriggerChange(
                                         item.value,
