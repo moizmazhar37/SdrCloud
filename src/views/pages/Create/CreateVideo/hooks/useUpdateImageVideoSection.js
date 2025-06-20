@@ -17,6 +17,7 @@ const useUpdateVideoSection = () => {
       audioEmbedded,
       scroll,
       audioDescription,
+      audioAccent,
       firstRowValue,
       value,
       link,
@@ -38,6 +39,7 @@ const useUpdateVideoSection = () => {
       formData.append("is_dynamic", isDynamic ? "true" : "false");
     if (audioDescription)
       formData.append("audio_description", audioDescription);
+    if (audioAccent) formData.append("audio_accent", audioAccent);
     if (duration) formData.append("duration", duration);
     if (scroll !== undefined)
       formData.append("scroll", scroll ? "true" : "false");

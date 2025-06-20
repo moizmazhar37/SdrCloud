@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useHistory } from "react-router-dom";
 import CategoryDropdown from "../CategoryDropdown/CategoryDropdown";
 import SectionView from "./SectionView/SectionView";
@@ -13,6 +13,7 @@ const SectionArea = ({
   templateId = null,
   elementsList = [],
   type = "video",
+  onViewSection,
 }) => {
   const history = useHistory();
   const [sections, setSections] = useState([]);
@@ -46,11 +47,23 @@ const SectionArea = ({
     onSectionTypeChange(value, sectionNum);
   };
 
+  const handleViewSection = (sequence, sectionName) => {
+    if (onViewSection) {
+      onViewSection(sequence, sectionName);
+    }
+  };
+
   const renderSection = (sequence) => {
     const currentSectionData = sectionData[sequence];
 
     if (elementsList?.length > 0 && currentSectionData) {
-      return <SectionView sectionData={currentSectionData} type={type} />;
+      return (
+        <SectionView
+          sectionData={currentSectionData}
+          type={type}
+          onViewSection={handleViewSection}
+        />
+      );
     }
 
     return (

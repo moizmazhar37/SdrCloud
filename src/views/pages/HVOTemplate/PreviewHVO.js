@@ -15,7 +15,7 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import Slider from "react-slick";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import ApiConfig from "src/config/APIConfig";
 import { IoIosArrowForward } from "react-icons/io";
 import {
@@ -255,67 +255,140 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function PreviewHVO(location) {
-  console.log("location: ", location);
+function PreviewHVO(props) {
+  console.log("props: ", props);
   const { customerId, templateId } = useParams();
   const classes = useStyles();
   const [pageData, setPageData] = useState([]);
   const [filteredFooterSection, setFilteredFooterSection] = useState();
   const [hoveredButtonIndex, setHoveredButtonIndex] = useState(null);
-  console.log("filteredFooterSection: ", filteredFooterSection);
-  console.log(useParams, "useParams");
-  console.log(pageData, "pageData");
+  const [tenant, setTenant] = useState("");
   const [accountData, setAccountData] = useState("");
-
   const [loading, setLoading] = useState(false);
-  useEffect(() => {
-    const fetchData = async () => {
-      const storedTemplateId = localStorage.getItem("templateId");
-      console.log("storedTemplateId: ", storedTemplateId);
 
-      if (storedTemplateId) {
-        try {
-          setLoading(true);
-          const res = await axios({
-            method: "GET",
-            url: `${ApiConfig.previewHVOwithsheetdata}/${storedTemplateId}`,
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          });
-          if (res?.status === 200 || res?.status === 201) {
-            setLoading(false);
-            const elementsList = res?.data;
+  const location = useLocation();
+  const isCustomerPreviewRoute = location.pathname.includes("/preview-url");
 
-            // Sort the elements by sequence value
-            const sortedElements = [...elementsList].sort((a, b) => {
-              // Convert sequence strings to numbers for proper comparison
-              const seqA = parseInt(a?.values?.sequence) || 0;
-              const seqB = parseInt(b?.values?.sequence) || 0;
-              return seqA - seqB;
-            });
+  // Fetch data for the "/preview-hvo" route
+  const fetchHVOPreviewData = async () => {
+    const storedTemplateId = localStorage.getItem("templateId");
+    console.log("storedTemplateId: ", storedTemplateId);
 
-            setPageData(sortedElements);
-            const filteredFooter = sortedElements.filter(
-              (item) => item?.sectionName === "FOOTER"
-            );
-            setFilteredFooterSection(filteredFooter);
-          }
-        } catch (error) {
-          console.log(error, "error");
-        } finally {
+    if (storedTemplateId) {
+      try {
+        setLoading(true);
+        const res = await axios({
+          method: "GET",
+          url: `${ApiConfig.previewHVOwithsheetdata}/${storedTemplateId}`,
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        if (res?.status === 200 || res?.status === 201) {
           setLoading(false);
+          const elementsList = res?.data;
+
+          // Sort the elements by sequence value
+          const sortedElements = [...elementsList].sort((a, b) => {
+            // Convert sequence strings to numbers for proper comparison
+            const seqA = parseInt(a?.values?.sequence) || 0;
+            const seqB = parseInt(b?.values?.sequence) || 0;
+            return seqA - seqB;
+          });
+
+          setPageData(sortedElements);
+          const filteredFooter = sortedElements.filter(
+            (item) => item?.sectionName === "FOOTER"
+          );
+          setFilteredFooterSection(filteredFooter);
         }
+      } catch (error) {
+        console.log(error, "error");
+      } finally {
+        setLoading(false);
       }
-    };
+    }
+  };
 
-    fetchData();
+  // Fetch data for the "/preview-url/:customerId" route
+  const fetchCustomerPreviewData = async () => {
+    try {
+      setLoading(true);
+      const res = await axios({
+        method: "GET",
+        url: `${ApiConfig.getHVO}/${customerId}`,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        params: {
+          customerTemplateId: customerId,
+        },
+      });
 
+      if (res?.status === 200 || res?.status === 201) {
+        setLoading(false);
+        console.log(res?.data);
+        const elementsList = res?.data?.data_list;
+
+        // Sort the elements by sequence value, same as in previewHVO route
+        const sortedElements = [...elementsList].sort((a, b) => {
+          // Convert sequence strings to numbers for proper comparison
+          const seqA = parseInt(a?.values?.sequence) || 0;
+          const seqB = parseInt(b?.values?.sequence) || 0;
+          return seqA - seqB;
+        });
+
+        setPageData(sortedElements);
+        setTenant(res?.data?.tenant_id);
+        const filteredFooter = sortedElements.filter(
+          (item) => item?.sectionName === "FOOTER"
+        );
+        setFilteredFooterSection(filteredFooter);
+      }
+    } catch (error) {
+      console.error("Error fetching data", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     AOS.init({
       duration: 800,
       offset: 100,
     });
-  }, []);
+
+    if (isCustomerPreviewRoute) {
+      fetchCustomerPreviewData();
+    } else {
+      fetchHVOPreviewData();
+    }
+  }, [isCustomerPreviewRoute, customerId]);
+
+  useEffect(() => {
+    // Only add the tracking script if we're on the customer preview route
+    if (isCustomerPreviewRoute) {
+      const script = document.createElement("script");
+      script.src =
+        "https://storage.googleapis.com/static-data-for-sdrc/scripts/tracker_d26331ec-e390-4c61-afb9-56795bb856cf.js";
+      script.async = true;
+      document.body.appendChild(script);
+
+      return () => {
+        if (document.body.contains(script)) {
+          document.body.removeChild(script);
+        }
+      };
+    }
+  }, [isCustomerPreviewRoute]);
+
+  console.log("filteredFooterSection: ", filteredFooterSection);
+  console.log(useParams, "useParams");
+  console.log(pageData, "pageData");
+
+  console.log("filteredFooterSection: ", filteredFooterSection);
+  console.log(useParams, "useParams");
+  console.log(pageData, "pageData");
 
   const settings = {
     infinite: true,
@@ -343,8 +416,6 @@ function PreviewHVO(location) {
   const [hoveredContact, setHoveredContact] = useState(false);
   const handleMouseEnterContact = () => setHoveredContact(true);
   const handleMouseLeaveContact = () => setHoveredContact(false);
-
-  console.log("aaaaaaaaaaaaaaaaaaaaaaaa");
 
   const getAccountData = async () => {
     try {
@@ -428,50 +499,50 @@ function PreviewHVO(location) {
                     >
                       {item?.values?.headline1 &&
                         item?.values?.headline1 !== "None" && (
-                      <Typography
-                        style={{
-                          color: item?.values?.headline1_color,
-                          fontWeight: 900,
-                          wordBreak: "break-word",
-                          fontSize: `${item?.values?.headline1_size}px`,
-                        }}
-                        variant="h3"
-                      >
-                        {item?.values?.headline1}
-                      </Typography>
+                          <Typography
+                            style={{
+                              color: item?.values?.headline1_color,
+                              fontWeight: 900,
+                              wordBreak: "break-word",
+                              fontSize: `${item?.values?.headline1_size}px`,
+                            }}
+                            variant="h3"
+                          >
+                            {item?.values?.headline1}
+                          </Typography>
                         )}
 
                       {item?.values?.headline2 &&
                         item?.values?.headline2 !== "None" && (
-                      <Typography
-                        style={{
-                          color: item?.values?.headline2_color,
-                          fontSize: `${item?.values?.headline2_size}px`,
-                          fontWeight: 800,
-                          wordBreak: "break-word",
-                          marginTop: "8px",
-                          lineHeight: "35px",
-                        }}
-                        variant="h1"
-                      >
-                        {item?.values?.headline2}
-                      </Typography>
+                          <Typography
+                            style={{
+                              color: item?.values?.headline2_color,
+                              fontSize: `${item?.values?.headline2_size}px`,
+                              fontWeight: 800,
+                              wordBreak: "break-word",
+                              marginTop: "8px",
+                              lineHeight: "35px",
+                            }}
+                            variant="h1"
+                          >
+                            {item?.values?.headline2}
+                          </Typography>
                         )}
 
                       {item?.values?.body_text &&
                         item?.values?.body_text !== "None" && (
-                      <Typography
-                        style={{
-                          color: item?.values?.body_text_color,
-                          lineHeight: "30px",
-                          wordBreak: "break-word",
-                          fontSize: `${item?.values?.body_text_size}px`,
-                        }}
-                        variant="body1"
-                        // data-aos="fade-up"
-                      >
-                        {item?.values?.body_text}
-                      </Typography>
+                          <Typography
+                            style={{
+                              color: item?.values?.body_text_color,
+                              lineHeight: "30px",
+                              wordBreak: "break-word",
+                              fontSize: `${item?.values?.body_text_size}px`,
+                            }}
+                            variant="body1"
+                            // data-aos="fade-up"
+                          >
+                            {item?.values?.body_text}
+                          </Typography>
                         )}
 
                       <Box className="btn">
@@ -513,8 +584,8 @@ function PreviewHVO(location) {
                             }}
                             onClick={() =>
                               window.open(
-                                item?.values?.dynamic_url
-                                  ? item?.values?.dynamic_url
+                                item?.values?.dynamic_url_demo
+                                  ? item?.values?.dynamic_url_demo
                                   : item?.values?.static_url
                               )
                             }
@@ -635,30 +706,30 @@ function PreviewHVO(location) {
                     >
                       {item?.values?.headline1 &&
                         item?.values?.headline1 !== "None" && (
-                      <Typography
-                        variant="h1"
-                        style={{
-                          fontSize: `${item?.values?.headline1_size}px`,
-                          color: item?.values?.headline1_color,
-                        }}
-                      >
-                        {item?.values?.headline1}
-                      </Typography>
+                          <Typography
+                            variant="h1"
+                            style={{
+                              fontSize: `${item?.values?.headline1_size}px`,
+                              color: item?.values?.headline1_color,
+                            }}
+                          >
+                            {item?.values?.headline1}
+                          </Typography>
                         )}
 
                       {item?.values?.headline2 &&
                         item?.values?.headline2 !== "None" && (
-                      <Typography
-                        variant="h2"
-                        // data-aos="fade-up"
-                        style={{
-                          fontSize: `${item?.values?.headline2_size}px`,
-                          color: item?.values?.headline2_color,
-                          fontWeight: 700,
-                        }}
-                      >
-                        {item?.values?.headline2}
-                      </Typography>
+                          <Typography
+                            variant="h2"
+                            // data-aos="fade-up"
+                            style={{
+                              fontSize: `${item?.values?.headline2_size}px`,
+                              color: item?.values?.headline2_color,
+                              fontWeight: 700,
+                            }}
+                          >
+                            {item?.values?.headline2}
+                          </Typography>
                         )}
 
                       {item?.values?.body_text &&
@@ -698,22 +769,22 @@ function PreviewHVO(location) {
                   >
                     {" "}
                     {item?.values?.banner_text &&
-                        item?.values?.banner_text !== "None" && (
-                    <Typography
-                      variant="h3"
-                      style={{
-                        fontWeight: 700,
-                        color: item?.values?.banner_text_color,
-                        fontSize: `${
-                          item?.values?.banner2_text_size || "30"
-                        }px`,
-                      }}
-                      display="flex"
-                      key={index}
-                    >
-                      {item?.values?.banner_text}
-                    </Typography>
-                    )}
+                      item?.values?.banner_text !== "None" && (
+                        <Typography
+                          variant="h3"
+                          style={{
+                            fontWeight: 700,
+                            color: item?.values?.banner_text_color,
+                            fontSize: `${
+                              item?.values?.banner2_text_size || "30"
+                            }px`,
+                          }}
+                          display="flex"
+                          key={index}
+                        >
+                          {item?.values?.banner_text}
+                        </Typography>
+                      )}
                     <a
                       href={
                         item?.values?.static_url
@@ -1082,21 +1153,26 @@ function PreviewHVO(location) {
                           })()}
                         </Box>
 
-                        <Typography
-                          variant="body1"
-                          style={{
-                            color: item?.values?.benchmark_color || "#333333",
-                            fontSize: `${
-                              item?.values?.benchmar_size || "14"
-                            }px`,
-                            fontWeight: 400,
-                          }}
-                        >
-                          {item?.values?.accountName ||
-                            item?.values?.account_name ||
-                            "Company"}
-                          . All rights reserved.
-                        </Typography>
+                        {(item?.values?.accountName ||
+                          item?.values?.account_name) &&
+                          item?.values?.account_name !== "None" && (
+                            <Typography
+                              variant="body1"
+                              style={{
+                                color:
+                                  item?.values?.benchmark_color || "#333333",
+                                fontSize: `${
+                                  item?.values?.benchmar_size || "14"
+                                }px`,
+                                fontWeight: 400,
+                              }}
+                            >
+                              {item?.values?.accountName ||
+                                item?.values?.account_name ||
+                                "Company"}
+                              . All rights reserved.
+                            </Typography>
+                          )}
                       </Grid>
                       <Grid item sm={4} xs={12}>
                         <Hidden xsDown>

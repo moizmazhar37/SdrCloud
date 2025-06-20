@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import ApiConfig from "src/config/APIConfig";
+import StaticURL from "../../../CreateVideo/StaticURL/StaticURL";
 
 const useUpdateHighlightBanner2 = () => {
   const [loading, setLoading] = useState(false);
@@ -25,6 +26,7 @@ const useUpdateHighlightBanner2 = () => {
           ctaButtonColor: data.ctaButtonColor,
           bannerColor: data.bannerColor,
           bannerButtonColor: "",
+          staticUrl: data.staticUrl,
           bannerTextColor: data.bannerTextColor,
           bannerButtonTextColor: data.bannerButtonTextColor,
           banner2TextSize: parseInt(data.bannerTextSize) || 0,
