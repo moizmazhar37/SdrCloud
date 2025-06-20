@@ -36,6 +36,40 @@ const VideoUpload = ({
   const videoInputRef = useRef(null);
   const audioInputRef = useRef(null);
 
+  // Voice models array - moved to component level so it can be used in useEffect
+  const voiceModels = [
+    {
+      name: "Natasha",
+      dev_name: "en-AU-NatashaNeural",
+      url: "https://storage.googleapis.com/static-data-for-sdrc/uploads/e0653e5d-a70a-41e0-9706-4764f27ae886/en-AU-NatashaNeural_20250522071439.mp3",
+    },
+    {
+      name: "William",
+      dev_name: "en-AU-WilliamNeural",
+      url: "https://storage.googleapis.com/static-data-for-sdrc/uploads/e0653e5d-a70a-41e0-9706-4764f27ae886/en-AU-WilliamNeural_20250522071508.mp3",
+    },
+    {
+      name: "Liam",
+      dev_name: "en-CA-LiamNeural",
+      url: "https://storage.googleapis.com/static-data-for-sdrc/uploads/e0653e5d-a70a-41e0-9706-4764f27ae886/en-CA-LiamNeural_20250522071530.mp3",
+    },
+    {
+      name: "Sonia",
+      dev_name: "en-GB-SoniaNeural",
+      url: "https://storage.googleapis.com/static-data-for-sdrc/uploads/e0653e5d-a70a-41e0-9706-4764f27ae886/en-GB-SoniaNeural_20250522071548.mp3",
+    },
+    {
+      name: "Aria",
+      dev_name: "en-US-AriaNeural",
+      url: "https://storage.googleapis.com/static-data-for-sdrc/uploads/e0653e5d-a70a-41e0-9706-4764f27ae886/en-US-AriaNeural_20250522071610.mp3",
+    },
+  ];
+
+  // Helper function to find voice model by dev_name
+  const findVoiceModelByDevName = (devName) => {
+    return voiceModels.find((model) => model.dev_name === devName) || null;
+  };
+
   // Initialize form with edit data if available
   useEffect(() => {
     if (editData) {
@@ -48,8 +82,14 @@ const VideoUpload = ({
       }
 
       setDuration(editData.duration || "");
-      setAudioDescription(editData.audioDescription || "");
-      setSelectedVoiceModel(editData.selectedVoiceModel || null);
+      setAudioDescription(editData.audio_description || "");
+
+      // Convert audio_accent string to voice model object
+      const voiceModel = editData.audio_accent
+        ? findVoiceModelByDevName(editData.audio_accent)
+        : null;
+      setSelectedVoiceModel(voiceModel);
+
       setScroll(editData.scroll || false);
       setAudioFile(editData.audio || null);
     } else {
@@ -281,6 +321,12 @@ const VideoUpload = ({
               <span>{audioFileName}</span>
             </div>
           )}
+          {selectedVoiceModel && (
+            <div className={styles.selectedVoiceModel}>
+              <span>Selected Voice: {selectedVoiceModel.name}</span>
+            </div>
+          )}
+
           <div className={styles.actionButtons}>
             <button
               className={`${styles.saveButton} ${
