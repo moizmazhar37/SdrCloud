@@ -27,11 +27,26 @@ const HighlightBanner2 = ({
   const [ctaButtonTextColor, setCtaButtonTextColor] = useState("");
   const [staticUrl, setStaticUrl] = useState("");
   const [dynamicUrl, setDynamicUrl] = useState("");
+  console.log("staticurlllll", staticUrl);
 
   const { saveHighlightBanner2, loading: saveLoading } =
     useSaveHighlightBanner2();
   const { updateHighlightBanner2, loading: updateLoading } =
     useUpdateHighlightBanner2();
+    
+
+  const normalizeUrl = (url) => {
+    let input = url.trim();
+    // If input already starts with http:// or https://, return as is
+    console.log("input", input);
+    if (/^https?:\/\//i.test(input)) {
+      console.log(" normailized input", input);
+      return input;
+    }
+    // Otherwise, prepend https://
+    
+    return 'https://' + input;
+  };
 
   useEffect(() => {
     if (initialData) {
@@ -52,10 +67,12 @@ const HighlightBanner2 = ({
       const urlToSave = staticUrl || dynamicUrl;
 
       if (initialData) {
+        console.log('initialData', staticUrl);
         await updateHighlightBanner2(
           {
             ctaButtonText,
             bannerText,
+            staticUrl: urlToSave,
             ctaButtonColor,
             bannerColor,
             bannerTextColor: textColor,
@@ -179,12 +196,20 @@ const HighlightBanner2 = ({
           <div className={styles.inputGroup}>
             <label>If Static Enter Static URL Here</label>
             <InputField
-              value={staticUrl}
-              onChange={(e) => {
-                setStaticUrl(e.target.value);
-                setDynamicUrl("");
-              }}
               placeholder="Enter Link URL"
+              value={normalizeUrl(staticUrl)}
+              onChange={(e) => {
+                    // setStaticUrl(e.target.value);
+                    setDynamicUrl("");
+                    const normalized = normalizeUrl(e.target.value);
+                                        setStaticUrl(normalized);
+
+                  }}
+                  onBlur={(e) => {
+                    const normalized = normalizeUrl(e.target.value);
+                    console.log("Normalized URL:", normalized);
+                    setStaticUrl(normalized);
+                  }}
             />
           </div>
 
