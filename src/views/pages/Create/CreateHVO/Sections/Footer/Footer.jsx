@@ -44,9 +44,7 @@ const Footer = ({
     if (value === "" || Number(value) <= maxSize) {
       setter(value);
     }
-  };
-
-  console.log("Data====", initialData);
+  };  
 
   const handleClose = () => {
     onClose();

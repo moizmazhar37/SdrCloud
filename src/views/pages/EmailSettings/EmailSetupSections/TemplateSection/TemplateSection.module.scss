@@ -1,0 +1,92 @@
+.templateSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  background: #e8effc;
+  border: 2px solid transparent;
+  padding: 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+  box-shadow: 0px 8px 24px 0px rgba(0, 0, 0, 0.04);
+
+  &:hover {
+    border-color: #007bffab;
+  }
+
+  &.active {
+    border-color: #007bff93;
+  }
+}
+
+.index {
+  width: 40px;
+  height: 40px;
+  border: 2px solid #007bffa2;
+  border-radius: 10px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 16px;
+  color: #007bff;
+}
+
+.details {
+  flex: 1;
+}
+
+.title {
+  font-weight: 600;
+  margin-bottom: 0.2rem;
+  color: #0353a4;
+}
+
+.scroll {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.viewButton {
+  border: 1px solid #007bff;
+  background: transparent;
+  color: #007bff;
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+.noTemplates {
+  font-style: italic;
+  color: #777;
+  padding: 1rem;
+}
+
+
+.addNewTemplateButtonWrapper {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.addNewTemplateButton {
+ width: 100%;
+  padding: 12px;
+  background: none;
+  border: none;
+  color: #0358ac;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 8px;
+
+  margin-bottom: 20px;
+
+  &:hover {
+    background-color: rgba(0, 102, 255, 0.05);
+  }
+}

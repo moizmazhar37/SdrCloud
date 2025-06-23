@@ -1,0 +1,426 @@
+.deliverySettings {
+  background-color: #fff;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  padding: 32px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.section {
+  margin-bottom: 32px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.sectionTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #212529;
+  margin: 0 0 16px 0;
+}
+
+// Delivery Type Section
+.deliveryTypeContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.deliveryTypeInput {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 48px;
+  padding: 12px 16px;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+  align-items: center;
+}
+
+.tag {
+  display: flex;
+  align-items: center;
+  background-color: #6c757d;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  gap: 6px;
+
+  .removeTag {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 0;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+  }
+}
+
+.deliveryTypeButtons {
+  display: flex;
+  gap: 8px;
+}
+
+.typeButton {
+  padding: 8px 16px;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  background-color: #fff;
+  color: #495057;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: #f8f9fa;
+  }
+
+  &.active {
+    background-color: #c9ebf8;
+    color: #0358ac;
+    border-color: #99d6ff;
+  }
+}
+
+// Maximum Reminders Section
+.maxRemindersContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dropdown {
+  position: relative;
+}
+
+.select {
+  appearance: none;
+  background-color: #fff;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 12px 40px 12px 16px;
+  font-size: 16px;
+  color: #495057;
+  cursor: pointer;
+  min-width: 80px;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 12px center;
+  background-repeat: no-repeat;
+  background-size: 16px;
+
+  &:focus {
+    outline: none;
+    border-color: #0358ac;
+    box-shadow: 0 0 0 3px rgba(3, 88, 172, 0.1);
+  }
+}
+
+// Schedule Buttons Section
+.scheduleButtons {
+  display: flex;
+  gap: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e9ecef;
+  width: fit-content;
+}
+
+.scheduleButton {
+  padding: 12px 24px;
+  border: none;
+  background-color: #fff;
+  color: #6c757d;
+  cursor: pointer;
+  font-size: 14px;
+  border-right: 1px solid #e9ecef;
+  transition: all 0.2s ease;
+
+  &:last-child {
+    border-right: none;
+  }
+
+  &:hover {
+    background-color: #f8f9fa;
+  }
+
+  &.active {
+    background-color: #c9ebf8;
+    color: #0358ac;
+  }
+}
+
+// Schedule Later Date/Time Section
+.scheduleDateTimeContainer {
+  display: flex;
+  gap: 24px;
+  align-items: end;
+}
+
+.datePickerContainer,
+.timePickerContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.inputLabel {
+  font-size: 14px;
+  font-weight: 500;
+  color: #495057;
+  margin-bottom: 4px;
+}
+
+.dateInput,
+.timePickerInput {
+  padding: 12px 16px;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  background-color: #fff;
+  font-size: 16px;
+  color: #495057;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 150px;
+
+  &:focus {
+    outline: none;
+    border-color: #0358ac;
+    box-shadow: 0 0 0 3px rgba(3, 88, 172, 0.1);
+  }
+
+  &::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+.dateInput {
+  &:invalid {
+    border-color: #dc3545;
+  }
+}
+
+// Time Rows Section
+.timeRow {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+  gap: 24px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.daySection {
+  min-width: 120px;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+
+  input[type="checkbox"] {
+    opacity: 0;
+    position: absolute;
+  }
+}
+
+.checkmark {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #e9ecef;
+  border-radius: 4px;
+  margin-right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+
+  &::after {
+    content: "✓";
+    color: white;
+    font-size: 12px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+}
+
+.checkbox input[type="checkbox"]:checked + .checkmark {
+  background-color: #0358ac;
+  border-color: #0358ac;
+
+  &::after {
+    opacity: 1;
+  }
+}
+
+.dayLabel {
+  font-size: 16px;
+  color: #495057;
+}
+
+.timeInputs {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 8px 16px;
+}
+
+.timeInput {
+  input[type="time"] {
+    border: none;
+    background: none;
+    font-size: 16px;
+    color: #495057;
+    padding: 4px;
+    outline: none;
+    cursor: pointer;
+
+    &::-webkit-calendar-picker-indicator {
+      cursor: pointer;
+    }
+  }
+}
+
+.timeSeparator {
+  font-size: 16px;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+// Button Section
+.buttonSection {
+  display: flex;
+  gap: 16px;
+  justify-content: flex-end;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid #e9ecef;
+}
+
+.saveButton {
+  padding: 12px 24px;
+  border: 1px solid #e9ecef;
+  background-color: #fff;
+  color: #495057;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(3, 88, 172, 0.1);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.nextButton {
+  padding: 12px 24px;
+  border: none;
+  background-color: #0358ac;
+  color: white;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: #024a92;
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(3, 88, 172, 0.3);
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .deliverySettings {
+    padding: 20px;
+    margin-top: 16px;
+  }
+
+  .maxRemindersContainer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .scheduleButtons {
+    width: 100%;
+  }
+
+  .scheduleButton {
+    flex: 1;
+  }
+
+  .scheduleDateTimeContainer {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+  }
+
+  .dateInput,
+  .timePickerInput {
+    min-width: auto;
+    width: 100%;
+  }
+
+  .timeRow {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .timeInputs {
+    justify-content: center;
+  }
+
+  .buttonSection {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .saveButton,
+  .nextButton {
+    width: 100%;
+  }
+}
