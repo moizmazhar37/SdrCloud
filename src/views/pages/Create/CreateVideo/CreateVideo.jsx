@@ -22,8 +22,7 @@ import {
 } from "./helpers";
 
 const CreateVideo = () => {
-  // Form visibility states
-  const [activeForm, setActiveForm] = useState(null); // 'image', 'video', 'static_url', 'dynamic_url'
+  const [activeForm, setActiveForm] = useState(null);
   const [templateId, setTemplateId] = useState(null);
   const [isSheetConnected, setIsSheetConnected] = useState(false);
   const [sectionNum, setSectionNum] = useState(null);
@@ -60,7 +59,6 @@ const CreateVideo = () => {
   } = useGetSections(templateId, saveTriggered);
 
   const elementsList = sectionData?.elementsList;
-  // Extract categories
   const imageCategories = extractCategories(data, "Image URL");
   const staticUrlCategories = extractCategories(data, "Static URL");
   const dynamicUrlCategories = extractCategories(data, "Dynamic URL");
@@ -86,7 +84,6 @@ const CreateVideo = () => {
   const totalPrice = totalVideoDuration * pricePerSecond;
 
   const handleSectionTypeChange = (selectedValue, sectionNumber) => {
-    // Reset all edit-related states when opening from section area
     setEditingSection(null);
     setIsEditMode(false);
     setSectionNum(sectionNumber);

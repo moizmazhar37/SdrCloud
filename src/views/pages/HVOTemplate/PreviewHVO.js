@@ -576,8 +576,8 @@ function PreviewHVO(props) {
                             }}
                             onClick={() =>
                               window.open(
-                                item?.values?.dynamic_url
-                                  ? item?.values?.dynamic_url
+                                item?.values?.dynamic_url_demo
+                                  ? item?.values?.dynamic_url_demo
                                   : item?.values?.static_url
                               )
                             }

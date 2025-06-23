@@ -53,12 +53,6 @@ const NewSettings = () => {
         text={"Alerts"}
         infoText={"Manage custom alerts here."}
       />
-      <Card
-        image={add_email}
-        route={"/email-templates"}
-        text={"Email Templates"}
-        infoText={"Create or edit email templates here"}
-      />
       {/* <Card
         image={add_email}
         route={"/book-meeting"}
@@ -70,12 +64,6 @@ const NewSettings = () => {
         route={"/booked-meetings"}
         text={"Booked Meetings"}
         infoText={"View the currently booked meetings"}
-      />
-      <Card
-        image={emailSchedule}
-        route={"/email-scheduling"}
-        text={"Schedule Emails"}
-        infoText={"Schedule emails to be sent at a later time"}
       />
       </>
       )}

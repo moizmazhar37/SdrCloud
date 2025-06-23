@@ -35,6 +35,8 @@ const Footer = ({
 
   const { saveFooter, loading: saveLoading } = useSaveFooter();
   const { updateFooter, loading: updateLoading } = useUpdateFooter();
+  const [isEditMode, setIsEditMode] = useState(false);
+
 
   // Handler for size inputs with max value validation
   const handleSizeChange = (setter, maxSize) => (e) => {
@@ -61,6 +63,7 @@ const Footer = ({
   useEffect(() => {
     if (initialData) {
       // Properly map API response fields to state
+      setIsEditMode(true);
       setFooterBgColor(initialData.footer_background_color || "");
       setFooterHeadingColor(initialData.footer_text_heading_color || "");
       setHeadingSize(initialData.footer_heading_size?.toString() || "0"); // Fixed this line
@@ -103,7 +106,7 @@ const Footer = ({
     };
 
     try {
-      if (initialData?.id) {
+      if (initialData?.id && isEditMode) {
         await updateFooter(initialData.id, footerData);
       } else {
         await saveFooter(footerData);
@@ -121,7 +124,7 @@ const Footer = ({
     }
   };
 
-  const loading = saveLoading || updateLoading;
+  const loading = isEditMode ? updateLoading : saveLoading;
 
   return (
     <div className={styles.wrapper}>
@@ -270,7 +273,7 @@ const Footer = ({
             onClick={handleSave}
             disabled={loading}
           >
-            {loading ? "Saving..." : "Save"}
+            {loading ? "Saving..." : isEditMode ? "Update" : "Save"}
           </button>
           <button
             onClick={handleClose}
