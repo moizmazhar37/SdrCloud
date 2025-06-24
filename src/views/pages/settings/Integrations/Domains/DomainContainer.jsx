@@ -3,6 +3,7 @@ import useGetStatus from "./Hooks/useGetDomainStatus";
 import Domains from "./Domains";
 import RegisteredDomain from "./RegisteredDomain/RegisteredDomain";
 import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
+import Loader from "src/Common/Loader/Loader";
 import styles from "./DomainContianer.module.scss";
 
 const DomainContainer = () => {
@@ -30,9 +31,12 @@ const DomainContainer = () => {
     setShowDomains(true);
   };
 
-  if (loading) return <div className={styles.loader}>Loading...</div>;
-  if (error)
-    return <div className={styles.error}>Error fetching domain status.</div>;
+  if (loading)
+    return (
+      <div className={styles.loader}>
+        <Loader />
+      </div>
+    );
 
   return (
     <>
