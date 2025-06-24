@@ -36,28 +36,28 @@ import { toast } from "react-toastify";
 const useStyles = makeStyles((theme) => ({
   main: {
     // width: "100%",
-    overflow: "hidden",
     "& .middleMain": {
       padding: "12px",
     },
+    overflow: "hidden",
     "& .MuiToolbar-regular": {
       minHeight: "60px !important",
       height: "100%",
       padding: "10px 15px",
     },
     "& .heroSection": {
-      marginTop: "20px",
+      marginTop: "100px",
       [theme.breakpoints.down("xs")]: {
-        marginTop: "20px", // Extra small screens
+        marginTop: "30px", // Extra small screens
       },
       [theme.breakpoints.up("sm")]: {
-        marginTop: "25px", // Small screens
+        marginTop: "50px", // Small screens
       },
       [theme.breakpoints.up("md")]: {
-        marginTop: "30px", // Medium screens
+        marginTop: "75px", // Medium screens
       },
       [theme.breakpoints.up("lg")]: {
-        marginTop: "30px", // Large screens
+        marginTop: "100px", // Large screens
       },
       marginBottom: "20px",
       "& h1": {
@@ -100,13 +100,12 @@ const useStyles = makeStyles((theme) => ({
       },
       "& .btn": {
         display: "flex",
+        flexWrap: "wrap",
         justifyContent: "space-between",
-        gap: "20px",
+        gap: "50px",
         alignItems: "baseline",
         "& .demobtn": {
           cursor: "pointer",
-          // paddingTop: "28px",
-          // paddingLeft: "30px",
           textTransform: "none",
           display: "flex",
           alignItems: "end",
@@ -195,6 +194,32 @@ const useStyles = makeStyles((theme) => ({
       },
     },
   },
+
+   floatingBannerContainer: {
+    width: "100%",
+    overflow: "hidden",
+    position: "relative",
+    padding: "30px 0",
+  },
+  floatingBannerScroller: {
+    display: "flex",
+    whiteSpace: "nowrap",
+    animation: "$floatRightToLeft 30s linear infinite",
+  },
+  floatingBannerItem: {
+    display: "inline-flex",
+    padding: "0 20px",
+    alignItems: "center",
+  },
+  "@keyframes floatRightToLeft": {
+    "0%": {
+      transform: "translateX(0)",
+    },
+    "100%": {
+      transform: "translateX(-50%)",
+    },
+  },
+
   LandingSlider: {
     // marginTop: "100px",
     "& .slick-track": {
@@ -217,13 +242,13 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   banner2: {
+    // marginTop: "100px",
+
     display: "flex",
     gap: "60px",
     alignItems: "center",
-    // height: "100px !important",
-    // background: "#0358AC",
+
     color: "white",
-    whiteSpace: "nowrap",
     fontSize: "32px",
   },
   specificGridItem: {
@@ -253,9 +278,7 @@ function CustomerPreview(location) {
     Instagram: FaInstagram,
     Twitter: FaTwitter,
   };
-  const [hovered, setHovered] = useState(false);
-  const handleMouseEnter = () => setHovered(true);
-  const handleMouseLeave = () => setHovered(false);
+
   const [loading, setLoading] = useState(false);
   const fetchPreviewData = async () => {
     try {
@@ -328,19 +351,13 @@ function CustomerPreview(location) {
     nextArrow: <></>,
   };
   const settings2 = {
-    // infinite: true,
-    // speed: 10000,
-    // slidesToShow: 1,
-    // slidesToScroll: 1,
-    // autoplay: true,
-    // autoplaySpeed: 1000,
-    // cssEase: "linear",
-    // variableWidth: true,
-    // pauseOnHover: false,
     prevArrow: <></>,
     nextArrow: <></>,
   };
 
+  const [hovered, setHovered] = useState(false);
+  const handleMouseEnter = () => setHovered(true);
+  const handleMouseLeave = () => setHovered(false);
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const handleMouseEnter1 = (index) => setHoveredIndex(index);
   const handleMouseLeave1 = () => setHoveredIndex(null);
@@ -442,70 +459,100 @@ function CustomerPreview(location) {
               </AppBar>
             )}
             {item?.sectionName === "HERO" && (
-              <>
-                <Container>
-                  <Grid container className="heroSection1">
-                    <Grid
-                      item
-                      sm={5}
-                      xs={12}
-                      // style={{ marginTop: "100px" }}
-                      className="d-flex column alignstart"
+            <>
+              <Container>
+                <Grid container className="heroSection1">
+                  <Grid
+                    item
+                    sm={5}
+                    xs={12}
+                    style={{ paddingRight: "30px" }}
+                    className="d-flex column alignstart"
+                  >
+                    {item?.values?.headline1 &&
+                      item?.values?.headline1 !== "None" && (
+                    <Typography
+                      style={{
+                        color: item?.values?.headline1_color,
+                        fontWeight: 900,
+                        wordBreak: "break-word",
+                        fontSize: `${item?.values?.headline1_size}px`,
+                      }}
+                      variant="h3"
                     >
-                      <Typography
+                      {item?.values?.headline1}
+                    </Typography>
+                      )}
+
+                    {item?.values?.headline2 &&
+                      item?.values?.headline2 !== "None" && (
+                    <Typography
+                      style={{
+                        color: item?.values?.headline2_color,
+                        fontSize: `${item?.values?.headline2_size}px`,
+                        fontWeight: 800,
+                        wordBreak: "break-word",
+                        marginTop: "8px",
+                        lineHeight: "35px",
+                      }}
+                      variant="h1"
+                    >
+                      {item?.values?.headline2}
+                    </Typography>
+                      )}
+
+                    {item?.values?.body_text &&
+                      item?.values?.body_text !== "None" && (
+                    <Typography
+                      style={{
+                        color: item?.values?.body_text_color,
+                        lineHeight: "30px",
+                        wordBreak: "break-word",
+                        fontSize: `${item?.values?.body_text_size}px`,
+                      }}
+                      variant="body1"
+                      // data-aos="fade-up"
+                    >
+                      {item?.values?.body_text}
+                    </Typography>
+                      )}
+
+                    <Box className="btn">
+                      <Button
                         style={{
-                          color: item?.values?.headline1_color,
-                          fontWeight: 900,
-                          wordWrap: "break-word",
-                          fontSize: `${item?.values?.headline1_size}px`,
+                          color: item?.values?.cta_button_text_color,
+                          backgroundColor: item?.values?.cta_button_color,
+                          padding: "10px 30px",
+                          textTransform: "none",
                         }}
-                        variant="h3"
+                        onClick={() =>
+                          window.open(
+                            item?.values?.dynamic_url
+                              ? item?.values?.dynamic_url
+                              : item?.values?.dynamic_url
+                          )
+                        }
+                        variant="contained"
                         // data-aos="fade-up"
                       >
-                        {/* <span
-                          style={{
-                            color: item?.values?.headline1Color,
-                            fontWeight: 300,
-                          }}
-                        >
-                          Welcome{" "}
-                        </span> */}
-                        {item?.values?.headline1}
-                      </Typography>
-                      <Typography
-                        style={{
-                          color: item?.values?.headline2_color,
-                          fontSize: `${item?.values?.headline2_size}px`,
-                          fontSize: "45px",
-                          fontWeight: 800,
-                          marginTop: "8px",
-                          wordWrap: "break-word",
-                          lineHeight: "45px",
-                        }}
-                        variant="h1"
-                        // data-aos="fade-up"
-                      >
-                        {item?.values?.headline2}
-                      </Typography>
-                      <Typography
-                        style={{
-                          color: item?.values?.body_text_color,
-                          lineHeight: "30px",
-                          wordWrap: "break-word",
-                          fontSize: `${item?.values?.body_text_size}px`,
-                        }}
-                        variant="body1"
-                        // data-aos="fade-up"
-                      >
-                        {item?.values?.bodyText}
-                      </Typography>
-                      <Box className="btn">
+                        {item?.values?.cta_button_text}
+                      </Button>
+
+                      {item?.values?.demo_button_text && (
                         <Button
+                          className="demobtn"
                           style={{
-                            color: item?.values?.cta_button_text_color,
-                            backgroundColor: item?.values?.cta_button_color,
-                            padding: "10px 30px",
+                            backgroundColor: item?.values?.demo_button_color,
+                            color: item?.values?.demo_button_text_color,
                             textTransform: "none",
+                            fontSize: "14px",
+                            border: `1px solid ${item?.values?.demo_button_color}`,
+                            borderRadius: "4px",
+                            padding: "13px 22px",
+                            transition: "all 0.3s ease",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "10px",
                           }}
                           onClick={() =>
                             window.open(
@@ -514,160 +561,104 @@ function CustomerPreview(location) {
                                 : item?.values?.static_url
                             )
                           }
-                          variant="contained"
-                          // data-aos="fade-up"
+                          onMouseEnter={handleMouseEnter}
+                          onMouseLeave={handleMouseLeave}
                         >
-                          {item?.values?.cta_button_text}
+                          {item?.values?.demo_button_text}
                         </Button>
-                        {item?.values?.demo_button_text && (
-                          <Typography
-                            className="demobtn"
-                            style={{
-                              color: hovered
-                                ? item?.values?.demo_button_color
-                                : item?.values?.demo_button_text_color,
-                              textTransform: "none",
-                              fontSize: "14px",
-                            }}
-                            onClick={() =>
-                              window.open(
-                                item?.values?.dynamic_url_demo
-                                  ? item?.values?.dynamic_url_demo
-                                  : item?.values?.static_url
-                              )
-                            }
-                            variant="text"
-                            // data-aos="fade-up"
-                            onMouseEnter={handleMouseEnter}
-                            onMouseLeave={handleMouseLeave}
-                          >
-                            {item?.values?.demo_button_text}
-                            {/* {"  "}
-                            <IoIosArrowForward /> */}
-                          </Typography>
-                        )}
-                      </Box>
-                    </Grid>
-                    <Grid
-                      item
-                      sm={7}
-                      xs={12}
-                      align="center"
-                      // style={{ paddingTop: "50px" }}
-                    >
-                      <img
-                        src={
-                          item?.values?.hero_img
-                            ? item?.values?.hero_img
-                            : item?.values?.static_image
-                        }
-                        alt="img"
-                        data-aos="zoom-in"
-                        style={{ marginTop: "60px" }}
-                      />
-                    </Grid>
+                      )}
+                    </Box>
                   </Grid>
-                </Container>
-              </>
-            )}
+                  <Grid
+                    item
+                    sm={7}
+                    xs={12}
+                    align="center"
+                    // style={{ paddingTop: "50px" }}
+                  >
+                    <img
+                      src={
+                        item?.values?.hero_img
+                          ? item?.values?.hero_img
+                          : item?.values?.static_image
+                      }
+                      alt="img"
+                      data-aos="zoom-in"
+                      style={{ marginTop: "60px" }}
+                    />
+                  </Grid>
+                </Grid>
+              </Container>
+            </>
+          )}
             {item?.sectionName === "HIGHLIGHT_BANNER" && (
-              <>
-                {item?.values?.scroll == true ? (
-                  <Slider
-                    {...settings}
-                    style={{ background: item?.values?.banner_color }}
-                    className={classes.LandingSlider}
-                  >
-                    {Array.from({ length: 18 }).map((_, index) => (
-                      <Box
-                        sx={{
-                          color: `${
-                            item?.values?.banner_text_color || "#FFF"
-                          } !important`,
-                          fontSize: `${
-                            item?.values?.banner_text_size || "16"
-                          }px !important`,
-                          paddingTop: "30px",
-                          paddingBottom: "30px",
-                        }}
-                        display="flex"
-                        key={index}
-                      >
-                        {item?.values?.banner_text}
-                      </Box>
-                    ))}
-                  </Slider>
-                ) : (
-                  <Slider
-                    {...settings2}
-                    style={{ background: item?.values?.banner_color }}
-                    className={classes.LandingSlider}
-                  >
-                    {Array.from({ length: 18 }).map((_, index) => (
-                      <Box
-                        sx={{
-                          color: `${
-                            item?.values?.banner_text_color || "#FFF"
-                          } !important`,
-                          fontSize: `${
-                            item?.values?.banner_text_size || "16"
-                          }px !important`,
-                          paddingTop: "30px",
-                          paddingBottom: "30px",
-                        }}
-                        display="flex"
-                        key={index}
-                      >
-                        {item?.values?.banner_text}
-                      </Box>
-                    ))}
-                  </Slider>
-                )}
+            <>
+              <div
+                className={classes.floatingBannerContainer}
+                style={{ background: item?.values?.banner_color }}
+              >
+                <div className={classes.floatingBannerScroller}>
+                  {Array.from({ length: 18 }).map((_, index) => (
+                    <div
+                      className={classes.floatingBannerItem}
+                      style={{
+                        color: `${item?.values?.banner_text_color || "#FFF"}`,
+                        fontSize: `${
+                          item?.values?.banner_text_size || "16"
+                        }px`,
+                      }}
+                      key={index}
+                    >
+                      {item?.values?.banner_text}
+                    </div>
+                  ))}
+                </div>
+              </div>
 
                 {/* ADD VIDEO SECTION WITH CENTERED VIDEO */}
-                {pageData?.find(
-                  (videoItem) => videoItem?.sectionName === "HVO_VIDEO"
-                ) && (
-                  <Container
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      padding: "40px 0",
-                    }}
-                  >
-                    <video
-                      width="60%" // Adjust size as needed
-                      autoPlay
-                      loop
-                      muted
-                      playsInline
+                  {pageData?.find(
+                    (videoItem) => videoItem?.sectionName === "HVO_VIDEO"
+                  ) && (
+                    <Container
                       style={{
-                        borderRadius: "10px",
-                        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-                        display: "block",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        padding: "40px 0",
                       }}
                     >
-                      <source
-                        src={
-                          pageData?.find(
-                            (videoItem) =>
-                              videoItem?.sectionName === "HVO_VIDEO"
-                          )?.values?.video
-                        }
-                        type="video/mp4"
-                      />
-                    </video>
-                  </Container>
-                )}
-              </>
-            )}
+                      <video
+                        width="60%" // Adjust size as needed
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        style={{
+                          borderRadius: "10px",
+                          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+                          display: "block",
+                        }}
+                      >
+                        <source
+                          src={
+                            pageData?.find(
+                              (videoItem) =>
+                                videoItem?.sectionName === "HVO_VIDEO"
+                            )?.values?.video
+                          }
+                          type="video/mp4"
+                        />
+                      </video>
+                    </Container>
+                  )}
+                </>
+              )}
 
             {item?.sectionName === "RIGHT_TEXT_LEFT_IMAGE" && (
               <>
                 <Container>
                   <Grid container className="heroSection">
-                    <Grid item sm={6} xs={12} align="center">
+                    <Grid item md={6} xs={12} align="center">
                       <img
                         style={{ aspectRatio: "3/2", objectFit: "contain" }}
                         src={
@@ -681,13 +672,14 @@ function CustomerPreview(location) {
                     </Grid>
                     <Grid
                       item
-                      sm={6}
+                      md={6}
                       xs={12}
                       className={`${classes.specificGridItem} d-flex column alignstart`}
                     >
+                      {item?.values?.headline1 &&
+                        item?.values?.headline1 !== "None" && (
                       <Typography
                         variant="h1"
-                        // data-aos="fade-up"
                         style={{
                           fontSize: `${item?.values?.headline1_size}px`,
                           color: item?.values?.headline1_color,
@@ -695,6 +687,10 @@ function CustomerPreview(location) {
                       >
                         {item?.values?.headline1}
                       </Typography>
+                        )}
+
+                      {item?.values?.headline2 &&
+                        item?.values?.headline2 !== "None" && (
                       <Typography
                         variant="h2"
                         // data-aos="fade-up"
@@ -706,19 +702,23 @@ function CustomerPreview(location) {
                       >
                         {item?.values?.headline2}
                       </Typography>
-                      <Typography
-                        variant="body1"
-                        // data-aos="fade-up"
-                        style={{
-                          wordBreak: "break-word",
-                          fontSize: `${item?.values?.body_text_size}px`,
-                          color: item?.values?.body_text_color,
-                          lineHeight: "30px",
-                        }}
-                      >
-                        {" "}
-                        {item?.values?.body_text}
-                      </Typography>
+                        )}
+
+                      {item?.values?.body_text &&
+                        item?.values?.body_text !== "None" && (
+                          <Typography
+                            variant="body1"
+                            // data-aos="fade-up"
+                            style={{
+                              wordBreak: "break-word",
+                              fontSize: `${item?.values?.body_text_size}px`,
+                              color: item?.values?.body_text_color,
+                              lineHeight: "30px",
+                            }}
+                          >
+                            {item?.values?.body_text}
+                          </Typography>
+                        )}
                     </Grid>
                   </Grid>
                 </Container>
@@ -740,18 +740,23 @@ function CustomerPreview(location) {
                     }}
                   >
                     {" "}
+                    {item?.values?.banner_text &&
+                        item?.values?.banner_text !== "None" && (
                     <Typography
                       variant="h3"
                       style={{
                         fontWeight: 700,
                         color: item?.values?.banner_text_color,
-                        fontSize: `${item?.values?.banner2_text_size}px`,
+                        fontSize: `${
+                          item?.values?.banner2_text_size || "30"
+                        }px`,
                       }}
                       display="flex"
                       key={index}
                     >
                       {item?.values?.banner_text}
                     </Typography>
+                    )}
                     <a
                       href={
                         item?.values?.static_url
@@ -788,44 +793,59 @@ function CustomerPreview(location) {
                       sm={6}
                       xs={12}
                       className="d-flex column alignstart"
-                      style={{ paddingLeft: "30px" }}
+                      style={{ paddingRight: "30px" }}
                     >
-                      <Typography
-                        variant="h3"
-                        // data-aos="fade-up"
-                        style={{
-                          fontSize: `${item?.values?.headline1_size}px`,
-                          color: item?.values?.headline1_color,
-                          fontWeight: 900,
-                          lineHeight: "30px",
-                        }}
-                      >
-                        {item?.values?.headline1}
-                      </Typography>
-                      <Typography
-                        variant="h1"
-                        // data-aos="fade-up"
-                        style={{
-                          fontSize: `${item?.values?.headline2_size}px`,
-                          color: item?.values?.headline2_color,
-                          fontWeight: 700,
-                          paddingTop: "10px",
-                        }}
-                      >
-                        {item?.values?.headline2}
-                      </Typography>
-                      <Typography
-                        variant="body1"
-                        // data-aos="fade-up"
-                        style={{
-                          wordBreak: "break-word",
-                          fontSize: `${item?.values?.body_text_size}px`,
-                          color: item?.values?.body_text_color,
-                          lineHeight: "30px",
-                        }}
-                      >
-                        {item?.values?.bodyText}
-                      </Typography>
+                      {item?.values?.headline1 &&
+                        item?.values?.headline1 !== "None" && (
+                          <Typography
+                            variant="h3"
+                            // data-aos="fade-up"
+                            style={{
+                              fontSize: `${item?.values?.headline1_size}px`,
+                              color: item?.values?.headline1_color,
+                              fontWeight: 900,
+                              lineHeight: "30px",
+                            }}
+                          >
+                            {item?.values?.headline1}
+                          </Typography>
+                        )}
+
+                      {item?.values?.headline2 &&
+                        item?.values?.headline2 !== "None" && (
+                          <Typography
+                            variant="h1"
+                            // data-aos="fade-up"
+                            style={{
+                              fontSize: `${item?.values?.headline2_size}px`,
+                              color: item?.values?.headline2_color,
+                              fontWeight: 700,
+                              paddingTop:
+                                item?.values?.headline1 &&
+                                item?.values?.headline1 !== "None"
+                                  ? "10px"
+                                  : "0",
+                            }}
+                          >
+                            {item?.values?.headline2}
+                          </Typography>
+                        )}
+
+                      {item?.values?.body_text &&
+                        item?.values?.body_text !== "None" && (
+                          <Typography
+                            variant="body1"
+                            // data-aos="fade-up"
+                            style={{
+                              wordBreak: "break-word",
+                              fontSize: `${item?.values?.body_text_size}px`,
+                              color: item?.values?.body_text_color,
+                              lineHeight: "30px",
+                            }}
+                          >
+                            {item?.values?.body_text}
+                          </Typography>
+                        )}
                     </Grid>
                     <Grid item sm={6} xs={12} align="center">
                       <img
@@ -1105,21 +1125,23 @@ function CustomerPreview(location) {
                           })()}
                         </Box>
 
-                        <Typography
-                          variant="body1"
-                          style={{
-                            color: item?.values?.benchmark_color || "#333333",
-                            fontSize: `${
-                              item?.values?.benchmar_size || "14"
-                            }px`,
-                            fontWeight: 400,
-                          }}
-                        >
-                          {item?.values?.accountName ||
-                            item?.values?.account_name ||
-                            "Company"}
-                          . All rights reserved.
-                        </Typography>
+                        {(item?.values?.accountName || item?.values?.account_name) &&
+                          item?.values?.account_name !== "None" && (
+                            <Typography
+                              variant="body1"
+                              style={{
+                                color: item?.values?.benchmark_color || "#333333",
+                                fontSize: `${item?.values?.benchmar_size || "14"}px`,
+                                fontWeight: 400,
+                              }}
+                            >
+                              {item?.values?.accountName ||
+                              item?.values?.account_name ||
+                              "Company"}
+                              . All rights reserved.
+                            </Typography>
+                          )}
+                          
                       </Grid>
                       <Grid item sm={4} xs={12}>
                         <Hidden xsDown>

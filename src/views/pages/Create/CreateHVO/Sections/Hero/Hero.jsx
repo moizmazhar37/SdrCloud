@@ -42,10 +42,16 @@ const HeroSection = ({
   const fileInputRef = useRef(null);
   const { saveHeroSection, loading: saveLoading } = useSaveHeroSection();
   const { updateHeroSection, loading: updateLoading } = useUpdateHeroSection();
+  const [isEditMode, setIsEditMode] = useState(false);
 
-  const loading = saveLoading || updateLoading;
+  //  const { saveHero, loading: saveLoading } = useSaveHeroSection(handleSave);
+  // const { updateHero, loading: updateLoading } = useUpdateHeader(handleSave);
+
+
+  const loading = isEditMode ? updateLoading : saveLoading;
   useEffect(() => {
     if (initialData) {
+      setIsEditMode(true);
       setHeroImg(initialData.hero_img || "");
       setHeadline1(initialData.headline1 || "");
       setHeadline1Color(initialData.headline1_color || "");
@@ -73,12 +79,13 @@ const HeroSection = ({
 
   console.log("HEROooo===-=---=-=", initialData);
 
-  const handleImageChange = useCallback((e) => {
+  const handleFileChange = useCallback((e) => {
     const file = e.target.files?.[0];
     if (file) {
       setFile(file);
-      setHeroImg(file.name);
-      setHeroImgPreview(URL.createObjectURL(file));
+      setHeroImg(file.name); // Name for backend
+      const url = URL.createObjectURL(file);
+      setHeroImgPreview(url);
     }
   }, []);
 
@@ -115,12 +122,23 @@ const HeroSection = ({
     onClose();
   };
 
+  const normalizeUrl = (url) => {
+    let input = url.trim();
+    // If input already starts with http:// or https://, return as is
+    if (/^https?:\/\//i.test(input)) {
+      return input;
+    }
+    // Otherwise, prepend https://
+    return 'https://' + input;
+  };
+
+
   const handleSave = useCallback(async () => {
     const heroSectionData = {
       templateId,
       sequence,
-      hero_img: file ? "" : heroImg, // If file selected, send in 'file', else send URL
-      file: file || null, // Send file if selected
+      hero_img: !file && heroImg ? heroImg : "",
+      file: file || null,
       headline1,
       headline1_size: parseInt(headline1Size) || null,
       headline1_color: headline1Color,
@@ -140,8 +158,14 @@ const HeroSection = ({
       dynamic_url_demo: demoUrl, // Demo Button URL
     };
 
+    console.log("🚀 Final Payload:", {
+      hero_img: !file && heroImg ? heroImg : "",
+      file: file || null,
+    });
+
+
     try {
-      if (initialData?.id) {
+      if (initialData?.id && isEditMode) {
         await updateHeroSection(initialData.id, heroSectionData);
       } else {
         await saveHeroSection(heroSectionData);
@@ -186,6 +210,9 @@ const HeroSection = ({
     onClose,
   ]);
 
+ 
+  
+ 
   return (
     <div className={styles.wrapper}>
       <div className={styles.container}>
@@ -199,41 +226,66 @@ const HeroSection = ({
         <div className={styles.content}>
           <div className={styles.mainSection}>
             <div className={styles.uploadSection}>
-              <label>Upload Static Image or Select Dynamic Image</label>
+              <label>Upload or Paste Image/Video Link</label>
               <div className={styles.uploadGroup}>
                 <InputField
                   value={heroImg}
                   onChange={handleUrlChange}
-                  placeholder="Enter Image URL or Upload Image"
+                  placeholder="Paste Image or Video URL"
                 />
                 <button
                   className={styles.chooseButton}
                   onClick={handleChooseClick}
                 >
-                  Choose
+                  Choose File
                 </button>
                 <input
                   ref={fileInputRef}
                   type="file"
-                  accept="image/*"
-                  onChange={(e) => {
-                    handleImageChange(e);
-                    handleChooseClick();
-                  }}
+                  accept="image/*,video/*"
+                  onChange={handleFileChange}
                   className={styles.hiddenInput}
                 />
               </div>
+
+              {/* 🔍 Conditional preview for image or video */}
               {heroImgPreview && (
                 <div className={styles.previewContainer}>
-                  <img
-                    src={heroImgPreview}
-                    alt="Preview"
-                    className={styles.preview}
-                  />
+                  {(file?.type?.startsWith("video/") ||
+                    (!file && /\.(mp4|webm|ogg)$/i.test(heroImgPreview))) ? (
+                    <video
+                      src={heroImgPreview}
+                      controls
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      className={styles.preview}
+                      style={{
+                        maxWidth: "100%",
+                        maxHeight: "400px",
+                        width: "100%",
+                        height: "auto",
+                        borderRadius: "10px",
+                      }}
+                    />
+                  ) : (
+                    <img
+                      src={heroImgPreview}
+                      alt="Preview"
+                      className={styles.preview}
+                      style={{
+                        maxWidth: "100%",
+                        maxHeight: "400px",
+                        width: "100%",
+                        objectFit: "cover",
+                        borderRadius: "10px",
+                      }}
+                    />
+                  )}
                 </div>
               )}
             </div>
-
             <div className={styles.selectSection}>
               <CategoryDropdown
                 key={heroImg}
@@ -333,12 +385,16 @@ const HeroSection = ({
                 onChange={setCtaButtonTextColor}
               />
               <InputField
-                placeholder="Enter Static URL"
-                value={ctaUrl}
-                onChange={(e) => {
-                  setCtaUrl(e.target.value);
-                }}
-              />
+                  placeholder="Enter Static URL"
+                  value={ctaUrl}
+                  onChange={(e) => {
+                    setCtaUrl(e.target.value);
+                  }}
+                  onBlur={(e) => {
+                    const normalized = normalizeUrl(e.target.value);
+                    setCtaUrl(normalized);
+                  }}
+                />
               <CategoryDropdown
                 options={dynamicURL.map((field) => ({
                   label: field,
@@ -375,8 +431,12 @@ const HeroSection = ({
                 placeholder="Enter Static URL"
                 value={demoUrl}
                 onChange={(e) => {
-                  setDemoUrl(e.target.value);
-                }}
+                    setDemoUrl(e.target.value);
+                  }}
+                  onBlur={(e) => {
+                    const normalized = normalizeUrl(e.target.value);
+                    setDemoUrl(normalized);
+                  }}
               />
               <CategoryDropdown
                 options={dynamicURL.map((field) => ({
@@ -405,7 +465,7 @@ const HeroSection = ({
             onClick={handleSave}
             disabled={loading}
           >
-            {loading ? "Saving..." : "Save"}
+            {loading ? "Saving..." : isEditMode ? "Update" : "Save"}
           </button>
 
           <button

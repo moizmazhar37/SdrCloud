@@ -23,6 +23,7 @@ const StaticURL = ({
   const [audioFile, setAudioFile] = useState(null);
   const [audioTitle, setAudioTitle] = useState("");
   const [audioDescription, setAudioDescription] = useState("");
+  const [selectedVoiceModel, setSelectedVoiceModel] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [dropdownKey, setDropdownKey] = useState(0);
   const [showAudioDescModal, setShowAudioDescModal] = useState(false);
@@ -34,6 +35,40 @@ const StaticURL = ({
   const { updateVideoSection, loading: updateLoading } =
     useUpdateVideoSection();
 
+  // Voice models array - same as in AudioDescModal
+  const voiceModels = [
+    {
+      name: "Natasha",
+      dev_name: "en-AU-NatashaNeural",
+      url: "https://storage.googleapis.com/static-data-for-sdrc/uploads/e0653e5d-a70a-41e0-9706-4764f27ae886/en-AU-NatashaNeural_20250522071439.mp3",
+    },
+    {
+      name: "William",
+      dev_name: "en-AU-WilliamNeural",
+      url: "https://storage.googleapis.com/static-data-for-sdrc/uploads/e0653e5d-a70a-41e0-9706-4764f27ae886/en-AU-WilliamNeural_20250522071508.mp3",
+    },
+    {
+      name: "Liam",
+      dev_name: "en-CA-LiamNeural",
+      url: "https://storage.googleapis.com/static-data-for-sdrc/uploads/e0653e5d-a70a-41e0-9706-4764f27ae886/en-CA-LiamNeural_20250522071530.mp3",
+    },
+    {
+      name: "Sonia",
+      dev_name: "en-GB-SoniaNeural",
+      url: "https://storage.googleapis.com/static-data-for-sdrc/uploads/e0653e5d-a70a-41e0-9706-4764f27ae886/en-GB-SoniaNeural_20250522071548.mp3",
+    },
+    {
+      name: "Aria",
+      dev_name: "en-US-AriaNeural",
+      url: "https://storage.googleapis.com/static-data-for-sdrc/uploads/e0653e5d-a70a-41e0-9706-4764f27ae886/en-US-AriaNeural_20250522071610.mp3",
+    },
+  ];
+
+  // Helper function to find voice model by dev_name
+  const findVoiceModelByDevName = (devName) => {
+    return voiceModels.find((model) => model.dev_name === devName) || null;
+  };
+
   useEffect(() => {
     if (editData) {
       setUrl(editData.value || "https://www.");
@@ -41,7 +76,14 @@ const StaticURL = ({
       setSelectedType(editData.scroll ? "Yes" : "No");
       setAudioFile(editData.audio || null);
       setAudioTitle(editData.audio?.name || "");
-      setAudioDescription(editData.audioDescription || "");
+      setAudioDescription(editData.audio_description || "");
+
+      // Convert audio_accent string to voice model object
+      const voiceModel = editData.audio_accent
+        ? findVoiceModelByDevName(editData.audio_accent)
+        : null;
+      setSelectedVoiceModel(voiceModel);
+
       setSelectedCategory(editData.sectionName || null);
       setDropdownKey((prev) => prev + 1);
     } else {
@@ -51,6 +93,7 @@ const StaticURL = ({
       setAudioFile(null);
       setAudioTitle("");
       setAudioDescription("");
+      setSelectedVoiceModel(null);
       setSelectedCategory(null);
     }
   }, [editData]);
@@ -83,11 +126,6 @@ const StaticURL = ({
     }
   };
 
-  // const handleCategorySelect = (value, label) => {
-  //   setUrl(value);
-  //   setSelectedCategory(label);
-  // };
-
   const handleUploadAudio = () => {
     audioInputRef.current?.click();
   };
@@ -96,8 +134,9 @@ const StaticURL = ({
     setShowAudioDescModal(true);
   };
 
-  const handleAudioDescriptionSave = (description) => {
-    setAudioDescription(description);
+  const handleAudioDescriptionSave = (descriptionData) => {
+    setAudioDescription(descriptionData.audioDesc);
+    setSelectedVoiceModel(descriptionData.selectedVoiceModel);
     setShowAudioDescModal(false);
   };
 
@@ -129,6 +168,7 @@ const StaticURL = ({
       audioEmbedded: !!audioFile,
       scroll: selectedType === "Yes",
       audioDescription: audioDescription,
+      audioAccent: selectedVoiceModel?.dev_name || null,
       firstRowValue: null,
       isDynamic: !!selectedCategory,
       value: url,
@@ -187,18 +227,6 @@ const StaticURL = ({
                 placeholder="https://www."
               />
             </div>
-
-            {/* <div className={styles.urlSelect}>
-              <label>Select Static URL</label>
-              <CategoryDropdown
-                key={dropdownKey}
-                options={categories}
-                buttonText="Select Static URL"
-                onSelect={handleCategorySelect}
-                allowAddNew={false}
-                initialValue={editData?.value}
-              />
-            </div> */}
           </div>
 
           <div className={styles.controlRow}>
@@ -263,6 +291,12 @@ const StaticURL = ({
             </div>
           )}
 
+          {selectedVoiceModel && (
+            <div className={styles.selectedVoiceModel}>
+              <p>Selected Voice: {selectedVoiceModel.name}</p>
+            </div>
+          )}
+
           {showPreview && (
             <div className={styles.previewSection}>
               <iframe
@@ -300,6 +334,8 @@ const StaticURL = ({
       {showAudioDescModal && (
         <AudioDescModal
           dynamicFields={audioCategories}
+          initialAudioDesc={audioDescription}
+          initialVoiceModel={selectedVoiceModel}
           onSave={handleAudioDescriptionSave}
           onClose={() => setShowAudioDescModal(false)}
         />

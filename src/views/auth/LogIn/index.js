@@ -89,15 +89,23 @@ const Login = () => {
         } else {
           const userType = response?.data?.user_details?.role;
 
-          if (userType === "USER") {
+          if (userType === "MARKETING_USER") {
             history.push("/CreateTemplate");
             toast.success(response?.data?.message);
-          } else if (userType === "ADMIN") {
+          } 
+          else if (userType === "SALES_USER") {
+            history.push("/prospects");
+            toast.success(response?.data?.message);
+          } 
+          else if (userType === "ADMIN") {
             history.push("/PP-createaccount");
             toast.success(response?.data?.message);
           } else if (userType === "SUBADMIN") {
             history.push("/dashboard");
             toast.success(response?.data?.message);
+          } else if ((userType = "SDRC_ADMIN")) {
+            toast.success(response?.data?.message);
+            history.push("/sdrc-dashboard");
           }
         }
 
@@ -145,14 +153,16 @@ const Login = () => {
     if (auth.userLoggedIn === true) {
       const userType = localStorage.getItem("userType");
       if (userType === "USER") {
-        history.push("/CreateTemplate"); // Changed from navigate to history.push
+        history.push("/CreateTemplate");
       } else if (userType === "ADMIN") {
-        history.push("/PP-createaccount"); // Changed from navigate to history.push
+        history.push("/PP-createaccount");
       } else if (userType === "SUBADMIN") {
-        history.push("/dashboard"); // Changed from navigate to history.push
+        history.push("/dashboard");
+      } else if (userType === "SDRC_ADMIN") {
+        history.push("/sdrc-dashboard");
       }
     }
-  }, [auth.userLoggedIn, history]); // Changed navigate to history in dependency array
+  }, [auth.userLoggedIn, history]);
 
   return (
     <div className={styles.loginContainer}>

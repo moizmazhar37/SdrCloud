@@ -1,0 +1,19 @@
+.container {
+  width: 100%;
+  padding: 2rem;
+  min-height: 300px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.loader {
+  padding-top: 250px;
+}
+
+.error {
+  color: red;
+  font-weight: bold;
+}

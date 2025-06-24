@@ -87,7 +87,7 @@ const Users = () => {
       <div>
         {loading ? (
           <div>
-            .<Loader />
+            <Loader />
           </div>
         ) : error ? (
           <div>Error loading users</div>

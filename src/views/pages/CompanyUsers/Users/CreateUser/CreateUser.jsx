@@ -17,8 +17,16 @@ import {
 } from "./helpers";
 
 const CreateUser = ({ isOpen, onClose, onSuccess, userId, viewState }) => {
-  const { createUser, loading: createLoading, error: createError } = useCreateUser();
-  const { updateUser, loading: updateLoading, error: updateError } = useUpdateUser();
+  const {
+    createUser,
+    loading: createLoading,
+    error: createError,
+  } = useCreateUser();
+  const {
+    updateUser,
+    loading: updateLoading,
+    error: updateError,
+  } = useUpdateUser();
   const { data: userData, loadingUserData, refetch } = useFetchUser(userId);
 
   const loading = viewState === "edit" ? updateLoading : createLoading;
@@ -33,6 +41,7 @@ const CreateUser = ({ isOpen, onClose, onSuccess, userId, viewState }) => {
     linkedinUrl: "",
     meetingLink: "",
     tokens: "",
+    permissions: ["VIEW"], // Default to VIEW permission
   });
 
   const [errors, setErrors] = useState({});
@@ -41,6 +50,7 @@ const CreateUser = ({ isOpen, onClose, onSuccess, userId, viewState }) => {
   useEffect(() => {
     if (!isOpen) {
       resetForm(setFormData, setErrors);
+      setFormData((prev) => ({ ...prev, permissions: ["VIEW"] }));
       return;
     }
 
@@ -49,14 +59,26 @@ const CreateUser = ({ isOpen, onClose, onSuccess, userId, viewState }) => {
         firstName: userData.first_name || "",
         lastName: userData.last_name || "",
         email: userData.email || "",
-        phone: userData.phoneNo || "",
+        phone: userData.phone_no || "", // Fixed: changed from phoneNo to phone_no
         title: userData.title || "",
         linkedinUrl: userData.linkedin_url || "",
         meetingLink: userData.meetLink || "",
         tokens: userData.tokens || 0,
+        permissions: userData.permissions || ["VIEW"],
       });
     } else if (viewState === "create") {
-      resetForm(setFormData, setErrors);
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        title: "",
+        linkedinUrl: "",
+        meetingLink: "",
+        tokens: "",
+        permissions: ["VIEW"],
+      });
+      setErrors({});
     }
   }, [isOpen, userData, viewState]);
 
@@ -64,12 +86,55 @@ const CreateUser = ({ isOpen, onClose, onSuccess, userId, viewState }) => {
     resetForm(setFormData, setErrors);
     onClose();
   };
+
+  const handlePermissionChange = (permission) => {
+    setFormData((prev) => {
+      let newPermissions = [...(prev.permissions || ["VIEW"])];
+
+      if (permission === "CREATE") {
+        if (newPermissions.includes("CREATE")) {
+          // Remove CREATE permission
+          newPermissions = newPermissions.filter((p) => p !== "CREATE");
+        } else {
+          // Add CREATE permission and ensure VIEW is also included
+          newPermissions.push("CREATE");
+          if (!newPermissions.includes("VIEW")) {
+            newPermissions.push("VIEW");
+          }
+        }
+      } else if (permission === "VIEW") {
+        if (
+          newPermissions.includes("VIEW") &&
+          !newPermissions.includes("CREATE")
+        ) {
+          // Only allow unchecking VIEW if CREATE is not selected
+          newPermissions = newPermissions.filter((p) => p !== "VIEW");
+        } else if (!newPermissions.includes("VIEW")) {
+          // Add VIEW permission
+          newPermissions.push("VIEW");
+        }
+      }
+
+      return { ...prev, permissions: newPermissions };
+    });
+  };
+
+  const isTokensDisabled = () => {
+    return !(formData.permissions || []).includes("CREATE");
+  };
+
   const handleFormSubmit = async () => {
     const validationErrors = {};
     Object.keys(formData).forEach((field) => {
+      if (field === "permissions") return; // Skip permissions validation here
       const error = validateField(field, formData[field]);
       if (error) validationErrors[field] = error;
     });
+
+    // Validate permissions
+    if (!formData.permissions || formData.permissions.length === 0) {
+      validationErrors.permissions = "At least one permission must be selected";
+    }
 
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
@@ -77,11 +142,27 @@ const CreateUser = ({ isOpen, onClose, onSuccess, userId, viewState }) => {
     }
 
     try {
+      const submitData = {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        phoneNo: formData.phone, // This stays as phoneNo for API submission
+        title: formData.title,
+        linkedinUrl: formData.linkedinUrl,
+        meetLink: formData.meetingLink,
+        permissions: formData.permissions,
+      };
+
+      // Only include tokens if CREATE permission is selected
+      if ((formData.permissions || []).includes("CREATE")) {
+        submitData.tokens = parseInt(formData.tokens) || 0;
+      }
+
       if (viewState === "edit") {
-        await updateUser({ ...formData, id: userId });
+        await updateUser({ ...submitData, id: userId });
         toast.success("User updated successfully!");
       } else {
-        await createUser(formData);
+        await createUser(submitData);
         toast.success("User created successfully!");
       }
 
@@ -116,7 +197,6 @@ const CreateUser = ({ isOpen, onClose, onSuccess, userId, viewState }) => {
           <div className={styles.modalHeader}>
             <h2>{viewState === "edit" ? "Edit User" : "Add New User"}</h2>
           </div>
-
 
           <div className={styles.formContainer}>
             <div className={styles.formGroup}>
@@ -190,7 +270,6 @@ const CreateUser = ({ isOpen, onClose, onSuccess, userId, viewState }) => {
               </div>
             </div>
 
-
             <div className={styles.formGroup}>
               <label>Title*</label>
               <input
@@ -223,7 +302,6 @@ const CreateUser = ({ isOpen, onClose, onSuccess, userId, viewState }) => {
               )}
             </div>
 
-
             {viewState !== "edit" && (
               <div className={styles.formGroup}>
                 <label>Meeting Link</label>
@@ -243,6 +321,41 @@ const CreateUser = ({ isOpen, onClose, onSuccess, userId, viewState }) => {
             )}
 
             <div className={styles.formGroup}>
+              <label>User Permissions*</label>
+              <div className={styles.permissionsGroup}>
+                <button
+                  type="button"
+                  className={`${styles.permissionButton} ${
+                    (formData.permissions || []).includes("VIEW")
+                      ? styles.active
+                      : ""
+                  }`}
+                  onClick={() => handlePermissionChange("VIEW")}
+                  disabled={
+                    loading || (formData.permissions || []).includes("CREATE")
+                  }
+                >
+                  VIEW
+                </button>
+                <button
+                  type="button"
+                  className={`${styles.permissionButton} ${
+                    (formData.permissions || []).includes("CREATE")
+                      ? styles.active
+                      : ""
+                  }`}
+                  onClick={() => handlePermissionChange("CREATE")}
+                  disabled={loading}
+                >
+                  CREATE
+                </button>
+              </div>
+              {errors.permissions && (
+                <span className={styles.error}>{errors.permissions}</span>
+              )}
+            </div>
+
+            <div className={styles.formGroup}>
               <label>Tokens*</label>
               <input
                 type="number"
@@ -251,10 +364,15 @@ const CreateUser = ({ isOpen, onClose, onSuccess, userId, viewState }) => {
                 value={formData.tokens}
                 onChange={(e) => handleChange(e, setFormData, setErrors)}
                 onBlur={(e) => handleBlur(e, setErrors)}
-                disabled={loading}
+                disabled={loading || isTokensDisabled()}
               />
               {errors.tokens && (
                 <span className={styles.error}>{errors.tokens}</span>
+              )}
+              {isTokensDisabled() && (
+                <span className={styles.info}>
+                  Tokens are only available for users with CREATE permission
+                </span>
               )}
             </div>
 
@@ -276,8 +394,8 @@ const CreateUser = ({ isOpen, onClose, onSuccess, userId, viewState }) => {
                     ? "Updating..."
                     : "Creating..."
                   : viewState === "edit"
-                    ? "Update & Save"
-                    : "Add & Send Invite"}
+                  ? "Update & Save"
+                  : "Add & Send Invite"}
               </button>
             </div>
           </div>

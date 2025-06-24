@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import ReactDOM from "react-dom";
 import styles from "./ConfirmationModal.module.scss";
 
 const ConfirmationModal = ({
@@ -17,7 +18,7 @@ const ConfirmationModal = ({
 
   if (!isOpen) return null;
 
-  return (
+  return ReactDOM.createPortal(
     <div className={styles.modalOverlay}>
       <div className={styles.modalContent}>
         {title && <h2 className={styles.modalTitle}>{title}</h2>}
@@ -64,7 +65,8 @@ const ConfirmationModal = ({
           )}
         </div>
       </div>
-    </div>
+    </div>,
+    document.getElementById("modal-root")
   );
 };
 

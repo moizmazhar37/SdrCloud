@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import SectionArea from "../CreateVideo/SectionArea/SectionArea";
 import useGetSheetData from "../Hooks/useGetSheetData";
 import useGetSheets from "../Hooks/useGetSheets";
@@ -51,6 +51,9 @@ const CreateHVO = () => {
   const [selectedSection, setSelectedSection] = useState(null);
   const [dataFetchTrigger, setDataFetchTrigger] = useState(0);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+
+  // Refs for scrolling to sections
+  const sectionRefs = useRef({});
 
   const { data: sheetData, loading: sheetsLoading } = useGetSheets("HVO");
   // Now we'll refetch when dataFetchTrigger changes
@@ -169,6 +172,22 @@ const CreateHVO = () => {
       setIsConfirmationOpen(true);
     } else {
       toast.error("Please create a template first");
+    }
+  };
+
+  // Handle viewing a section from SectionView component
+  const handleViewSection = (sequence, sectionName) => {
+    // Find the section in elementsList
+    const sectionToView = elementsList.find(
+      (element) => element.sequence === sequence
+    );
+
+    if (sectionToView) {
+      // Scroll to the corresponding section in the left component
+      const sectionElement = sectionRefs.current[`section-${sequence}`];
+      if (sectionElement) {
+        sectionElement.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
     }
   };
 
@@ -314,6 +333,7 @@ const CreateHVO = () => {
                   onSectionUpdate={handleSectionUpdate}
                   handleEdit={handleEdit}
                   templateId={templateId}
+                  sectionRefs={sectionRefs}
                 />
               </div>
             </div>
@@ -334,6 +354,7 @@ const CreateHVO = () => {
             templateId={templateId}
             elementsList={elementsList}
             type="hvo"
+            onViewSection={handleViewSection}
           />
         </div>
       </div>

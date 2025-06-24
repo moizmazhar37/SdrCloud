@@ -25,6 +25,7 @@ const Create = () => {
     { label: "Categories", key: "category_name" },
     { label: "Total Records", key: "total_records" },
     { label: "Sent", key: "sent" },
+    { label: "Campaigns", key: "campaigns" },
     { label: "Action", key: "actions" },
   ];
 
@@ -33,15 +34,22 @@ const Create = () => {
     await deleteTemplate(id);
   };
 
+  const handleBuildCampaign = (templateId) => {
+    // Store template ID in localStorage
+    localStorage.setItem("template_id", templateId);
+    // Navigate to email settings route
+    history.push("/email-settings");
+  };
+
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toISOString().split("T")[0]; // Returns in YYYY-MM-DD format
+    return date.toISOString().split("T")[0];
   };
 
   const tableData =
     data[activeTab]?.map((row) => ({
       ...row,
-      created_at: formatDate(row.created_at), // Format the creation date
+      created_at: formatDate(row.created_at),
       category_name: (
         <div className={styles.categoryContainer}>
           {row.category_name.split(",").map((category, index) => (
@@ -52,6 +60,14 @@ const Create = () => {
         </div>
       ),
       sent: "--",
+      campaigns: (
+        <button
+          className={styles.buildCampaignButton}
+          onClick={() => handleBuildCampaign(row.id)}
+        >
+          Build Campaign
+        </button>
+      ),
       actions: (
         <Dropdown
           options={[

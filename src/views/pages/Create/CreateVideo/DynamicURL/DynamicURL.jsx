@@ -24,7 +24,10 @@ const DynamicURL = ({
   const [audioFile, setAudioFile] = useState(editData?.audio || null);
   const [audioTitle, setAudioTitle] = useState(editData?.audio?.name || "");
   const [audioDescription, setAudioDescription] = useState(
-    editData?.audioDescription || ""
+    editData?.audio_description || ""
+  );
+  const [selectedVoiceModel, setSelectedVoiceModel] = useState(
+    editData?.audio_accent ? { dev_name: editData.audio_accent } : null
   );
   const [loading, setLoading] = useState(false);
   const [showAudioDescModal, setShowAudioDescModal] = useState(false);
@@ -34,14 +37,21 @@ const DynamicURL = ({
 
   // Initialize form with edit data if available
   useEffect(() => {
-    if (editData?.value) {
-      console.log("Setting edit data:", editData.value);
-      setSelectedURL(editData.value);
+    if (editData) {
+      console.log("Setting edit data:", editData);
+      setSelectedURL(editData.value || "");
       setDuration(editData.duration || "");
       setSelectedType(editData.scroll ? "Yes" : "No");
       setAudioFile(editData.audio || null);
       setAudioTitle(editData.audio?.name || "");
-      setAudioDescription(editData.audioDescription || "");
+      setAudioDescription(editData.audio_description || "");
+
+      // Handle voice model - create object if audio_accent exists
+      if (editData.audio_accent) {
+        setSelectedVoiceModel({ dev_name: editData.audio_accent });
+      } else {
+        setSelectedVoiceModel(null);
+      }
     }
   }, [editData]);
 
@@ -67,8 +77,9 @@ const DynamicURL = ({
     setShowAudioDescModal(true);
   };
 
-  const handleAudioDescriptionSave = (description) => {
-    setAudioDescription(description);
+  const handleAudioDescriptionSave = (descriptionData) => {
+    setAudioDescription(descriptionData.audioDesc);
+    setSelectedVoiceModel(descriptionData.selectedVoiceModel);
     setShowAudioDescModal(false);
   };
 
@@ -98,6 +109,7 @@ const DynamicURL = ({
       audioEmbedded: !!audioFile,
       scroll: selectedType === "Yes",
       audioDescription: audioDescription,
+      audioAccent: selectedVoiceModel?.dev_name || null,
       firstRowValue: null,
       isDynamic: true,
       value: selectedURL,
@@ -245,6 +257,8 @@ const DynamicURL = ({
       {showAudioDescModal && (
         <AudioDescModal
           dynamicFields={audioCategories}
+          initialAudioDesc={audioDescription}
+          initialVoiceModel={selectedVoiceModel}
           onSave={handleAudioDescriptionSave}
           onClose={() => setShowAudioDescModal(false)}
         />

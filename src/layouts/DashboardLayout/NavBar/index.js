@@ -47,10 +47,26 @@ const getNavSections = (userType) => {
           {
             title: "Settings",
             icon: "images/template/setting.svg",
-            href: "/pp-settings",
+            href: "/settings",
           },
         ],
       },
+    ],
+    SDRC_ADMIN: [
+      {
+        items: [
+          {
+            title: "Companies",
+            icon: "images/template/dashboard.svg",  
+            href: "/sdrc-dashboard",
+          },
+          {
+            title: "Settings",
+            icon: "images/template/dashboard.svg",  
+            href: "/settings",
+          },
+        ]
+      }
     ],
     SUBADMIN: [
       {
@@ -92,7 +108,7 @@ const getNavSections = (userType) => {
           {
             title: "Prospects",
             icon: "images/template/clipboard-text.svg",
-            href: "/Myprojects",
+            href: "/prospects",
           },
           {
             title: "Settings",
@@ -102,68 +118,35 @@ const getNavSections = (userType) => {
         ],
       },
     ],
-    // USER: [
-    //   {
-    //     items: [
-    //       {
-    //         title: "My Dashboard",
-    //         icon: "images/template/dashboard.svg",
-    //         href: "/user-dashboard",
-    //       },
-    //       {
-    //         title: "My Prospects",
-    //         icon: "images/template/clipboard-text.svg",
-    //         href: "/myprojects-list",
-    //       },
-    //       {
-    //         title: "Settings",
-    //         icon: "images/template/setting.svg",
-    //         href: "/user-settings",
-    //       },
-    //     ],
-    //   },
-    // ],
-    USER: [
+
+    MARKETING_USER: [
       {
         items: [
-          // {
-          //   title: "Dashboard",
-          //   icon: "images/template/dashboard.svg",
-          //   href: "/dashboard",
-          // },
-          // {
-          //   title: "Users",
-          //   icon: "images/usersnew.png",
-          //   href: "/companyUsers-List",
-          // },
-          // {
-          //   title: "Visitors",
-          //   icon: "images/Leads.svg",
-          //   href: "/leads",
-          //   items: [
-          //     {
-          //       title: "Dashboard",
-          //       href: "/leads-dashboard",
-          //     },
-          //     {
-          //       title: "Search Visitors",
-          //       href: "/leads-search",
-          //     },
-          //     {
-          //       title: "Installations",
-          //       href: "/leads",
-          //     },
-          //   ],
-          // },
-          // {
-          //   title: "Create",
-          //   icon: "images/template/play.svg",
-          //   href: "/CreateTemplate",
-          // },
+          {
+            title: "Create",
+            icon: "images/template/play.svg",
+            href: "/CreateTemplate",
+          },
           {
             title: "Prospects",
             icon: "images/template/clipboard-text.svg",
-            href: "/Myprojects",
+            href: "/prospects",
+          },
+          {
+            title: "Settings",
+            icon: "images/template/setting.svg",
+            href: "/settings",
+          },
+        ]
+        }
+      ],
+    SALES_USER: [
+      {
+        items: [
+          {
+            title: "Prospects",
+            icon: "images/template/clipboard-text.svg",
+            href: "/prospects",
           },
           {
             title: "Settings",
