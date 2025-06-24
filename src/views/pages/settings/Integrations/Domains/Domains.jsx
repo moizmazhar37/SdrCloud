@@ -1,13 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./Domains.module.scss";
 import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
 import useAuthenticateDomain from "./Hooks/useAuthenticateDomain";
 import useVerifyDomain from "./Hooks/useVerifyDomain";
 import useGetStatus from "./Hooks/useGetDomainStatus";
 
-const Domains = () => {
-  const [currentStep, setCurrentStep] = useState(1);
-  const [domainInput, setDomainInput] = useState("");
+const Domains = ({ initialStep = 1, existingDomain = "" }) => {
+  const [currentStep, setCurrentStep] = useState(initialStep);
+  const [domainInput, setDomainInput] = useState(existingDomain);
   const [domainData, setDomainData] = useState([]);
   const [domainInfo, setDomainInfo] = useState(null);
 
@@ -22,6 +22,22 @@ const Domains = () => {
     { text: "Integration", route: "/integrations" },
     { text: "Domains", route: "/domains" },
   ];
+
+  // Initialize component based on props and existing data
+  useEffect(() => {
+    if (initialStep === 2 && existingDomain && data) {
+      // If starting at step 2 with existing domain, set up the domain info
+      setDomainInfo({
+        domain_id: data.domain_id || null,
+        domain: existingDomain,
+      });
+
+      // If DNS records are available in the status data, use them
+      if (data.dns_records && data.dns_records.length > 0) {
+        setDomainData(data.dns_records);
+      }
+    }
+  }, [initialStep, existingDomain, data]);
 
   const handleAuthenticate = async () => {
     if (!domainInput.trim()) return;
@@ -52,6 +68,7 @@ const Domains = () => {
 
     if (response) {
       console.log("Verification successful:", response);
+      // Optionally reload the page or redirect after successful verification
     }
   };
 
@@ -148,8 +165,8 @@ const Domains = () => {
                   <h2 className={styles.stepTitle}>DNS Records</h2>
                   {domainInfo && (
                     <p className={styles.domainName}>
-                      Domain: <strong>{domainInfo.domain}</strong> (ID:{" "}
-                      {domainInfo.domain_id})
+                      Domain: <strong>{domainInfo.domain}</strong>
+                      {domainInfo.domain_id && ` (ID: ${domainInfo.domain_id})`}
                     </p>
                   )}
                 </div>
@@ -175,17 +192,58 @@ const Domains = () => {
               </div>
 
               <div className={styles.domainTable}>
-                {domainData.map((record, index) => (
-                  <div key={index} className={styles.tableRow}>
-                    <div className={styles.recordHeader}>
-                      <div className={styles.recordInfo}>
-                        <div className={styles.recordHost}>
-                          <span className={styles.label}>Host:</span>
-                          <span className={styles.value}>{record.host}</span>
+                {domainData.length > 0 ? (
+                  domainData.map((record, index) => (
+                    <div key={index} className={styles.tableRow}>
+                      <div className={styles.recordHeader}>
+                        <div className={styles.recordInfo}>
+                          <div className={styles.recordHost}>
+                            <span className={styles.label}>Host:</span>
+                            <span className={styles.value}>{record.host}</span>
+                            <button
+                              onClick={() => handleCopy(record.host)}
+                              className={styles.copyButton}
+                              title="Copy host to clipboard"
+                            >
+                              <svg
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                              >
+                                <rect
+                                  x="9"
+                                  y="9"
+                                  width="13"
+                                  height="13"
+                                  rx="2"
+                                  ry="2"
+                                ></rect>
+                                <path d="m5 5 6 0 0 6"></path>
+                              </svg>
+                            </button>
+                          </div>
+                          <div className={styles.recordMeta}>
+                            <span className={styles.recordType}>
+                              {record.type.toUpperCase()}
+                            </span>
+                            {getStatusBadge(record.valid)}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className={styles.recordData}>
+                        <span className={styles.label}>Data:</span>
+                        <div className={styles.dataContainer}>
+                          <span className={styles.dataValue}>
+                            {record.data}
+                          </span>
                           <button
-                            onClick={() => handleCopy(record.host)}
+                            onClick={() => handleCopy(record.data)}
                             className={styles.copyButton}
-                            title="Copy host to clipboard"
+                            title="Copy data to clipboard"
                           >
                             <svg
                               width="16"
@@ -207,47 +265,18 @@ const Domains = () => {
                             </svg>
                           </button>
                         </div>
-                        <div className={styles.recordMeta}>
-                          <span className={styles.recordType}>
-                            {record.type.toUpperCase()}
-                          </span>
-                          {getStatusBadge(record.valid)}
-                        </div>
                       </div>
                     </div>
-
-                    <div className={styles.recordData}>
-                      <span className={styles.label}>Data:</span>
-                      <div className={styles.dataContainer}>
-                        <span className={styles.dataValue}>{record.data}</span>
-                        <button
-                          onClick={() => handleCopy(record.data)}
-                          className={styles.copyButton}
-                          title="Copy data to clipboard"
-                        >
-                          <svg
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                          >
-                            <rect
-                              x="9"
-                              y="9"
-                              width="13"
-                              height="13"
-                              rx="2"
-                              ry="2"
-                            ></rect>
-                            <path d="m5 5 6 0 0 6"></path>
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
+                  ))
+                ) : (
+                  <div className={styles.noDnsRecords}>
+                    <p>No DNS records available for this domain.</p>
+                    <p>
+                      Please verify your domain configuration or try
+                      authenticating again.
+                    </p>
                   </div>
-                ))}
+                )}
               </div>
             </div>
           )}

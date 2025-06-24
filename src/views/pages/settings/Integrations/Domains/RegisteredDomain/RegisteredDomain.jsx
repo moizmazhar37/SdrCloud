@@ -1,7 +1,19 @@
 import React from "react";
 import styles from "./RegisteredDomain.module.scss";
+import useDeleteDomain from "../Hooks/useDeleteDomain";
 
 const RegisteredDomain = ({ domain, onDelete }) => {
+  const { deleteDomain, loading: isDeleting } = useDeleteDomain();
+
+  const handleDelete = async () => {
+    const result = await deleteDomain();
+
+    if (result) {
+      // Successfully deleted, call the parent's onDelete function
+      onDelete();
+    }
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.card}>
@@ -28,8 +40,12 @@ const RegisteredDomain = ({ domain, onDelete }) => {
             This Tenant is authenticated with domain <strong>{domain}</strong>
           </span>
         </div>
-        <button className={styles.deleteBtn} onClick={onDelete}>
-          Delete
+        <button
+          className={styles.deleteBtn}
+          onClick={handleDelete}
+          disabled={isDeleting}
+        >
+          {isDeleting ? "Deleting..." : "Delete"}
         </button>
       </div>
     </div>
