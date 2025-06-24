@@ -4,6 +4,7 @@ import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
 import useAuthenticateDomain from "./Hooks/useAuthenticateDomain";
 import useVerifyDomain from "./Hooks/useVerifyDomain";
 import useGetStatus from "./Hooks/useGetDomainStatus";
+import useDeleteDomain from "./Hooks/useDeleteDomain";
 
 const Domains = ({ initialStep = 1, existingDomain = "" }) => {
   const [currentStep, setCurrentStep] = useState(initialStep);
@@ -15,6 +16,7 @@ const Domains = ({ initialStep = 1, existingDomain = "" }) => {
     useAuthenticateDomain();
   const { verifyToken, loading: isVerifying } = useVerifyDomain();
   const { data, loading, error } = useGetStatus();
+  const { deleteDomain, loading: isDeleting } = useDeleteDomain();
   console.log("adassadsad", data);
 
   const navs = [
@@ -69,6 +71,14 @@ const Domains = ({ initialStep = 1, existingDomain = "" }) => {
     if (response) {
       console.log("Verification successful:", response);
       // Optionally reload the page or redirect after successful verification
+    }
+  };
+
+  const handleDelete = async () => {
+    const response = await deleteDomain(domainInfo.domain_id);
+    if (response) {
+      console.log("Domain deleted successfully:", response);
+      handleBack();
     }
   };
 
@@ -183,6 +193,20 @@ const Domains = ({ initialStep = 1, existingDomain = "" }) => {
                       </>
                     ) : (
                       "Verify"
+                    )}
+                  </button>
+                  <button
+                    className={styles.deleteButton}
+                    onClick={handleDelete}
+                    disabled={isDeleting || !domainInfo?.domain_id}
+                  >
+                    {isDeleting ? (
+                      <>
+                        <div className={styles.spinner}></div>
+                        Deleting...
+                      </>
+                    ) : (
+                      "Delete Domain"
                     )}
                   </button>
                   <button onClick={handleBack} className={styles.backButton}>

@@ -23,8 +23,7 @@ const useAuthenticateDomain = () => {
       toast.success(response?.data?.message || "Authenticated successfully");
       return response.data;
     } catch (error) {
-      const errorMsg =
-        error?.response?.data?.message || "Authentication failed";
+      const errorMsg = error?.response?.domain || "Authentication failed";
       toast.error(errorMsg);
       return null;
     } finally {
