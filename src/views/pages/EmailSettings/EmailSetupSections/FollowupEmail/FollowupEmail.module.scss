@@ -1,0 +1,71 @@
+.dropdownWrapper {
+  position: relative;
+  font-family: sans-serif;
+}
+
+.headerRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.labelText {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 140%;
+  letter-spacing: 0px;
+  color: #2a4e9c;
+}
+
+
+.dropdownToggle {
+  background: white;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.arrowIcon {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.2s ease;
+}
+
+.arrowOpen {
+  transform: rotate(180deg);
+}
+
+.selectedLabel {
+  margin-top: 6px;
+  font-size: 14px;
+  color: #333;
+}
+
+.dropdownMenu {
+  margin-top: 4px;
+  position: absolute;
+  background: white;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  min-width: 160px;
+  z-index: 10;
+}
+
+.dropdownItem {
+  padding: 10px 12px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #f0f0f0;
+  }
+}
+
+.selected {
+  background-color: #e0e7ff;
+  font-weight: 500;
+}

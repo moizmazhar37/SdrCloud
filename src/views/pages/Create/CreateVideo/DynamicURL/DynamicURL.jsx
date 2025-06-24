@@ -24,10 +24,10 @@ const DynamicURL = ({
   const [audioFile, setAudioFile] = useState(editData?.audio || null);
   const [audioTitle, setAudioTitle] = useState(editData?.audio?.name || "");
   const [audioDescription, setAudioDescription] = useState(
-    editData?.audioDescription || ""
+    editData?.audio_description || ""
   );
   const [selectedVoiceModel, setSelectedVoiceModel] = useState(
-    editData?.selectedVoiceModel || null
+    editData?.audio_accent ? { dev_name: editData.audio_accent } : null
   );
   const [loading, setLoading] = useState(false);
   const [showAudioDescModal, setShowAudioDescModal] = useState(false);
@@ -37,15 +37,21 @@ const DynamicURL = ({
 
   // Initialize form with edit data if available
   useEffect(() => {
-    if (editData?.value) {
-      console.log("Setting edit data:", editData.value);
-      setSelectedURL(editData.value);
+    if (editData) {
+      console.log("Setting edit data:", editData);
+      setSelectedURL(editData.value || "");
       setDuration(editData.duration || "");
       setSelectedType(editData.scroll ? "Yes" : "No");
       setAudioFile(editData.audio || null);
       setAudioTitle(editData.audio?.name || "");
-      setAudioDescription(editData.audioDescription || "");
-      setSelectedVoiceModel(editData.selectedVoiceModel || null);
+      setAudioDescription(editData.audio_description || "");
+
+      // Handle voice model - create object if audio_accent exists
+      if (editData.audio_accent) {
+        setSelectedVoiceModel({ dev_name: editData.audio_accent });
+      } else {
+        setSelectedVoiceModel(null);
+      }
     }
   }, [editData]);
 

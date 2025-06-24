@@ -12,8 +12,11 @@ const SearchFilters = ({ onSearch, initialFilters = null }) => {
   const [isFinancialCriteriaOpen, setIsFinancialCriteriaOpen] = useState(false);
   const [isMarketingCriteriaOpen, setIsMarketingCriteriaOpen] = useState(false);
 
+  // Use the resetFiltersState function from helpers to ensure proper structure
+  const getDefaultFilters = () => resetFiltersState();
+
   // Use initialFilters if provided, otherwise use default state
-  const [filters, setFilters] = useState(initialFilters || resetFiltersState());
+  const [filters, setFilters] = useState(initialFilters || getDefaultFilters());
 
   const handleDateChange = (e) => {
     setFilters({
@@ -64,11 +67,25 @@ const SearchFilters = ({ onSearch, initialFilters = null }) => {
   };
 
   const handleReset = () => {
-    setFilters(resetFiltersState());
+    // Reset filters to default empty state
+    const defaultFilters = getDefaultFilters();
+    setFilters(defaultFilters);
+
+    // Close all dropdowns
     setIsPersonalCriteriaOpen(false);
     setIsLocationCriteriaOpen(false);
     setIsFinancialCriteriaOpen(false);
     setIsMarketingCriteriaOpen(false);
+
+    // Automatically trigger search with empty/default filters
+    if (onSearch) {
+      const transformedDefaultFilters = transformFilters(defaultFilters);
+      console.log(
+        "Reset - calling API with default filters:",
+        transformedDefaultFilters
+      );
+      onSearch(transformedDefaultFilters);
+    }
   };
 
   return (

@@ -35,6 +35,40 @@ const StaticURL = ({
   const { updateVideoSection, loading: updateLoading } =
     useUpdateVideoSection();
 
+  // Voice models array - same as in AudioDescModal
+  const voiceModels = [
+    {
+      name: "Natasha",
+      dev_name: "en-AU-NatashaNeural",
+      url: "https://storage.googleapis.com/static-data-for-sdrc/uploads/e0653e5d-a70a-41e0-9706-4764f27ae886/en-AU-NatashaNeural_20250522071439.mp3",
+    },
+    {
+      name: "William",
+      dev_name: "en-AU-WilliamNeural",
+      url: "https://storage.googleapis.com/static-data-for-sdrc/uploads/e0653e5d-a70a-41e0-9706-4764f27ae886/en-AU-WilliamNeural_20250522071508.mp3",
+    },
+    {
+      name: "Liam",
+      dev_name: "en-CA-LiamNeural",
+      url: "https://storage.googleapis.com/static-data-for-sdrc/uploads/e0653e5d-a70a-41e0-9706-4764f27ae886/en-CA-LiamNeural_20250522071530.mp3",
+    },
+    {
+      name: "Sonia",
+      dev_name: "en-GB-SoniaNeural",
+      url: "https://storage.googleapis.com/static-data-for-sdrc/uploads/e0653e5d-a70a-41e0-9706-4764f27ae886/en-GB-SoniaNeural_20250522071548.mp3",
+    },
+    {
+      name: "Aria",
+      dev_name: "en-US-AriaNeural",
+      url: "https://storage.googleapis.com/static-data-for-sdrc/uploads/e0653e5d-a70a-41e0-9706-4764f27ae886/en-US-AriaNeural_20250522071610.mp3",
+    },
+  ];
+
+  // Helper function to find voice model by dev_name
+  const findVoiceModelByDevName = (devName) => {
+    return voiceModels.find((model) => model.dev_name === devName) || null;
+  };
+
   useEffect(() => {
     if (editData) {
       setUrl(editData.value || "https://www.");
@@ -42,8 +76,14 @@ const StaticURL = ({
       setSelectedType(editData.scroll ? "Yes" : "No");
       setAudioFile(editData.audio || null);
       setAudioTitle(editData.audio?.name || "");
-      setAudioDescription(editData.audioDescription || "");
-      setSelectedVoiceModel(editData.selectedVoiceModel || null);
+      setAudioDescription(editData.audio_description || "");
+
+      // Convert audio_accent string to voice model object
+      const voiceModel = editData.audio_accent
+        ? findVoiceModelByDevName(editData.audio_accent)
+        : null;
+      setSelectedVoiceModel(voiceModel);
+
       setSelectedCategory(editData.sectionName || null);
       setDropdownKey((prev) => prev + 1);
     } else {
@@ -85,11 +125,6 @@ const StaticURL = ({
       setAudioTitle(file.name);
     }
   };
-
-  // const handleCategorySelect = (value, label) => {
-  //   setUrl(value);
-  //   setSelectedCategory(label);
-  // };
 
   const handleUploadAudio = () => {
     audioInputRef.current?.click();
@@ -192,18 +227,6 @@ const StaticURL = ({
                 placeholder="https://www."
               />
             </div>
-
-            {/* <div className={styles.urlSelect}>
-              <label>Select Static URL</label>
-              <CategoryDropdown
-                key={dropdownKey}
-                options={categories}
-                buttonText="Select Static URL"
-                onSelect={handleCategorySelect}
-                allowAddNew={false}
-                initialValue={editData?.value}
-              />
-            </div> */}
           </div>
 
           <div className={styles.controlRow}>
@@ -265,6 +288,12 @@ const StaticURL = ({
           {audioTitle && (
             <div className={styles.audioTitle}>
               <p>Uploaded Audio: {audioTitle}</p>
+            </div>
+          )}
+
+          {selectedVoiceModel && (
+            <div className={styles.selectedVoiceModel}>
+              <p>Selected Voice: {selectedVoiceModel.name}</p>
             </div>
           )}
 

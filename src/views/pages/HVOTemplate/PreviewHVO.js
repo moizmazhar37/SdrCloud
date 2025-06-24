@@ -382,14 +382,6 @@ function PreviewHVO(props) {
     }
   }, [isCustomerPreviewRoute]);
 
-  console.log("filteredFooterSection: ", filteredFooterSection);
-  console.log(useParams, "useParams");
-  console.log(pageData, "pageData");
-
-  console.log("filteredFooterSection: ", filteredFooterSection);
-  console.log(useParams, "useParams");
-  console.log(pageData, "pageData");
-
   const settings = {
     infinite: true,
     speed: 40000,
@@ -604,16 +596,39 @@ function PreviewHVO(props) {
                       align="center"
                       // style={{ paddingTop: "50px" }}
                     >
-                      <img
-                        src={
-                          item?.values?.hero_img
-                            ? item?.values?.hero_img
-                            : item?.values?.static_image
-                        }
-                        alt="img"
-                        data-aos="zoom-in"
-                        style={{ marginTop: "60px" }}
-                      />
+                      {item?.values?.hero_img &&
+                        (item?.values?.hero_img.endsWith(".mp4") ||
+                          item?.values?.hero_img.endsWith(".webm") ||
+                          item?.values?.hero_img.endsWith(".ogg")) ? (
+                          <video
+                            src={item?.values?.hero_img}
+                            controls
+                            autoPlay
+                            loop
+                            muted
+                            playsInline
+                            style={{
+                              marginTop: "60px",
+                              maxWidth: "100%",
+                              maxHeight: "400px",
+                              width: "100%",
+                              height: "auto",
+                              borderRadius: "10px",
+                            }}
+                            data-aos="zoom-in"
+                          />
+                        ) : (
+                          <img
+                            src={
+                              item?.values?.hero_img
+                                ? item?.values?.hero_img
+                                : item?.values?.static_image
+                            }
+                            alt="hero"
+                            style={{ marginTop: "60px", maxWidth: "100%", borderRadius: "10px" }}
+                            data-aos="zoom-in"
+                          />
+                        )}
                     </Grid>
                   </Grid>
                 </Container>
@@ -1184,7 +1199,6 @@ function PreviewHVO(props) {
                               alignItems: "center",
                             }}
                           >
-                            <img src="/FooterImage.png" alt="FooterImage" />
                           </Box>
                         </Hidden>
                       </Grid>

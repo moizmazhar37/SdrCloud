@@ -28,7 +28,7 @@ const TopBar = ({ onMobileNavOpen }) => {
   const handleUserSelect = async (selectedUser) => {
     toast.info(`Switching to ${selectedUser.first_name}...`);
 
-    const token = await getTemporaryToken(selectedUser.id);
+    const {user_details, token} = await getTemporaryToken(selectedUser.id);
     if (!token) return; // Stop if token request failed
 
     // Store Master’s session before switching
@@ -43,7 +43,7 @@ const TopBar = ({ onMobileNavOpen }) => {
 
     // Set Slave user session
     localStorage.setItem("email", selectedUser.email);
-    localStorage.setItem("userType", "USER");
+    localStorage.setItem("userType", user_details?.role);
     localStorage.setItem("_id", selectedUser.id);
     localStorage.setItem("token", token); // Use new token
 
