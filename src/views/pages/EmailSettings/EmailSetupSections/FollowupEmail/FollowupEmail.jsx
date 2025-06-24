@@ -21,6 +21,7 @@ const FollowupEmail = ({
   templateId,
 }) => {
   const groupedTemplates = useMemo(() => {
+    console.log("DATA===", data);
     if (Array.isArray(data)) {
       return data.reduce((acc, item) => {
         acc[item.action] = item;
@@ -31,7 +32,6 @@ const FollowupEmail = ({
     }
   }, [data]);
 
-  // Track which actions have existing saved data
   const existingActions = useMemo(() => {
     return Object.keys(groupedTemplates).filter((action) => {
       const template = groupedTemplates[action];

@@ -7,7 +7,22 @@ const useUpdateFollowupEmail = () => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
 
-  const updateFollowupEmail = async ({ subject, message, isHtml, templateId, action }) => {
+  // Map frontend action values to backend action values
+  const getActionKey = (action) => {
+    const actionMap = {
+      email: "OPEN",
+      video: "CLICK",
+    };
+    return actionMap[action] || action;
+  };
+
+  const updateFollowupEmail = async ({
+    subject,
+    message,
+    isHtml,
+    templateId,
+    action,
+  }) => {
     setLoading(true);
     setError(null);
     setSuccess(false);
@@ -20,8 +35,8 @@ const useUpdateFollowupEmail = () => {
           subject,
           body: message,
           is_html: isHtml,
-          action: action,
-          teemplate_id: templateId,
+          action: getActionKey(action), // Transform action here
+          template_id: templateId, // Fixed typo: was "teemplate_id"
         },
         {
           headers: {

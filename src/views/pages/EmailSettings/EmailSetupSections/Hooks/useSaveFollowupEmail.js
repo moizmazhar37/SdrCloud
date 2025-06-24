@@ -2,13 +2,27 @@ import { useState } from "react";
 import axios from "axios";
 import { followupEmail } from "src/config/APIConfig";
 
-
 const useSaveFollowupEmail = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
 
-  const saveFollowupEmail = async ({ subject, message, isHtml, action, templateId}) => {
+  // Map frontend action values to backend action values
+  const getActionKey = (action) => {
+    const actionMap = {
+      email: "OPEN",
+      video: "CLICK",
+    };
+    return actionMap[action] || action;
+  };
+
+  const saveFollowupEmail = async ({
+    subject,
+    message,
+    isHtml,
+    action,
+    templateId,
+  }) => {
     setLoading(true);
     setError(null);
     setSuccess(false);
@@ -21,7 +35,7 @@ const useSaveFollowupEmail = () => {
           body: message,
           is_html: isHtml,
           template_id: templateId,
-          action: action,
+          action: getActionKey(action), // Transform action here
         },
         {
           headers: {
