@@ -59,6 +59,7 @@ const BookedMeetings = lazy(() =>
 const EmailSettings = lazy(() =>
   import("src/views/pages/EmailSettings/EmailSettings")
 );
+
 const ViewGoogleSheet = lazy(() =>
   import(
     "src/views/pages/settings/Integrations/GoogleSheets/ViewGoogleSheet/ViewGoogleSheet"
@@ -123,6 +124,14 @@ const LeadsDashboard = lazy(() =>
 
 const AddSheet = lazy(() =>
   import("src/views/pages/settings/Integrations/AddNewSheet/NewSheet")
+);
+
+const Domains = lazy(() =>
+  import("src/views/pages/settings/Integrations/Domains/Domains")
+);
+
+const DomainsContainer = lazy(() =>
+  import("src/views/pages/settings/Integrations/Domains/DomainContainer")
 );
 
 export const routes = [
@@ -487,12 +496,21 @@ export const routes = [
     layout: DashboardLayout,
     component: withRoleGuard(AdminAccount, ["ADMIN"]),
   },
+
   {
     exact: true,
     path: "/PP-create",
     guard: true,
     layout: DashboardLayout,
     component: withRoleGuard(AdminCreateAccount, ["ADMIN"]),
+  },
+
+  {
+    exact: true,
+    path: "/domains",
+    guard: true,
+    layout: DashboardLayout,
+    component: withRoleGuard(DomainsContainer, ["SUBADMIN"]),
   },
 
   //==========================================SDRC ADMIN=======================================
