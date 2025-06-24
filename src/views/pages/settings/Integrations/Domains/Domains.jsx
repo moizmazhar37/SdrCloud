@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styles from "./Domains.module.scss";
+import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
 import useAuthenticateDomain from "./Hooks/useAuthenticateDomain";
 import useVerifyDomain from "./Hooks/useVerifyDomain";
 import useGetStatus from "./Hooks/useGetDomainStatus";
@@ -23,39 +24,30 @@ const Domains = ({ initialStep = 1, existingDomain = "" }) => {
     { text: "Integration", route: "/integrations" },
     { text: "Domains", route: "/domains" },
   ];
+
+  // Initialize component based on props and existing data
   useEffect(() => {
     if (initialStep === 2 && existingDomain && data) {
+      // If starting at step 2 with existing domain, set up the domain info
       setDomainInfo({
         domain_id: data.domain_id || null,
         domain: existingDomain,
       });
 
+      // If DNS records are available in the status data, use them
       if (data.dns_records && data.dns_records.length > 0) {
         setDomainData(data.dns_records);
       }
     }
   }, [initialStep, existingDomain, data]);
 
-  const validateDomain = (domain) => {
-    const trimmedDomain = domain.trim();
-
-    if (!trimmedDomain) {
-      return false;
-    }
-    if (!trimmedDomain.includes("@")) {
-      return false;
-    }
-    return true;
-  };
-
   const handleAuthenticate = async () => {
-    if (!validateDomain(domainInput)) {
-      return;
-    }
+    if (!domainInput.trim()) return;
 
     const response = await authenticateDomain(domainInput.trim());
 
     if (response) {
+      // Store domain information
       setDomainInfo({
         domain_id: response.domain_id,
         domain: response.domain,
@@ -78,6 +70,7 @@ const Domains = ({ initialStep = 1, existingDomain = "" }) => {
 
     if (response) {
       console.log("Verification successful:", response);
+      // Optionally reload the page or redirect after successful verification
     }
   };
 
@@ -112,12 +105,6 @@ const Domains = ({ initialStep = 1, existingDomain = "" }) => {
     );
   };
 
-  const handleKeyPress = (e) => {
-    if (e.key === "Enter") {
-      handleAuthenticate();
-    }
-  };
-
   return (
     <>
       {/* <DynamicNavigator items={navs} /> */}
@@ -150,18 +137,17 @@ const Domains = ({ initialStep = 1, existingDomain = "" }) => {
               <h2 className={styles.stepTitle}>Authenticate Domain</h2>
               <p className={styles.stepDescription}>
                 Please enter the domain name you want to authenticate and get
-                detailed DNS records information. Domain must include '@' symbol
-                (e.g., user@example.com).
+                detailed DNS records information.
               </p>
 
               <div className={styles.inputGroup}>
                 <input
                   type="text"
-                  placeholder="Enter domain with @ (e.g., user@example.com)"
+                  placeholder="Enter domain name (e.g., example.com)"
                   value={domainInput}
                   onChange={(e) => setDomainInput(e.target.value)}
                   className={styles.domainInput}
-                  onKeyPress={handleKeyPress}
+                  onKeyPress={(e) => e.key === "Enter" && handleAuthenticate()}
                 />
                 <button
                   onClick={handleAuthenticate}
@@ -212,7 +198,7 @@ const Domains = ({ initialStep = 1, existingDomain = "" }) => {
                   <button
                     className={styles.deleteButton}
                     onClick={handleDelete}
-                    disabled={isDeleting}
+                    disabled={isDeleting || !domainInfo?.domain_id}
                   >
                     {isDeleting ? (
                       <>
