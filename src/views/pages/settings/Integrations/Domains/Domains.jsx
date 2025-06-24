@@ -3,6 +3,7 @@ import styles from "./Domains.module.scss";
 import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
 import useAuthenticateDomain from "./Hooks/useAuthenticateDomain";
 import useVerifyDomain from "./Hooks/useVerifyDomain";
+import useGetStatus from "./Hooks/useGetDomainStatus";
 
 const Domains = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -13,6 +14,8 @@ const Domains = () => {
   const { authenticateDomain, loading: isAuthenticating } =
     useAuthenticateDomain();
   const { verifyToken, loading: isVerifying } = useVerifyDomain();
+  const { data, loading, error } = useGetStatus();
+  console.log("adassadsad", data);
 
   const navs = [
     { text: "Settings", route: "/settings" },
@@ -77,7 +80,7 @@ const Domains = () => {
 
   return (
     <>
-      <DynamicNavigator items={navs} />
+      {/* <DynamicNavigator items={navs} /> */}
       <div className={styles.domainsContainer}>
         <div className={styles.formCard}>
           {/* Step Indicator */}

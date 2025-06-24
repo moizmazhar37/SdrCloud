@@ -130,6 +130,10 @@ const Domains = lazy(() =>
   import("src/views/pages/settings/Integrations/Domains/Domains")
 );
 
+const DomainsContainer = lazy(() =>
+  import("src/views/pages/settings/Integrations/Domains/DomainContainer")
+);
+
 export const routes = [
   {
     exact: true,
@@ -506,7 +510,7 @@ export const routes = [
     path: "/domains",
     guard: true,
     layout: DashboardLayout,
-    component: withRoleGuard(Domains, ["SUBADMIN"]),
+    component: withRoleGuard(DomainsContainer, ["SUBADMIN"]),
   },
 
   //==========================================SDRC ADMIN=======================================

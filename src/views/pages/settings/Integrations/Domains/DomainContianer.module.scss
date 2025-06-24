@@ -1,0 +1,20 @@
+.container {
+  width: 100%;
+  padding: 2rem;
+  min-height: 300px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.loader {
+  font-size: 1.2rem;
+  color: #555;
+}
+
+.error {
+  color: red;
+  font-weight: bold;
+}
