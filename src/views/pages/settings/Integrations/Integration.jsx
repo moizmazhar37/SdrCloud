@@ -23,6 +23,12 @@ const Integration = () => {
       path: "/sendgrid",
     },
     {
+      name: "Domains",
+      status: isUser ? "Disabled" : "Enabled",
+      path: "/domains",
+    },
+
+    {
       name: "Calender Link",
       status: isUser ? "Disabled" : "Enabled",
       path: "/calendar-link",
