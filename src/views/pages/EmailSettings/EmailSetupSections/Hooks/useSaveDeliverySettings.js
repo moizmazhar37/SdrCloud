@@ -25,6 +25,12 @@ const useSaveDeliverySettings = () => {
         max_reminders: parseInt(settings.maxReminders) || 0,
       };
 
+      if (settings.start_date) {
+        requestBody.start_date = settings.start_date;
+      }
+
+      console.log("Request body being sent:", requestBody); // For debugging
+
       const response = await fetch(url, {
         method: "POST",
         headers: {

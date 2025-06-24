@@ -57,16 +57,33 @@ export const prepareSettingsForSave = (
   weekdaysEnabled,
   weekendsEnabled,
   weekdaysTimes,
-  weekendsTimes
+  weekendsTimes,
+  scheduleType,
+  scheduledDate,
+  scheduledTime
 ) => {
+  // Convert date and time to UTC format
+  const convertToUTC = (date, time) => {
+    if (!date || !time) return null;
+    const localDateTime = new Date(`${date}T${time}`);
+    return localDateTime.toISOString();
+  };
+
   const weekdaysTime = weekdaysEnabled ? weekdaysTimes.start : null;
   const weekendTime = weekendsEnabled ? weekendsTimes.start : null;
 
-  return {
+  const settings = {
     maxReminders,
     weekdaysTime,
     weekendTime,
   };
+
+  if (scheduledDate && scheduledTime) {
+    console.log("asjfbjsakbsa");
+    settings.start_date = convertToUTC(scheduledDate, scheduledTime);
+  }
+
+  return settings;
 };
 
 export const createDataChangePayload = (

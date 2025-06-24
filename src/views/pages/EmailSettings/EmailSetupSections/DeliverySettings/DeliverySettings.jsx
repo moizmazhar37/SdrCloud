@@ -38,6 +38,25 @@ const DeliverySettings = ({ onNext, onDataChange, initialData }) => {
     return today.toISOString().split("T")[0];
   };
 
+  // Convert date and time to UTC format
+  const convertToUTC = (date, time) => {
+    if (!date || !time) return null;
+
+    // Create a datetime string in local timezone
+    const localDateTime = new Date(`${date}T${time}`);
+
+    // Convert to UTC ISO string
+    return localDateTime.toISOString();
+  };
+
+  // Get start_date in UTC format
+  const getStartDateUTC = () => {
+    if (scheduleType === "Schedule Later" && scheduledDate && scheduledTime) {
+      return convertToUTC(scheduledDate, scheduledTime);
+    }
+    return null;
+  };
+
   useEffect(() => {
     if (initialData && !isInitialized.current) {
       const initializedData = initializeDeliveryData(initialData);
@@ -107,11 +126,6 @@ const DeliverySettings = ({ onNext, onDataChange, initialData }) => {
 
   const handleScheduleTypeChange = (type) => {
     setScheduleType(type);
-    // Clear scheduled date/time when switching to Recurring
-    if (type === "Recurring") {
-      setScheduledDate("");
-      setScheduledTime("08:00");
-    }
     handleDataChange({ scheduleType: type });
   };
 
@@ -244,6 +258,11 @@ const DeliverySettings = ({ onNext, onDataChange, initialData }) => {
               />
             </div>
           </div>
+          {scheduledDate && scheduledTime && (
+            <div className={styles.utcPreview}>
+              <small>UTC Time: {getStartDateUTC()}</small>
+            </div>
+          )}
         </div>
       )}
 

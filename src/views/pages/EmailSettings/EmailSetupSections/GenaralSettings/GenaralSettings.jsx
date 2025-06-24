@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import styles from "./GenaralSettings.module.scss";
 import useSaveGeneralSettings from "../Hooks/useSaveGeneralSettings";
+import useGetStatus from "src/views/pages/settings/Integrations/Domains/Hooks/useGetDomainStatus";
 
 const GeneralSettings = ({ onNext, onDataChange, initialData }) => {
   const [smsEnabled, setSmsEnabled] = useState(false);
@@ -11,12 +12,17 @@ const GeneralSettings = ({ onNext, onDataChange, initialData }) => {
   const [fromEmail, setFromEmail] = useState("");
   const [fromName, setFromName] = useState("");
   const [replyToEmail, setReplyToEmail] = useState("");
+  const [fromEmailError, setFromEmailError] = useState("");
 
+  const {
+    data: domainStatus,
+    loading: loadingDomain,
+    error: domainError,
+  } = useGetStatus();
 
   const TEMPLATE_ID = localStorage.getItem("template_id");
   const { saveGeneralSettings, loading, error } = useSaveGeneralSettings();
 
-  // Populate initial data from API - only once when data first arrives
   useEffect(() => {
     if (initialData && !isInitialized.current) {
       setSmsEnabled(initialData.sms_enabled || false);
@@ -27,10 +33,8 @@ const GeneralSettings = ({ onNext, onDataChange, initialData }) => {
       setFromName(initialData.from_name || "");
       setReplyToEmail(initialData.reply_to || "");
 
-
       isInitialized.current = true;
 
-      // Update parent component with initial data
       const allData = {
         smsEnabled: initialData.sms_enabled || false,
         emailEnabled: initialData.email_enabled || true,
@@ -58,6 +62,19 @@ const GeneralSettings = ({ onNext, onDataChange, initialData }) => {
     onDataChange && onDataChange(allData);
   };
 
+  const validateFromEmail = (value) => {
+    if (value.includes("@")) {
+      const domain = domainStatus?.domain || "domain.com";
+      setFromEmailError(
+        `Your email is ${value}@${domain}. Please enter a valid email.`
+      );
+      return false;
+    } else {
+      setFromEmailError("");
+      return true;
+    }
+  };
+
   const handleSmsToggle = () => {
     const newValue = !smsEnabled;
     setSmsEnabled(newValue);
@@ -80,7 +97,19 @@ const GeneralSettings = ({ onNext, onDataChange, initialData }) => {
     handleDataChange({ maxEmailPerDay: value });
   };
 
+  const handleFromEmailChange = (value) => {
+    setFromEmail(value);
+    validateFromEmail(value);
+    handleDataChange({ fromEmail: value });
+  };
+
   const handleSave = async () => {
+    // Validate before saving
+    if (!validateFromEmail(fromEmail)) {
+      console.error("Cannot save: Invalid from email format");
+      return;
+    }
+
     const settings = {
       smsEnabled,
       emailEnabled,
@@ -153,60 +182,67 @@ const GeneralSettings = ({ onNext, onDataChange, initialData }) => {
         </div>
 
         {emailEnabled && (
-           <>
-          <div className={styles.maxInputContainer}>
-            <label className={styles.inputLabel}>Max Email per day:</label>
-            <input
-              type="number"
-              min="1"
-              max="50"
-              value={maxEmailPerDay}
-              onChange={(e) => handleMaxEmailChange(e.target.value)}
-              className={styles.numberInput}
-            />
-          </div>
+          <>
+            <div className={styles.maxInputContainer}>
+              <label className={styles.inputLabel}>Max Email per day:</label>
+              <input
+                type="number"
+                min="1"
+                max="50"
+                value={maxEmailPerDay}
+                onChange={(e) => handleMaxEmailChange(e.target.value)}
+                className={styles.numberInput}
+              />
+            </div>
 
-          <div className={styles.inputGroup}>
-          <label className={styles.inputLabel}>From Email:</label>
-          <input
-            type="email"
-            value={fromEmail}
-            onChange={(e) => {
-              setFromEmail(e.target.value);
-              handleDataChange({ fromEmail: e.target.value });
-            }}
-            className={styles.textInput}
-            placeholder="e.g. example@domain.com"
-          />
-        </div>
+            <div className={styles.inputGroup}>
+              <label className={styles.inputLabel}>From Email:</label>
+              <div className={styles.emailInputContainer}>
+                <input
+                  type="text"
+                  value={fromEmail}
+                  onChange={(e) => handleFromEmailChange(e.target.value)}
+                  className={`${styles.textInput} ${
+                    fromEmailError ? styles.errorInput : ""
+                  }`}
+                  placeholder="e.g. example"
+                />
+                <span className={styles.domainSuffix}>
+                  @{domainStatus?.domain || "domain.com"}
+                </span>
+              </div>
+              {fromEmailError && (
+                <div className={styles.errorMessage}>{fromEmailError}</div>
+              )}
+            </div>
 
-        <div className={styles.inputGroup}>
-          <label className={styles.inputLabel}>From Name:</label>
-          <input
-            type="text"
-            value={fromName}
-            onChange={(e) => {
-              setFromName(e.target.value);
-              handleDataChange({ fromName: e.target.value });
-            }}
-            className={styles.textInput}
-            placeholder="e.g. John Doe"
-          />
-        </div>
+            <div className={styles.inputGroup}>
+              <label className={styles.inputLabel}>From Name:</label>
+              <input
+                type="text"
+                value={fromName}
+                onChange={(e) => {
+                  setFromName(e.target.value);
+                  handleDataChange({ fromName: e.target.value });
+                }}
+                className={styles.textInput}
+                placeholder="e.g. John Doe"
+              />
+            </div>
 
-        <div className={styles.inputGroup}>
-          <label className={styles.inputLabel}>Reply To Email:</label>
-          <input
-            type="email"
-            value={replyToEmail}
-            onChange={(e) => {
-              setReplyToEmail(e.target.value);
-              handleDataChange({ replyToEmail: e.target.value });
-            }}
-            className={styles.textInput}
-            placeholder="e.g. reply@domain.com"
-          />
-          </div>
+            <div className={styles.inputGroup}>
+              <label className={styles.inputLabel}>Reply To Email:</label>
+              <input
+                type="email"
+                value={replyToEmail}
+                onChange={(e) => {
+                  setReplyToEmail(e.target.value);
+                  handleDataChange({ replyToEmail: e.target.value });
+                }}
+                className={styles.textInput}
+                placeholder="e.g. reply@domain.com"
+              />
+            </div>
           </>
         )}
       </div>
@@ -216,7 +252,7 @@ const GeneralSettings = ({ onNext, onDataChange, initialData }) => {
         <button
           className={styles.saveButton}
           onClick={handleSave}
-          disabled={loading}
+          disabled={loading || fromEmailError}
         >
           {loading ? "Saving..." : "Save"}
         </button>
