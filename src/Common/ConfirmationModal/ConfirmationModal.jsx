@@ -11,12 +11,24 @@ const ConfirmationModal = ({
   cancelButtonText = "Cancel",
   actionButtonText = "Proceed",
   onAction,
-  totalRecords,
-  showInputField = true, // <-- NEW PROP
+  totalRecords = 0,
+  showInputField = true,
 }) => {
-  const [rowsToCreate, setRowsToCreate] = useState(totalRecords || 0);
+  const [inputValue, setInputValue] = useState("");
 
   if (!isOpen) return null;
+
+  const handleInputChange = (e) => {
+    const value = Number(e.target.value);
+    if (isNaN(value)) return;
+
+    const clamped = Math.max(0, Math.min(totalRecords, value));
+    setInputValue(clamped === 0 ? "" : clamped);
+  };
+
+  const handleAction = () => {
+    onAction(showInputField ? Number(inputValue) || 0 : undefined);
+  };
 
   return ReactDOM.createPortal(
     <div className={styles.modalOverlay}>
@@ -24,7 +36,6 @@ const ConfirmationModal = ({
         {title && <h2 className={styles.modalTitle}>{title}</h2>}
 
         <div className={styles.modalBody}>
-          {/* Conditionally show the input section */}
           {showInputField && (
             <div className={styles.inputSection}>
               <label htmlFor="recordsInput" className={styles.inputLabel}>
@@ -34,12 +45,10 @@ const ConfirmationModal = ({
                 id="recordsInput"
                 type="number"
                 max={totalRecords}
-                value={rowsToCreate}
-                onChange={(e) => {
-                  const value = Math.min(totalRecords, Math.max(0, Number(e.target.value)));
-                  setRowsToCreate(value);
-                }}
+                value={inputValue}
+                onChange={handleInputChange}
                 className={styles.inputField}
+                placeholder={`Enter up to ${totalRecords}`}
               />
               <small className={styles.helperText}>
                 Enter the number of rows to process. Max is {totalRecords}.
@@ -47,18 +56,23 @@ const ConfirmationModal = ({
             </div>
           )}
 
-          {confirmationText && <p className={styles.confirmText}>{confirmationText}</p>}
+          {confirmationText && (
+            <p className={styles.confirmText}>{confirmationText}</p>
+          )}
           {noteText && <p className={styles.noteText}>{noteText}</p>}
         </div>
 
         <div className={styles.modalFooter}>
-          <button className={`${styles.button} ${styles.cancelButton}`} onClick={onClose}>
+          <button
+            className={`${styles.button} ${styles.cancelButton}`}
+            onClick={onClose}
+          >
             {cancelButtonText}
           </button>
           {actionButtonText && (
             <button
               className={`${styles.button} ${styles.actionButton}`}
-              onClick={() => onAction(showInputField ? rowsToCreate : undefined)}
+              onClick={handleAction}
             >
               {actionButtonText}
             </button>
