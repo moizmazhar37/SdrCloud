@@ -1,6 +1,6 @@
 .modal {
   position: fixed;
-  z-index: 1000;
+  z-index: 9999; /* Increased z-index to ensure it's above sidebar */
   left: 0;
   top: 0;
   width: 100%;
@@ -23,6 +23,8 @@
   max-width: 900px;
   max-height: 90vh;
   overflow-y: auto;
+  position: relative; /* Added to ensure proper stacking */
+  z-index: 10000; /* Ensure modal content is on top */
 
   @media (max-width: 768px) {
     padding: 20px;
@@ -31,6 +33,13 @@
 
   @media (max-width: 480px) {
     padding: 15px;
+  }
+
+  /* Specific media query for sidebar overlap issue */
+  @media (min-width: 1220px) and (max-width: 1580px) {
+    margin-left: auto;
+    margin-right: auto;
+    /* Ensure modal stays centered even when sidebar is open */
   }
 }
 
