@@ -1,5 +1,4 @@
 // EmailSettings.module.scss - Clean and Responsive
-
 .emailSettings {
   border: 1px solid #f0efef;
   border-radius: 6px;
@@ -105,6 +104,30 @@
   }
 }
 
+// Specific media query for activeStep 2 between 1600px and 1200px
+@media screen and (max-width: 1600px) and (min-width: 1201px) {
+  .emailSettings[data-active-step="2"] {
+    .contentContainer {
+      flex-direction: column;
+      gap: 24px;
+      padding-top: 30px;
+      align-items: center;
+    }
+
+    .copyTextContainer {
+      flex: none;
+      min-width: auto;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .settingsContent {
+      flex: none;
+      width: 100%;
+    }
+  }
+}
+
 // Mobile Responsive Styles
 @media screen and (max-width: 1200px) {
   .contentContainer {
@@ -114,6 +137,7 @@
     align-items: center;
   }
 }
+
 @media screen and (max-width: 768px) {
   .emailSettingsContainer {
     padding: 20px;

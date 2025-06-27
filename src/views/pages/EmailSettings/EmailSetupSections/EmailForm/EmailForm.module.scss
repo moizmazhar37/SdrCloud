@@ -20,10 +20,19 @@
     @media (max-width: 480px) {
       padding: 1rem;
     }
+
+    @media (max-width: 380px) {
+      padding: 0.75rem;
+      border-radius: 6px;
+    }
   }
 
   .subjectSection {
     margin-bottom: 1.5rem;
+
+    @media (max-width: 380px) {
+      margin-bottom: 1rem;
+    }
   }
 
   .label {
@@ -32,6 +41,11 @@
     font-weight: 500;
     color: #374151;
     margin-bottom: 0.5rem;
+
+    @media (max-width: 380px) {
+      font-size: 0.8125rem;
+      margin-bottom: 0.375rem;
+    }
   }
 
   .subjectInput {
@@ -60,10 +74,20 @@
       padding: 0.625rem 0.75rem;
       font-size: 0.8125rem;
     }
+
+    @media (max-width: 380px) {
+      padding: 0.5rem 0.625rem;
+      font-size: 0.75rem;
+      border-radius: 6px;
+    }
   }
 
   .messageSection {
     margin-bottom: 1.5rem;
+
+    @media (max-width: 380px) {
+      margin-bottom: 1rem;
+    }
   }
 
   .messageTextarea {
@@ -101,6 +125,14 @@
       padding: 0.75rem;
       font-size: 0.8125rem;
     }
+
+    @media (max-width: 380px) {
+      min-height: 160px;
+      padding: 0.625rem;
+      font-size: 0.75rem;
+      border-radius: 6px 6px 0 0;
+      line-height: 1.5;
+    }
   }
 
   // HTML Template Section
@@ -114,6 +146,11 @@
     @media (max-width: 768px) {
       border-radius: 8px;
     }
+
+    @media (max-width: 380px) {
+      margin-bottom: 1rem;
+      border-radius: 6px;
+    }
   }
 
   .htmlInputContainer {
@@ -126,6 +163,10 @@
 
     @media (max-width: 480px) {
       padding: 0.75rem;
+    }
+
+    @media (max-width: 380px) {
+      padding: 0.625rem;
     }
   }
 
@@ -165,6 +206,14 @@
       padding: 0.75rem;
       font-size: 0.7rem;
     }
+
+    @media (max-width: 380px) {
+      min-height: 120px;
+      padding: 0.625rem;
+      font-size: 0.6875rem;
+      border-radius: 6px;
+      line-height: 1.4;
+    }
   }
 
   .htmlPreviewContainer {
@@ -189,6 +238,11 @@
     @media (max-width: 480px) {
       padding: 0.75rem;
     }
+
+    @media (max-width: 380px) {
+      padding: 0.625rem;
+      gap: 0.375rem;
+    }
   }
 
   .previewTitle {
@@ -199,12 +253,20 @@
     @media (max-width: 480px) {
       font-size: 0.8125rem;
     }
+
+    @media (max-width: 380px) {
+      font-size: 0.75rem;
+    }
   }
 
   .previewControls {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+
+    @media (max-width: 380px) {
+      gap: 0.375rem;
+    }
   }
 
   .previewNote {
@@ -217,6 +279,12 @@
 
     @media (max-width: 480px) {
       font-size: 0.6875rem;
+    }
+
+    @media (max-width: 380px) {
+      font-size: 0.625rem;
+      padding: 0.1875rem 0.375rem;
+      border-radius: 3px;
     }
   }
 
@@ -233,6 +301,11 @@
     @media (max-width: 480px) {
       padding: 0.75rem;
       min-height: 200px;
+    }
+
+    @media (max-width: 380px) {
+      padding: 0.625rem;
+      min-height: 180px;
     }
   }
 
@@ -251,6 +324,11 @@
     @media (max-width: 480px) {
       height: 200px;
     }
+
+    @media (max-width: 380px) {
+      height: 180px;
+      border-radius: 4px;
+    }
   }
 
   .attachmentSection {
@@ -259,6 +337,12 @@
     background-color: #f8fafc;
     border-radius: 8px;
     border: 1px solid #e2e8f0;
+
+    @media (max-width: 380px) {
+      margin-bottom: 1rem;
+      padding: 0.75rem;
+      border-radius: 6px;
+    }
   }
 
   .attachmentTitle {
@@ -266,6 +350,11 @@
     font-weight: 500;
     color: #374151;
     margin: 0 0 1rem 0;
+
+    @media (max-width: 380px) {
+      font-size: 0.8125rem;
+      margin: 0 0 0.75rem 0;
+    }
   }
 
   .attachmentGrid {
@@ -275,6 +364,11 @@
 
     @media (max-width: 768px) {
       grid-template-columns: 1fr;
+    }
+
+    @media (max-width: 380px) {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
     }
   }
 
@@ -293,6 +387,12 @@
       border-color: #cbd5e1;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
+
+    @media (max-width: 380px) {
+      gap: 0.5rem;
+      padding: 0.625rem;
+      border-radius: 4px;
+    }
   }
 
   .imagePreview {
@@ -310,6 +410,12 @@
       border-color: #cbd5e1;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
+
+    @media (max-width: 380px) {
+      gap: 0.5rem;
+      padding: 0.625rem;
+      border-radius: 4px;
+    }
   }
 
   .fileIcon {
@@ -322,6 +428,12 @@
     background-color: #f1f5f9;
     border-radius: 6px;
     color: #64748b;
+
+    @media (max-width: 380px) {
+      width: 32px;
+      height: 32px;
+      border-radius: 4px;
+    }
   }
 
   .imageContainer {
@@ -331,6 +443,12 @@
     border-radius: 6px;
     overflow: hidden;
     background-color: #f1f5f9;
+
+    @media (max-width: 380px) {
+      width: 32px;
+      height: 32px;
+      border-radius: 4px;
+    }
   }
 
   .previewImage {
@@ -352,11 +470,20 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+
+    @media (max-width: 380px) {
+      font-size: 0.8125rem;
+      margin-bottom: 0.1875rem;
+    }
   }
 
   .fileSize {
     font-size: 0.75rem;
     color: #6b7280;
+
+    @media (max-width: 380px) {
+      font-size: 0.6875rem;
+    }
   }
 
   .removeButton {
@@ -381,6 +508,12 @@
     &:active {
       transform: scale(0.95);
     }
+
+    @media (max-width: 380px) {
+      width: 20px;
+      height: 20px;
+      border-radius: 3px;
+    }
   }
 
   .bottomSection {
@@ -394,12 +527,20 @@
       flex-direction: column;
       align-items: stretch;
     }
+
+    @media (max-width: 380px) {
+      gap: 0.75rem;
+    }
   }
 
   .checkboxContainer {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+
+    @media (max-width: 380px) {
+      gap: 0.375rem;
+    }
   }
 
   .checkbox {
@@ -413,6 +554,12 @@
       background-color: #3b82f6;
       border-color: #3b82f6;
     }
+
+    @media (max-width: 380px) {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+    }
   }
 
   .checkboxLabel {
@@ -424,11 +571,20 @@
     @media (max-width: 480px) {
       font-size: 0.8125rem;
     }
+
+    @media (max-width: 380px) {
+      font-size: 0.75rem;
+    }
   }
 
-  .buttonGroup{
+  .buttonGroup {
     display: flex;
     gap: 8px;
+
+    @media (max-width: 380px) {
+      gap: 6px;
+      flex-direction: column;
+    }
   }
 
   .saveButton {
@@ -459,6 +615,13 @@
       padding: 0.875rem;
       font-size: 1rem;
     }
+
+    @media (max-width: 380px) {
+      padding: 0.75rem;
+      font-size: 0.875rem;
+      border-radius: 6px;
+      min-width: auto;
+    }
   }
 
   .deleteButton {
@@ -476,12 +639,12 @@
     &:hover {
       background-color: #d81d1d;
       transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
+      box-shadow: 0 4px 12px rgba(175, 30, 30, 0.3);
     }
 
     &:active {
       transform: translateY(0);
-      box-shadow: 0 2px 4px rgba(30, 64, 175, 0.3);
+      box-shadow: 0 2px 4px rgba(175, 30, 30, 0.3);
     }
 
     @media (max-width: 580px) {
@@ -489,9 +652,16 @@
       padding: 0.875rem;
       font-size: 1rem;
     }
+
+    @media (max-width: 380px) {
+      padding: 0.75rem;
+      font-size: 0.875rem;
+      border-radius: 6px;
+      min-width: auto;
+    }
   }
 
-    .nextButton {
+  .nextButton {
     background-color: #1e40af;
     color: white;
     border: none;
@@ -518,6 +688,13 @@
       width: 100%;
       padding: 0.875rem;
       font-size: 1rem;
+    }
+
+    @media (max-width: 380px) {
+      padding: 0.75rem;
+      font-size: 0.875rem;
+      border-radius: 6px;
+      min-width: auto;
     }
   }
 }

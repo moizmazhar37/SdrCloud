@@ -212,7 +212,7 @@ const EmailSettings = ({ activeStep: initialStep = 1 }) => {
 
   return (
     <div className={styles.emailSettingsContainer}>
-      <div className={styles.emailSettings}>
+      <div className={styles.emailSettings} data-active-step={activeStep}>
         <div className={styles.headerNavigation}>
           <button
             className={`${styles.navArrow} ${styles.backArrow}`}
