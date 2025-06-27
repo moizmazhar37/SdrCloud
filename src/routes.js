@@ -4,6 +4,7 @@ import DashboardLayout from "src/layouts/DashboardLayout";
 import LoginLayout from "./layouts/LoginLayout";
 import AuthLayout from "./layouts/AuthLayout";
 import withRoleGuard from "./withRoleGuard";
+import EmailTemplates from "./views/pages/settings/EmailTemplates/EmailTemplates";
 
 const SubAdminDashboard = lazy(() =>
   import("src/views/pages/DashboardAdmin/AdminDashboard/AdminDashboard")
@@ -365,6 +366,14 @@ export const routes = [
     guard: true,
     layout: DashboardLayout,
     component: withRoleGuard(CompanyInformation, ["SUBADMIN"]),
+  },
+
+    {
+    exact: true,
+    path: "/email-templates",
+    guard: true,
+    layout: DashboardLayout,
+    component: withRoleGuard(EmailTemplates, ["SUBADMIN"]),
   },
 
   {
