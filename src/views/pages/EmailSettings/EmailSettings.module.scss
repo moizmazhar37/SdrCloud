@@ -1,85 +1,22 @@
-// Add this to your EmailSettings.module.scss file
+// EmailSettings.module.scss - Clean and Responsive
 
-// Ensure the header container has relative positioning for arrow placement
 .emailSettings {
-  border: 1px solid rgb(240, 239, 239);
-  margin: 0;
+  border: 1px solid #f0efef;
   border-radius: 6px;
   padding: 30px;
   background: #fff;
-  box-shadow: 0px 8px 24px 0px rgba(0, 0, 0, 0.04);
-  position: relative; // Add this to ensure arrows position correctly
-}
-
-// Navigation arrows styling
-.navigationArrow {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-  border: 2px solid #e5e7eb;
-  background: white;
-  color: #6b7280;
-  cursor: pointer;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 10;
-
-  &:hover:not(:disabled) {
-    background: #eff6ff;
-    border-color: #93c5fd;
-    color: #2563eb;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
-
-  &:disabled {
-    background: #f9fafb;
-    border-color: #f3f4f6;
-    color: #d1d5db;
-    cursor: not-allowed;
-  }
-}
-
-.navigationArrowLeft {
-  left: -24px; // Position exactly in the yellow circle area
-}
-
-.navigationArrowRight {
-  right: -24px; // Position exactly in the yellow circle area
-}
-
-// Responsive adjustments
-@media (max-width: 768px) {
-  .navigationArrow {
-    width: 40px;
-    height: 40px;
-  }
-
-  .navigationArrowLeft {
-    left: -20px;
-  }
-
-  .navigationArrowRight {
-    right: -20px;
-  }
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+  position: relative;
 }
 
 .emailSettingsContainer {
-  padding: 40px;
-
-  padding-left: 60px;
-  padding-right: 60px;
+  padding: 40px 60px;
 }
 
 .contentContainer {
   display: flex;
   gap: 32px;
   padding-top: 40px;
-  margin: 0 auto;
   align-items: flex-start;
 }
 
@@ -94,7 +31,7 @@
 }
 
 .placeholder {
-  background-color: #fff;
+  background: #fff;
   border: 1px solid #e9ecef;
   border-radius: 12px;
   padding: 32px;
@@ -114,33 +51,13 @@
   }
 }
 
-@media (max-width: 768px) {
-  .emailSettingsContainer {
-    padding: 16px;
-    padding-left: 36px;
-    padding-right: 36px;
-  }
-
-  .emailSettings {
-    padding: 16px;
-  }
-
-  .contentContainer {
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .copyTextContainer {
-    flex: none;
-    min-width: auto;
-  }
-}
 .headerNavigation {
   display: flex;
   align-items: center;
   gap: 16px;
   margin-bottom: 0;
   width: 100%;
+
   > * {
     flex: 1;
     min-width: 0;
@@ -188,9 +105,49 @@
   }
 }
 
-@media (max-width: 768px) {
+// Mobile Responsive Styles
+@media screen and (max-width: 1200px) {
+  .contentContainer {
+    flex-direction: column;
+    gap: 20px;
+    padding-top: 20px;
+    align-items: center;
+  }
+}
+@media screen and (max-width: 768px) {
+  .emailSettingsContainer {
+    padding: 20px;
+  }
+
+  .emailSettings {
+    padding: 20px;
+  }
+
+  .contentContainer {
+    flex-direction: column;
+    gap: 20px;
+    padding-top: 20px;
+  }
+
+  .copyTextContainer {
+    flex: none;
+    min-width: auto;
+  }
+
+  .placeholder {
+    padding: 24px;
+
+    h3 {
+      font-size: 18px;
+    }
+
+    p {
+      font-size: 14px;
+    }
+  }
+
   .headerNavigation {
-    gap: 8px;
+    gap: 12px;
   }
 
   .navArrow {
@@ -201,5 +158,66 @@
       width: 18px;
       height: 18px;
     }
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .emailSettingsContainer {
+    padding: 16px;
+  }
+
+  .emailSettings {
+    padding: 16px;
+  }
+
+  .contentContainer {
+    gap: 16px;
+    padding-top: 16px;
+  }
+
+  .placeholder {
+    padding: 20px;
+
+    h3 {
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+
+    p {
+      font-size: 13px;
+    }
+  }
+
+  .headerNavigation {
+    gap: 8px;
+  }
+
+  .navArrow {
+    width: 32px;
+    height: 32px;
+
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .emailSettingsContainer {
+    padding: 12px;
+  }
+
+  .emailSettings {
+    padding: 12px;
+  }
+
+  .contentContainer {
+    gap: 12px;
+    padding-top: 12px;
+  }
+
+  .placeholder {
+    padding: 16px;
   }
 }
