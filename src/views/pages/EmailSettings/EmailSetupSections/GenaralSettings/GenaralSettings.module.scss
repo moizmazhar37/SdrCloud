@@ -4,9 +4,26 @@
   border-radius: 12px;
   padding: 32px;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  max-width: 100%;
+  box-sizing: border-box;
 
+  /* Tablet */
+  @media (max-width: 1024px) {
+    padding: 24px;
+    border-radius: 8px;
+  }
+
+  /* Mobile */
   @media (max-width: 768px) {
     padding: 16px;
+    margin: 8px;
+    border-radius: 6px;
+  }
+
+  /* Small mobile */
+  @media (max-width: 480px) {
+    padding: 12px;
+    margin: 4px;
   }
 }
 
@@ -16,10 +33,22 @@
   &:last-child {
     margin-bottom: 0;
   }
+
+  @media (max-width: 768px) {
+    margin-bottom: 24px;
+  }
+
+  @media (max-width: 480px) {
+    margin-bottom: 20px;
+  }
 }
 
 .toggleContainer {
   margin-bottom: 16px;
+
+  @media (max-width: 480px) {
+    margin-bottom: 12px;
+  }
 }
 
 .toggleLabel {
@@ -29,6 +58,17 @@
   font-size: 16px;
   font-weight: 500;
   color: #495057;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  @media (max-width: 768px) {
+    font-size: 15px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 14px;
+    align-items: flex-start;
+  }
 }
 
 .toggleInput {
@@ -46,6 +86,7 @@
   border-radius: 24px;
   margin-right: 12px;
   transition: background-color 0.3s ease;
+  flex-shrink: 0;
 
   &::after {
     content: "";
@@ -59,6 +100,17 @@
     transition: transform 0.3s ease;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   }
+
+  @media (max-width: 480px) {
+    width: 44px;
+    height: 22px;
+    margin-right: 8px;
+
+    &::after {
+      width: 18px;
+      height: 18px;
+    }
+  }
 }
 
 .toggleInput:checked + .toggleSwitch {
@@ -67,11 +119,27 @@
   &::after {
     transform: translateX(26px);
   }
+
+  @media (max-width: 480px) {
+    &::after {
+      transform: translateX(22px);
+    }
+  }
 }
 
 .toggleText {
   font-size: 16px;
   color: #495057;
+  flex: 1;
+  min-width: 0;
+
+  @media (max-width: 768px) {
+    font-size: 15px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 14px;
+  }
 }
 
 .maxInputContainer {
@@ -81,11 +149,21 @@
   margin-left: 62px;
   margin-top: 12px;
 
+  @media (max-width: 1024px) {
+    margin-left: 50px;
+    gap: 10px;
+  }
+
   @media (max-width: 768px) {
     margin-left: 0;
     flex-direction: column;
     align-items: stretch;
     gap: 8px;
+    margin-top: 8px;
+  }
+
+  @media (max-width: 480px) {
+    gap: 6px;
   }
 }
 
@@ -95,8 +173,18 @@
   font-weight: 500;
   min-width: 120px;
 
+  @media (max-width: 1024px) {
+    min-width: 100px;
+    font-size: 13px;
+  }
+
   @media (max-width: 768px) {
     min-width: unset;
+    font-size: 14px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 13px;
   }
 }
 
@@ -107,11 +195,23 @@
   border-radius: 6px;
   font-size: 14px;
   text-align: center;
+  box-sizing: border-box;
 
   &:focus {
     outline: none;
     border-color: #0358ac;
     box-shadow: 0 0 0 3px rgba(3, 88, 172, 0.1);
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    max-width: 120px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 10px 12px;
+    font-size: 16px; /* Prevents zoom on iOS */
+    max-width: 100px;
   }
 }
 
@@ -123,9 +223,22 @@
   padding-top: 24px;
   border-top: 1px solid #e9ecef;
 
+  @media (max-width: 1024px) {
+    margin-top: 24px;
+    padding-top: 20px;
+    gap: 12px;
+  }
+
   @media (max-width: 768px) {
     flex-direction: column;
     gap: 12px;
+    margin-top: 20px;
+    padding-top: 16px;
+  }
+
+  @media (max-width: 480px) {
+    gap: 10px;
+    margin-top: 16px;
   }
 }
 
@@ -137,9 +250,24 @@
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
+  box-sizing: border-box;
+  min-height: 44px; /* Touch-friendly minimum */
+
+  @media (max-width: 1024px) {
+    padding: 10px 20px;
+    font-size: 13px;
+  }
 
   @media (max-width: 768px) {
     width: 100%;
+    padding: 14px 24px;
+    font-size: 14px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 16px 24px;
+    font-size: 16px; /* Better readability on small screens */
+    border-radius: 6px;
   }
 }
 
@@ -157,6 +285,10 @@
     outline: none;
     box-shadow: 0 0 0 3px rgba(3, 88, 172, 0.1);
   }
+
+  &:active {
+    background-color: #e9ecef;
+  }
 }
 
 .nextButton {
@@ -172,6 +304,10 @@
     outline: none;
     box-shadow: 0 0 0 3px rgba(3, 88, 172, 0.3);
   }
+
+  &:active {
+    background-color: #023a7a;
+  }
 }
 
 .inputGroup {
@@ -181,11 +317,22 @@
   margin-left: 62px;
   margin-top: 12px;
 
+  @media (max-width: 1424px) {
+    margin-left: 0px;
+    display: block;
+    gap: 10px;
+  }
+
   @media (max-width: 768px) {
     flex-direction: column;
     align-items: stretch;
     margin-left: 0;
     gap: 8px;
+    margin-top: 8px;
+  }
+
+  @media (max-width: 480px) {
+    gap: 6px;
   }
 }
 
@@ -196,11 +343,21 @@
   border: 1px solid #e9ecef;
   border-radius: 6px;
   font-size: 14px;
+  box-sizing: border-box;
 
   &:focus {
     outline: none;
     border-color: #0358ac;
     box-shadow: 0 0 0 3px rgba(3, 88, 172, 0.1);
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+
+  @media (max-width: 480px) {
+    padding: 10px 12px;
+    font-size: 16px; /* Prevents zoom on iOS */
   }
 }
 
@@ -208,12 +365,30 @@
   display: flex;
   align-items: center;
   position: relative;
+  width: 100%;
+  max-width: 300px;
 
   .textInput {
-    padding-right: 12px; // Adjust padding to prevent text overlap
+    padding-right: 12px;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
     border-right: none;
+    flex: 1;
+    min-width: 0;
+  }
+
+  @media (max-width: 768px) {
+    max-width: 100%;
+  }
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+
+    .textInput {
+      border-radius: 6px 6px 0 0;
+      border-right: 1px solid #e9ecef;
+      width: 100%;
+    }
   }
 }
 
@@ -228,11 +403,21 @@
   color: #6c757d;
   white-space: nowrap;
   min-width: fit-content;
+  flex-shrink: 0;
+
+  @media (max-width: 480px) {
+    border-left: 1px solid #e9ecef;
+    border-radius: 0 0 6px 6px;
+    width: 100%;
+    text-align: center;
+    padding: 10px 12px;
+    font-size: 16px;
+  }
 }
 
 .errorInput {
   border-color: #dc3545 !important;
-  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
 }
 
 .errorMessage {
@@ -240,4 +425,151 @@
   font-size: 0.875rem;
   margin-top: 0.25rem;
   display: block;
+
+  @media (max-width: 480px) {
+    font-size: 0.8rem;
+  }
+}
+
+/* Mobile form improvements */
+@media (max-width: 768px) {
+  .inputGroup {
+    .inputLabel {
+      margin-bottom: 4px;
+      text-align: left;
+    }
+  }
+
+  .emailInputContainer {
+    order: 2;
+  }
+
+  .errorMessage {
+    order: 3;
+    margin-top: 4px;
+    margin-left: 0;
+  }
+}
+
+/* Additional responsive utilities */
+@media (max-width: 480px) {
+  /* Ensure touch targets are at least 44px */
+  .toggleLabel,
+  .saveButton,
+  .nextButton,
+  .textInput,
+  .numberInput {
+    min-height: 44px;
+  }
+
+  /* Improve text readability */
+  body {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Prevent horizontal scroll */
+  * {
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Better spacing for form elements */
+  .inputGroup {
+    margin-top: 16px;
+  }
+
+  .toggleContainer {
+    padding: 4px 0;
+  }
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .toggleSwitch {
+    &::after {
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+  }
+}
+
+/* Dark mode support (optional) */
+@media (prefers-color-scheme: dark) {
+  .generalSettings {
+    background-color: #1a1a1a;
+    border-color: #333;
+    color: #fff;
+  }
+
+  .toggleText,
+  .inputLabel {
+    color: #ccc;
+  }
+
+  .textInput,
+  .numberInput {
+    background-color: #2a2a2a;
+    border-color: #444;
+    color: #fff;
+
+    &:focus {
+      border-color: #0358ac;
+    }
+  }
+
+  .saveButton {
+    background-color: #2a2a2a;
+    border-color: #444;
+    color: #ccc;
+
+    &:hover {
+      background-color: #333;
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  .domainSuffix {
+    background-color: #2a2a2a;
+    border-color: #444;
+    color: #ccc;
+  }
+}
+
+/* Loading and disabled states */
+.saveButton:disabled,
+.nextButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.saveButton:disabled:hover,
+.nextButton:disabled:hover {
+  background-color: inherit;
+  border-color: inherit;
+}
+
+/* Loading animation */
+.saveButton:disabled::after {
+  content: "";
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-left: 8px;
+  border: 2px solid transparent;
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
