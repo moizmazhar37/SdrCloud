@@ -1,6 +1,7 @@
 import EmailSetup from "./EmailSetupSections/CampaignEmail/CampaignEmail";
 import React from "react";
 import { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom"; // Add this import
 import CopyText from "src/Common/CopyText/CopyText";
 import styles from "./EmailSettings.module.scss";
 import Header from "./Header/Header";
@@ -26,7 +27,20 @@ const getInitialActiveOption = (step) => {
   }
 };
 
+// Add this function to check authentication status
+const checkAuthenticationStatus = async () => {
+  try {
+    const response = await fetch("/api/status"); // Replace with your actual status API endpoint
+    const data = await response.json();
+    return data.is_authenticated;
+  } catch (error) {
+    console.error("Error checking authentication status:", error);
+    return false;
+  }
+};
+
 const EmailSettings = ({ activeStep: initialStep = 1 }) => {
+  const history = useHistory(); // Add this hook
   const [activeStep, setActiveStep] = useState(initialStep);
   const [activeOption, setActiveOption] = useState(
     getInitialActiveOption(initialStep)
@@ -50,6 +64,18 @@ const EmailSettings = ({ activeStep: initialStep = 1 }) => {
     error,
     refetch,
   } = useGetEmailTemplates(templateId);
+
+  // Add authentication check effect
+  useEffect(() => {
+    const verifyAuthentication = async () => {
+      const isAuthenticated = await checkAuthenticationStatus();
+      if (!isAuthenticated) {
+        history.push("/domains");
+      }
+    };
+
+    verifyAuthentication();
+  }, []); // Run only on component mount
 
   useEffect(() => {}, [
     campaignEmail,
