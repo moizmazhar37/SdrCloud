@@ -1,5 +1,5 @@
-export const url = "https://backend-283763506150.us-central1.run.app";
-// export const url = "http://localhost:8000";
+// export const url = "https://backend-283763506150.us-central1.run.app";
+export const url = "http://localhost:8000";
 
 export const auth = `${url}/auth`;
 export const users = `${url}/users`;
@@ -21,6 +21,7 @@ export const leads = `${url}/leads/dashboard`;
 export const alerts = `${url}/user-alerts`;
 export const tenantEmail = `${url}/tenant-email/`;
 export const emailTemplate = `${url}/email-template`;
+export const tenantEmailTemplate = `${url}/tenant-email-template/tenant-email-template`;
 export const videoTracking = `${url}/video-tracking/`;
 export const hvoTracking = `${url}/hvo-tracking`;
 export const tenantMeeting = `${url}/tenant-meeting`;
