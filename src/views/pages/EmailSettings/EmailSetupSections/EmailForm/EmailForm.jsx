@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "./EmailForm.module.scss"; 
+import styles from "./EmailForm.module.scss";
 
 const EmailForm = ({
   subject,
@@ -17,6 +17,7 @@ const EmailForm = ({
   handleSave,
   handleDelete,
   handleNext,
+  showNext = true,
 }) => {
   return (
     <div className={styles.emailSetup}>
@@ -52,7 +53,9 @@ const EmailForm = ({
           {IsHtmlTemplate && (
             <div className={styles.htmlSection}>
               <div className={styles.htmlInputContainer}>
-                <label htmlFor="htmlContent" className={styles.label}>HTML Content</label>
+                <label htmlFor="htmlContent" className={styles.label}>
+                  HTML Content
+                </label>
                 <textarea
                   id="htmlContent"
                   placeholder="Enter your HTML content..."
@@ -96,15 +99,17 @@ const EmailForm = ({
               </label>
             </div>
             <div className={styles.buttonGroup}>
-                <button onClick={handleDelete} className={styles.deleteButton}>
-                    {deleteButtonText}
-                </button>
-                <button onClick={handleSave} className={styles.saveButton}>
-                    {saveButtonText}
-                </button>
+              <button onClick={handleDelete} className={styles.deleteButton}>
+                {deleteButtonText}
+              </button>
+              <button onClick={handleSave} className={styles.saveButton}>
+                {saveButtonText}
+              </button>
+              {showNext && (
                 <button onClick={handleNext} className={styles.nextButton}>
-                    Next
+                  Next
                 </button>
+              )}
             </div>
           </div>
         </div>
