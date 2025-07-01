@@ -198,7 +198,7 @@ const Domains = ({ initialStep = 1, existingDomain = "" }) => {
                   <button
                     className={styles.deleteButton}
                     onClick={handleDelete}
-                    disabled={isDeleting || !domainInfo?.domain_id}
+                    disabled={isDeleting}
                   >
                     {isDeleting ? (
                       <>
