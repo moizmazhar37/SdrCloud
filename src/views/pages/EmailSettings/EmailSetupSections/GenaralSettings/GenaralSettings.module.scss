@@ -483,7 +483,6 @@
   }
 }
 
-/* High DPI displays */
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
   .toggleSwitch {
     &::after {
@@ -492,53 +491,6 @@
   }
 }
 
-/* Dark mode support (optional) */
-@media (prefers-color-scheme: dark) {
-  .generalSettings {
-    background-color: #1a1a1a;
-    border-color: #333;
-    color: #fff;
-  }
-
-  .toggleText,
-  .inputLabel {
-    color: #ccc;
-  }
-
-  .textInput,
-  .numberInput {
-    background-color: #2a2a2a;
-    border-color: #444;
-    color: #fff;
-
-    &:focus {
-      border-color: #0358ac;
-    }
-  }
-
-  .saveButton {
-    background-color: #2a2a2a;
-    border-color: #444;
-    color: #ccc;
-
-    &:hover {
-      background-color: #333;
-    }
-
-    &:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-  }
-
-  .domainSuffix {
-    background-color: #2a2a2a;
-    border-color: #444;
-    color: #ccc;
-  }
-}
-
-/* Loading and disabled states */
 .saveButton:disabled,
 .nextButton:disabled {
   opacity: 0.6;
