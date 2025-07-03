@@ -227,6 +227,12 @@
   }
 }
 
+.loaderContainer {
+  position: fixed;
+  top: 45%;
+  left: 45%;
+}
+
 @media screen and (max-width: 320px) {
   .emailSettingsContainer {
     padding: 12px;
