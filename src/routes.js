@@ -58,7 +58,7 @@ const BookedMeetings = lazy(() =>
 );
 
 const EmailSettings = lazy(() =>
-  import("src/views/pages/EmailSettings/EmailSettings")
+  import("src/views/pages/EmailSettingsContainer/EmailSettingsContainer")
 );
 
 const ViewGoogleSheet = lazy(() =>
@@ -368,7 +368,7 @@ export const routes = [
     component: withRoleGuard(CompanyInformation, ["SUBADMIN"]),
   },
 
-    {
+  {
     exact: true,
     path: "/email-templates",
     guard: true,
@@ -422,15 +422,6 @@ export const routes = [
     guard: true,
     layout: DashboardLayout,
     component: withRoleGuard(AddSheet, ["SUBADMIN"]),
-  },
-
-  //Email Settings and Configuration for a template
-  {
-    exact: true,
-    path: "/email-settings",
-    guard: true,
-    layout: DashboardLayout,
-    component: withRoleGuard(EmailSettings, ["SUBADMIN", "MARKETING_USER"]),
   },
 
   //Email Settings and Configuration for a template
