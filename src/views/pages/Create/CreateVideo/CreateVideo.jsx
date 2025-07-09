@@ -201,67 +201,68 @@ const CreateVideo = () => {
   };
 
   return (
-  <div className={styles.wrapper}>
-    <DynamicNavigator items={navigationItems} />
-    <div className={styles.container}>
-      <div className={styles.leftComponent}>
-        <CategoryForm
-          sheetData={sheetData}
-          sheetsLoading={sheetsLoading}
-          onTemplateSave={handleTemplateSave}
-          onSheetConnectSuccess={handleSheetConnectSuccess}
-          sectionData={sectionData}
-          isViewMode={isViewMode}
-          template_id={templateId}
-        />
-        {renderActiveForm()}
-        {elementsList && (
-          <div>
-            <div className={styles.cardContainer}>
-              <SectionCardContainer
-                elementsList={elementsList}
-                setSaveTriggered={setSaveTriggered}
-                handleEdit={handleEdit}
-              />
+    <div className={styles.wrapper}>
+      <DynamicNavigator items={navigationItems} />
+      <div className={styles.container}>
+        <div className={styles.leftComponent}>
+          <CategoryForm
+            sheetData={sheetData}
+            sheetsLoading={sheetsLoading}
+            onTemplateSave={handleTemplateSave}
+            onSheetConnectSuccess={handleSheetConnectSuccess}
+            sectionData={sectionData}
+            isViewMode={isViewMode}
+            template_id={templateId}
+          />
+          {renderActiveForm()}
+          {elementsList && (
+            <div>
+              <div className={styles.cardContainer}>
+                <SectionCardContainer
+                  elementsList={elementsList}
+                  setSaveTriggered={setSaveTriggered}
+                  handleEdit={handleEdit}
+                />
+              </div>
+              {elementsList.length > 0 && (
+                <button
+                  className={styles.createVideo}
+                  onClick={() => setIsModalOpen(true)}
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Creating..." : "Create Video"}
+                </button>
+              )}
             </div>
-            {elementsList.length > 0 && (
-              <button
-                className={styles.createVideo}
-                onClick={() => setIsModalOpen(true)}
-                disabled={isLoading}
-              >
-                {isLoading ? "Creating..." : "Create Video"}
-              </button>
-            )}
-          </div>
-        )}
+          )}
+        </div>
+        <div className={styles.rightComponent}>
+          <SectionArea
+            initialOptions={initialOptions}
+            onSectionTypeChange={handleSectionTypeChange}
+            editable={isEditable}
+            templateId={templateId}
+            elementsList={elementsList}
+            type="video"
+          />
+          {sectionData?.getVideo?.copied && sectionData?.getVideo?.sheetId === null && (
+            <DynamicFieldsList
+              templateId={templateId}
+              title="Dynamic Fields to be added"
+            />
+          )}
+        </div>
       </div>
-      <div className={styles.rightComponent}>
-        <SectionArea
-          initialOptions={initialOptions}
-          onSectionTypeChange={handleSectionTypeChange}
-          editable={isEditable}
-          templateId={templateId}
-          elementsList={elementsList}
-          type="video"
-        />
-        {/* Add the StringListPanel component here */}
-        <DynamicFieldsList 
-          templateId={templateId} 
-          title="Template Strings" 
-        />
-      </div>
-    </div>
 
-    <ConfirmationModal
-      isOpen={isModalOpen}
-      onClose={handleModalClose}
-      title="Confirm Video Creation"
-      totalRecords={totalRecords}
-      confirmationText="Are you sure you want to create a Video with this template? This also means that the emails will be sent!"
-      onAction={handleProceed}
-    />
-  </div>
-);
+      <ConfirmationModal
+        isOpen={isModalOpen}
+        onClose={handleModalClose}
+        title="Confirm Video Creation"
+        totalRecords={totalRecords}
+        confirmationText="Are you sure you want to create a Video with this template? This also means that the emails will be sent!"
+        onAction={handleProceed}
+      />
+    </div>
+  );
 }
 export default CreateVideo;

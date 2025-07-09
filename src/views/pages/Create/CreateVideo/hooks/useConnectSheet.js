@@ -25,7 +25,7 @@ export const useConnectSheet = () => {
       console.error("Error connecting sheet:", err);
 
       const errorMessage =
-        err.response?.data?.message || "Failed to connect sheet.";
+        err.response?.data?.detail || "Failed to connect sheet.";
       toast.error(errorMessage);
       setError(err);
     } finally {
