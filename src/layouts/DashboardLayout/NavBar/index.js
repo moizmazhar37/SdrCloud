@@ -57,16 +57,16 @@ const getNavSections = (userType) => {
         items: [
           {
             title: "Companies",
-            icon: "images/template/dashboard.svg",  
+            icon: "images/template/dashboard.svg",
             href: "/sdrc-dashboard",
           },
           {
             title: "Settings",
-            icon: "images/template/dashboard.svg",  
+            icon: "images/template/dashboard.svg",
             href: "/settings",
           },
-        ]
-      }
+        ],
+      },
     ],
     SUBADMIN: [
       {
@@ -111,6 +111,11 @@ const getNavSections = (userType) => {
             href: "/prospects",
           },
           {
+            title: "Agents",
+            icon: "images/template/clipboard-text.svg",
+            href: "/agents",
+          },
+          {
             title: "Settings",
             icon: "images/template/setting.svg",
             href: "/settings",
@@ -137,9 +142,9 @@ const getNavSections = (userType) => {
             icon: "images/template/setting.svg",
             href: "/settings",
           },
-        ]
-        }
-      ],
+        ],
+      },
+    ],
     SALES_USER: [
       {
         items: [
