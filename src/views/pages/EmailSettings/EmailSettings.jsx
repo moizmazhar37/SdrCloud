@@ -64,7 +64,7 @@ const EmailSettings = ({ activeStep: initialStep = 1 }) => {
   useEffect(() => {
     const verifyAuthentication = async () => {
       if (loadingDomain) {
-        return; // Still loading, don't redirect yet
+        return;
       }
 
       if (domainError) {

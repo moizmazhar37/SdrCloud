@@ -434,6 +434,14 @@ export const routes = [
     layout: DashboardLayout,
     component: withRoleGuard(EmailSettings, ["SUBADMIN", "MARKETING_USER"]),
   },
+  //duplicate route of campaign for agents tab
+  {
+    exact: true,
+    path: "/agent-campaign/:id",
+    guard: true,
+    layout: DashboardLayout,
+    component: withRoleGuard(EmailSettings, ["SUBADMIN", "MARKETING_USER"]),
+  },
   {
     exact: true,
     path: "/agents",
