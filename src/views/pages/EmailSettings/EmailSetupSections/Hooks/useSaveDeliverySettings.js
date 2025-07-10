@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { campaignSettings } from "src/config/APIConfig";
 
 const useSaveDeliverySettings = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const { id: agentIdFromUrl } = useParams();
 
   const saveDeliverySettings = async (templateId, settings) => {
     setLoading(true);
@@ -17,9 +19,11 @@ const useSaveDeliverySettings = () => {
         if (!timeString) return "00:00:57.006Z";
         return `${timeString}:57.006Z`;
       };
+      const finalAgentId = agentIdFromUrl;
 
       const requestBody = {
         template_id: templateId,
+        agent_id: finalAgentId,
         weekdays_time: convertTimeToISO(settings.weekdaysTime),
         weekend_time: convertTimeToISO(settings.weekendTime),
         max_reminders: parseInt(settings.maxReminders) || 0,
@@ -28,9 +32,6 @@ const useSaveDeliverySettings = () => {
       if (settings.start_date) {
         requestBody.start_date = settings.start_date;
       }
-
-      console.log("Request body being sent:", requestBody); // For debugging
-
       const response = await fetch(url, {
         method: "POST",
         headers: {
@@ -49,12 +50,10 @@ const useSaveDeliverySettings = () => {
 
       const data = await response.json();
       toast.success("Delivery settings saved successfully!");
-
       return data;
     } catch (err) {
       setError(err.message);
       toast.error(`Failed to save delivery settings: ${err.message}`);
-
       throw err;
     } finally {
       setLoading(false);
