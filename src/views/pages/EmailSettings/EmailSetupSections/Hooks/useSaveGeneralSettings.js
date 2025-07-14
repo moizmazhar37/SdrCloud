@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { campaignSettings } from "src/config/APIConfig";
 
 const useSaveGeneralSettings = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const { id: agentIdFromUrl } = useParams();
 
   const saveGeneralSettings = async (templateId, settings) => {
     setLoading(true);
@@ -16,11 +18,12 @@ const useSaveGeneralSettings = () => {
 
       const requestBody = {
         template_id: templateId,
+        agent_id: agentIdFromUrl,
         sms_enabled: settings.smsEnabled,
         email_enabled: settings.emailEnabled,
         from_email: settings.fromEmail,
         from_name: settings.fromName,
-        reply_to: settings.replyToEmail,  
+        reply_to: settings.replyToEmail,
         max_sms_per_day: parseInt(settings.maxSmsPerDay) || 0,
         max_emails_per_day: parseInt(settings.maxEmailPerDay) || 0,
       };
@@ -59,6 +62,7 @@ const useSaveGeneralSettings = () => {
     saveGeneralSettings,
     loading,
     error,
+    agentId: agentIdFromUrl,
   };
 };
 

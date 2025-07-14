@@ -57,33 +57,33 @@ const getNavSections = (userType) => {
         items: [
           {
             title: "Companies",
-            icon: "images/template/dashboard.svg",  
+            icon: "images/template/dashboard.svg",
             href: "/sdrc-dashboard",
           },
           {
             title: "Settings",
-            icon: "images/template/dashboard.svg",  
+            icon: "images/template/dashboard.svg",
             href: "/settings",
           },
-        ]
-      }
+        ],
+      },
     ],
     SUBADMIN: [
       {
         items: [
           {
             title: "Dashboard",
-            icon: "images/template/dashboard.svg",
+            icon: "/images/template/dashboard.svg",
             href: "/dashboard",
           },
           {
             title: "Users",
-            icon: "images/usersnew.png",
+            icon: "/images/usersnew.png",
             href: "/companyUsers-List",
           },
           {
             title: "Visitors",
-            icon: "images/Leads.svg",
+            icon: "/images/Leads.svg",
             href: "/leads",
             items: [
               {
@@ -102,17 +102,22 @@ const getNavSections = (userType) => {
           },
           {
             title: "Create",
-            icon: "images/template/play.svg",
+            icon: "/images/template/play.svg",
             href: "/CreateTemplate",
           },
           {
             title: "Prospects",
-            icon: "images/template/clipboard-text.svg",
+            icon: "/images/template/clipboard-text.svg",
             href: "/prospects",
           },
           {
+            title: "Agents",
+            icon: "/images/template/clipboard-text.svg",
+            href: "/agents",
+          },
+          {
             title: "Settings",
-            icon: "images/template/setting.svg",
+            icon: "/images/template/setting.svg",
             href: "/settings",
           },
         ],
@@ -137,9 +142,9 @@ const getNavSections = (userType) => {
             icon: "images/template/setting.svg",
             href: "/settings",
           },
-        ]
-        }
-      ],
+        ],
+      },
+    ],
     SALES_USER: [
       {
         items: [
@@ -257,7 +262,7 @@ const NavBar = ({ onMobileClose, openMobile, drawerOpen, onToggleDrawer }) => {
   const drawerContent = (
     <div className="navbar-container">
       <div className="logo-container">
-        <img src="images/template/SDR.png" alt="SDR Logo" className="logo" />
+        <img src="/images/template/SDR.png" alt="SDR Logo" className="logo" />
       </div>
       <div className="content-nav">
         {sections.map((section, index) => (

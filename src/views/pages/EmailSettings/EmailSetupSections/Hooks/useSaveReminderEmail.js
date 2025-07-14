@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 import { reminderEmail } from "src/config/APIConfig";
 
@@ -6,8 +7,16 @@ const useSaveReminderEmail = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
+  const { id: agentIdFromUrl } = useParams();
 
-  const saveReminderEmail = async ({ subject, message, isHtml, send_after_days, existingTemplates = [], templateId }) => {
+  const saveReminderEmail = async ({
+    subject,
+    message,
+    isHtml,
+    send_after_days,
+    existingTemplates = [],
+    templateId,
+  }) => {
     setLoading(true);
     setError(null);
     setSuccess(false);
@@ -28,6 +37,7 @@ const useSaveReminderEmail = () => {
             body: message,
             is_html: isHtml,
             template_id: templateId,
+            agent_id: agentIdFromUrl,
             sequence: nextSequence,
             send_after_days: send_after_days,
           },
@@ -52,7 +62,13 @@ const useSaveReminderEmail = () => {
     }
   };
 
-  return { saveReminderEmail, loading, error, success };
+  return {
+    saveReminderEmail,
+    loading,
+    error,
+    success,
+    agentId: agentIdFromUrl,
+  };
 };
 
 export default useSaveReminderEmail;

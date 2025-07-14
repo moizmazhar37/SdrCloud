@@ -135,6 +135,8 @@ const DomainsContainer = lazy(() =>
   import("src/views/pages/settings/Integrations/Domains/DomainContainer")
 );
 
+const Agents = lazy(() => import("src/views/pages/EmailSettings/Agent/Agent"));
+
 export const routes = [
   {
     exact: true,
@@ -431,6 +433,21 @@ export const routes = [
     guard: true,
     layout: DashboardLayout,
     component: withRoleGuard(EmailSettings, ["SUBADMIN", "MARKETING_USER"]),
+  },
+  //duplicate route of campaign for agents tab
+  {
+    exact: true,
+    path: "/agent-campaign/:id",
+    guard: true,
+    layout: DashboardLayout,
+    component: withRoleGuard(EmailSettings, ["SUBADMIN", "MARKETING_USER"]),
+  },
+  {
+    exact: true,
+    path: "/agents",
+    guard: true,
+    layout: DashboardLayout,
+    component: withRoleGuard(Agents, ["SUBADMIN", "MARKETING_USER"]),
   },
 
   //Booked Meetings

@@ -35,7 +35,6 @@ const EmailSetup = ({
   const { saveCampaignEmail } = useSaveCampaignEmail();
   const { updateCampaignEmail } = useUpdateEmailTemplates();
   const { deleteCampaignEmail } = useDeleteCampaignEmail();
-  console.log(data);
 
   useEffect(() => {
     if (firstRenderRef.current) {
