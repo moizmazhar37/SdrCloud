@@ -53,13 +53,11 @@ const AdminDashboard = ({
     shouldMakeApiCalls ? dateRange.endDate : null
   );
 
-  // Use external data if provided, otherwise use API data
   const currentDashboardData = externalData || dashboardData;
   const currentLoading = externalData ? false : dashboardLoading;
 
   console.log(currentDashboardData);
 
-  //Get Alerts for user - only if making API calls
   const {
     data: alerts = [],
     loading: alertsLoading,
@@ -92,7 +90,7 @@ const AdminDashboard = ({
 
   const closePopup = () => {
     setIsPopUpOpen(false);
-    setPopupHeading(""); // Reset heading when closing popup
+    setPopupHeading("");
   };
 
   if (currentLoading)
@@ -102,14 +100,12 @@ const AdminDashboard = ({
       </div>
     );
 
-  // Only render the dashboard when data is available
   if (!currentDashboardData) {
     return null;
   }
 
   const showTopTemplates = false;
 
-  // Destructure the data
   const {
     supportInfo,
     metrics,
@@ -123,13 +119,13 @@ const AdminDashboard = ({
     userCreditsData,
     topUsersData,
     topTemplatesData,
-    prospect_list_data = [], // Default to empty array if not provided
+    prospect_list_data = [],
   } = currentDashboardData;
 
   const growthRates_metrics = metrics?.growth_rates;
   const growthRates_summaryStats = summaryStats?.growth_rates;
 
-  // Updated table headers for users to match the actual data structure
+  // Table headers for top users
   const tableHeaders = [
     { key: "name", label: "Name" },
     { key: "email", label: "Email" },
