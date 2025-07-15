@@ -58,7 +58,7 @@ const BookedMeetings = lazy(() =>
 );
 
 const EmailSettings = lazy(() =>
-  import("src/views/pages/EmailSettings/EmailSettings")
+  import("src/views/pages/EmailSettingsContainer/EmailSettingsContainer")
 );
 
 const ViewGoogleSheet = lazy(() =>
@@ -134,6 +134,8 @@ const Domains = lazy(() =>
 const DomainsContainer = lazy(() =>
   import("src/views/pages/settings/Integrations/Domains/DomainContainer")
 );
+
+const Agents = lazy(() => import("src/views/pages/EmailSettings/Agent/Agent"));
 
 export const routes = [
   {
@@ -368,7 +370,7 @@ export const routes = [
     component: withRoleGuard(CompanyInformation, ["SUBADMIN"]),
   },
 
-    {
+  {
     exact: true,
     path: "/email-templates",
     guard: true,
@@ -432,14 +434,20 @@ export const routes = [
     layout: DashboardLayout,
     component: withRoleGuard(EmailSettings, ["SUBADMIN", "MARKETING_USER"]),
   },
-
-  //Email Settings and Configuration for a template
+  //duplicate route of campaign for agents tab
   {
     exact: true,
-    path: "/email-settings",
+    path: "/agent-campaign/:id",
     guard: true,
     layout: DashboardLayout,
     component: withRoleGuard(EmailSettings, ["SUBADMIN", "MARKETING_USER"]),
+  },
+  {
+    exact: true,
+    path: "/agents",
+    guard: true,
+    layout: DashboardLayout,
+    component: withRoleGuard(Agents, ["SUBADMIN", "MARKETING_USER"]),
   },
 
   //Booked Meetings

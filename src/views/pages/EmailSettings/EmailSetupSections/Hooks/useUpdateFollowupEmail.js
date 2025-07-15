@@ -20,7 +20,7 @@ const useUpdateFollowupEmail = () => {
     subject,
     message,
     isHtml,
-    templateId,
+    followupEmailId, // Changed from templateId to be more explicit
     action,
   }) => {
     setLoading(true);
@@ -28,15 +28,15 @@ const useUpdateFollowupEmail = () => {
     setSuccess(false);
 
     try {
-      const url = buildUpdateUrl(templateId);
+      const url = buildUpdateUrl(followupEmailId);
       const response = await axios.patch(
         url,
         {
           subject,
           body: message,
           is_html: isHtml,
-          action: getActionKey(action), // Transform action here
-          template_id: templateId, // Fixed typo: was "teemplate_id"
+          action: getActionKey(action),
+          // Remove template_id from the payload as it's not needed for updates
         },
         {
           headers: {

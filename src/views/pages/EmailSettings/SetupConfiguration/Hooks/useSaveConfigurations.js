@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 import { campaign } from "src/config/APIConfig";
 
@@ -6,6 +7,7 @@ const useSaveConfigurations = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [response, setResponse] = useState(null);
+  const { id: agentIdFromUrl } = useParams();
 
   const saveConfigurations = async (payload) => {
     setLoading(true);
@@ -15,12 +17,21 @@ const useSaveConfigurations = () => {
     try {
       const token = localStorage.getItem("token");
 
-      const res = await axios.post(`${campaign}/trigger-conditions`, payload, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
+      const updatedPayload = {
+        ...payload,
+        agent_id: agentIdFromUrl,
+      };
+
+      const res = await axios.post(
+        `${campaign}/trigger-conditions`,
+        updatedPayload,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       setResponse(res.data);
       return res.data;
@@ -32,7 +43,13 @@ const useSaveConfigurations = () => {
     }
   };
 
-  return { saveConfigurations, loading, error, response };
+  return {
+    saveConfigurations,
+    loading,
+    error,
+    response,
+    agentId: agentIdFromUrl,
+  };
 };
 
 export default useSaveConfigurations;

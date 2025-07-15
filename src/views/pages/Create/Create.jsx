@@ -25,7 +25,7 @@ const Create = () => {
     { label: "Categories", key: "category_name" },
     { label: "Total Records", key: "total_records" },
     { label: "Sent", key: "sent" },
-    { label: "Campaigns", key: "campaigns" },
+    // { label: "Campaigns", key: "campaigns" },
     { label: "Action", key: "actions" },
   ];
 
@@ -34,12 +34,12 @@ const Create = () => {
     await deleteTemplate(id);
   };
 
-  const handleBuildCampaign = (templateId) => {
-    // Store template ID in localStorage
-    localStorage.setItem("template_id", templateId);
-    // Navigate to email settings route
-    history.push("/email-settings");
-  };
+  // const handleBuildCampaign = (templateId) => {
+  //   // Store template ID in localStorage
+  //   localStorage.setItem("template_id", templateId);
+  //   // Navigate to email settings route
+  //   history.push("/email-settings");
+  // };
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -60,14 +60,14 @@ const Create = () => {
         </div>
       ),
       sent: "--",
-      campaigns: (
-        <button
-          className={styles.buildCampaignButton}
-          onClick={() => handleBuildCampaign(row.id)}
-        >
-          Build Campaign
-        </button>
-      ),
+      // campaigns: (
+      //   <button
+      //     className={styles.buildCampaignButton}
+      //     onClick={() => handleBuildCampaign(row.id)}
+      //   >
+      //     Build Campaign
+      //   </button>
+      // ),
       actions: (
         <Dropdown
           options={[

@@ -64,7 +64,7 @@ const EmailSettings = ({ activeStep: initialStep = 1 }) => {
   useEffect(() => {
     const verifyAuthentication = async () => {
       if (loadingDomain) {
-        return; // Still loading, don't redirect yet
+        return;
       }
 
       if (domainError) {
@@ -239,7 +239,6 @@ const EmailSettings = ({ activeStep: initialStep = 1 }) => {
     return activeStep === 2 ? "Email Setup" : "Email Settings";
   };
 
-  // Show loading state while domain status is being fetched
   if (loadingDomain) {
     return (
       <div className={styles.emailSettingsContainer}>

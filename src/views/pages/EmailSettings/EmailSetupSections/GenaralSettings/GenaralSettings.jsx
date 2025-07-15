@@ -22,14 +22,16 @@ const GeneralSettings = ({ onNext, onDataChange, initialData }) => {
 
   const TEMPLATE_ID = localStorage.getItem("template_id");
   const { saveGeneralSettings, loading, error } = useSaveGeneralSettings();
-
   useEffect(() => {
     if (initialData && !isInitialized.current) {
       setSmsEnabled(initialData.sms_enabled || false);
       setEmailEnabled(initialData.email_enabled || true);
       setMaxSmsPerDay(String(initialData.max_sms_per_day || 5));
       setMaxEmailPerDay(String(initialData.max_emails_per_day || 5));
-      setFromEmail(initialData.from_email || "");
+      const fromEmailValue = initialData.from_email
+        ? initialData.from_email.split("@")[0]
+        : "";
+      setFromEmail(fromEmailValue);
       setFromName(initialData.from_name || "");
       setReplyToEmail(initialData.reply_to || "");
 
@@ -40,7 +42,7 @@ const GeneralSettings = ({ onNext, onDataChange, initialData }) => {
         emailEnabled: initialData.email_enabled || true,
         maxSmsPerDay: String(initialData.max_sms_per_day || 5),
         maxEmailPerDay: String(initialData.max_emails_per_day || 5),
-        fromEmail: initialData.from_email || "",
+        fromEmail: fromEmailValue,
         fromName: initialData.from_name || "",
         replyToEmail: initialData.reply_to || "",
       };
