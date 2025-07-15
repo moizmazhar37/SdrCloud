@@ -8,9 +8,8 @@ import TopUsers from "../MainDashboard/TableCardBlock/TabularCard";
 import VisitorsGraph from "./VisitorsGraph/VisitorsGraph.jsx";
 import UserCreditsChart from "./UserCreditsChart/UserCreditsChart";
 import ActiveProspectsLifecycle from "./ActiveProspectsLifeCycle/ActiveProspectsLifeCycle";
-import CardPopUpGraph from "../MainDashboard/CardBlock/CardPopUpGraph/CardPopUpGraph";
 import useGetAdminDashboard from "../MainDashboard/Hooks/useGetAdminDashboard";
-import useGetMiniGraphData from "../MainDashboard/Hooks/useGetMiniGraphData";
+import useGetDrilldownScreensData from "../../EmailSettings/EmailSetupSections/Hooks/useGetDrilldownScreensData";
 import Graph from "../MainDashboard/Graph/Graph";
 import Loader from "src/Common/Loader/Loader";
 import useGetRealTimeAlerts from "../MainDashboard/Hooks/Alerts/useGetAlerts";
@@ -26,22 +25,19 @@ const AdminDashboard = ({
   const userType = localStorage.getItem("userType");
   const [toastMessages, setToastMessages] = useState([]);
   const [dateRange, setDateRange] = useState(initialDateRange);
-  const [isPopUpOpen, setIsPopUpOpen] = useState(false);
-  const [popupHeading, setPopupHeading] = useState("");
+  const [selectedCardHeading, setSelectedCardHeading] = useState(null);
   const { downloadCSV, loading: csvLoading } = useDownloadCSV();
 
   // Only make API calls if external data is not provided
   const shouldMakeApiCalls = !externalData;
 
-  // Get mini graph data for popup - pass date range parameters
+  // Get drilldown data for the selected card
   const {
-    data: miniGraphData,
-    loading: miniGraphLoading,
-    error: miniGraphError,
-  } = useGetMiniGraphData(
-    shouldMakeApiCalls ? popupHeading : null,
-    shouldMakeApiCalls ? dateRange.startDate : null,
-    shouldMakeApiCalls ? dateRange.endDate : null
+    data: drilldownData,
+    loading: drilldownLoading,
+    error: drilldownError,
+  } = useGetDrilldownScreensData(
+    shouldMakeApiCalls ? selectedCardHeading : null
   );
 
   const {
@@ -70,6 +66,26 @@ const AdminDashboard = ({
     }
   }, [alerts, alertsLoading, shouldMakeApiCalls]);
 
+  // Log drilldown data when it's received
+  useEffect(() => {
+    if (drilldownData) {
+      console.log(
+        `Drilldown data for "${selectedCardHeading}":`,
+        drilldownData
+      );
+    }
+  }, [drilldownData, selectedCardHeading]);
+
+  // Log drilldown errors
+  useEffect(() => {
+    if (drilldownError) {
+      console.error(
+        `Error fetching drilldown data for "${selectedCardHeading}":`,
+        drilldownError
+      );
+    }
+  }, [drilldownError, selectedCardHeading]);
+
   const handleDateRangeChange = (newDateRange) => {
     console.log("Date range updated:", newDateRange);
     setDateRange(newDateRange);
@@ -81,16 +97,11 @@ const AdminDashboard = ({
   };
 
   const handleCardClick = (heading) => {
-    // Only handle card clicks if making API calls (popup functionality)
+    // Only handle card clicks if making API calls (drilldown functionality)
     if (shouldMakeApiCalls) {
-      setPopupHeading(heading);
-      setIsPopUpOpen(true);
+      console.log(`Card clicked: ${heading}`);
+      setSelectedCardHeading(heading);
     }
-  };
-
-  const closePopup = () => {
-    setIsPopUpOpen(false);
-    setPopupHeading("");
   };
 
   if (currentLoading)
@@ -231,8 +242,8 @@ const AdminDashboard = ({
           <Card
             heading="Campaigns"
             amount={formatAmount(summaryStats.campaigns)}
-            // isClickable={true}
-            // onClick={() => handleCardClick("Campaigns")}
+            isClickable={true}
+            onClick={() => handleCardClick("Campaigns")}
             // Only pass `change` if it's not null
             {...(growthRates_summaryStats?.campaigns !== null && {
               change: growthRates_summaryStats?.campaigns,
@@ -252,18 +263,18 @@ const AdminDashboard = ({
           <Card
             heading="Meetings Booked"
             amount={formatAmount(summaryStats.meetingsBooked)}
-            // isClickable={true}
-            // onClick={() => handleCardClick("Meetings Booked")}
+            isClickable={true}
+            onClick={() => handleCardClick("Meetings Booked")}
             {...(growthRates_summaryStats?.meetingsBooked !== null && {
               change: growthRates_summaryStats?.meetingsBooked,
             })}
           />
 
           <Card
-            heading="Meeting Attended"
+            heading="Meetings Attended"
             amount={formatAmount(summaryStats.meetingsAttended)}
-            // isClickable={true}
-            // onClick={() => handleCardClick("Meeting Attended")}
+            isClickable={true}
+            onClick={() => handleCardClick("Meetings Attended")}
             {...(growthRates_summaryStats?.meetingsAttended !== null && {
               change: growthRates_summaryStats?.meetingsAttended,
             })}
@@ -342,17 +353,11 @@ const AdminDashboard = ({
       </div>
       {userType != "SDRC_ADMIN" && <MeetingsTable />}
 
-      {/* Popup component - only render if making API calls */}
-      {shouldMakeApiCalls && (
-        <CardPopUpGraph
-          isOpen={isPopUpOpen}
-          onClose={closePopup}
-          heading={popupHeading}
-          graphData={miniGraphData}
-          loading={miniGraphLoading}
-          error={miniGraphError}
-          dateRange={dateRange}
-        />
+      {/* Display drilldown loading state */}
+      {drilldownLoading && (
+        <div className={styles.drilldownLoading}>
+          Loading drilldown data for "{selectedCardHeading}"...
+        </div>
       )}
 
       <ToastManager toastMessages={toastMessages} />
