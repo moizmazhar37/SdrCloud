@@ -75,7 +75,7 @@ const handleAudioDescriptionSave = async (descriptionData) => {
     file: null,
     templateId,
     audioDescription: descriptionData?.audioDesc,
-    voiceModel: descriptionData?.selectedVoiceModel?.name,
+    voiceModel: descriptionData?.selectedVoiceModel?.dev_name,
   });
 
   console.log(descriptionData)
