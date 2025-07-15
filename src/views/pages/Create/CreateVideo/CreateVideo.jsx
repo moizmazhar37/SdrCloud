@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import CategoryForm from "./CategoryForm/CategoryForm";
 import SectionArea from "./SectionArea/SectionArea";
 import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
+import DynamicFieldsList from "src/Common/DynamicFieldsList/DynamicFieldsList";
 import useGetSheets from "../Hooks/useGetSheets";
 import styles from "./CreateVideo.module.scss";
 import ImageUpload from "./ImageUpload/ImageUpload";
@@ -244,6 +245,12 @@ const CreateVideo = () => {
             elementsList={elementsList}
             type="video"
           />
+          {sectionData?.getVideo?.copied && sectionData?.getVideo?.sheetId === null && (
+            <DynamicFieldsList
+              templateId={templateId}
+              title="Dynamic Fields to be added"
+            />
+          )}
         </div>
       </div>
 
@@ -257,6 +264,5 @@ const CreateVideo = () => {
       />
     </div>
   );
-};
-
+}
 export default CreateVideo;
