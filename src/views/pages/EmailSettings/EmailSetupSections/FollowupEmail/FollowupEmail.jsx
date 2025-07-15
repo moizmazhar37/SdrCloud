@@ -20,6 +20,9 @@ const FollowupEmail = ({
   isReadOnly = false,
   templateId,
 }) => {
+  // State to track newly created follow-up email IDs
+  const [newlyCreatedIds, setNewlyCreatedIds] = useState({});
+
   const groupedTemplates = useMemo(() => {
     console.log("DATA===", data);
     if (Array.isArray(data)) {
@@ -38,6 +41,7 @@ const FollowupEmail = ({
       return !!(template.subject || template.body || template.htmlContent);
     });
   }, [groupedTemplates]);
+
   const initialAction = groupedTemplates["email"]
     ? "email"
     : Object.keys(groupedTemplates)[0] || "";
@@ -89,6 +93,7 @@ const FollowupEmail = ({
 
     setsaveButtonText(getSaveButtonText());
   }, [selectedAction, groupedTemplates]);
+
   useEffect(() => {
     const newExistingActions = Object.keys(groupedTemplates).filter(
       (action) => {
@@ -136,23 +141,36 @@ const FollowupEmail = ({
       message: IsHtmlTemplate ? htmlContent : message,
       isHtml: IsHtmlTemplate,
       action: selectedAction,
-      templateId,
+      templateId, // This should be the main template ID for creating new follow-up emails
     };
 
     try {
       setsaveButtonText(isFirstSave ? "Saving..." : "Updating...");
       if (isFirstSave) {
-        await saveFollowupEmail(payload);
+        // Save new follow-up email
+        const response = await saveFollowupEmail(payload);
+        // Store the newly created ID
+        setNewlyCreatedIds((prev) => ({
+          ...prev,
+          [selectedAction]: response.id,
+        }));
         toast.success("Follow up email saved successfully.");
       } else {
-        const templateId = currentData.id;
-        if (!templateId) {
-          toast.error("Template ID is missing for update.");
+        const followupEmailId =
+          newlyCreatedIds[selectedAction] || currentData.id;
+        if (!followupEmailId) {
+          toast.error("Follow-up email ID is missing for update.");
           setsaveButtonText(getSaveButtonText());
           saveInProgress.current = false;
           return;
         }
-        await updateFollowupEmail({ templateId, ...payload });
+        await updateFollowupEmail({
+          followupEmailId,
+          subject,
+          message: IsHtmlTemplate ? htmlContent : message,
+          isHtml: IsHtmlTemplate,
+          action: selectedAction,
+        });
         toast.success("Follow up email updated successfully.");
       }
 
@@ -172,13 +190,19 @@ const FollowupEmail = ({
   };
 
   const handleDeleteConfirm = async () => {
-    if (!templateId) {
-      toast.error("Template ID is missing for deletion.");
+    const followupEmailId = newlyCreatedIds[selectedAction] || currentData.id;
+    if (!followupEmailId) {
+      toast.error("Follow-up email ID is missing for deletion.");
       return;
     }
     try {
-      await deleteFollowupEmail(templateId);
+      await deleteFollowupEmail(followupEmailId);
       toast.success("Follow up email deleted successfully.");
+      setNewlyCreatedIds((prev) => {
+        const updated = { ...prev };
+        delete updated[selectedAction];
+        return updated;
+      });
 
       setSubject("");
       setMessage(defaultMessage);

@@ -10,23 +10,24 @@ import Loader from "src/Common/Loader/Loader";
 import styles from "./Agent.module.scss";
 
 const Agent = () => {
-  const history = useHistory(); // Add this hook
+  const history = useHistory();
 
   const {
     data: agents,
     loading: agentsLoading,
     error: agentsError,
+    refetch: refetchAgents, // Destructure the refetch function
   } = useGetAgents();
   const { data: sheets } = useGoogleSheetsData();
   console.log(sheets);
   const { data } = useTemplateList();
-  const { loading, error, data: saveData, postAgent } = useSaveAgent(); // Use the hook
+  const { loading, error, data: saveData, postAgent } = useSaveAgent();
 
   const [formData, setFormData] = useState({
     email: "",
     agentName: "",
     selectedTemplate: "",
-    templateType: "HVO", // Default to HVO
+    templateType: "HVO",
   });
 
   const [errors, setErrors] = useState({});
@@ -146,7 +147,20 @@ const Agent = () => {
         );
 
         console.log("Agent saved successfully!");
-        // You can add additional success handling here if needed
+
+        // Refetch agents list after successful save
+        await refetchAgents();
+
+        // Optionally clear the form after successful save
+        setFormData({
+          email: "",
+          agentName: "",
+          selectedTemplate: "",
+          templateType: "HVO",
+        });
+
+        // Clear any errors
+        setErrors({});
       } catch (error) {
         console.error("Error saving agent:", error);
         // Error handling is already done in the hook via toast
