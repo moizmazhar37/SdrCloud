@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 import { followupEmail } from "src/config/APIConfig";
 
@@ -6,8 +7,8 @@ const useSaveFollowupEmail = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
+  const { id: agentIdFromUrl } = useParams();
 
-  // Map frontend action values to backend action values
   const getActionKey = (action) => {
     const actionMap = {
       email: "OPEN",
@@ -35,7 +36,8 @@ const useSaveFollowupEmail = () => {
           body: message,
           is_html: isHtml,
           template_id: templateId,
-          action: getActionKey(action), // Transform action here
+          agent_id: agentIdFromUrl,
+          action: getActionKey(action),
         },
         {
           headers: {
@@ -59,7 +61,13 @@ const useSaveFollowupEmail = () => {
     }
   };
 
-  return { saveFollowupEmail, loading, error, success };
+  return {
+    saveFollowupEmail,
+    loading,
+    error,
+    success,
+    agentId: agentIdFromUrl,
+  };
 };
 
 export default useSaveFollowupEmail;

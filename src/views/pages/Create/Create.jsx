@@ -7,6 +7,7 @@ import hvo from "src/images/Hvo.png";
 import video from "src/images/video.png";
 import useTemplateList from "./Hooks/useTemplateList";
 import useDeleteTemplate from "./Hooks/useDeleteTemplate";
+import useDuplicateTemplate from "./Hooks/useDuplicateTemplate";
 import WarningModal from "src/Common/Modal/Modal";
 import Loader from "src/Common/Loader/Loader";
 import styles from "./Create.module.scss";
@@ -15,6 +16,7 @@ const Create = () => {
   const history = useHistory();
   const { data, loading, refetch } = useTemplateList();
   const { deleteTemplate, loading: deleting } = useDeleteTemplate(refetch);
+  const { duplicateTemplate, loading: duplicating, data: duplicateData } = useDuplicateTemplate(refetch);
   const [activeTab, setActiveTab] = useState("VIDEO");
   const [modalData, setModalData] = useState({ isOpen: false, id: null });
 
@@ -25,7 +27,7 @@ const Create = () => {
     { label: "Categories", key: "category_name" },
     { label: "Total Records", key: "total_records" },
     { label: "Sent", key: "sent" },
-    { label: "Campaigns", key: "campaigns" },
+    // { label: "Campaigns", key: "campaigns" },
     { label: "Action", key: "actions" },
   ];
 
@@ -34,12 +36,36 @@ const Create = () => {
     await deleteTemplate(id);
   };
 
-  const handleBuildCampaign = (templateId) => {
-    // Store template ID in localStorage
-    localStorage.setItem("template_id", templateId);
-    // Navigate to email settings route
-    history.push("/email-settings");
+  const handleDuplicate = async (id) => {
+    const result = await duplicateTemplate(id);
+
+    if (!result?.template_id) {
+      console.error("Failed to retrieve duplicated template ID");
+      return;
+    }
+
+    const newId = result.template_id;
+
+    const route =
+      activeTab === "HVO"
+        ? "/create-hvo-template"
+        : "/createtemplate&Video";
+
+    history.push({
+      pathname: route,
+      state: "summary",
+      search: `templateId=${newId}`,
+    });
   };
+
+
+
+  // const handleBuildCampaign = (templateId) => {
+  //   // Store template ID in localStorage
+  //   localStorage.setItem("template_id", templateId);
+  //   // Navigate to email settings route
+  //   history.push("/email-settings");
+  // };
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -60,14 +86,14 @@ const Create = () => {
         </div>
       ),
       sent: "--",
-      campaigns: (
-        <button
-          className={styles.buildCampaignButton}
-          onClick={() => handleBuildCampaign(row.id)}
-        >
-          Build Campaign
-        </button>
-      ),
+      // campaigns: (
+      //   <button
+      //     className={styles.buildCampaignButton}
+      //     onClick={() => handleBuildCampaign(row.id)}
+      //   >
+      //     Build Campaign
+      //   </button>
+      // ),
       actions: (
         <Dropdown
           options={[
@@ -100,6 +126,11 @@ const Create = () => {
                   search: `templateId=${row.id}`,
                 });
               },
+            },
+            {
+              label: "Duplicate",
+              value: "Duplicate",
+              onClick: () => handleDuplicate(row.id),
             },
             {
               label: "Delete",
@@ -161,7 +192,7 @@ const Create = () => {
       </div>
 
       <div className={styles.tableContainer}>
-        {loading ? (
+        {loading || deleting || duplicating ? (
           <div className={styles.loaderWrapper}>{<Loader size={160} />}</div>
         ) : (
           <Table headers={headers} data={tableData} />

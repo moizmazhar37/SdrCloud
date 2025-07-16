@@ -1,7 +1,7 @@
 import EmailSetup from "./EmailSetupSections/CampaignEmail/CampaignEmail";
 import React from "react";
 import { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom"; // Add this import
+import { useHistory } from "react-router-dom";
 import CopyText from "src/Common/CopyText/CopyText";
 import styles from "./EmailSettings.module.scss";
 import Header from "./Header/Header";
@@ -13,6 +13,8 @@ import GeneralSettings from "./EmailSetupSections/GenaralSettings/GenaralSetting
 import SetupConfiguration from "./SetupConfiguration/SetupConfiguration";
 import useGetEmailTemplates from "./EmailSetupSections/Hooks/useGetEmailTemplates";
 import useGetCampaignData from "./EmailSetupSections/Hooks/useGetCampaignData";
+import useGetStatus from "../settings/Integrations/Domains/Hooks/useGetDomainStatus";
+import Loader from "src/Common/Loader/Loader";
 
 const getInitialActiveOption = (step) => {
   switch (step) {
@@ -27,24 +29,18 @@ const getInitialActiveOption = (step) => {
   }
 };
 
-// Add this function to check authentication status
-const checkAuthenticationStatus = async () => {
-  try {
-    const response = await fetch("/api/status"); // Replace with your actual status API endpoint
-    const data = await response.json();
-    return data.is_authenticated;
-  } catch (error) {
-    console.error("Error checking authentication status:", error);
-    return false;
-  }
-};
-
 const EmailSettings = ({ activeStep: initialStep = 1 }) => {
-  const history = useHistory(); // Add this hook
+  const history = useHistory();
   const [activeStep, setActiveStep] = useState(initialStep);
   const [activeOption, setActiveOption] = useState(
     getInitialActiveOption(initialStep)
   );
+
+  const {
+    data: domainStatus,
+    loading: loadingDomain,
+    error: domainError,
+  } = useGetStatus();
 
   const [deliveryData, setDeliveryData] = useState({});
   const [generalData, setGeneralData] = useState({});
@@ -65,17 +61,24 @@ const EmailSettings = ({ activeStep: initialStep = 1 }) => {
     refetch,
   } = useGetEmailTemplates(templateId);
 
-  // Add authentication check effect
   useEffect(() => {
     const verifyAuthentication = async () => {
-      const isAuthenticated = await checkAuthenticationStatus();
-      if (!isAuthenticated) {
+      if (loadingDomain) {
+        return;
+      }
+
+      if (domainError) {
+        console.error("Error loading domain status:", domainError);
+        history.push("/domains");
+        return;
+      }
+      if (!domainStatus || !domainStatus.is_authenticated) {
         history.push("/domains");
       }
     };
 
     verifyAuthentication();
-  }, []); // Run only on component mount
+  }, [domainStatus, loadingDomain, domainError, history]);
 
   useEffect(() => {}, [
     campaignEmail,
@@ -213,7 +216,7 @@ const EmailSettings = ({ activeStep: initialStep = 1 }) => {
             <GeneralSettings
               onNext={handleGeneralSettingsNext}
               onDataChange={handleGeneralDataChange}
-              initialData={campaignData} // Pass campaign data
+              initialData={campaignData}
             />
           );
       }
@@ -235,6 +238,16 @@ const EmailSettings = ({ activeStep: initialStep = 1 }) => {
   const getSidebarHeading = () => {
     return activeStep === 2 ? "Email Setup" : "Email Settings";
   };
+
+  if (loadingDomain) {
+    return (
+      <div className={styles.emailSettingsContainer}>
+        <div className={styles.loaderContainer}>
+          <Loader />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.emailSettingsContainer}>
