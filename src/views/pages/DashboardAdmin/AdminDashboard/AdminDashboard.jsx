@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import DateRangeDropdown from "./DateRangeDropdown/DateRangeDropdown";
 import SupportContactLabel from "./SupportContactLabel/SupportContactLabel";
 import Card from "../MainDashboard/CardBlock/Card";
@@ -9,7 +10,6 @@ import VisitorsGraph from "./VisitorsGraph/VisitorsGraph.jsx";
 import UserCreditsChart from "./UserCreditsChart/UserCreditsChart";
 import ActiveProspectsLifecycle from "./ActiveProspectsLifeCycle/ActiveProspectsLifeCycle";
 import useGetAdminDashboard from "../MainDashboard/Hooks/useGetAdminDashboard";
-import useGetDrilldownScreensData from "../../EmailSettings/EmailSetupSections/Hooks/useGetDrilldownScreensData";
 import Graph from "../MainDashboard/Graph/Graph";
 import Loader from "src/Common/Loader/Loader";
 import useGetRealTimeAlerts from "../MainDashboard/Hooks/Alerts/useGetAlerts";
@@ -23,22 +23,13 @@ const AdminDashboard = ({
   initialDateRange = { startDate: null, endDate: null },
 }) => {
   const userType = localStorage.getItem("userType");
+  const history = useHistory();
   const [toastMessages, setToastMessages] = useState([]);
   const [dateRange, setDateRange] = useState(initialDateRange);
-  const [selectedCardHeading, setSelectedCardHeading] = useState(null);
   const { downloadCSV, loading: csvLoading } = useDownloadCSV();
 
   // Only make API calls if external data is not provided
   const shouldMakeApiCalls = !externalData;
-
-  // Get drilldown data for the selected card
-  const {
-    data: drilldownData,
-    loading: drilldownLoading,
-    error: drilldownError,
-  } = useGetDrilldownScreensData(
-    shouldMakeApiCalls ? selectedCardHeading : null
-  );
 
   const {
     data: dashboardData,
@@ -66,26 +57,6 @@ const AdminDashboard = ({
     }
   }, [alerts, alertsLoading, shouldMakeApiCalls]);
 
-  // Log drilldown data when it's received
-  useEffect(() => {
-    if (drilldownData) {
-      console.log(
-        `Drilldown data for "${selectedCardHeading}":`,
-        drilldownData
-      );
-    }
-  }, [drilldownData, selectedCardHeading]);
-
-  // Log drilldown errors
-  useEffect(() => {
-    if (drilldownError) {
-      console.error(
-        `Error fetching drilldown data for "${selectedCardHeading}":`,
-        drilldownError
-      );
-    }
-  }, [drilldownError, selectedCardHeading]);
-
   const handleDateRangeChange = (newDateRange) => {
     console.log("Date range updated:", newDateRange);
     setDateRange(newDateRange);
@@ -100,7 +71,8 @@ const AdminDashboard = ({
     // Only handle card clicks if making API calls (drilldown functionality)
     if (shouldMakeApiCalls) {
       console.log(`Card clicked: ${heading}`);
-      setSelectedCardHeading(heading);
+      // Navigate to drilldown route with heading as URL parameter
+      history.push(`/drilldown?heading=${encodeURIComponent(heading)}`);
     }
   };
 
@@ -352,13 +324,6 @@ const AdminDashboard = ({
         </div>
       </div>
       {userType != "SDRC_ADMIN" && <MeetingsTable />}
-
-      {/* Display drilldown loading state */}
-      {drilldownLoading && (
-        <div className={styles.drilldownLoading}>
-          Loading drilldown data for "{selectedCardHeading}"...
-        </div>
-      )}
 
       <ToastManager toastMessages={toastMessages} />
     </div>
