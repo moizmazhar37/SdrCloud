@@ -135,6 +135,10 @@ const DomainsContainer = lazy(() =>
   import("src/views/pages/settings/Integrations/Domains/DomainContainer")
 );
 
+const DrillDownScreens = lazy(() =>
+  import("src/layouts/DashboardLayout/Drilldowns/Drilldown")
+);
+
 const Agents = lazy(() => import("src/views/pages/EmailSettings/Agent/Agent"));
 
 export const routes = [
@@ -528,6 +532,14 @@ export const routes = [
     guard: true,
     layout: DashboardLayout,
     component: withRoleGuard(DomainsContainer, ["SUBADMIN"]),
+  },
+
+  {
+    exact: true,
+    path: "/drilldown",
+    guard: true,
+    layout: DashboardLayout,
+    component: withRoleGuard(DrillDownScreens, ["SUBADMIN"]),
   },
 
   //==========================================SDRC ADMIN=======================================

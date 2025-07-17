@@ -8,6 +8,7 @@ import useCreateHVO from "./Hooks/useCreateHVO";
 import styles from "./CreateHVO.module.scss";
 import HVOCategoryForm from "./HVOCategoryForm/HVOCategoryForm";
 import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
+import DynamicFieldsList from "src/Common/DynamicFieldsList/DynamicFieldsList";
 import HvoSectionCardContainer from "./HvoSectionCard/HvoSectionCardContainer";
 import ConfirmationModal from "src/Common/ConfirmationModal/ConfirmationModal";
 import VideoUpload from "./Sections/VideoSection/VideoSection";
@@ -356,6 +357,12 @@ const CreateHVO = () => {
             type="hvo"
             onViewSection={handleViewSection}
           />
+          {sectionData?.templateData?.copied && sectionData?.templateData?.sheetId === null && (
+            <DynamicFieldsList
+              templateId={templateId}
+              title="Dynamic Fields to be added"
+            />
+          )}
         </div>
       </div>
       {isConfirmationOpen && (

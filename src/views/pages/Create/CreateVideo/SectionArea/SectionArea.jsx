@@ -5,6 +5,10 @@ import SectionView from "./SectionView/SectionView";
 import usePreviewVideo from "../hooks/usePreviewVideo";
 import styles from "./SectionArea.module.scss";
 import InfoBox from "src/Common/InfoBox/InfoBox";
+import { getAudioCategories } from "../helpers";
+import AudioDescModal from "src/Common/AudioDescModal/AudioDescModal";
+import useUploadAudio from "./hooks/useUploadAudio";
+import { toast } from "react-toastify";
 
 const SectionArea = ({
   initialOptions,
@@ -14,11 +18,77 @@ const SectionArea = ({
   elementsList = [],
   type = "video",
   onViewSection,
+  sheetData = null,
 }) => {
   const history = useHistory();
   const [sections, setSections] = useState([]);
   const [sectionData, setSectionData] = useState({});
   const { previewVideo, loading: previewLoading } = usePreviewVideo();
+  const [audioFile, setAudioFile] = useState(null);
+  const [audioFileName, setAudioFileName] = useState("");
+  const [showAudioDescModal, setShowAudioDescModal] = useState(false);
+  const [audioDescription, setAudioDescription] = useState("");
+  const [selectedVoiceModel, setSelectedVoiceModel] = useState(null);
+  const { uploadAudio, uploading, error, audioUrl } = useUploadAudio();
+
+
+  let audioCategories = getAudioCategories(sheetData);
+
+  const audioInputRef = useRef(null);
+
+  const handleAudioUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const uploadedUrl = await uploadAudio({
+      file,
+      templateId,
+      audioDescription,
+    });
+
+    if (uploadedUrl) {
+      toast.success("Audio uploaded successfully!");
+    } else {
+      toast.error(error || "Failed to upload audio. Please try again.");
+    }
+  };
+
+  const handleAddDescription = () => {
+    setShowAudioDescModal(true);
+  };
+
+  const handleUploadAudio = () => {
+    audioInputRef.current?.click();
+  };
+
+const handleAudioDescriptionSave = async (descriptionData) => {
+  setAudioDescription(descriptionData.audioDesc);
+  setSelectedVoiceModel(descriptionData.selectedVoiceModel);
+  setShowAudioDescModal(false);
+
+  if (!templateId || !descriptionData.audioDesc) {
+    toast.error("Missing template or audio description");
+    return;
+  }
+
+  const uploadedUrl = await uploadAudio({
+    file: null,
+    templateId,
+    audioDescription: descriptionData?.audioDesc,
+    voiceModel: descriptionData?.selectedVoiceModel?.dev_name,
+  });
+
+  console.log(descriptionData)
+  setAudioFileName(descriptionData?.audioDesc);
+  setAudioFile(uploadedUrl);
+
+  if (uploadedUrl) {
+    toast.success("Audio description uploaded successfully!");
+  } else {
+    toast.error(error || "Failed to upload audio description.");
+  }
+};
+
 
   useEffect(() => {
     if (templateId && elementsList?.length > 0) {
@@ -117,6 +187,28 @@ const SectionArea = ({
         <button onClick={addNewSection} className={styles.addSectionButton}>
           + Add New Section
         </button>
+        {type === "video" && (
+          <div className={styles.audioContainer}>
+            <div className={styles.audioButtons}>
+              <div className={styles.audioActions}>
+                <button
+                  className={styles.uploadButton}
+                  onClick={handleUploadAudio}
+                  disabled={uploading}
+                >
+                  {uploading ? "Saving Audio..." : "Upload Audio"}
+                </button>
+                <button
+                  className={`${styles.descriptionButton} ${audioDescription ? styles.active : ""
+                    }`}
+                  onClick={handleAddDescription}
+                >
+                  Add Audio Description
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
         <button
           onClick={handleProgressOverview}
           className={styles.progressButton}
@@ -125,11 +217,28 @@ const SectionArea = ({
           {previewLoading
             ? "Loading..."
             : type === "hvo"
-            ? "Preview HVO"
-            : "Progress Overview"}
+              ? "Preview HVO"
+              : "Progress Overview"}
         </button>
       </div>
+      {showAudioDescModal && (
+        <AudioDescModal
+          dynamicFields={audioCategories}
+          initialAudioDesc={audioDescription}
+          initialVoiceModel={selectedVoiceModel}
+          onSave={handleAudioDescriptionSave}
+          onClose={() => setShowAudioDescModal(false)}
+        />
+      )}
+      <input
+        type="file"
+        accept="audio/*"
+        ref={audioInputRef}
+        onChange={handleAudioUpload}
+        style={{ display: "none" }}
+      />
     </div>
+
   );
 };
 
