@@ -1,12 +1,14 @@
 import React, { useState } from "react";
-import { useHistory } from "react-router-dom"; // Add this import
+import { useHistory } from "react-router-dom";
 import Dropdown from "src/Common/Dropdown/Dropdown";
 import Table from "src/Common/Table/Table";
 import useTemplateList from "../../Create/Hooks/useTemplateList";
 import { useGoogleSheetsData } from "../../settings/GoogleSheets/hooks";
 import useSaveAgent from "./Hooks/useSaveAgent";
 import useGetAgents from "./Hooks/useGetAgents";
+import useDuplicateAgent from "./Hooks/useDuplicateAgent";
 import Loader from "src/Common/Loader/Loader";
+import DuplicateAgentModal from "./DuplicateAgentModal/DuplicateAgentModal";
 import styles from "./Agent.module.scss";
 
 const Agent = () => {
@@ -16,12 +18,13 @@ const Agent = () => {
     data: agents,
     loading: agentsLoading,
     error: agentsError,
-    refetch: refetchAgents, // Destructure the refetch function
+    refetch: refetchAgents,
   } = useGetAgents();
   const { data: sheets } = useGoogleSheetsData();
   console.log(sheets);
   const { data } = useTemplateList();
   const { loading, error, data: saveData, postAgent } = useSaveAgent();
+  const { loading: duplicateLoading, duplicateAgent } = useDuplicateAgent();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -32,7 +35,12 @@ const Agent = () => {
 
   const [errors, setErrors] = useState({});
 
-  // Generate template options based on selected template type
+  // Duplicate modal state
+  const [duplicateModal, setDuplicateModal] = useState({
+    isOpen: false,
+    selectedAgent: null,
+  });
+
   const getTemplateOptions = () => {
     if (!data || !data[formData.templateType]) return [];
 
@@ -52,7 +60,7 @@ const Agent = () => {
     setFormData((prev) => ({
       ...prev,
       templateType: type,
-      selectedTemplate: "", // Clear selected template when switching types
+      selectedTemplate: "",
     }));
 
     // Clear template selection error when switching types
@@ -70,7 +78,6 @@ const Agent = () => {
       selectedTemplate: value,
     }));
 
-    // Clear error when user selects
     if (errors.selectedTemplate) {
       setErrors((prev) => ({
         ...prev,
@@ -86,7 +93,6 @@ const Agent = () => {
       [name]: value,
     }));
 
-    // Clear error when user starts typing
     if (errors[name]) {
       setErrors((prev) => ({
         ...prev,
@@ -98,19 +104,15 @@ const Agent = () => {
   const validateForm = () => {
     const newErrors = {};
 
-    // Validate email
     if (!formData.email) {
       newErrors.email = "Email is required";
     } else if (!validateEmail(formData.email)) {
       newErrors.email = "Please enter a valid email address";
     }
 
-    // Validate agent name
     if (!formData.agentName.trim()) {
       newErrors.agentName = "Agent name is required";
     }
-
-    // Validate template selection
     if (!formData.selectedTemplate) {
       newErrors.selectedTemplate = "Please select a template";
     }
@@ -131,48 +133,61 @@ const Agent = () => {
   };
 
   const handleSave = async () => {
-    // Validate form before saving
     const newErrors = validateForm();
     setErrors(newErrors);
-
     if (Object.keys(newErrors).length === 0) {
       try {
         console.log("Saving form data:", formData);
-
-        // Call the postAgent function from the hook
         await postAgent(
           formData.agentName,
           formData.email,
           formData.selectedTemplate
         );
-
-        console.log("Agent saved successfully!");
-
-        // Refetch agents list after successful save
         await refetchAgents();
 
-        // Optionally clear the form after successful save
+        // Reset form after successful save
         setFormData({
           email: "",
           agentName: "",
           selectedTemplate: "",
           templateType: "HVO",
         });
-
-        // Clear any errors
         setErrors({});
       } catch (error) {
         console.error("Error saving agent:", error);
-        // Error handling is already done in the hook via toast
       }
     }
   };
 
-  // Handle campaign button click - Updated to navigate with agent ID
   const handleCampaignClick = (agent) => {
     console.log("Campaign clicked for agent:", agent.name);
     // Navigate to the agent-campaign route with the agent ID
     history.push(`/agent-campaign/${agent.id}`);
+  };
+
+  // Duplicate modal handlers
+  const handleDuplicateClick = (agent) => {
+    setDuplicateModal({
+      isOpen: true,
+      selectedAgent: agent,
+    });
+  };
+
+  const closeDuplicateModal = () => {
+    setDuplicateModal({
+      isOpen: false,
+      selectedAgent: null,
+    });
+  };
+
+  const handleDuplicateSubmit = async (agentId, agentName, email) => {
+    try {
+      await duplicateAgent(agentId, agentName, email);
+      await refetchAgents();
+      closeDuplicateModal();
+    } catch (error) {
+      console.error("Error duplicating agent:", error);
+    }
   };
 
   // Table headers configuration
@@ -183,16 +198,24 @@ const Agent = () => {
     { label: "Actions", key: "actions" },
   ];
 
-  // Transform agents data for the table - Updated to pass entire agent object
+  // Transform agents data for the table
   const transformedAgentsData = (agents || []).map((agent) => ({
     ...agent,
     actions: (
-      <button
-        className={styles.campaignButton}
-        onClick={() => handleCampaignClick(agent)} // Pass the entire agent object
-      >
-        Campaign
-      </button>
+      <div className={styles.actionButtons}>
+        <button
+          className={styles.campaignButton}
+          onClick={() => handleCampaignClick(agent)}
+        >
+          Campaign
+        </button>
+        <button
+          className={styles.duplicateButton}
+          onClick={() => handleDuplicateClick(agent)}
+        >
+          Duplicate
+        </button>
+      </div>
     ),
   }));
 
@@ -309,6 +332,15 @@ const Agent = () => {
           <Table headers={headers} data={transformedAgentsData} />
         )}
       </div>
+
+      {/* Duplicate Modal */}
+      <DuplicateAgentModal
+        isOpen={duplicateModal.isOpen}
+        onClose={closeDuplicateModal}
+        onDuplicate={handleDuplicateSubmit}
+        agent={duplicateModal.selectedAgent}
+        loading={duplicateLoading}
+      />
     </div>
   );
 };
