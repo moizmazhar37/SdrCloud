@@ -20,7 +20,7 @@ const GeneralSettings = ({ onNext, onDataChange, initialData }) => {
     error: domainError,
   } = useGetStatus();
 
-  const TEMPLATE_ID = localStorage.getItem("template_id");
+  const TEMPLATE_ID = localStorage.getItem("selectedTemplateId");
   const { saveGeneralSettings, loading, error } = useSaveGeneralSettings();
   useEffect(() => {
     if (initialData && !isInitialized.current) {
