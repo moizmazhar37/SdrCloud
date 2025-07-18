@@ -13,7 +13,7 @@ const useGetCampaignData = () => {
       setError(null);
 
       try {
-        const templateId = localStorage.getItem("template_id");
+        const templateId = localStorage.getItem("selectedTemplateId");
         const token = localStorage.getItem("token");
 
         const response = await axios.get(`${campaignSettings}/${templateId}`, {

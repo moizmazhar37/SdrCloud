@@ -51,7 +51,7 @@ const EmailSettings = ({ activeStep: initialStep = 1 }) => {
     error: errorLoadingCampaignData,
   } = useGetCampaignData();
 
-  const templateId = localStorage.getItem("template_id");
+  const templateId = localStorage.getItem("selectedTemplateId");
   const {
     campaignEmail,
     reminderEmails,
