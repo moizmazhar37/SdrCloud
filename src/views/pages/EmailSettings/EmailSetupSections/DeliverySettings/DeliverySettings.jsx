@@ -29,7 +29,7 @@ const DeliverySettings = ({ onNext, onDataChange, initialData }) => {
   });
   const isInitialized = useRef(false);
 
-  const TEMPLATE_ID = localStorage.getItem("template_id");
+  const TEMPLATE_ID = localStorage.getItem("selectedTemplateId");
   const { saveDeliverySettings, loading, error } = useSaveDeliverySettings();
 
   // Get today's date in YYYY-MM-DD format for min date

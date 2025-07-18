@@ -16,11 +16,10 @@ const useSaveConfigurations = () => {
 
     try {
       const token = localStorage.getItem("token");
-
-      const updatedPayload = {
-        ...payload,
+      const updatedPayload = payload.map((item) => ({
+        ...item,
         agent_id: agentIdFromUrl,
-      };
+      }));
 
       const res = await axios.post(
         `${campaign}/trigger-conditions`,

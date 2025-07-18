@@ -160,8 +160,9 @@ const Agent = () => {
   };
 
   const handleCampaignClick = (agent) => {
-    console.log("Campaign clicked for agent:", agent.name);
-    // Navigate to the agent-campaign route with the agent ID
+    console.log("Campaign clicked for agent:", agent);
+
+    localStorage.setItem("selectedTemplateId", agent.template_id);
     history.push(`/agent-campaign/${agent.id}`);
   };
 
