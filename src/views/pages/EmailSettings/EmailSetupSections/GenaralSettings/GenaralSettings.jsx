@@ -3,16 +3,21 @@ import styles from "./GenaralSettings.module.scss";
 import useSaveGeneralSettings from "../Hooks/useSaveGeneralSettings";
 import useGetStatus from "src/views/pages/settings/Integrations/Domains/Hooks/useGetDomainStatus";
 
-const GeneralSettings = ({ onNext, onDataChange, initialData }) => {
+const GeneralSettings = ({
+  onNext,
+  onDataChange,
+  initialData,
+  currentData,
+}) => {
   const [smsEnabled, setSmsEnabled] = useState(false);
   const [emailEnabled, setEmailEnabled] = useState(true);
   const [maxSmsPerDay, setMaxSmsPerDay] = useState("5");
   const [maxEmailPerDay, setMaxEmailPerDay] = useState("5");
-  const isInitialized = useRef(false);
   const [fromEmail, setFromEmail] = useState("");
   const [fromName, setFromName] = useState("");
   const [replyToEmail, setReplyToEmail] = useState("");
   const [fromEmailError, setFromEmailError] = useState("");
+  const isInitialized = useRef(false);
 
   const {
     data: domainStatus,
@@ -22,33 +27,50 @@ const GeneralSettings = ({ onNext, onDataChange, initialData }) => {
 
   const TEMPLATE_ID = localStorage.getItem("selectedTemplateId");
   const { saveGeneralSettings, loading, error } = useSaveGeneralSettings();
+
+  // Use currentData (from parent state) instead of initialData for state initialization
   useEffect(() => {
-    if (initialData && !isInitialized.current) {
-      setSmsEnabled(initialData.sms_enabled || false);
-      setEmailEnabled(initialData.email_enabled || true);
-      setMaxSmsPerDay(String(initialData.max_sms_per_day || 5));
-      setMaxEmailPerDay(String(initialData.max_emails_per_day || 5));
-      const fromEmailValue = initialData.from_email
-        ? initialData.from_email.split("@")[0]
-        : "";
-      setFromEmail(fromEmailValue);
-      setFromName(initialData.from_name || "");
-      setReplyToEmail(initialData.reply_to || "");
+    const dataToUse = currentData || initialData;
+
+    if (dataToUse && !isInitialized.current) {
+      setSmsEnabled(dataToUse.smsEnabled || false);
+      setEmailEnabled(dataToUse.emailEnabled !== false); // default to true
+      setMaxSmsPerDay(String(dataToUse.maxSmsPerDay || 5));
+      setMaxEmailPerDay(String(dataToUse.maxEmailPerDay || 5));
+      setFromEmail(dataToUse.fromEmail || "");
+      setFromName(dataToUse.fromName || "");
+      setReplyToEmail(dataToUse.replyToEmail || "");
 
       isInitialized.current = true;
 
-      const allData = {
-        smsEnabled: initialData.sms_enabled || false,
-        emailEnabled: initialData.email_enabled || true,
-        maxSmsPerDay: String(initialData.max_sms_per_day || 5),
-        maxEmailPerDay: String(initialData.max_emails_per_day || 5),
-        fromEmail: fromEmailValue,
-        fromName: initialData.from_name || "",
-        replyToEmail: initialData.reply_to || "",
-      };
-      onDataChange && onDataChange(allData);
+      // Only call onDataChange if this is the initial load
+      if (!currentData) {
+        const allData = {
+          smsEnabled: dataToUse.smsEnabled || false,
+          emailEnabled: dataToUse.emailEnabled !== false,
+          maxSmsPerDay: String(dataToUse.maxSmsPerDay || 5),
+          maxEmailPerDay: String(dataToUse.maxEmailPerDay || 5),
+          fromEmail: dataToUse.fromEmail || "",
+          fromName: dataToUse.fromName || "",
+          replyToEmail: dataToUse.replyToEmail || "",
+        };
+        onDataChange && onDataChange(allData);
+      }
     }
-  }, [initialData, onDataChange]);
+  }, [currentData, initialData, onDataChange]);
+
+  // Update local state when currentData changes (when switching between tabs)
+  useEffect(() => {
+    if (currentData && isInitialized.current) {
+      setSmsEnabled(currentData.smsEnabled);
+      setEmailEnabled(currentData.emailEnabled);
+      setMaxSmsPerDay(currentData.maxSmsPerDay);
+      setMaxEmailPerDay(currentData.maxEmailPerDay);
+      setFromEmail(currentData.fromEmail);
+      setFromName(currentData.fromName);
+      setReplyToEmail(currentData.replyToEmail);
+    }
+  }, [currentData]);
 
   const handleDataChange = (newData) => {
     const allData = {
