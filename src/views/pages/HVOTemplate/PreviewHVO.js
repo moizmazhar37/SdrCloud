@@ -531,10 +531,10 @@ function PreviewHVO(props) {
                               fontSize: `${item?.values?.body_text_size}px`,
                             }}
                             variant="body1"
-                            // data-aos="fade-up"
-                          >
-                            {item?.values?.body_text}
-                          </Typography>
+                            dangerouslySetInnerHTML={{
+                              __html: item?.values?.body_text,
+                            }}
+                          />
                         )}
 
                       <Box className="btn">
@@ -553,7 +553,6 @@ function PreviewHVO(props) {
                             )
                           }
                           variant="contained"
-                          // data-aos="fade-up"
                         >
                           {item?.values?.cta_button_text}
                         </Button>
@@ -597,38 +596,42 @@ function PreviewHVO(props) {
                       // style={{ paddingTop: "50px" }}
                     >
                       {item?.values?.hero_img &&
-                        (item?.values?.hero_img.endsWith(".mp4") ||
-                          item?.values?.hero_img.endsWith(".webm") ||
-                          item?.values?.hero_img.endsWith(".ogg")) ? (
-                          <video
-                            src={item?.values?.hero_img}
-                            controls
-                            autoPlay
-                            loop
-                            muted
-                            playsInline
-                            style={{
-                              marginTop: "60px",
-                              maxWidth: "100%",
-                              maxHeight: "400px",
-                              width: "100%",
-                              height: "auto",
-                              borderRadius: "10px",
-                            }}
-                            data-aos="zoom-in"
-                          />
-                        ) : (
-                          <img
-                            src={
-                              item?.values?.hero_img
-                                ? item?.values?.hero_img
-                                : item?.values?.static_image
-                            }
-                            alt="hero"
-                            style={{ marginTop: "60px", maxWidth: "100%", borderRadius: "10px" }}
-                            data-aos="zoom-in"
-                          />
-                        )}
+                      (item?.values?.hero_img.endsWith(".mp4") ||
+                        item?.values?.hero_img.endsWith(".webm") ||
+                        item?.values?.hero_img.endsWith(".ogg")) ? (
+                        <video
+                          src={item?.values?.hero_img}
+                          controls
+                          autoPlay
+                          loop
+                          muted
+                          playsInline
+                          style={{
+                            marginTop: "60px",
+                            maxWidth: "100%",
+                            maxHeight: "400px",
+                            width: "100%",
+                            height: "auto",
+                            borderRadius: "10px",
+                          }}
+                          data-aos="zoom-in"
+                        />
+                      ) : (
+                        <img
+                          src={
+                            item?.values?.hero_img
+                              ? item?.values?.hero_img
+                              : item?.values?.static_image
+                          }
+                          alt="hero"
+                          style={{
+                            marginTop: "60px",
+                            maxWidth: "100%",
+                            borderRadius: "10px",
+                          }}
+                          data-aos="zoom-in"
+                        />
+                      )}
                     </Grid>
                   </Grid>
                 </Container>
@@ -1198,8 +1201,7 @@ function PreviewHVO(props) {
                               justifyContent: "center",
                               alignItems: "center",
                             }}
-                          >
-                          </Box>
+                          ></Box>
                         </Hidden>
                       </Grid>
                     </Grid>
