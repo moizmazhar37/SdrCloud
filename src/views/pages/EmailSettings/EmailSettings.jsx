@@ -29,6 +29,30 @@ const getInitialActiveOption = (step) => {
   }
 };
 
+// Initial state for general settings
+const initialGeneralState = {
+  smsEnabled: false,
+  emailEnabled: true,
+  maxSmsPerDay: "5",
+  maxEmailPerDay: "5",
+  fromEmail: "",
+  fromName: "",
+  replyToEmail: "",
+};
+
+// Initial state for delivery settings
+const initialDeliveryState = {
+  deliveryTypes: ["Email"],
+  maxReminders: "5",
+  scheduleType: "Recurring",
+  scheduledDate: "",
+  scheduledTime: "08:00",
+  weekdaysEnabled: false,
+  weekendsEnabled: true,
+  weekdaysTimes: { start: "08:00", end: "08:00" },
+  weekendsTimes: { start: "08:00", end: "08:00" },
+};
+
 const EmailSettings = ({ activeStep: initialStep = 1 }) => {
   const history = useHistory();
   const [activeStep, setActiveStep] = useState(initialStep);
@@ -36,15 +60,21 @@ const EmailSettings = ({ activeStep: initialStep = 1 }) => {
     getInitialActiveOption(initialStep)
   );
 
+  // Lifted state for settings
+  const [generalData, setGeneralData] = useState(initialGeneralState);
+  const [deliveryData, setDeliveryData] = useState(initialDeliveryState);
+  const [campaignEmailData, setCampaignEmailData] = useState({});
+
+  // Track if data has been loaded from API to prevent overwriting saved state
+  const [isGeneralDataLoaded, setIsGeneralDataLoaded] = useState(false);
+  const [isDeliveryDataLoaded, setIsDeliveryDataLoaded] = useState(false);
+
   const {
     data: domainStatus,
     loading: loadingDomain,
     error: domainError,
   } = useGetStatus();
 
-  const [deliveryData, setDeliveryData] = useState({});
-  const [generalData, setGeneralData] = useState({});
-  const [campaignEmailData, setCampaignEmailData] = useState({});
   const {
     data: campaignData,
     loading: loadingCampaignData,
@@ -60,6 +90,50 @@ const EmailSettings = ({ activeStep: initialStep = 1 }) => {
     error,
     refetch,
   } = useGetEmailTemplates(templateId);
+
+  // Initialize data from API only once
+  useEffect(() => {
+    if (campaignData && !isGeneralDataLoaded && !isDeliveryDataLoaded) {
+      // Initialize general settings from API data
+      const generalFromAPI = {
+        smsEnabled: campaignData.sms_enabled || false,
+        emailEnabled: campaignData.email_enabled !== false, // default to true
+        maxSmsPerDay: String(campaignData.max_sms_per_day || 5),
+        maxEmailPerDay: String(campaignData.max_emails_per_day || 5),
+        fromEmail: campaignData.from_email
+          ? campaignData.from_email.split("@")[0]
+          : "",
+        fromName: campaignData.from_name || "",
+        replyToEmail: campaignData.reply_to || "",
+      };
+
+      // Initialize delivery settings from API data
+      const deliveryFromAPI = {
+        deliveryTypes: ["Email"], // You might need to extract this from API
+        maxReminders: String(campaignData.max_reminders || 5),
+        scheduleType: campaignData.schedule_type || "Recurring",
+        scheduledDate: campaignData.scheduled_date
+          ? campaignData.scheduled_date.split("T")[0]
+          : "",
+        scheduledTime: campaignData.scheduled_time || "08:00",
+        weekdaysEnabled: campaignData.weekdays_enabled || false,
+        weekendsEnabled: campaignData.weekends_enabled !== false, // default to true
+        weekdaysTimes: campaignData.weekdays_times || {
+          start: "08:00",
+          end: "08:00",
+        },
+        weekendsTimes: campaignData.weekends_times || {
+          start: "08:00",
+          end: "08:00",
+        },
+      };
+
+      setGeneralData(generalFromAPI);
+      setDeliveryData(deliveryFromAPI);
+      setIsGeneralDataLoaded(true);
+      setIsDeliveryDataLoaded(true);
+    }
+  }, [campaignData, isGeneralDataLoaded, isDeliveryDataLoaded]);
 
   useEffect(() => {
     const verifyAuthentication = async () => {
@@ -110,11 +184,11 @@ const EmailSettings = ({ activeStep: initialStep = 1 }) => {
   };
 
   const handleDeliveryDataChange = (data) => {
-    setDeliveryData(data);
+    setDeliveryData((prevData) => ({ ...prevData, ...data }));
   };
 
   const handleGeneralDataChange = (data) => {
-    setGeneralData(data);
+    setGeneralData((prevData) => ({ ...prevData, ...data }));
   };
 
   const handleCampaignEmailDataChange = (data) => {
@@ -200,7 +274,8 @@ const EmailSettings = ({ activeStep: initialStep = 1 }) => {
             <GeneralSettings
               onNext={handleGeneralSettingsNext}
               onDataChange={handleGeneralDataChange}
-              initialData={campaignData}
+              initialData={generalData} // Pass the lifted state instead of campaignData
+              currentData={generalData} // Pass current state to prevent reinitialization
             />
           );
         case 1:
@@ -208,7 +283,8 @@ const EmailSettings = ({ activeStep: initialStep = 1 }) => {
             <DeliverySettings
               onNext={handleNextStep}
               onDataChange={handleDeliveryDataChange}
-              initialData={campaignData}
+              initialData={deliveryData} // Pass the lifted state instead of campaignData
+              currentData={deliveryData} // Pass current state to prevent reinitialization
             />
           );
         default:
@@ -216,7 +292,8 @@ const EmailSettings = ({ activeStep: initialStep = 1 }) => {
             <GeneralSettings
               onNext={handleGeneralSettingsNext}
               onDataChange={handleGeneralDataChange}
-              initialData={campaignData}
+              initialData={generalData}
+              currentData={generalData}
             />
           );
       }
