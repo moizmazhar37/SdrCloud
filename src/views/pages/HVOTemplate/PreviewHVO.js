@@ -761,9 +761,10 @@ function PreviewHVO(props) {
                               color: item?.values?.body_text_color,
                               lineHeight: "30px",
                             }}
-                          >
-                            {item?.values?.body_text}
-                          </Typography>
+                          dangerouslySetInnerHTML={{
+                              __html: item?.values?.body_text,
+                            }}
+                          />
                         )}
                     </Grid>
                   </Grid>
@@ -888,9 +889,10 @@ function PreviewHVO(props) {
                               color: item?.values?.body_text_color,
                               lineHeight: "30px",
                             }}
-                          >
-                            {item?.values?.body_text}
-                          </Typography>
+                          dangerouslySetInnerHTML={{
+                              __html: item?.values?.body_text,
+                            }}
+                          />
                         )}
                     </Grid>
                     <Grid item sm={6} xs={12} align="center">
