@@ -9,14 +9,14 @@ import FollowupEmailForm from "../EmailForm/EmailForm";
 import ConfirmationModal from "src/Common/ConfirmationModal/ConfirmationModal";
 
 const typeOptions = [
-  { label: "Opened Email", value: "email" },
-  { label: "Played Video", value: "video" },
+  { label: "Opened Email", value: "email", apiAction: "OPEN" },
+  { label: "Played Video", value: "video", apiAction: "CLICK" },
 ];
 
 const FollowupEmail = ({
   onSave,
   onNext,
-  data = {},
+  data = [],
   isReadOnly = false,
   templateId,
 }) => {
@@ -27,12 +27,22 @@ const FollowupEmail = ({
     console.log("DATA===", data);
     if (Array.isArray(data)) {
       return data.reduce((acc, item) => {
-        acc[item.action] = item;
+        // Map API actions to component values
+        const componentAction = typeOptions.find(
+          (opt) => opt.apiAction === item.action
+        )?.value;
+        if (componentAction) {
+          acc[componentAction] = item;
+        }
         return acc;
       }, {});
-    } else {
-      return { [data.action || "email"]: data };
+    } else if (data && typeof data === "object") {
+      const componentAction = typeOptions.find(
+        (opt) => opt.apiAction === data.action
+      )?.value;
+      return componentAction ? { [componentAction]: data } : {};
     }
+    return {};
   }, [data]);
 
   const existingActions = useMemo(() => {
@@ -42,9 +52,12 @@ const FollowupEmail = ({
     });
   }, [groupedTemplates]);
 
+  // Default to "email" (Opened Email) as specified
   const initialAction = groupedTemplates["email"]
     ? "email"
-    : Object.keys(groupedTemplates)[0] || "";
+    : existingActions.length > 0
+    ? existingActions[0]
+    : "email";
 
   const [selectedAction, setSelectedAction] = useState(initialAction);
   const [editStates, setEditStates] = useState(() => {
@@ -136,20 +149,23 @@ const FollowupEmail = ({
       return;
     }
 
+    // Get the API action value for the selected component action
+    const apiAction = typeOptions.find(
+      (opt) => opt.value === selectedAction
+    )?.apiAction;
+
     const payload = {
       subject,
       message: IsHtmlTemplate ? htmlContent : message,
       isHtml: IsHtmlTemplate,
-      action: selectedAction,
-      templateId, // This should be the main template ID for creating new follow-up emails
+      action: apiAction, // Use the API action value
+      templateId,
     };
 
     try {
       setsaveButtonText(isFirstSave ? "Saving..." : "Updating...");
       if (isFirstSave) {
-        // Save new follow-up email
         const response = await saveFollowupEmail(payload);
-        // Store the newly created ID
         setNewlyCreatedIds((prev) => ({
           ...prev,
           [selectedAction]: response.id,
@@ -169,7 +185,7 @@ const FollowupEmail = ({
           subject,
           message: IsHtmlTemplate ? htmlContent : message,
           isHtml: IsHtmlTemplate,
-          action: selectedAction,
+          action: apiAction, // Use the API action value
         });
         toast.success("Follow up email updated successfully.");
       }
@@ -234,7 +250,7 @@ const FollowupEmail = ({
           <div className={styles.headerRow}>
             <span className={styles.labelText}>
               {typeOptions.find((option) => option.value === selectedAction)
-                ?.label || "Action"}
+                ?.label || "Opened Email"}
             </span>
             <button
               type="button"
