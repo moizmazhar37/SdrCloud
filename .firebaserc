@@ -1,7 +1,13 @@
 {
   "projects": {
-    "default": "sdr-cloud-441006",
-    "live": "sdr-cloud-441006",
-    "staging": "sdr-cloud-staging"
+    "default": "sdr-cloud-441006"
+  },
+  "targets": {
+    "sdr-cloud-441006": {
+      "hosting": {
+        "live": ["sdr-cloud-441006"],
+        "staging": ["sdr-cloud-staging"]
+      }
+    }
   }
 }
