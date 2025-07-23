@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "sdr-cloud-441006"
+    "default": "sdr-cloud-441006",
+    "live": "sdr-cloud-441006",
+    "staging": "sdr-cloud-staging"
   }
 }

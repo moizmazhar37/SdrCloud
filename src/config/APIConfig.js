@@ -1,5 +1,18 @@
-export const url = "https://backend-283763506150.us-central1.run.app";
-// export const url = "http://localhost:8000";
+// Environment-specific backend URLs
+const getBackendUrl = () => {
+  const hostname = window.location.hostname;
+  
+  if (hostname.includes('staging') || hostname.includes('sdr-cloud-staging')) {
+    return "https://backend-283763506150.us-central1.run.app"; // Replace with your staging backend URL
+  } else if (hostname.includes('localhost')) {
+    return "http://localhost:8000";
+  } else {
+    // Production/Live environment
+    return "https://live-backend-283763506150.us-central1.run.app";
+  }
+};
+
+export const url = getBackendUrl();
 
 export const auth = `${url}/auth`;
 export const users = `${url}/users`;
