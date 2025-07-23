@@ -2,7 +2,7 @@
 const getBackendUrl = () => {
   const hostname = window.location.hostname;
   
-  if (hostname.includes('staging') || hostname.includes('sdr-cloud-staging')) {
+  if (hostname.includes('staging')) {
     return "https://backend-283763506150.us-central1.run.app"; // Replace with your staging backend URL
   } else if (hostname.includes('localhost')) {
     return "http://localhost:8000";
