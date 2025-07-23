@@ -11,12 +11,17 @@ import {
   createDataChangePayload,
 } from "./helpers";
 
-const DeliverySettings = ({ onNext, onDataChange, initialData }) => {
+const DeliverySettings = ({
+  onNext,
+  onDataChange,
+  initialData,
+  currentData,
+}) => {
   const [deliveryTypes, setDeliveryTypes] = useState(["Email"]);
   const [maxReminders, setMaxReminders] = useState("5");
   const [scheduleType, setScheduleType] = useState("Recurring");
-  const [scheduledDate, setScheduledDate] = useState(""); // New state for scheduled date
-  const [scheduledTime, setScheduledTime] = useState("08:00"); // New state for scheduled time
+  const [scheduledDate, setScheduledDate] = useState("");
+  const [scheduledTime, setScheduledTime] = useState("08:00");
   const [weekdaysEnabled, setWeekdaysEnabled] = useState(false);
   const [weekendsEnabled, setWeekendsEnabled] = useState(true);
   const [weekdaysTimes, setWeekdaysTimes] = useState({
@@ -29,7 +34,7 @@ const DeliverySettings = ({ onNext, onDataChange, initialData }) => {
   });
   const isInitialized = useRef(false);
 
-  const TEMPLATE_ID = localStorage.getItem("template_id");
+  const TEMPLATE_ID = localStorage.getItem("selectedTemplateId");
   const { saveDeliverySettings, loading, error } = useSaveDeliverySettings();
 
   // Get today's date in YYYY-MM-DD format for min date
@@ -42,10 +47,7 @@ const DeliverySettings = ({ onNext, onDataChange, initialData }) => {
   const convertToUTC = (date, time) => {
     if (!date || !time) return null;
 
-    // Create a datetime string in local timezone
     const localDateTime = new Date(`${date}T${time}`);
-
-    // Convert to UTC ISO string
     return localDateTime.toISOString();
   };
 
@@ -57,37 +59,48 @@ const DeliverySettings = ({ onNext, onDataChange, initialData }) => {
     return null;
   };
 
+  // Use currentData (from parent state) instead of initialData for state initialization
   useEffect(() => {
-    if (initialData && !isInitialized.current) {
-      const initializedData = initializeDeliveryData(initialData);
+    const dataToUse = currentData || initialData;
 
-      if (initializedData) {
-        // Set max reminders
-        setMaxReminders(initializedData.maxReminders);
+    if (dataToUse && !isInitialized.current) {
+      setMaxReminders(dataToUse.maxReminders || "5");
+      setScheduleType(dataToUse.scheduleType || "Recurring");
+      setScheduledDate(dataToUse.scheduledDate || "");
+      setScheduledTime(dataToUse.scheduledTime || "08:00");
+      setWeekdaysEnabled(dataToUse.weekdaysEnabled || false);
+      setWeekendsEnabled(dataToUse.weekendsEnabled !== false); // default to true
+      setWeekdaysTimes(
+        dataToUse.weekdaysTimes || { start: "08:00", end: "08:00" }
+      );
+      setWeekendsTimes(
+        dataToUse.weekendsTimes || { start: "08:00", end: "08:00" }
+      );
+      setDeliveryTypes(dataToUse.deliveryTypes || ["Email"]);
 
-        // Set schedule type and related data
-        setScheduleType(initializedData.scheduleType || "Recurring");
-        setScheduledDate(initializedData.scheduledDate || "");
-        setScheduledTime(initializedData.scheduledTime || "08:00");
+      isInitialized.current = true;
 
-        // Set enabled states
-        setWeekdaysEnabled(initializedData.weekdaysEnabled);
-        setWeekendsEnabled(initializedData.weekendsEnabled);
-
-        // Set times
-        setWeekdaysTimes(initializedData.weekdaysTimes);
-        setWeekendsTimes(initializedData.weekendsTimes);
-
-        // Set delivery types
-        setDeliveryTypes(initializedData.deliveryTypes);
-
-        isInitialized.current = true;
-
-        // Notify parent of initialized data
-        onDataChange && onDataChange(initializedData);
+      // Only call onDataChange if this is the initial load
+      if (!currentData) {
+        onDataChange && onDataChange(dataToUse);
       }
     }
-  }, [initialData, onDataChange]);
+  }, [currentData, initialData, onDataChange]);
+
+  // Update local state when currentData changes (when switching between tabs)
+  useEffect(() => {
+    if (currentData && isInitialized.current) {
+      setDeliveryTypes(currentData.deliveryTypes);
+      setMaxReminders(currentData.maxReminders);
+      setScheduleType(currentData.scheduleType);
+      setScheduledDate(currentData.scheduledDate);
+      setScheduledTime(currentData.scheduledTime);
+      setWeekdaysEnabled(currentData.weekdaysEnabled);
+      setWeekendsEnabled(currentData.weekendsEnabled);
+      setWeekdaysTimes(currentData.weekdaysTimes);
+      setWeekendsTimes(currentData.weekendsTimes);
+    }
+  }, [currentData]);
 
   const handleDataChange = (newData) => {
     const allData = createDataChangePayload(
@@ -99,9 +112,9 @@ const DeliverySettings = ({ onNext, onDataChange, initialData }) => {
       weekdaysTimes,
       weekendsTimes,
       {
-        ...newData,
         scheduledDate,
         scheduledTime,
+        ...newData,
       }
     );
     onDataChange && onDataChange(allData);

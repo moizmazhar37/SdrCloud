@@ -1,0 +1,75 @@
+.loader {
+  position: fixed;
+  top: 50%;
+  left: 57%;
+  transform: translate(-50%, -50%);
+}
+
+.drilldownContainer {
+  padding: 20px;
+  max-width: 90%;
+  margin: 0 auto;
+}
+
+.content {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.headingCard {
+  background: linear-gradient(135deg, #4a90e2 0%, #357abd 50%, #1e5f99 100%);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+  color: white;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.heading {
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.subHeading {
+  font-size: 16px;
+  margin: 0;
+  opacity: 0.9;
+  font-weight: 400;
+}
+
+.noData {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}
+
+.noData p {
+  font-size: 18px;
+  margin: 0;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .drilldownContainer {
+    padding: 16px;
+  }
+
+  .headingCard {
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+
+  .heading {
+    font-size: 24px;
+  }
+
+  .subHeading {
+    font-size: 14px;
+  }
+}

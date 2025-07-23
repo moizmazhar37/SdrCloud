@@ -249,3 +249,98 @@ label {
   font-weight: 500;
   color: #333;
 }
+
+.textImageQuillWrapper {
+  margin-bottom: 16px;
+
+  :global {
+    .quill {
+      background-color: white;
+      border-radius: 8px;
+
+      .ql-toolbar {
+        border: 1px solid #e0e0e0;
+        border-radius: 8px 8px 0 0;
+        background-color: #f5f5f5;
+      }
+
+      .ql-container {
+        border: 1px solid #e0e0e0;
+        border-top: none;
+        border-radius: 0 0 8px 8px;
+        min-height: 150px;
+        font-family: inherit;
+      }
+
+      .ql-editor {
+        min-height: 150px;
+        padding: 12px 15px;
+
+        &.ql-blank::before {
+          font-style: italic;
+          color: #999;
+        }
+
+        a {
+          color: #0066cc;
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}
+
+.textImageNote {
+  font-size: 12px;
+  color: #666;
+  margin-top: 8px;
+  font-style: italic;
+}
+
+.quillWrapper {
+  margin-bottom: 16px;
+
+  :global {
+    .quill {
+      background-color: white;
+      border-radius: 8px;
+
+      .ql-toolbar {
+        border: 1px solid #e0e0e0;
+        border-radius: 8px 8px 0 0;
+        background-color: #f5f5f5;
+      }
+
+      .ql-container {
+        border: 1px solid #e0e0e0;
+        border-top: none;
+        border-radius: 0 0 8px 8px;
+        min-height: 150px;
+        font-family: inherit;
+      }
+
+      .ql-editor {
+        min-height: 150px;
+        padding: 12px 15px;
+
+        &.ql-blank::before {
+          font-style: italic;
+          color: #999;
+        }
+
+        // Ensure links are styled properly
+        a {
+          color: #0066cc;
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}
+
+.note {
+  font-size: 12px;
+  color: #666;
+  margin-top: 8px;
+  font-style: italic;
+}

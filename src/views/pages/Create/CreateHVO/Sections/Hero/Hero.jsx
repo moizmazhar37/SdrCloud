@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css"; // Import Quill styles
 import CategoryDropdown from "../../../CreateVideo/CategoryDropdown/CategoryDropdown";
 import ColorInput from "src/Common/ColorInput/ColorInput";
 import CopyText from "src/Common/CopyText/CopyText";
@@ -7,6 +9,32 @@ import { ArrowLeft } from "lucide-react";
 import styles from "./Hero.module.scss";
 import useSaveHeroSection from "../../Hooks/Hero/useSaveHero";
 import useUpdateHeroSection from "../../Hooks/Hero/useUpdateHero";
+
+const quillModules = {
+  toolbar: [
+    [{ header: [1, 2, 3, false] }],
+    ["bold", "italic", "underline", "strike"],
+    [{ list: "ordered" }, { list: "bullet" }],
+    [{ color: [] }, { background: [] }],
+    [{ align: [] }],
+    ["link"],
+    ["clean"],
+  ],
+};
+
+const quillFormats = [
+  "header",
+  "bold",
+  "italic",
+  "underline",
+  "strike",
+  "list",
+  "bullet",
+  "color",
+  "background",
+  "align",
+  "link",
+];
 
 const HeroSection = ({
   dynamicFields = [],
@@ -44,11 +72,8 @@ const HeroSection = ({
   const { updateHeroSection, loading: updateLoading } = useUpdateHeroSection();
   const [isEditMode, setIsEditMode] = useState(false);
 
-  //  const { saveHero, loading: saveLoading } = useSaveHeroSection(handleSave);
-  // const { updateHero, loading: updateLoading } = useUpdateHeader(handleSave);
-
-
   const loading = isEditMode ? updateLoading : saveLoading;
+
   useEffect(() => {
     if (initialData) {
       setIsEditMode(true);
@@ -77,13 +102,11 @@ const HeroSection = ({
     }
   }, [initialData]);
 
-  console.log("HEROooo===-=---=-=", initialData);
-
   const handleFileChange = useCallback((e) => {
     const file = e.target.files?.[0];
     if (file) {
       setFile(file);
-      setHeroImg(file.name); // Name for backend
+      setHeroImg(file.name);
       const url = URL.createObjectURL(file);
       setHeroImgPreview(url);
     }
@@ -124,14 +147,11 @@ const HeroSection = ({
 
   const normalizeUrl = (url) => {
     let input = url.trim();
-    // If input already starts with http:// or https://, return as is
     if (/^https?:\/\//i.test(input)) {
       return input;
     }
-    // Otherwise, prepend https://
-    return 'https://' + input;
+    return "https://" + input;
   };
-
 
   const handleSave = useCallback(async () => {
     const heroSectionData = {
@@ -145,24 +165,18 @@ const HeroSection = ({
       headline2,
       headline2_size: parseInt(headline2Size) || null,
       headline2_color: headline2Color,
-      body_text: bodyText,
+      body_text: bodyText, // This now contains HTML
       body_text_size: parseInt(bodyTextSize) || null,
       body_text_color: bodyTextColor,
       cta_button_text: ctaButtonText,
       cta_button_color: ctaButtonColor,
       cta_button_text_color: ctaButtonTextColor,
-      dynamic_url: ctaUrl, // CTA Button URL
+      dynamic_url: ctaUrl,
       demo_button_text: demoButtonText,
       demo_button_color: demoButtonColor,
       demo_button_text_color: demoButtonTextColor,
-      dynamic_url_demo: demoUrl, // Demo Button URL
+      dynamic_url_demo: demoUrl,
     };
-
-    console.log("🚀 Final Payload:", {
-      hero_img: !file && heroImg ? heroImg : "",
-      file: file || null,
-    });
-
 
     try {
       if (initialData?.id && isEditMode) {
@@ -210,9 +224,6 @@ const HeroSection = ({
     onClose,
   ]);
 
- 
-  
- 
   return (
     <div className={styles.wrapper}>
       <div className={styles.container}>
@@ -248,11 +259,10 @@ const HeroSection = ({
                 />
               </div>
 
-              {/* 🔍 Conditional preview for image or video */}
               {heroImgPreview && (
                 <div className={styles.previewContainer}>
-                  {(file?.type?.startsWith("video/") ||
-                    (!file && /\.(mp4|webm|ogg)$/i.test(heroImgPreview))) ? (
+                  {file?.type?.startsWith("video/") ||
+                  (!file && /\.(mp4|webm|ogg)$/i.test(heroImgPreview)) ? (
                     <video
                       src={heroImgPreview}
                       controls
@@ -342,28 +352,40 @@ const HeroSection = ({
               </div>
             </div>
 
-            {/* Body Text */}
+            {/* Body Text with React Quill */}
             <div className={styles.inputGroup}>
               <label>Body Text</label>
-              <InputField
-                value={bodyText}
-                onChange={(e) => setBodyText(e.target.value)}
-                placeholder="Enter Body Text"
-                multiline
-              />
+              <div className={styles.quillWrapper}>
+                <ReactQuill
+                  theme="snow"
+                  value={bodyText}
+                  onChange={setBodyText}
+                  modules={quillModules}
+                  formats={quillFormats}
+                  placeholder="Enter formatted body text..."
+                  style={{
+                    backgroundColor: "white",
+                    minHeight: "150px",
+                  }}
+                />
+              </div>
               <div className={styles.inputControls}>
                 <ColorInput
-                  label="Choose Body Text Color"
+                  label="Default Text Color"
                   value={bodyTextColor}
                   onChange={setBodyTextColor}
                 />
                 <InputField
-                  label="Size"
+                  label="Default Size"
                   value={bodyTextSize}
                   onChange={handleSizeChange(setBodyTextSize, 18)}
                   placeholder="Max 18px"
                 />
               </div>
+              <p className={styles.note}>
+                Note: Color and size here set the default values. Users can
+                override these using the editor toolbar.
+              </p>
             </div>
 
             {/* CTA and Demo Button Sections */}
@@ -385,16 +407,16 @@ const HeroSection = ({
                 onChange={setCtaButtonTextColor}
               />
               <InputField
-                  placeholder="Enter Static URL"
-                  value={ctaUrl}
-                  onChange={(e) => {
-                    setCtaUrl(e.target.value);
-                  }}
-                  onBlur={(e) => {
-                    const normalized = normalizeUrl(e.target.value);
-                    setCtaUrl(normalized);
-                  }}
-                />
+                placeholder="Enter Static URL"
+                value={ctaUrl}
+                onChange={(e) => {
+                  setCtaUrl(e.target.value);
+                }}
+                onBlur={(e) => {
+                  const normalized = normalizeUrl(e.target.value);
+                  setCtaUrl(normalized);
+                }}
+              />
               <CategoryDropdown
                 options={dynamicURL.map((field) => ({
                   label: field,
@@ -404,7 +426,6 @@ const HeroSection = ({
                 buttonText="Select Dynamic URL for CTA"
                 onSelect={(value) => {
                   setCtaUrl(`[${value}]`);
-                  // resetUrlFields("cta");
                 }}
                 allowAddNew={false}
               />
@@ -431,12 +452,12 @@ const HeroSection = ({
                 placeholder="Enter Static URL"
                 value={demoUrl}
                 onChange={(e) => {
-                    setDemoUrl(e.target.value);
-                  }}
-                  onBlur={(e) => {
-                    const normalized = normalizeUrl(e.target.value);
-                    setDemoUrl(normalized);
-                  }}
+                  setDemoUrl(e.target.value);
+                }}
+                onBlur={(e) => {
+                  const normalized = normalizeUrl(e.target.value);
+                  setDemoUrl(normalized);
+                }}
               />
               <CategoryDropdown
                 options={dynamicURL.map((field) => ({
@@ -446,8 +467,7 @@ const HeroSection = ({
                 key={demoUrl}
                 buttonText="Select Dynamic URL for Demo"
                 onSelect={(value) => {
-                  setDemoUrl(`[${value}]`); // Set the dynamic URL
-                  // resetUrlFields("demo"); // Reset static URL input when dynamic URL is selected
+                  setDemoUrl(`[${value}]`);
                 }}
                 allowAddNew={false}
               />
@@ -469,12 +489,12 @@ const HeroSection = ({
           </button>
 
           <button
-          onClick={handleClose}
-          className={styles.cancelButton}
-          disabled={loading}
-        >
-          Cancel
-        </button>
+            onClick={handleClose}
+            className={styles.cancelButton}
+            disabled={loading}
+          >
+            Cancel
+          </button>
         </div>
       </div>
     </div>

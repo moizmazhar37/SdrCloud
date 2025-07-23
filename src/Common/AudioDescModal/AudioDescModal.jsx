@@ -14,6 +14,9 @@ const AudioDescModal = ({
     useState(initialVoiceModel);
   const audioRef = useRef(null);
 
+  const [estimatedDuration, setEstimatedDuration] = useState(0);
+  const [charLimit, setCharLimit] = useState(1000);
+
   const voiceModels = [
     {
       name: "Natasha",
@@ -41,6 +44,60 @@ const AudioDescModal = ({
       url: "https://storage.googleapis.com/static-data-for-sdrc/uploads/e0653e5d-a70a-41e0-9706-4764f27ae886/en-US-AriaNeural_20250522071610.mp3",
     },
   ];
+
+
+  const VOICE_RATES = {
+    "en-AU-NatashaNeural": 0.068,
+    "en-AU-WilliamNeural": 0.070,
+    "en-CA-LiamNeural": 0.067,
+    "en-GB-SoniaNeural": 0.071,
+    "en-US-AriaNeural": 0.066,
+  };
+
+  const PAUSE_DELAYS = {
+    '.': 0.5,
+    ',': 0.2,
+    ';': 0.3,
+    ':': 0.3,
+    '!': 0.4,
+    '?': 0.4,
+    '\n': 0.3,
+    '—': 0.3,
+    '-': 0.1,
+  };
+
+
+  const MAX_AUDIO_DURATION_SECONDS = 3600;
+
+
+  const calculateEstimatedDuration = (text, model) => {
+    if (!model || !model.dev_name) return { duration: 0, charLimit: 0 };
+
+    const rate = VOICE_RATES[model.dev_name] || 0.07;
+
+    // Calculate character-based duration
+    const chars = text.replace(/\s/g, "").length;
+
+    // Calculate punctuation delay
+    const punctuationDelay = text.split("").reduce((acc, char) => {
+      return acc + (PAUSE_DELAYS[char] || 0);
+    }, 0);
+
+    const duration = parseFloat((chars * rate + punctuationDelay).toFixed(2));
+    const maxChars = Math.floor((MAX_AUDIO_DURATION_SECONDS - punctuationDelay) / rate);
+
+    return {
+      duration,
+      charLimit: maxChars > 0 ? maxChars : 0
+    };
+  };
+
+  useEffect(() => {
+    const { duration, charLimit } = calculateEstimatedDuration(audioDesc, selectedVoiceModel);
+    setEstimatedDuration(duration);
+    setCharLimit(charLimit);
+  }, [audioDesc, selectedVoiceModel]);
+
 
   // Initialize state with initial values
   useEffect(() => {
@@ -84,9 +141,16 @@ const AudioDescModal = ({
             <textarea
               className={styles.audioDescInput}
               value={audioDesc}
-              onChange={(e) => setAudioDesc(e.target.value)}
+              maxLength={charLimit}
+              onChange={(e) => {
+                const newValue = e.target.value;
+                setAudioDesc(newValue);
+              }}
               placeholder="Enter your audio description here..."
             />
+            <div className={styles.durationInfo}>
+              Estimated Audio Duration: <strong>{estimatedDuration}s</strong>
+            </div>
           </div>
 
           <div className={styles.rightSection}>
@@ -111,11 +175,10 @@ const AudioDescModal = ({
             {voiceModels.map((model, index) => (
               <button
                 key={index}
-                className={`${styles.voiceModelButton} ${
-                  selectedVoiceModel?.dev_name === model.dev_name
-                    ? styles.selected
-                    : ""
-                }`}
+                className={`${styles.voiceModelButton} ${selectedVoiceModel?.dev_name === model.dev_name
+                  ? styles.selected
+                  : ""
+                  }`}
                 onClick={() => handleVoiceModelSelect(model)}
               >
                 <span className={styles.voiceModelName}>{model.name}</span>

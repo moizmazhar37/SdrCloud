@@ -19,7 +19,7 @@ const Loader = ({ size = 150 }) => {
         <div className={styles.loaderRing}></div>
         <div className={`${styles.loaderRing} ${styles.reverseRing}`}></div>
         <img
-          src="images/template/SDR.png"
+          src="/images/template/SDR.png"
           alt="SDR"
           className={styles.loaderImage}
           style={imageStyle}

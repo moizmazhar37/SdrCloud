@@ -9,6 +9,10 @@ import useSaveRightTextLeftImage from "../../Hooks/TextImage/useSaveRightTextLef
 import useUpdateRightTextLeftImage from "../../Hooks/TextImage/useUpdateRightTextLeftImage";
 import useSaveLeftTextRightImage from "../../Hooks/TextImage/useSaveLeftTextRightImage";
 import useUpdateLeftTextRightImage from "../../Hooks/TextImage/useUpdateLeftTextRightImage";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css"; // Import Quill styles
+
+
 
 const TextImage = ({
   dynamicImageOptions = [],
@@ -308,30 +312,62 @@ const TextImage = ({
               </div>
 
               <div className={styles.inputGroup}>
-                <label>Body Text</label>
-                <InputField
-                  value={bodyText}
-                  onChange={(e) => setBodyText(e.target.value)}
-                  placeholder="Enter Your Text Here"
-                  multiline
-                />
-                <div className={styles.inputControls}>
-                  <div className={styles.colorInput}>
-                    <label>Choose Body Text Color</label>
-                    <ColorInput
-                      value={bodyTextColor}
-                      onChange={setBodyTextColor}
-                    />
-                  </div>
-                  <div className={styles.sizeInput}>
-                    <label>Size (Max 18 px.)</label>
-                    <InputField
-                      value={bodySize}
-                      onChange={handleSizeChange(setBodySize, 18)}
-                    />
-                  </div>
-                </div>
-              </div>
+  <label>Body Text</label>
+
+  <div className={styles.quillWrapper}>
+    <ReactQuill
+      value={bodyText}
+      onChange={setBodyText}
+      modules={{
+        toolbar: [
+          [{ header: [1, 2, 3, false] }],
+          ["bold", "italic", "underline", "strike"],
+          [{ list: "ordered" }, { list: "bullet" }],
+          [{ color: [] }, { background: [] }],
+          [{ align: [] }],
+          ["link"],
+          ["clean"],
+        ],
+      }}
+      formats={[
+        "header",
+        "bold",
+        "italic",
+        "underline",
+        "strike",
+        "list",
+        "bullet",
+        "color",
+        "background",
+        "align",
+        "link",
+      ]}
+      placeholder="Enter your text here"
+      style={{
+        color: bodyTextColor,
+        fontSize: `${bodySize}px`,
+      }}
+    />
+  </div>
+
+  <div className={styles.inputControls}>
+    <div className={styles.colorInput}>
+      <label>Choose Body Text Color</label>
+      <ColorInput
+        value={bodyTextColor}
+        onChange={setBodyTextColor}
+      />
+    </div>
+    <div className={styles.sizeInput}>
+      <label>Size (Max 18 px.)</label>
+      <InputField
+        value={bodySize}
+        onChange={handleSizeChange(setBodySize, 18)}
+      />
+    </div>
+  </div>
+</div>
+
               <div className={styles.inputGroup}>
                 <label>CTA URL</label>
                 <InputField

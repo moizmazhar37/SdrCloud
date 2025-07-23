@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import DateRangeDropdown from "./DateRangeDropdown/DateRangeDropdown";
 import SupportContactLabel from "./SupportContactLabel/SupportContactLabel";
 import Card from "../MainDashboard/CardBlock/Card";
@@ -8,9 +9,7 @@ import TopUsers from "../MainDashboard/TableCardBlock/TabularCard";
 import VisitorsGraph from "./VisitorsGraph/VisitorsGraph.jsx";
 import UserCreditsChart from "./UserCreditsChart/UserCreditsChart";
 import ActiveProspectsLifecycle from "./ActiveProspectsLifeCycle/ActiveProspectsLifeCycle";
-import CardPopUpGraph from "../MainDashboard/CardBlock/CardPopUpGraph/CardPopUpGraph";
 import useGetAdminDashboard from "../MainDashboard/Hooks/useGetAdminDashboard";
-import useGetMiniGraphData from "../MainDashboard/Hooks/useGetMiniGraphData";
 import Graph from "../MainDashboard/Graph/Graph";
 import Loader from "src/Common/Loader/Loader";
 import useGetRealTimeAlerts from "../MainDashboard/Hooks/Alerts/useGetAlerts";
@@ -24,25 +23,13 @@ const AdminDashboard = ({
   initialDateRange = { startDate: null, endDate: null },
 }) => {
   const userType = localStorage.getItem("userType");
+  const history = useHistory();
   const [toastMessages, setToastMessages] = useState([]);
   const [dateRange, setDateRange] = useState(initialDateRange);
-  const [isPopUpOpen, setIsPopUpOpen] = useState(false);
-  const [popupHeading, setPopupHeading] = useState("");
   const { downloadCSV, loading: csvLoading } = useDownloadCSV();
 
   // Only make API calls if external data is not provided
   const shouldMakeApiCalls = !externalData;
-
-  // Get mini graph data for popup - pass date range parameters
-  const {
-    data: miniGraphData,
-    loading: miniGraphLoading,
-    error: miniGraphError,
-  } = useGetMiniGraphData(
-    shouldMakeApiCalls ? popupHeading : null,
-    shouldMakeApiCalls ? dateRange.startDate : null,
-    shouldMakeApiCalls ? dateRange.endDate : null
-  );
 
   const {
     data: dashboardData,
@@ -53,13 +40,11 @@ const AdminDashboard = ({
     shouldMakeApiCalls ? dateRange.endDate : null
   );
 
-  // Use external data if provided, otherwise use API data
   const currentDashboardData = externalData || dashboardData;
   const currentLoading = externalData ? false : dashboardLoading;
 
   console.log(currentDashboardData);
 
-  //Get Alerts for user - only if making API calls
   const {
     data: alerts = [],
     loading: alertsLoading,
@@ -83,16 +68,12 @@ const AdminDashboard = ({
   };
 
   const handleCardClick = (heading) => {
-    // Only handle card clicks if making API calls (popup functionality)
+    // Only handle card clicks if making API calls (drilldown functionality)
     if (shouldMakeApiCalls) {
-      setPopupHeading(heading);
-      setIsPopUpOpen(true);
+      console.log(`Card clicked: ${heading}`);
+      // Navigate to drilldown route with heading as URL parameter
+      history.push(`/drilldown?heading=${encodeURIComponent(heading)}`);
     }
-  };
-
-  const closePopup = () => {
-    setIsPopUpOpen(false);
-    setPopupHeading(""); // Reset heading when closing popup
   };
 
   if (currentLoading)
@@ -102,14 +83,12 @@ const AdminDashboard = ({
       </div>
     );
 
-  // Only render the dashboard when data is available
   if (!currentDashboardData) {
     return null;
   }
 
   const showTopTemplates = false;
 
-  // Destructure the data
   const {
     supportInfo,
     metrics,
@@ -123,13 +102,13 @@ const AdminDashboard = ({
     userCreditsData,
     topUsersData,
     topTemplatesData,
-    prospect_list_data = [], // Default to empty array if not provided
+    prospect_list_data = [],
   } = currentDashboardData;
 
   const growthRates_metrics = metrics?.growth_rates;
   const growthRates_summaryStats = summaryStats?.growth_rates;
 
-  // Updated table headers for users to match the actual data structure
+  // Table headers for top users
   const tableHeaders = [
     { key: "name", label: "Name" },
     { key: "email", label: "Email" },
@@ -235,8 +214,8 @@ const AdminDashboard = ({
           <Card
             heading="Campaigns"
             amount={formatAmount(summaryStats.campaigns)}
-            // isClickable={true}
-            // onClick={() => handleCardClick("Campaigns")}
+            isClickable={true}
+            onClick={() => handleCardClick("Campaigns")}
             // Only pass `change` if it's not null
             {...(growthRates_summaryStats?.campaigns !== null && {
               change: growthRates_summaryStats?.campaigns,
@@ -256,18 +235,18 @@ const AdminDashboard = ({
           <Card
             heading="Meetings Booked"
             amount={formatAmount(summaryStats.meetingsBooked)}
-            // isClickable={true}
-            // onClick={() => handleCardClick("Meetings Booked")}
+            isClickable={true}
+            onClick={() => handleCardClick("Meetings Booked")}
             {...(growthRates_summaryStats?.meetingsBooked !== null && {
               change: growthRates_summaryStats?.meetingsBooked,
             })}
           />
 
           <Card
-            heading="Meeting Attended"
+            heading="Meetings Attended"
             amount={formatAmount(summaryStats.meetingsAttended)}
-            // isClickable={true}
-            // onClick={() => handleCardClick("Meeting Attended")}
+            isClickable={true}
+            onClick={() => handleCardClick("Meetings Attended")}
             {...(growthRates_summaryStats?.meetingsAttended !== null && {
               change: growthRates_summaryStats?.meetingsAttended,
             })}
@@ -345,19 +324,6 @@ const AdminDashboard = ({
         </div>
       </div>
       {userType != "SDRC_ADMIN" && <MeetingsTable />}
-
-      {/* Popup component - only render if making API calls */}
-      {shouldMakeApiCalls && (
-        <CardPopUpGraph
-          isOpen={isPopUpOpen}
-          onClose={closePopup}
-          heading={popupHeading}
-          graphData={miniGraphData}
-          loading={miniGraphLoading}
-          error={miniGraphError}
-          dateRange={dateRange}
-        />
-      )}
 
       <ToastManager toastMessages={toastMessages} />
     </div>
