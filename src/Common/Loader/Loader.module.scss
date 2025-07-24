@@ -3,84 +3,193 @@
   justify-content: center;
   align-items: center;
   background: transparent;
+  position: relative;
 }
 
 .loader {
   position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.loaderImage {
+/* Clean, elegant rings */
+.ring1, .ring2, .ring3 {
   position: absolute;
+  border-radius: 50%;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 2;
-  animation: pulse 2s ease-in-out infinite;
-  filter: drop-shadow(0 0 10px rgba(66, 133, 244, 0.5));
-  object-fit: contain;
+  border: 2px solid transparent;
 }
 
-.loaderRing {
-  position: absolute;
+.ring1 {
   width: 100%;
   height: 100%;
-  border-radius: 50%;
-  animation: rotate 2s linear infinite;
-
-  &::before {
-    content: "";
-    position: absolute;
-    top: -5px;
-    left: -5px;
-    right: -5px;
-    bottom: -5px;
-    border-radius: 50%;
-    border: 4px solid transparent;
-    border-top: 4px solid #4285f4;
-    border-bottom: 4px solid #4285f4;
-    // filter: drop-shadow(0 0 20px #4285f4);
-  }
-
-  &.reverseRing {
-    animation-direction: reverse;
-    animation-duration: 3s;
-
-    &::before {
-      border-top: 4px solid #03a7a1;
-      border-bottom: 4px solid #03a7a1;
-      //   filter: drop-shadow(0 0 20px #03a7a1);
-    }
-  }
+  border-top: 2px solid #4285f4;
+  animation: elegantSpin 3s ease-in-out infinite;
 }
 
-@keyframes rotate {
+.ring2 {
+  width: 80%;
+  height: 80%;
+  border-right: 2px solid #10b981;
+  animation: elegantSpin 2.5s ease-in-out infinite reverse;
+  animation-delay: -0.5s;
+}
+
+.ring3 {
+  width: 60%;
+  height: 60%;
+  border-bottom: 2px solid #f59e0b;
+  animation: elegantSpin 2s ease-in-out infinite;
+  animation-delay: -1s;
+}
+
+@keyframes elegantSpin {
   0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes pulse {
-  0%,
-  100% {
-    transform: translate(-50%, -50%) scale(1);
+    transform: translate(-50%, -50%) rotate(0deg);
+    opacity: 1;
   }
   50% {
-    transform: translate(-50%, -50%) scale(1.1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+    opacity: 1;
   }
 }
 
-// Responsive adjustments
+/* Elegant floating dots */
+.dots {
+  position: absolute;
+  width: 120%;
+  height: 120%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.dot1, .dot2, .dot3, .dot4 {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4285f4, #60a5fa);
+  animation: floatDot 4s ease-in-out infinite;
+}
+
+.dot1 {
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  animation-delay: 0s;
+}
+
+.dot2 {
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  background: linear-gradient(135deg, #10b981, #34d399);
+  animation-delay: 1s;
+}
+
+.dot3 {
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #f59e0b, #fbbf24);
+  animation-delay: 2s;
+}
+
+.dot4 {
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  background: linear-gradient(135deg, #ef4444, #f87171);
+  animation-delay: 3s;
+}
+
+@keyframes floatDot {
+  0%, 100% {
+    transform: translateX(-50%) translateY(-50%) scale(0);
+    opacity: 0;
+  }
+  25% {
+    transform: translateX(-50%) translateY(-50%) scale(1.2);
+    opacity: 1;
+  }
+  50% {
+    transform: translateX(-50%) translateY(-50%) scale(1);
+    opacity: 0.8;
+  }
+  75% {
+    transform: translateX(-50%) translateY(-50%) scale(0.8);
+    opacity: 1;
+  }
+}
+
+/* Clean image styling */
+.imageContainer {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loaderImage {
+  position: relative;
+  object-fit: contain;
+  border-radius: 12px;
+  animation: gentleFloat 3s ease-in-out infinite;
+  transition: all 0.3s ease;
+}
+
+@keyframes gentleFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+/* Responsive design */
 @media (max-width: 768px) {
   .loader {
-    transform: scale(0.8);
+    transform: scale(0.9);
+  }
+  
+  .dot1, .dot2, .dot3, .dot4 {
+    width: 6px;
+    height: 6px;
   }
 }
 
 @media (max-width: 480px) {
   .loader {
-    transform: scale(0.6);
+    transform: scale(0.8);
+  }
+  
+  .dot1, .dot2, .dot3, .dot4 {
+    width: 5px;
+    height: 5px;
+  }
+}
+
+/* Smooth loading animation */
+.loaderContainer {
+  animation: fadeInLoader 0.5s ease-out;
+}
+
+@keyframes fadeInLoader {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }
