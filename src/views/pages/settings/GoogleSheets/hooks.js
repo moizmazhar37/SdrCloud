@@ -66,3 +66,30 @@ export const useDeleteGoogleSheet = (refreshCallback) => {
 
   return { deleteGoogleSheet, isLoading };
 };
+
+
+export const useResyncGoogleSheet = (refreshCallback) => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const resyncGoogleSheet = async (id) => {
+    setIsLoading(true);
+    try {
+      const response = await axios({
+        url: `${ApiConfig.googleSheet}/resync/${id}`,
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      toast.success("Sheet Resynced Successfully.");
+    } catch (error) {
+      toast.error("An error occurred while resyncing the sheet.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return { resyncGoogleSheet, isLoading };
+};
+
+

@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Dropdown from "../../../../Common/Dropdown/Dropdown";
 import { faCircle } from "@fortawesome/free-solid-svg-icons";
 import styles from "./googlesheets.module.scss";
-import { useGoogleSheetsData, useDeleteGoogleSheet } from "./hooks";
+import { useGoogleSheetsData, useDeleteGoogleSheet, useResyncGoogleSheet } from "./hooks";
 import WarningModal from "../../../../Common/Modal/Modal";
 import DynamicNavigator from "../../../../Common/DynamicNavigator/DynamicNavigator";
 
@@ -15,6 +15,7 @@ function GoogleSheets() {
   const history = useHistory();
   const { data, loading, error, fetchData } = useGoogleSheetsData();
   const { deleteGoogleSheet, isLoading } = useDeleteGoogleSheet(fetchData);
+  const { resyncGoogleSheet, isLoading: isResyncLoading } = useResyncGoogleSheet(fetchData);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
 
@@ -40,6 +41,14 @@ function GoogleSheets() {
   const handleDelete = (row) => {
     setSelectedRow(row);
     setIsModalOpen(true);
+  };
+
+  const handleResync = async (row) => {
+    await resyncGoogleSheet(row.id);
+    history.push({
+      pathname: "/editSheets",
+      state: { sheetId: row.id },
+    });
   };
 
   const handleNewSheet = () => {
@@ -92,6 +101,7 @@ function GoogleSheets() {
         options={[
           { label: "View", onClick: () => handleEdit(row) },
           { label: "Edit", onClick: () => handleEdit(row) },
+          { label: "Resync", onClick: () => handleResync(row) },
           { label: "Delete", onClick: () => handleDelete(row) },
         ]}
         buttonText="Actions"
@@ -123,8 +133,8 @@ function GoogleSheets() {
         <DynamicNavigator items={navigationItems} />
         <button onClick={handleNewSheet}>Create New Google Sheet Connection</button>
       </div>
-      
-      {loading || isLoading ? (
+
+      {loading || isLoading || isResyncLoading ? (
         <div className={styles.loader}>
           <Loader size={160} />
         </div>
