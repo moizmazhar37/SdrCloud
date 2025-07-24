@@ -4,7 +4,7 @@ import Table from "src/Common/Table/Table";
 import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
 import useGetDrilldownScreensData from "src/views/pages/EmailSettings/EmailSetupSections/Hooks/useGetDrilldownScreensData";
 import Loader from "src/Common/Loader/Loader";
-import { prepareTableData, prepareTableHeaders } from "./helpers";
+import { prepareTableData, prepareTableHeaders, formatDateTime } from "./helpers";
 import styles from "./Drilldown.module.scss";
 
 const Drilldown = () => {

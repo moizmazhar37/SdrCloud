@@ -18,6 +18,32 @@ export const formatDate = (dateString) => {
   }
 };
 
+// Helper function to format datetime from UTC
+export const formatDateTime = (utcString) => {
+  try {
+    const date = new Date(utcString);
+    // Check if date is valid
+    if (isNaN(date.getTime())) {
+      return utcString; // Return original if not a valid date
+    }
+    
+    // Format date as DD/MM/YYYY
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    
+    // Format time as HH:MM AM/PM
+    const hours = date.getHours();
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    const displayHours = hours % 12 || 12;
+    
+    return `${day}/${month}/${year} ${displayHours}:${minutes} ${ampm}`;
+  } catch (error) {
+    return utcString; // Return original if formatting fails
+  }
+};
+
 // Helper function to check if a field is a date field
 export const isDateField = (key, value) => {
   // Check if key contains date-related words
@@ -139,6 +165,128 @@ export const prepareTableData = (data, heading) => {
             Open
           </button>
         );
+      }
+      // Special handling for meeting_link field - show Meet button
+      else if (key === "meeting_link" && value && value !== "null" && value !== "") {
+        processedItem[key] = (
+          <button
+            onClick={() => window.open(value, '_blank')}
+            style={{
+              backgroundColor: '#10b981',
+              color: 'white',
+              border: 'none',
+              borderRadius: '8px',
+              padding: '8px 16px',
+              fontSize: '13px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+              boxShadow: '0 2px 4px rgba(16, 185, 129, 0.2)',
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.backgroundColor = '#059669';
+              e.target.style.transform = 'translateY(-1px)';
+              e.target.style.boxShadow = '0 4px 8px rgba(16, 185, 129, 0.3)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.backgroundColor = '#10b981';
+              e.target.style.transform = 'translateY(0)';
+              e.target.style.boxShadow = '0 2px 4px rgba(16, 185, 129, 0.2)';
+            }}
+          >
+            Meet
+          </button>
+        );
+      }
+      // Special handling for email_sent field in Meetings Booked - show Yes/No with border
+      else if (key === "email_sent" && heading === "Meetings Booked") {
+        const isSent = value === true || value === "true";
+        processedItem[key] = (
+          <span style={{ 
+            color: isSent ? '#16a34a' : '#dc2626',
+            backgroundColor: isSent ? '#f0fdf4' : '#fef2f2',
+            fontWeight: 'bold',
+            padding: '6px 12px',
+            borderRadius: '6px',
+            border: `2px solid ${isSent ? '#16a34a' : '#dc2626'}`,
+            fontSize: '12px',
+            display: 'inline-block',
+            minWidth: '45px',
+            textAlign: 'center'
+          }}>
+            {isSent ? "Yes" : "No"}
+          </span>
+        );
+      }
+      // Special handling for meeting_type field - style "calendly" text
+      else if (key === "meeting_type") {
+        if (typeof value === 'string' && value.toLowerCase() === 'calendly') {
+          processedItem[key] = (
+            <span style={{
+              color: '#0066cc',
+              fontWeight: '600',
+              backgroundColor: '#e6f3ff',
+              padding: '4px 8px',
+              borderRadius: '4px',
+              fontSize: '12px'
+            }}>
+              Calendly
+            </span>
+          );
+        } else {
+          processedItem[key] = (
+            <span style={{
+              color: '#6b7280',
+              fontWeight: '500',
+              backgroundColor: '#f3f4f6',
+              padding: '4px 8px',
+              borderRadius: '4px',
+              fontSize: '12px'
+            }}>
+              {value || 'N/A'}
+            </span>
+          );
+        }
+      }
+      // Special handling for meeting_status field - colorful styling
+      else if (key === "meeting_status") {
+        let statusColor = '#6b7280';
+        let bgColor = '#f3f4f6';
+        
+        if (typeof value === 'string') {
+          const status = value.toLowerCase();
+          if (status.includes('confirmed') || status.includes('scheduled')) {
+            statusColor = '#16a34a';
+            bgColor = '#f0fdf4';
+          } else if (status.includes('pending') || status.includes('waiting')) {
+            statusColor = '#d97706';
+            bgColor = '#fffbeb';
+          } else if (status.includes('cancelled') || status.includes('failed')) {
+            statusColor = '#dc2626';
+            bgColor = '#fef2f2';
+          } else if (status.includes('completed') || status.includes('attended')) {
+            statusColor = '#7c3aed';
+            bgColor = '#faf5ff';
+          }
+        }
+        
+        processedItem[key] = (
+          <span style={{
+            color: statusColor,
+            fontWeight: '600',
+            backgroundColor: bgColor,
+            padding: '4px 8px',
+            borderRadius: '4px',
+            fontSize: '12px',
+            textTransform: 'capitalize'
+          }}>
+            {value || 'N/A'}
+          </span>
+        );
+      }
+      // Special handling for start_time and end_time fields in Meetings Booked - format UTC to local date/time
+      else if ((key === "start_time" || key === "end_time") && heading === "Meetings Booked") {
+        processedItem[key] = formatDateTime(value);
       }
       // Special handling for date fields - format to DD/MM/YYYY
       else if (isDateField(key, value)) {
@@ -405,6 +553,15 @@ export const prepareTableHeaders = (processedData, originalData, heading) => {
           'weekdays_time', 'weekend_time', 'total_sent_sms', 'from_name', 
           'reply_to', 'email_enabled', 'sms_enabled', 'campaign_status', 
           'max_emails_per_day', 'daily_sent_emails', 'max_sms_per_day', 'active'
+        ];
+        if (!allowedFields.includes(key)) return false;
+      }
+      
+      // Show only specific columns for Meetings Booked drilldown
+      if (heading === "Meetings Booked") {
+        const allowedFields = [
+          'tenant_email', 'email_sent', 'user_email', 'meeting_link', 
+          'start_time', 'end_time', 'meeting_type', 'meeting_status'
         ];
         if (!allowedFields.includes(key)) return false;
       }
