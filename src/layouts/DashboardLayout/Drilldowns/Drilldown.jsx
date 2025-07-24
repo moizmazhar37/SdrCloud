@@ -4,6 +4,7 @@ import Table from "src/Common/Table/Table";
 import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
 import useGetDrilldownScreensData from "src/views/pages/EmailSettings/EmailSetupSections/Hooks/useGetDrilldownScreensData";
 import Loader from "src/Common/Loader/Loader";
+import { prepareTableData, prepareTableHeaders } from "./helpers";
 import styles from "./Drilldown.module.scss";
 
 const Drilldown = () => {
@@ -11,6 +12,8 @@ const Drilldown = () => {
 
   const searchParams = new URLSearchParams(location.search);
   const heading = searchParams.get("heading");
+  const startDate = searchParams.get("start_date");
+  const endDate = searchParams.get("end_date");
 
   const navigationItems = [
     { text: "Dashboard", route: "/dashboard" },
@@ -21,7 +24,7 @@ const Drilldown = () => {
     data: drilldownData,
     loading: drilldownLoading,
     error: drilldownError,
-  } = useGetDrilldownScreensData(heading);
+  } = useGetDrilldownScreensData(heading, startDate, endDate);
 
   if (drilldownLoading) {
     return (
@@ -33,53 +36,12 @@ const Drilldown = () => {
     );
   }
 
-  // Prepare table data
-  const prepareTableData = (data) => {
-    if (!data || !Array.isArray(data)) {
-      return [];
-    }
 
-    return data.map((item, index) => {
-      const processedItem = { id: index + 1 };
+  const tableData = prepareTableData(drilldownData, heading);
+  const tableHeaders = prepareTableHeaders(tableData, drilldownData, heading);
 
-      // Replace null, undefined, empty string values with "NA"
-      Object.keys(item).forEach((key) => {
-        const value = item[key];
-        if (
-          value === null ||
-          value === undefined ||
-          value === "" ||
-          value === "null"
-        ) {
-          processedItem[key] = "NA";
-        } else {
-          processedItem[key] = value;
-        }
-      });
-
-      return processedItem;
-    });
-  };
-
-  // Prepare table headers
-  const prepareTableHeaders = (data) => {
-    if (!data || !Array.isArray(data) || data.length === 0) {
-      return [];
-    }
-
-    const firstItem = data[0];
-    return Object.keys(firstItem).map((key) => ({
-      key: key,
-      label: key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, " "),
-    }));
-  };
-
-  const tableData = prepareTableData(drilldownData);
-  const tableHeaders = prepareTableHeaders(drilldownData);
-
-  // Default headers for empty state
+  // Default headers for empty state (without id column)
   const defaultHeaders = [
-    { key: "id", label: "ID" },
     { key: "name", label: "Name" },
     { key: "status", label: "Status" },
     { key: "date", label: "Date" },
@@ -88,7 +50,6 @@ const Drilldown = () => {
   // Error data for table
   const errorData = [
     {
-      id: 1,
       name: "Error",
       status: drilldownError?.message || "Failed to load data",
       date: new Date().toLocaleDateString(),

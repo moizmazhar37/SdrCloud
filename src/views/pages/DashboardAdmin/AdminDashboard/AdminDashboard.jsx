@@ -70,9 +70,21 @@ const AdminDashboard = ({
   const handleCardClick = (heading) => {
     // Only handle card clicks if making API calls (drilldown functionality)
     if (shouldMakeApiCalls) {
-      console.log(`Card clicked: ${heading}`);
-      // Navigate to drilldown route with heading as URL parameter
-      history.push(`/drilldown?heading=${encodeURIComponent(heading)}`);
+      // Build query parameters including date range
+      const queryParams = new URLSearchParams({
+        heading: heading
+      });
+      
+      if (dateRange.startDate) {
+        queryParams.append('start_date', dateRange.startDate);
+      }
+      
+      if (dateRange.endDate) {
+        queryParams.append('end_date', dateRange.endDate);
+      }
+      
+      // Navigate to drilldown route with heading and date range as URL parameters
+      history.push(`/drilldown?${queryParams.toString()}`);
     }
   };
 
@@ -170,7 +182,6 @@ const AdminDashboard = ({
         <Card
           heading="Available Seats"
           amount={formatAmount(metrics.availableSeats)}
-          isClickable={shouldMakeApiCalls}
           onClick={() => handleCardClick("Available Seats")}
         />
         <Card
