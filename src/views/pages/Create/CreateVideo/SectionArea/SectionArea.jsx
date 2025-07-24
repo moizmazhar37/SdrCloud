@@ -20,6 +20,7 @@ const SectionArea = ({
   type = "video",
   onViewSection,
   sheetData = null,
+  templateData=null,
 }) => {
   const history = useHistory();
   const [sections, setSections] = useState([]);
@@ -38,6 +39,34 @@ const SectionArea = ({
   let audioCategories = getAudioCategories(sheetData);
 
   const audioInputRef = useRef(null);
+
+    const voiceModels = [
+    {
+      name: "Natasha",
+      dev_name: "en-AU-NatashaNeural",
+      url: "https://storage.googleapis.com/static-data-for-sdrc/uploads/e0653e5d-a70a-41e0-9706-4764f27ae886/en-AU-NatashaNeural_20250522071439.mp3",
+    },
+    {
+      name: "William",
+      dev_name: "en-AU-WilliamNeural",
+      url: "https://storage.googleapis.com/static-data-for-sdrc/uploads/e0653e5d-a70a-41e0-9706-4764f27ae886/en-AU-WilliamNeural_20250522071508.mp3",
+    },
+    {
+      name: "Liam",
+      dev_name: "en-CA-LiamNeural",
+      url: "https://storage.googleapis.com/static-data-for-sdrc/uploads/e0653e5d-a70a-41e0-9706-4764f27ae886/en-CA-LiamNeural_20250522071530.mp3",
+    },
+    {
+      name: "Sonia",
+      dev_name: "en-GB-SoniaNeural",
+      url: "https://storage.googleapis.com/static-data-for-sdrc/uploads/e0653e5d-a70a-41e0-9706-4764f27ae886/en-GB-SoniaNeural_20250522071548.mp3",
+    },
+    {
+      name: "Aria",
+      dev_name: "en-US-AriaNeural",
+      url: "https://storage.googleapis.com/static-data-for-sdrc/uploads/e0653e5d-a70a-41e0-9706-4764f27ae886/en-US-AriaNeural_20250522071610.mp3",
+    },
+  ];
 
   const confirmAction = (type) => {
     setPendingAction(type); // store what to do after confirmation
@@ -112,6 +141,14 @@ const SectionArea = ({
     }
   };
 
+    const findVoiceModelByDevName = (devName) => {
+    return voiceModels.find((model) => model.dev_name === devName) || null;
+  };
+
+  const voiceModel = templateData?.audioAccent
+        ? findVoiceModelByDevName(templateData.audioAccent)
+        : null;
+
 
   useEffect(() => {
     if (templateId && elementsList?.length > 0) {
@@ -126,6 +163,8 @@ const SectionArea = ({
 
       setSections(sortedSequences);
       setSectionData(sectionMap);
+      setAudioDescription(templateData?.audio || "");
+      setSelectedVoiceModel(voiceModel || null);
     } else {
       setSections([]);
       setSectionData({});
