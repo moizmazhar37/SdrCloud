@@ -6,6 +6,7 @@ import useUpdateVideoSection from "../hooks/useUpdateImageVideoSection";
 import { toast } from "react-toastify";
 import AudioDescModal from "src/Common/AudioDescModal/AudioDescModal";
 import InfoBox from "src/Common/InfoBox/InfoBox";
+import ConfirmationModal from "src/Common/ConfirmationModal/ConfirmationModal";
 
 const ImageUpload = ({
   categories,
@@ -29,6 +30,36 @@ const ImageUpload = ({
   const [dropdownKey, setDropdownKey] = useState(0);
   const [showAudioDescModal, setShowAudioDescModal] = useState(false);
   const [currentEditData, setCurrentEditData] = useState(null);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [pendingAudioAction, setPendingAudioAction] = useState(null); // "upload" or "description"
+
+  const handleRequestAudioUpload = () => {
+    setPendingAudioAction("upload");
+    setShowConfirmModal(true);
+  };
+
+  const handleRequestAudioDescription = () => {
+    setPendingAudioAction("description");
+    setShowConfirmModal(true);
+  };
+
+  const handleConfirmAudioAction = () => {
+    setShowConfirmModal(false);
+
+    if (pendingAudioAction === "upload") {
+      document.getElementById("audioUpload").click(); // trigger file input
+    } else if (pendingAudioAction === "description") {
+      setShowAudioDescModal(true); // open description modal
+    }
+
+    setPendingAudioAction(null);
+  };
+
+  const handleCancelAudioAction = () => {
+    setShowConfirmModal(false);
+    setPendingAudioAction(null);
+  };
+
 
   const { createVideoSection, loading: createLoading } =
     useCreateVideoSection();
@@ -320,16 +351,15 @@ const ImageUpload = ({
               <div className={styles.audioButtons}>
                 <div className={styles.audioActions}>
                   <button
-                    className={styles.uploadButton}
-                    onClick={handleUploadAudio}
+                    className={styles.uploadBtn}
+                    onClick={handleRequestAudioUpload}
                   >
                     Upload Audio
                   </button>
+
                   <button
-                    className={`${styles.descriptionButton} ${
-                      audioDescription ? styles.active : ""
-                    }`}
-                    onClick={handleAddDescription}
+                    className={`${styles.descriptionBtn} ${audioDescription ? styles.active : ""}`}
+                    onClick={handleRequestAudioDescription}
                   >
                     Add Audio Description
                   </button>
@@ -345,19 +375,18 @@ const ImageUpload = ({
 
           <div className={styles.actionButtons}>
             <button
-              className={`${styles.saveButton} ${
-                !isFormValid() || createLoading || updateLoading
+              className={`${styles.saveButton} ${!isFormValid() || createLoading || updateLoading
                   ? styles.disabled
                   : ""
-              }`}
+                }`}
               disabled={!isFormValid() || createLoading || updateLoading}
               onClick={handleSave}
             >
               {createLoading || updateLoading
                 ? "Saving..."
                 : currentEditData
-                ? "Update"
-                : "Save"}
+                  ? "Update"
+                  : "Save"}
             </button>
             <button className={styles.cancelButton} onClick={onClose}>
               Cancel
@@ -373,6 +402,18 @@ const ImageUpload = ({
           initialVoiceModel={selectedVoiceModel}
           onSave={handleAudioDescriptionSave}
           onClose={() => setShowAudioDescModal(false)}
+        />
+      )}
+      {showConfirmModal && (
+        <ConfirmationModal
+          isOpen={showConfirmModal}
+          onClose={handleCancelAudioAction}
+          onAction={handleConfirmAudioAction}
+          title="Override Global Audio?"
+          confirmationText="Uploading section audio will remove the audio of the whole video."
+          cancelButtonText="Cancel"
+          actionButtonText="Proceed"
+          showInputField={false}
         />
       )}
     </div>

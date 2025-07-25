@@ -245,6 +245,7 @@ const CreateVideo = () => {
             elementsList={elementsList}
             type="video"
             sheetData={data}
+            templateData={sectionData?.getVideo}
           />
           {sectionData?.getVideo?.copied && sectionData?.getVideo?.sheetId === null && (
             <DynamicFieldsList

@@ -9,6 +9,7 @@ import { getAudioCategories } from "../helpers";
 import AudioDescModal from "src/Common/AudioDescModal/AudioDescModal";
 import useUploadAudio from "./hooks/useUploadAudio";
 import { toast } from "react-toastify";
+import ConfirmationModal from "src/Common/ConfirmationModal/ConfirmationModal";
 
 const SectionArea = ({
   initialOptions,
@@ -19,6 +20,7 @@ const SectionArea = ({
   type = "video",
   onViewSection,
   sheetData = null,
+  templateData=null,
 }) => {
   const history = useHistory();
   const [sections, setSections] = useState([]);
@@ -30,11 +32,61 @@ const SectionArea = ({
   const [audioDescription, setAudioDescription] = useState("");
   const [selectedVoiceModel, setSelectedVoiceModel] = useState(null);
   const { uploadAudio, uploading, error, audioUrl } = useUploadAudio();
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [pendingAction, setPendingAction] = useState(null); // "upload" or "description"
 
 
   let audioCategories = getAudioCategories(sheetData);
 
   const audioInputRef = useRef(null);
+
+    const voiceModels = [
+    {
+      name: "Natasha",
+      dev_name: "en-AU-NatashaNeural",
+      url: "https://storage.googleapis.com/static-data-for-sdrc/uploads/e0653e5d-a70a-41e0-9706-4764f27ae886/en-AU-NatashaNeural_20250522071439.mp3",
+    },
+    {
+      name: "William",
+      dev_name: "en-AU-WilliamNeural",
+      url: "https://storage.googleapis.com/static-data-for-sdrc/uploads/e0653e5d-a70a-41e0-9706-4764f27ae886/en-AU-WilliamNeural_20250522071508.mp3",
+    },
+    {
+      name: "Liam",
+      dev_name: "en-CA-LiamNeural",
+      url: "https://storage.googleapis.com/static-data-for-sdrc/uploads/e0653e5d-a70a-41e0-9706-4764f27ae886/en-CA-LiamNeural_20250522071530.mp3",
+    },
+    {
+      name: "Sonia",
+      dev_name: "en-GB-SoniaNeural",
+      url: "https://storage.googleapis.com/static-data-for-sdrc/uploads/e0653e5d-a70a-41e0-9706-4764f27ae886/en-GB-SoniaNeural_20250522071548.mp3",
+    },
+    {
+      name: "Aria",
+      dev_name: "en-US-AriaNeural",
+      url: "https://storage.googleapis.com/static-data-for-sdrc/uploads/e0653e5d-a70a-41e0-9706-4764f27ae886/en-US-AriaNeural_20250522071610.mp3",
+    },
+  ];
+
+  const confirmAction = (type) => {
+    setPendingAction(type); // store what to do after confirmation
+    setShowConfirmModal(true);
+  };
+
+  const handleModalConfirm = () => {
+    setShowConfirmModal(false);
+    if (pendingAction === "upload") {
+      handleUploadAudio();
+    } else if (pendingAction === "description") {
+      handleAddDescription();
+    }
+    setPendingAction(null);
+  };
+
+  const handleModalClose = () => {
+    setShowConfirmModal(false);
+    setPendingAction(null);
+  };
 
   const handleAudioUpload = async (e) => {
     const file = e.target.files[0];
@@ -61,33 +113,41 @@ const SectionArea = ({
     audioInputRef.current?.click();
   };
 
-const handleAudioDescriptionSave = async (descriptionData) => {
-  setAudioDescription(descriptionData.audioDesc);
-  setSelectedVoiceModel(descriptionData.selectedVoiceModel);
-  setShowAudioDescModal(false);
+  const handleAudioDescriptionSave = async (descriptionData) => {
+    setAudioDescription(descriptionData.audioDesc);
+    setSelectedVoiceModel(descriptionData.selectedVoiceModel);
+    setShowAudioDescModal(false);
 
-  if (!templateId || !descriptionData.audioDesc) {
-    toast.error("Missing template or audio description");
-    return;
-  }
+    if (!templateId || !descriptionData.audioDesc) {
+      toast.error("Missing template or audio description");
+      return;
+    }
 
-  const uploadedUrl = await uploadAudio({
-    file: null,
-    templateId,
-    audioDescription: descriptionData?.audioDesc,
-    voiceModel: descriptionData?.selectedVoiceModel?.dev_name,
-  });
+    const uploadedUrl = await uploadAudio({
+      file: null,
+      templateId,
+      audioDescription: descriptionData?.audioDesc,
+      voiceModel: descriptionData?.selectedVoiceModel?.dev_name,
+    });
 
-  console.log(descriptionData)
-  setAudioFileName(descriptionData?.audioDesc);
-  setAudioFile(uploadedUrl);
+    console.log(descriptionData)
+    setAudioFileName(descriptionData?.audioDesc);
+    setAudioFile(uploadedUrl);
 
-  if (uploadedUrl) {
-    toast.success("Audio description uploaded successfully!");
-  } else {
-    toast.error(error || "Failed to upload audio description.");
-  }
-};
+    if (uploadedUrl) {
+      toast.success("Audio description uploaded successfully!");
+    } else {
+      toast.error(error || "Failed to upload audio description.");
+    }
+  };
+
+    const findVoiceModelByDevName = (devName) => {
+    return voiceModels.find((model) => model.dev_name === devName) || null;
+  };
+
+  const voiceModel = templateData?.audioAccent
+        ? findVoiceModelByDevName(templateData.audioAccent)
+        : null;
 
 
   useEffect(() => {
@@ -103,6 +163,8 @@ const handleAudioDescriptionSave = async (descriptionData) => {
 
       setSections(sortedSequences);
       setSectionData(sectionMap);
+      setAudioDescription(templateData?.audio || "");
+      setSelectedVoiceModel(voiceModel || null);
     } else {
       setSections([]);
       setSectionData({});
@@ -193,15 +255,15 @@ const handleAudioDescriptionSave = async (descriptionData) => {
               <div className={styles.audioActions}>
                 <button
                   className={styles.uploadButton}
-                  onClick={handleUploadAudio}
+                  onClick={() => confirmAction("upload")}
                   disabled={uploading}
                 >
                   {uploading ? "Saving Audio..." : "Upload Audio"}
                 </button>
+
                 <button
-                  className={`${styles.descriptionButton} ${audioDescription ? styles.active : ""
-                    }`}
-                  onClick={handleAddDescription}
+                  className={`${styles.descriptionButton} ${audioDescription ? styles.active : ""}`}
+                  onClick={() => confirmAction("description")}
                 >
                   Add Audio Description
                 </button>
@@ -237,7 +299,18 @@ const handleAudioDescriptionSave = async (descriptionData) => {
         onChange={handleAudioUpload}
         style={{ display: "none" }}
       />
+      <ConfirmationModal
+        isOpen={showConfirmModal}
+        onClose={handleModalClose}
+        onAction={handleModalConfirm}
+        title="Override Existing Section Audio?"
+        confirmationText="Any audio used in sections will be overridden. This audio will be used for the entire video."
+        cancelButtonText="Cancel"
+        actionButtonText="Proceed"
+        showInputField={false}
+      />
     </div>
+
 
   );
 };
