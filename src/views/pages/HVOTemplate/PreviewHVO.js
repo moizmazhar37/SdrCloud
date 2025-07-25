@@ -595,43 +595,117 @@ function PreviewHVO(props) {
                       align="center"
                       // style={{ paddingTop: "50px" }}
                     >
-                      {item?.values?.hero_img &&
-                      (item?.values?.hero_img.endsWith(".mp4") ||
-                        item?.values?.hero_img.endsWith(".webm") ||
-                        item?.values?.hero_img.endsWith(".ogg")) ? (
-                        <video
-                          src={item?.values?.hero_img}
-                          controls
-                          autoPlay
-                          loop
-                          muted
-                          playsInline
-                          style={{
-                            marginTop: "60px",
-                            maxWidth: "100%",
-                            maxHeight: "400px",
-                            width: "100%",
-                            height: "auto",
-                            borderRadius: "10px",
-                          }}
-                          data-aos="zoom-in"
-                        />
-                      ) : (
-                        <img
-                          src={
-                            item?.values?.hero_img
-                              ? item?.values?.hero_img
-                              : item?.values?.static_image
+                      {(() => {
+                        const heroImg = item?.values?.hero_img;
+                        
+                        // Helper functions
+                        const isVideoFile = (url) => {
+                          return url && (url.endsWith(".mp4") || url.endsWith(".webm") || url.endsWith(".ogg"));
+                        };
+                        
+                        const isYouTubeLink = (url) => {
+                          return url && (url.includes("youtube.com/watch") || url.includes("youtu.be/"));
+                        };
+                        
+                        const isGoogleDriveLink = (url) => {
+                          return url && url.includes("drive.google.com");
+                        };
+                        
+                        const getYouTubeEmbedUrl = (url) => {
+                          let videoId;
+                          if (url.includes("youtube.com/watch")) {
+                            videoId = url.split("v=")[1]?.split("&")[0];
+                          } else if (url.includes("youtu.be/")) {
+                            videoId = url.split("youtu.be/")[1]?.split("?")[0];
                           }
-                          alt="hero"
-                          style={{
-                            marginTop: "60px",
-                            maxWidth: "100%",
-                            borderRadius: "10px",
-                          }}
-                          data-aos="zoom-in"
-                        />
-                      )}
+                          return videoId ? `https://www.youtube.com/embed/${videoId}` : url;
+                        };
+                        
+                        const getGoogleDriveEmbedUrl = (url) => {
+                          if (url.includes("/file/d/")) {
+                            const fileId = url.split("/file/d/")[1]?.split("/")[0];
+                            return `https://drive.google.com/file/d/${fileId}/preview`;
+                          }
+                          return url;
+                        };
+
+                        // Render logic
+                        if (heroImg && (isVideoFile(heroImg) || isYouTubeLink(heroImg) || isGoogleDriveLink(heroImg))) {
+                          if (isVideoFile(heroImg)) {
+                            return (
+                              <video
+                                src={heroImg}
+                                controls
+                                autoPlay
+                                loop
+                                muted
+                                playsInline
+                                style={{
+                                  marginTop: "60px",
+                                  maxWidth: "100%",
+                                  maxHeight: "400px",
+                                  width: "100%",
+                                  height: "auto",
+                                  borderRadius: "10px",
+                                }}
+                                data-aos="zoom-in"
+                              />
+                            );
+                          } else if (isYouTubeLink(heroImg)) {
+                            return (
+                              <iframe
+                                src={getYouTubeEmbedUrl(heroImg)}
+                                title="YouTube video"
+                                allowFullScreen
+                                style={{
+                                  marginTop: "60px",
+                                  maxWidth: "100%",
+                                  width: "100%",
+                                  height: "400px",
+                                  borderRadius: "10px",
+                                  border: "none",
+                                }}
+                                data-aos="zoom-in"
+                              />
+                            );
+                          } else if (isGoogleDriveLink(heroImg)) {
+                            return (
+                              <iframe
+                                src={getGoogleDriveEmbedUrl(heroImg)}
+                                title="Google Drive video"
+                                allowFullScreen
+                                style={{
+                                  marginTop: "60px",
+                                  maxWidth: "100%",
+                                  width: "100%",
+                                  height: "400px",
+                                  borderRadius: "10px",
+                                  border: "none",
+                                }}
+                                data-aos="zoom-in"
+                              />
+                            );
+                          }
+                        }
+                        
+                        // Default image rendering
+                        return (
+                          <img
+                            src={
+                              item?.values?.hero_img
+                                ? item?.values?.hero_img
+                                : item?.values?.static_image
+                            }
+                            alt="hero"
+                            style={{
+                              marginTop: "60px",
+                              maxWidth: "100%",
+                              borderRadius: "10px",
+                            }}
+                            data-aos="zoom-in"
+                          />
+                        );
+                      })()}
                     </Grid>
                   </Grid>
                 </Container>
