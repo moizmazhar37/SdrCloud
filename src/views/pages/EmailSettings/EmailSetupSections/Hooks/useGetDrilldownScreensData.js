@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import ApiConfig from "src/config/APIConfig";
 
-const useGetDrilldownScreensData = (heading) => {
+const useGetDrilldownScreensData = (heading, startDate = null, endDate = null) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -19,10 +19,21 @@ const useGetDrilldownScreensData = (heading) => {
       setError(null);
       const token = localStorage.getItem("token");
       try {
+        // Build query parameters
+        const queryParams = new URLSearchParams({
+          headline: heading
+        });
+        
+        if (startDate) {
+          queryParams.append('start_date', startDate);
+        }
+        
+        if (endDate) {
+          queryParams.append('end_date', endDate);
+        }
+
         const response = await fetch(
-          `${ApiConfig.mainDashboard}/drilldown?headline=${encodeURIComponent(
-            heading
-          )}`,
+          `${ApiConfig.mainDashboard}/drilldown?${queryParams.toString()}`,
           {
             method: "GET",
             headers: {
@@ -50,7 +61,7 @@ const useGetDrilldownScreensData = (heading) => {
     };
 
     fetchDrilldownData();
-  }, [heading]);
+  }, [heading, startDate, endDate]);
 
   return { data, loading, error };
 };
