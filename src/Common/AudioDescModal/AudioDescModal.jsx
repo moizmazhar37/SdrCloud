@@ -16,6 +16,7 @@ const AudioDescModal = ({
 
   const [estimatedDuration, setEstimatedDuration] = useState(0);
   const [charLimit, setCharLimit] = useState(1000);
+  const [showVoiceModelWarning, setShowVoiceModelWarning] = useState(false);
 
   const voiceModels = [
     {
@@ -106,8 +107,14 @@ const AudioDescModal = ({
   }, [initialAudioDesc, initialVoiceModel]);
 
   const handleFieldSelect = (field) => {
+    if (!selectedVoiceModel) {
+      setShowVoiceModelWarning(true);
+      return;
+    }
+
     setSelectedFields([...selectedFields, `[${field}]`]);
     setAudioDesc(audioDesc + `[${field}]`);
+    setShowVoiceModelWarning(false);
   };
 
   const handleVoiceModelSelect = (model) => {
@@ -143,11 +150,19 @@ const AudioDescModal = ({
               value={audioDesc}
               maxLength={charLimit}
               onChange={(e) => {
-                const newValue = e.target.value;
-                setAudioDesc(newValue);
+                if (!selectedVoiceModel) {
+                  setShowVoiceModelWarning(true);
+                  return;
+                }
+                setAudioDesc(e.target.value);
+                setShowVoiceModelWarning(false);
               }}
               placeholder="Enter your audio description here..."
+              disabled={!selectedVoiceModel}
             />
+            {showVoiceModelWarning && (
+              <div className={styles.warningText}>Please select a voice model first.</div>
+            )}
             <div className={styles.durationInfo}>
               Estimated Audio Duration: <strong>{estimatedDuration}s</strong>
             </div>

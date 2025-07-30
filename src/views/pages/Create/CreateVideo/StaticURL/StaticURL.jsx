@@ -6,6 +6,9 @@ import useCreateVideoSection from "../hooks/useCreateVideoSection";
 import useUpdateVideoSection from "../hooks/useUpdateImageVideoSection";
 import { toast } from "react-toastify";
 import InfoBox from "src/Common/InfoBox/InfoBox";
+import ConfirmationModal from "src/Common/ConfirmationModal/ConfirmationModal";
+
+
 
 const StaticURL = ({
   categories = [],
@@ -27,6 +30,38 @@ const StaticURL = ({
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [dropdownKey, setDropdownKey] = useState(0);
   const [showAudioDescModal, setShowAudioDescModal] = useState(false);
+
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [pendingAudioAction, setPendingAudioAction] = useState(null); // "upload" or "description"
+
+
+  const handleRequestAudioUpload = () => {
+    setPendingAudioAction("upload");
+    setShowConfirmModal(true);
+  };
+
+  const handleRequestAudioDescription = () => {
+    setPendingAudioAction("description");
+    setShowConfirmModal(true);
+  };
+
+
+  const handleConfirmAudioAction = () => {
+    setShowConfirmModal(false);
+
+    if (pendingAudioAction === "upload") {
+      document.getElementById("audioUpload").click(); // trigger file input
+    } else if (pendingAudioAction === "description") {
+      setShowAudioDescModal(true); // open description modal
+    }
+
+    setPendingAudioAction(null);
+  };
+
+  const handleCancelAudioAction = () => {
+    setShowConfirmModal(false);
+    setPendingAudioAction(null);
+  };
 
   const iframeRef = useRef(null);
   const audioInputRef = useRef(null);
@@ -262,15 +297,14 @@ const StaticURL = ({
               <div className={styles.audioButtons}>
                 <button
                   className={styles.uploadBtn}
-                  onClick={handleUploadAudio}
+                  onClick={handleRequestAudioUpload}
                 >
                   Upload Audio
                 </button>
+
                 <button
-                  className={`${styles.descriptionBtn} ${
-                    audioDescription ? styles.active : ""
-                  }`}
-                  onClick={handleAddDescription}
+                  className={`${styles.descriptionBtn} ${audioDescription ? styles.active : ""}`}
+                  onClick={handleRequestAudioDescription}
                 >
                   Add Audio Description
                 </button>
@@ -311,19 +345,18 @@ const StaticURL = ({
 
         <div className={styles.footer}>
           <button
-            className={`${styles.saveBtn} ${
-              !isFormValid() || createLoading || updateLoading
+            className={`${styles.saveBtn} ${!isFormValid() || createLoading || updateLoading
                 ? styles.disabled
                 : ""
-            }`}
+              }`}
             onClick={handleSave}
             disabled={!isFormValid() || createLoading || updateLoading}
           >
             {createLoading || updateLoading
               ? "Saving..."
               : editData
-              ? "Update"
-              : "Save"}
+                ? "Update"
+                : "Save"}
           </button>
           <button className={styles.cancelBtn} onClick={onClose}>
             Cancel
@@ -340,6 +373,19 @@ const StaticURL = ({
           onClose={() => setShowAudioDescModal(false)}
         />
       )}
+      {showConfirmModal && (
+        <ConfirmationModal
+          isOpen={showConfirmModal}
+          onClose={handleCancelAudioAction}
+          onAction={handleConfirmAudioAction}
+          title="Override Global Audio?"
+          confirmationText="Uploading section audio will remove the audio of the whole video."
+          cancelButtonText="Cancel"
+          actionButtonText="Proceed"
+          showInputField={false}
+        />
+      )}
+
     </div>
   );
 };
