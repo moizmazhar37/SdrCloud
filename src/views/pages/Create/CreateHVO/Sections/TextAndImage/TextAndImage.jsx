@@ -26,6 +26,9 @@ const TextImage = ({
 }) => {
   const [headline1, setHeadline1] = useState("");
   const [ctaUrl, setCtaUrl] = useState("");
+  const [ctaButtonText, setCtaButtonText] = useState("");
+  const [ctaButtonBgColor, setCtaButtonBgColor] = useState("");
+  const [ctaButtonTextColor, setCtaButtonTextColor] = useState("");
   const [headline2, setHeadline2] = useState("");
   const [bodyText, setBodyText] = useState("");
   const [headline1Color, setHeadline1Color] = useState("");
@@ -65,6 +68,10 @@ const TextImage = ({
       setSize1(initialData.headline1_size?.toString() || "");
       setSize2(initialData.headline2_size?.toString() || "");
       setBodySize(initialData.body_text_size?.toString() || "");
+      setCtaUrl(initialData.cta_url || "");
+      setCtaButtonText(initialData.cta_button_text || "");
+      setCtaButtonBgColor(initialData.cta_button_bg_color || "");
+      setCtaButtonTextColor(initialData.cta_button_text_color || "");
 
       if (isRightText && initialData.left_image_right_text) {
         setImageUrl(initialData.left_image_right_text);
@@ -137,6 +144,9 @@ const TextImage = ({
       headline2Size: parseInt(size2) || null,
       image: selectedFile || selectedDynamicOption || imageUrl || null,
       ctaUrl: ctaUrl || null,
+      ctaButtonText: ctaButtonText || null,
+      ctaButtonBgColor: ctaButtonBgColor || null,
+      ctaButtonTextColor: ctaButtonTextColor || null,
 
     };
 
@@ -184,6 +194,10 @@ const TextImage = ({
     selectedFile,
     selectedDynamicOption,
     imageUrl,
+    ctaUrl,
+    ctaButtonText,
+    ctaButtonBgColor,
+    ctaButtonTextColor,
     updateRightTextLeftImage,
     updateLeftTextRightImage,
     saveRightTextLeftImage,
@@ -375,6 +389,35 @@ const TextImage = ({
                   onChange={(e) => setCtaUrl(e.target.value)}
                   placeholder="Enter Your CTA URL Here"
                 />
+              </div>
+
+              <div className={styles.inputGroup}>
+                <label>CTA Button Text</label>
+                <InputField
+                  value={ctaButtonText}
+                  onChange={(e) => setCtaButtonText(e.target.value)}
+                  placeholder="Enter CTA Button Text"
+                />
+              </div>
+
+              <div className={styles.inputGroup}>
+                <label>CTA Button Colors</label>
+                <div className={styles.inputControls}>
+                  <div className={styles.colorInput}>
+                    <label>Background Color</label>
+                    <ColorInput
+                      value={ctaButtonBgColor}
+                      onChange={setCtaButtonBgColor}
+                    />
+                  </div>
+                  <div className={styles.colorInput}>
+                    <label>Text Color</label>
+                    <ColorInput
+                      value={ctaButtonTextColor}
+                      onChange={setCtaButtonTextColor}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
