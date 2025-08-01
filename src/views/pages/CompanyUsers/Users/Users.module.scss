@@ -1,7 +1,67 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+}
+// Users.module.scss
 
-.container{
-    display: flex;
-    flex-direction: column;
-    gap: 50px;
+.activeLabel {
+  background-color: #10b981;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 500;
+  display: inline-block;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
 
+.activateButton {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: #2563eb;
+  }
+
+  &:disabled {
+    background-color: #9ca3af;
+    cursor: not-allowed;
+  }
+}
+
+.profilePictureContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profilePicture {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e5e7eb;
+}
+
+.profilePlaceholder {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #6b7280;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
 }

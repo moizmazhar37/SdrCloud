@@ -840,6 +840,37 @@ function PreviewHVO(props) {
                             }}
                           />
                         )}
+
+                      {item?.values?.cta_button_text && 
+                        item?.values?.cta_button_text !== "None" && 
+                        item?.values?.cta_url && 
+                        item?.values?.cta_url !== "None" && (
+                        <Button
+                          variant="contained"
+                          onClick={() => {
+                            const url = item?.values?.cta_url.startsWith('http') 
+                              ? item?.values?.cta_url 
+                              : `https://${item?.values?.cta_url}`;
+                            window.open(url, '_blank');
+                          }}
+                          style={{
+                            backgroundColor: item?.values?.cta_button_bg_color || "#0358AC",
+                            color: item?.values?.cta_button_text_color || "white",
+                            fontSize: "14px",
+                            fontWeight: 500,
+                            marginTop: "24px",
+                            padding: "12px 24px",
+                            textTransform: "none",
+                            borderRadius: "6px",
+                            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                            '&:hover': {
+                              opacity: 0.9,
+                            }
+                          }}
+                        >
+                          {item?.values?.cta_button_text}
+                        </Button>
+                      )}
                     </Grid>
                   </Grid>
                 </Container>
@@ -968,6 +999,37 @@ function PreviewHVO(props) {
                             }}
                           />
                         )}
+
+                      {item?.values?.cta_button_text && 
+                        item?.values?.cta_button_text !== "None" && 
+                        item?.values?.cta_url && 
+                        item?.values?.cta_url !== "None" && (
+                        <Button
+                          variant="contained"
+                          onClick={() => {
+                            const url = item?.values?.cta_url.startsWith('http') 
+                              ? item?.values?.cta_url 
+                              : `https://${item?.values?.cta_url}`;
+                            window.open(url, '_blank');
+                          }}
+                          style={{
+                            backgroundColor: item?.values?.cta_button_bg_color || "#0358AC",
+                            color: item?.values?.cta_button_text_color || "white",
+                            fontSize: "14px",
+                            fontWeight: 500,
+                            marginTop: "24px",
+                            padding: "12px 24px",
+                            textTransform: "none",
+                            borderRadius: "6px",
+                            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                            '&:hover': {
+                              opacity: 0.9,
+                            }
+                          }}
+                        >
+                          {item?.values?.cta_button_text}
+                        </Button>
+                      )}
                     </Grid>
                     <Grid item sm={6} xs={12} align="center">
                       <img

@@ -31,7 +31,13 @@ const useSaveTextImage = () => {
     if (data.headline2Size)
       formData.append("headline2_size", data.headline2Size);
     if (data.ctaUrl)
-        formData.append("cta_button_text", data.ctaUrl);
+      formData.append("cta_url", data.ctaUrl);
+    if (data.ctaButtonText)
+      formData.append("cta_button_text", data.ctaButtonText);
+    if (data.ctaButtonBgColor)
+      formData.append("cta_button_bg_color", data.ctaButtonBgColor);
+    if (data.ctaButtonTextColor)
+      formData.append("cta_button_text_color", data.ctaButtonTextColor);
 
     // Handle image upload
     if (data.image instanceof File) {
