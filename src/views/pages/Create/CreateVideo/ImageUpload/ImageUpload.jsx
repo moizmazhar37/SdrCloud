@@ -1,12 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
 import styles from "./ImageUpload.module.scss";
 import CategoryDropdown from "../CategoryDropdown/CategoryDropdown";
+import AudioDescModal from "src/Common/AudioDescModal/AudioDescModal";
+import AudioPromptModal from "src/Common/AudioPromptModal/AudioPromptModal"; // Import the new modal
 import useCreateVideoSection from "../hooks/useCreateVideoSection";
 import useUpdateVideoSection from "../hooks/useUpdateImageVideoSection";
 import { toast } from "react-toastify";
-import AudioDescModal from "src/Common/AudioDescModal/AudioDescModal";
 import InfoBox from "src/Common/InfoBox/InfoBox";
-import ConfirmationModal from "src/Common/ConfirmationModal/ConfirmationModal";
 
 const ImageUpload = ({
   categories,
@@ -25,42 +25,17 @@ const ImageUpload = ({
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [audioDescription, setAudioDescription] = useState("");
   const [selectedVoiceModel, setSelectedVoiceModel] = useState(null);
+  // New state for audio prompt
+  const [audioPrompt, setAudioPrompt] = useState(editData?.audio_prompt || "");
+  const [selectedVoiceModelForPrompt, setSelectedVoiceModelForPrompt] = useState(
+    editData?.audio_prompt_accent ? { dev_name: editData.audio_prompt_accent } : null
+  );
   const [audioFileName, setAudioFileName] = useState("");
   const [scroll, setScroll] = useState(null);
   const [dropdownKey, setDropdownKey] = useState(0);
   const [showAudioDescModal, setShowAudioDescModal] = useState(false);
+  const [showAudioPromptModal, setShowAudioPromptModal] = useState(false); // New state for audio prompt modal
   const [currentEditData, setCurrentEditData] = useState(null);
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [pendingAudioAction, setPendingAudioAction] = useState(null); // "upload" or "description"
-
-  const handleRequestAudioUpload = () => {
-    setPendingAudioAction("upload");
-    setShowConfirmModal(true);
-  };
-
-  const handleRequestAudioDescription = () => {
-    setPendingAudioAction("description");
-    setShowConfirmModal(true);
-  };
-
-  const handleConfirmAudioAction = () => {
-    setShowConfirmModal(false);
-
-    if (pendingAudioAction === "upload") {
-      document.getElementById("audioUpload").click(); // trigger file input
-    } else if (pendingAudioAction === "description") {
-      setShowAudioDescModal(true); // open description modal
-    }
-
-    setPendingAudioAction(null);
-  };
-
-  const handleCancelAudioAction = () => {
-    setShowConfirmModal(false);
-    setPendingAudioAction(null);
-  };
-
-
   const { createVideoSection, loading: createLoading } =
     useCreateVideoSection();
   const { updateVideoSection, loading: updateLoading } =
@@ -112,17 +87,20 @@ const ImageUpload = ({
       } else {
         setImagePreview(editData.previewContent);
       }
-
       setDuration(editData.duration || "");
       setScroll(editData.scroll || false);
       setAudioDescription(editData.audio_description || "");
-
       // Convert audio_accent string to voice model object
       const voiceModel = editData.audio_accent
         ? findVoiceModelByDevName(editData.audio_accent)
         : null;
       setSelectedVoiceModel(voiceModel);
-
+      // Initialize audio prompt data
+      setAudioPrompt(editData.audio_prompt || "");
+      const voiceModelForPrompt = editData.audio_prompt_accent
+        ? findVoiceModelByDevName(editData.audio_prompt_accent)
+        : null;
+      setSelectedVoiceModelForPrompt(voiceModelForPrompt);
       setCurrentEditData(editData);
     } else {
       setImageFile(null);
@@ -134,6 +112,8 @@ const ImageUpload = ({
       setAudioDescription("");
       setSelectedVoiceModel(null);
       setScroll(null);
+      setAudioPrompt("");
+      setSelectedVoiceModelForPrompt(null);
       setCurrentEditData(null);
     }
   }, [editData]);
@@ -150,6 +130,8 @@ const ImageUpload = ({
       setAudioDescription("");
       setSelectedVoiceModel(null);
       setScroll(null);
+      setAudioPrompt("");
+      setSelectedVoiceModelForPrompt(null);
       setDropdownKey((prev) => prev + 1);
     }
   }, [editData, currentEditData]);
@@ -197,15 +179,24 @@ const ImageUpload = ({
     setShowAudioDescModal(true);
   };
 
+  const handleAddPrompt = () => {
+    setShowAudioPromptModal(true);
+  };
+
   const handleAudioDescriptionSave = (descriptionData) => {
     setAudioDescription(descriptionData.audioDesc);
     setSelectedVoiceModel(descriptionData.selectedVoiceModel);
     setShowAudioDescModal(false);
   };
 
+  const handleAudioPromptSave = (promptData) => {
+    setAudioPrompt(promptData.audioPrompt);
+    setSelectedVoiceModelForPrompt(promptData.selectedVoiceModel);
+    setShowAudioPromptModal(false);
+  };
+
   const handleSave = async () => {
     if (!isFormValid()) return;
-
     const videoSectionData = {
       hvoTemplateId: templateId,
       sectionName: selectedCategory || "IMAGE URL",
@@ -216,6 +207,8 @@ const ImageUpload = ({
       scroll: scroll,
       audioDescription: audioDescription,
       audioAccent: selectedVoiceModel?.dev_name || null,
+      audioPrompt: audioPrompt, // Add audio prompt
+      audioPromptAccent: selectedVoiceModelForPrompt?.dev_name || null, // Add audio prompt accent
       firstRowValue: null,
       isDynamic: !!selectedCategory, // True if category selected, false if URL or file
       file: imageFile,
@@ -223,11 +216,9 @@ const ImageUpload = ({
       link: imageURL && !selectedCategory ? imageURL : null, // Only URL if no category is selected
       audio: audioFile,
     };
-
     if (currentEditData) {
       videoSectionData.id = currentEditData.id;
     }
-
     try {
       let response;
       if (currentEditData) {
@@ -238,7 +229,6 @@ const ImageUpload = ({
       } else {
         response = await createVideoSection(videoSectionData);
       }
-
       if (response) {
         onSaveSuccess();
         toast.success(
@@ -268,7 +258,6 @@ const ImageUpload = ({
             {sectionNumber}
           </span>
         </div>
-
         <div className={styles.uploadSection}>
           <div className={styles.row}>
             <div className={styles.imageUploadContainer}>
@@ -297,7 +286,6 @@ const ImageUpload = ({
                 className={styles.hiddenInput}
               />
             </div>
-
             <div className={styles.dropdownContainer}>
               <label>Select Image URL</label>
               <CategoryDropdown
@@ -310,7 +298,6 @@ const ImageUpload = ({
               />
             </div>
           </div>
-
           {imagePreview && (
             <div className={styles.previewContainer}>
               <img
@@ -320,7 +307,6 @@ const ImageUpload = ({
               />
             </div>
           )}
-
           <div className={styles.row}>
             <div className={styles.durationContainer}>
               <label>
@@ -339,7 +325,6 @@ const ImageUpload = ({
                 className={styles.durationInput}
               />
             </div>
-
             <div className={styles.audioContainer}>
               <input
                 ref={audioInputRef}
@@ -351,17 +336,27 @@ const ImageUpload = ({
               <div className={styles.audioButtons}>
                 <div className={styles.audioActions}>
                   <button
-                    className={styles.uploadBtn}
-                    onClick={handleRequestAudioUpload}
+                    className={styles.uploadButton}
+                    onClick={handleUploadAudio}
                   >
                     Upload Audio
                   </button>
-
                   <button
-                    className={`${styles.descriptionBtn} ${audioDescription ? styles.active : ""}`}
-                    onClick={handleRequestAudioDescription}
+                    className={`${styles.descriptionButton} ${
+                      audioDescription ? styles.active : ""
+                    }`}
+                    onClick={handleAddDescription}
                   >
                     Add Audio Description
+                  </button>
+                  {/* New button for Audio Prompt */}
+                  <button
+                    className={`${styles.descriptionButton} ${
+                      audioPrompt ? styles.active : ""
+                    }`}
+                    onClick={handleAddPrompt}
+                  >
+                    Add Audio Prompt
                   </button>
                 </div>
               </div>
@@ -372,21 +367,21 @@ const ImageUpload = ({
               <span>{audioFileName}</span>
             </div>
           )}
-
           <div className={styles.actionButtons}>
             <button
-              className={`${styles.saveButton} ${!isFormValid() || createLoading || updateLoading
+              className={`${styles.saveButton} ${
+                !isFormValid() || createLoading || updateLoading
                   ? styles.disabled
                   : ""
-                }`}
+              }`}
               disabled={!isFormValid() || createLoading || updateLoading}
               onClick={handleSave}
             >
               {createLoading || updateLoading
                 ? "Saving..."
                 : currentEditData
-                  ? "Update"
-                  : "Save"}
+                ? "Update"
+                : "Save"}
             </button>
             <button className={styles.cancelButton} onClick={onClose}>
               Cancel
@@ -404,16 +399,13 @@ const ImageUpload = ({
           onClose={() => setShowAudioDescModal(false)}
         />
       )}
-      {showConfirmModal && (
-        <ConfirmationModal
-          isOpen={showConfirmModal}
-          onClose={handleCancelAudioAction}
-          onAction={handleConfirmAudioAction}
-          title="Override Global Audio?"
-          confirmationText="Uploading section audio will remove the audio of the whole video."
-          cancelButtonText="Cancel"
-          actionButtonText="Proceed"
-          showInputField={false}
+      {/* New Audio Prompt Modal */}
+      {showAudioPromptModal && (
+        <AudioPromptModal
+          initialAudioPrompt={audioPrompt}
+          initialVoiceModel={selectedVoiceModelForPrompt}
+          onSave={handleAudioPromptSave}
+          onClose={() => setShowAudioPromptModal(false)}
         />
       )}
     </div>
