@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from "react";
 import styles from "./ImageUpload.module.scss";
 import CategoryDropdown from "../CategoryDropdown/CategoryDropdown";
 import AudioDescModal from "src/Common/AudioDescModal/AudioDescModal";
-import AudioPromptModal from "src/Common/AudioPromptModal/AudioPromptModal"; // Import the new modal
 import useCreateVideoSection from "../hooks/useCreateVideoSection";
 import useUpdateVideoSection from "../hooks/useUpdateImageVideoSection";
 import { toast } from "react-toastify";
@@ -34,7 +33,7 @@ const ImageUpload = ({
   const [scroll, setScroll] = useState(null);
   const [dropdownKey, setDropdownKey] = useState(0);
   const [showAudioDescModal, setShowAudioDescModal] = useState(false);
-  const [showAudioPromptModal, setShowAudioPromptModal] = useState(false); // New state for audio prompt modal
+  const [showAudioPromptModal, setShowAudioPromptModal] = useState(false);
   const [currentEditData, setCurrentEditData] = useState(null);
   const { createVideoSection, loading: createLoading } =
     useCreateVideoSection();
@@ -190,7 +189,7 @@ const ImageUpload = ({
   };
 
   const handleAudioPromptSave = (promptData) => {
-    setAudioPrompt(promptData.audioPrompt);
+    setAudioPrompt(promptData.audioDesc);
     setSelectedVoiceModelForPrompt(promptData.selectedVoiceModel);
     setShowAudioPromptModal(false);
   };
@@ -397,15 +396,17 @@ const ImageUpload = ({
           initialVoiceModel={selectedVoiceModel}
           onSave={handleAudioDescriptionSave}
           onClose={() => setShowAudioDescModal(false)}
+          mode="description" // Specify mode
         />
       )}
-      {/* New Audio Prompt Modal */}
+      {/* Reuse AudioDescModal for Audio Prompt with mode="prompt" */}
       {showAudioPromptModal && (
-        <AudioPromptModal
-          initialAudioPrompt={audioPrompt}
+        <AudioDescModal
+          initialAudioDesc={audioPrompt}
           initialVoiceModel={selectedVoiceModelForPrompt}
           onSave={handleAudioPromptSave}
           onClose={() => setShowAudioPromptModal(false)}
+          mode="prompt" // Specify mode
         />
       )}
     </div>

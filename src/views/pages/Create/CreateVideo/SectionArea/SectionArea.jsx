@@ -7,7 +7,6 @@ import styles from "./SectionArea.module.scss";
 import InfoBox from "src/Common/InfoBox/InfoBox";
 import { getAudioCategories } from "../helpers";
 import AudioDescModal from "src/Common/AudioDescModal/AudioDescModal";
-import AudioPromptModal from "src/Common/AudioPromptModal/AudioPromptModal"; // New import
 import useUploadAudio from "./hooks/useUploadAudio";
 import { toast } from "react-toastify";
 
@@ -28,11 +27,11 @@ const SectionArea = ({
   const [audioFile, setAudioFile] = useState(null);
   const [audioFileName, setAudioFileName] = useState("");
   const [showAudioDescModal, setShowAudioDescModal] = useState(false);
-  const [showAudioPromptModal, setShowAudioPromptModal] = useState(false); // New state
+  const [showAudioPromptModal, setShowAudioPromptModal] = useState(false);
   const [audioDescription, setAudioDescription] = useState("");
-  const [audioPrompt, setAudioPrompt] = useState(""); // New state
+  const [audioPrompt, setAudioPrompt] = useState("");
   const [selectedVoiceModel, setSelectedVoiceModel] = useState(null);
-  const [selectedVoiceModelForPrompt, setSelectedVoiceModelForPrompt] = useState(null); // New state
+  const [selectedVoiceModelForPrompt, setSelectedVoiceModelForPrompt] = useState(null);
   const { uploadAudio, uploading, error, audioUrl } = useUploadAudio();
 
   let audioCategories = getAudioCategories(sheetData);
@@ -44,10 +43,12 @@ const SectionArea = ({
     const uploadedUrl = await uploadAudio({
       file,
       templateId,
-      audioDescription,
+      audioDescription: "",
     });
     if (uploadedUrl) {
       toast.success("Audio uploaded successfully!");
+      setAudioFile(uploadedUrl);
+      setAudioFileName(file.name);
     } else {
       toast.error(error || "Failed to upload audio. Please try again.");
     }
@@ -90,21 +91,21 @@ const SectionArea = ({
   };
 
   const handleAudioPromptSave = async (promptData) => {
-    setAudioPrompt(promptData.audioPrompt);
+    setAudioPrompt(promptData.audioDesc);
     setSelectedVoiceModelForPrompt(promptData.selectedVoiceModel);
     setShowAudioPromptModal(false);
-    if (!templateId || !promptData.audioPrompt) {
+    if (!templateId || !promptData.audioDesc) {
       toast.error("Missing template or audio prompt");
       return;
     }
     const uploadedUrl = await uploadAudio({
       file: null,
       templateId,
-      audioDescription: promptData?.audioPrompt,
+      audioDescription: promptData?.audioDesc,
       voiceModel: promptData?.selectedVoiceModel?.dev_name,
     });
     console.log(promptData);
-    setAudioFileName(promptData?.audioPrompt);
+    setAudioFileName(promptData?.audioDesc);
     setAudioFile(uploadedUrl);
     if (uploadedUrl) {
       toast.success("Audio prompt uploaded successfully!");
@@ -216,16 +217,14 @@ const SectionArea = ({
                   {uploading ? "Saving Audio..." : "Upload Audio"}
                 </button>
                 <button
-                  className={`${styles.descriptionButton} ${audioDescription ? styles.active : ""
-                    }`}
+                  className={`${styles.descriptionButton} ${audioDescription ? styles.active : ""}`}
                   onClick={handleAddDescription}
                 >
                   Add Audio Description
                 </button>
                 {/* New Audio Prompt Button */}
                 <button
-                  className={`${styles.descriptionButton} ${audioPrompt ? styles.active : ""
-                    }`}
+                  className={`${styles.descriptionButton} ${audioPrompt ? styles.active : ""}`}
                   onClick={handleAddPrompt}
                 >
                   Add Audio Prompt
@@ -253,15 +252,17 @@ const SectionArea = ({
           initialVoiceModel={selectedVoiceModel}
           onSave={handleAudioDescriptionSave}
           onClose={() => setShowAudioDescModal(false)}
+          mode="description" // Specify mode
         />
       )}
-      {/* New Audio Prompt Modal */}
+      {/* Reuse AudioDescModal for Audio Prompt with mode="prompt" */}
       {showAudioPromptModal && (
-        <AudioPromptModal
-          initialAudioPrompt={audioPrompt}
+        <AudioDescModal
+          initialAudioDesc={audioPrompt}
           initialVoiceModel={selectedVoiceModelForPrompt}
           onSave={handleAudioPromptSave}
           onClose={() => setShowAudioPromptModal(false)}
+          mode="prompt" // Specify mode
         />
       )}
       <input

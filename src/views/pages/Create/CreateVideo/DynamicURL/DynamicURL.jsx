@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import styles from "./DynamicURL.module.scss";
 import CategoryDropdown from "../CategoryDropdown/CategoryDropdown";
 import AudioDescModal from "src/Common/AudioDescModal/AudioDescModal";
-import AudioPromptModal from "src/Common/AudioPromptModal/AudioPromptModal"; // Import the new modal
 import useCreateVideoSection from "../hooks/useCreateVideoSection";
 import useUpdateVideoSection from "../hooks/useUpdateImageVideoSection";
 import { toast } from "react-toastify";
@@ -37,7 +36,7 @@ const DynamicURL = ({
   );
   const [loading, setLoading] = useState(false);
   const [showAudioDescModal, setShowAudioDescModal] = useState(false);
-  const [showAudioPromptModal, setShowAudioPromptModal] = useState(false); // New state for audio prompt modal
+  const [showAudioPromptModal, setShowAudioPromptModal] = useState(false);
 
   const { createVideoSection } = useCreateVideoSection();
   const { updateVideoSection } = useUpdateVideoSection();
@@ -101,7 +100,7 @@ const DynamicURL = ({
   };
 
   const handleAudioPromptSave = (promptData) => {
-    setAudioPrompt(promptData.audioPrompt);
+    setAudioPrompt(promptData.audioDesc);
     setSelectedVoiceModelForPrompt(promptData.selectedVoiceModel);
     setShowAudioPromptModal(false);
   };
@@ -284,15 +283,17 @@ const DynamicURL = ({
           initialVoiceModel={selectedVoiceModel}
           onSave={handleAudioDescriptionSave}
           onClose={() => setShowAudioDescModal(false)}
+          mode="description" // Specify mode
         />
       )}
-      {/* New Audio Prompt Modal */}
+      {/* Reuse AudioDescModal for Audio Prompt with mode="prompt" */}
       {showAudioPromptModal && (
-        <AudioPromptModal
-          initialAudioPrompt={audioPrompt}
+        <AudioDescModal
+          initialAudioDesc={audioPrompt}
           initialVoiceModel={selectedVoiceModelForPrompt}
           onSave={handleAudioPromptSave}
           onClose={() => setShowAudioPromptModal(false)}
+          mode="prompt" // Specify mode
         />
       )}
     </div>
