@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { url } from "src/config/APIConfig";
 import axios from "axios";
-import { toast } from "react-hot-toast";
+import { toast } from "react-toastify";
 
 const usePostAgent = () => {
   const [loading, setLoading] = useState(false);
@@ -24,9 +24,11 @@ const usePostAgent = () => {
       });
 
       setData(response.data);
+      toast.success("Agent created successfully!");
       return response.data;
     } catch (err) {
       const message =
+        err?.response?.data?.detail ||
         err?.response?.data?.message ||
         err?.message ||
         "An error occurred while posting agent.";

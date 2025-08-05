@@ -188,6 +188,8 @@ const Agent = () => {
       closeDuplicateModal();
     } catch (error) {
       console.error("Error duplicating agent:", error);
+      // Error toast is already handled in the useDuplicateAgent hook
+      // Just keep the modal open so user can try again
     }
   };
 
