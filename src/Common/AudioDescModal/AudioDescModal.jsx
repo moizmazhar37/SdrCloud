@@ -15,7 +15,7 @@ const AudioDescModal = ({
   const audioRef = useRef(null);
   const [estimatedDuration, setEstimatedDuration] = useState(0);
   const [charLimit, setCharLimit] = useState(1000);
-
+  
   const voiceModels = [
     {
       name: "Natasha",
@@ -51,6 +51,7 @@ const AudioDescModal = ({
     "en-GB-SoniaNeural": 0.071,
     "en-US-AriaNeural": 0.066,
   };
+
   const PAUSE_DELAYS = {
     '.': 0.5,
     ',': 0.2,
@@ -122,7 +123,7 @@ const AudioDescModal = ({
   const placeholderText = mode === "prompt" 
     ? "Enter your audio prompt here..." 
     : "Enter your audio description here...";
-
+    
   // Conditionally show dynamic fields and duration based on mode
   const showDynamicFields = mode === "description";
   const showDurationInfo = mode === "description";
