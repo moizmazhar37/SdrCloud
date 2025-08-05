@@ -21,6 +21,13 @@ const useSaveHeroSection = () => {
         formData.append("hero_img", data.hero_img || ""); // Use hero_img URL if no file
       }
 
+      // Append thumbnail file or URL
+      if (data.thumbnailFile) {
+        formData.append("thumbnailFile", data.thumbnailFile); // Thumbnail file
+      } else if (data.thumbnail) {
+        formData.append("thumbnail", data.thumbnail); // Thumbnail URL
+      }
+
       formData.append("hvoTemplateId", data.templateId || "");
       formData.append("sequence", data.sequence || 0);
       

@@ -213,3 +213,40 @@
   margin-top: 8px;
   font-style: italic;
 }
+
+.thumbnailSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  margin-top: 16px;
+  padding: 16px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+
+  label {
+    font-size: 14px;
+    color: #1a202c;
+    font-weight: 500;
+  }
+}
+
+.thumbnailPreviewContainer {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.thumbnailLabel {
+  font-size: 12px;
+  color: #666;
+  font-weight: 500;
+  margin: 0;
+}
+
+.thumbnailPreview {
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
