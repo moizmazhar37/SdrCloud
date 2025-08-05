@@ -6,6 +6,7 @@ import useCreateVideoSection from "../hooks/useCreateVideoSection";
 import useUpdateVideoSection from "../hooks/useUpdateImageVideoSection";
 import { toast } from "react-toastify";
 import InfoBox from "src/Common/InfoBox/InfoBox";
+import ConfirmationModal from "src/Common/ConfirmationModal/ConfirmationModal";
 
 const ImageUpload = ({
   categories,
@@ -15,6 +16,8 @@ const ImageUpload = ({
   onSaveSuccess,
   onClose,
   editData,
+  hasLeftSectionAudio = false,
+  hasRightSectionAudio = false,
 }) => {
   const [imageFile, setImageFile] = useState(null);
   const [imageURL, setImageURL] = useState("");
@@ -24,7 +27,6 @@ const ImageUpload = ({
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [audioDescription, setAudioDescription] = useState("");
   const [selectedVoiceModel, setSelectedVoiceModel] = useState(null);
-  // New state for audio prompt
   const [audioPrompt, setAudioPrompt] = useState(editData?.audio_prompt || "");
   const [selectedVoiceModelForPrompt, setSelectedVoiceModelForPrompt] = useState(
     editData?.audio_prompt_accent ? { dev_name: editData.audio_prompt_accent } : null
@@ -34,15 +36,16 @@ const ImageUpload = ({
   const [dropdownKey, setDropdownKey] = useState(0);
   const [showAudioDescModal, setShowAudioDescModal] = useState(false);
   const [showAudioPromptModal, setShowAudioPromptModal] = useState(false);
+  const [showAudioMismatchModal, setShowAudioMismatchModal] = useState(false);
+  const [pendingAudioAction, setPendingAudioAction] = useState(null);
   const [currentEditData, setCurrentEditData] = useState(null);
-  const { createVideoSection, loading: createLoading } =
-    useCreateVideoSection();
-  const { updateVideoSection, loading: updateLoading } =
-    useUpdateVideoSection();
+  
+  const { createVideoSection, loading: createLoading } = useCreateVideoSection();
+  const { updateVideoSection, loading: updateLoading } = useUpdateVideoSection();
+  
   const imageInputRef = useRef(null);
   const audioInputRef = useRef(null);
 
-  // Voice models array - moved to component level so it can be used in useEffect
   const voiceModels = [
     {
       name: "Natasha",
@@ -71,12 +74,10 @@ const ImageUpload = ({
     },
   ];
 
-  // Helper function to find voice model by dev_name
   const findVoiceModelByDevName = (devName) => {
     return voiceModels.find((model) => model.dev_name === devName) || null;
   };
 
-  // Initialize form with edit data if available
   useEffect(() => {
     if (editData) {
       if (editData.value) {
@@ -89,12 +90,10 @@ const ImageUpload = ({
       setDuration(editData.duration || "");
       setScroll(editData.scroll || false);
       setAudioDescription(editData.audio_description || "");
-      // Convert audio_accent string to voice model object
       const voiceModel = editData.audio_accent
         ? findVoiceModelByDevName(editData.audio_accent)
         : null;
       setSelectedVoiceModel(voiceModel);
-      // Initialize audio prompt data
       setAudioPrompt(editData.audio_prompt || "");
       const voiceModelForPrompt = editData.audio_prompt_accent
         ? findVoiceModelByDevName(editData.audio_prompt_accent)
@@ -170,16 +169,92 @@ const ImageUpload = ({
     setDropdownKey((prev) => prev + 1);
   };
 
-  const handleUploadAudio = () => {
+  // Check if current section has audio
+  const hasCurrentSectionAudio = () => {
+    return !!(audioFile || (audioDescription && selectedVoiceModel) || (audioPrompt && selectedVoiceModelForPrompt));
+  };
+
+  const handleRequestAudioUpload = () => {
+    // Check if there's an audio mismatch with adjacent sections
+    const currentHasAudio = hasCurrentSectionAudio();
+    
+    // If we're adding audio and there's a mismatch with adjacent sections
+    if (!currentHasAudio && (hasLeftSectionAudio || hasRightSectionAudio)) {
+      setPendingAudioAction("upload");
+      setShowAudioMismatchModal(true);
+      return;
+    }
+    
+    // If we're replacing audio and there's a mismatch with adjacent sections
+    if (currentHasAudio && (hasLeftSectionAudio !== currentHasAudio || hasRightSectionAudio !== currentHasAudio)) {
+      setPendingAudioAction("upload");
+      setShowAudioMismatchModal(true);
+      return;
+    }
+    
+    // If no mismatch, proceed directly
     audioInputRef.current?.click();
   };
 
-  const handleAddDescription = () => {
+  const handleRequestDescription = () => {
+    // Check if there's an audio mismatch with adjacent sections
+    const currentHasAudio = hasCurrentSectionAudio();
+    
+    // If we're adding audio and there's a mismatch with adjacent sections
+    if (!currentHasAudio && (hasLeftSectionAudio || hasRightSectionAudio)) {
+      setPendingAudioAction("description");
+      setShowAudioMismatchModal(true);
+      return;
+    }
+    
+    // If we're replacing audio and there's a mismatch with adjacent sections
+    if (currentHasAudio && (hasLeftSectionAudio !== currentHasAudio || hasRightSectionAudio !== currentHasAudio)) {
+      setPendingAudioAction("description");
+      setShowAudioMismatchModal(true);
+      return;
+    }
+    
+    // If no mismatch, proceed directly
     setShowAudioDescModal(true);
   };
 
-  const handleAddPrompt = () => {
+  const handleRequestPrompt = () => {
+    // Check if there's an audio mismatch with adjacent sections
+    const currentHasAudio = hasCurrentSectionAudio();
+    
+    // If we're adding audio and there's a mismatch with adjacent sections
+    if (!currentHasAudio && (hasLeftSectionAudio || hasRightSectionAudio)) {
+      setPendingAudioAction("prompt");
+      setShowAudioMismatchModal(true);
+      return;
+    }
+    
+    // If we're replacing audio and there's a mismatch with adjacent sections
+    if (currentHasAudio && (hasLeftSectionAudio !== currentHasAudio || hasRightSectionAudio !== currentHasAudio)) {
+      setPendingAudioAction("prompt");
+      setShowAudioMismatchModal(true);
+      return;
+    }
+    
+    // If no mismatch, proceed directly
     setShowAudioPromptModal(true);
+  };
+
+  const handleProceedWithMismatch = () => {
+    setShowAudioMismatchModal(false);
+    if (pendingAudioAction === "upload") {
+      audioInputRef.current?.click();
+    } else if (pendingAudioAction === "description") {
+      setShowAudioDescModal(true);
+    } else if (pendingAudioAction === "prompt") {
+      setShowAudioPromptModal(true);
+    }
+    setPendingAudioAction(null);
+  };
+
+  const handleCancelDueToMismatch = () => {
+    setShowAudioMismatchModal(false);
+    setPendingAudioAction(null);
   };
 
   const handleAudioDescriptionSave = (descriptionData) => {
@@ -206,13 +281,13 @@ const ImageUpload = ({
       scroll: scroll,
       audioDescription: audioDescription,
       audioAccent: selectedVoiceModel?.dev_name || null,
-      audioPrompt: audioPrompt, // Add audio prompt
-      audioPromptAccent: selectedVoiceModelForPrompt?.dev_name || null, // Add audio prompt accent
+      audioPrompt: audioPrompt,
+      audioPromptAccent: selectedVoiceModelForPrompt?.dev_name || null,
       firstRowValue: null,
-      isDynamic: !!selectedCategory, // True if category selected, false if URL or file
+      isDynamic: !!selectedCategory,
       file: imageFile,
-      value: selectedCategory ? imageURL : null, // URL for dynamic categories
-      link: imageURL && !selectedCategory ? imageURL : null, // Only URL if no category is selected
+      value: selectedCategory ? imageURL : null,
+      link: imageURL && !selectedCategory ? imageURL : null,
       audio: audioFile,
     };
     if (currentEditData) {
@@ -336,7 +411,7 @@ const ImageUpload = ({
                 <div className={styles.audioActions}>
                   <button
                     className={styles.uploadButton}
-                    onClick={handleUploadAudio}
+                    onClick={handleRequestAudioUpload}
                   >
                     Upload Audio
                   </button>
@@ -344,16 +419,15 @@ const ImageUpload = ({
                     className={`${styles.descriptionButton} ${
                       audioDescription ? styles.active : ""
                     }`}
-                    onClick={handleAddDescription}
+                    onClick={handleRequestDescription}
                   >
                     Add Audio Description
                   </button>
-                  {/* New button for Audio Prompt */}
                   <button
                     className={`${styles.descriptionButton} ${
                       audioPrompt ? styles.active : ""
                     }`}
-                    onClick={handleAddPrompt}
+                    onClick={handleRequestPrompt}
                   >
                     Add Audio Prompt
                   </button>
@@ -388,7 +462,6 @@ const ImageUpload = ({
           </div>
         </div>
       </div>
-      <div className={styles.audioModal}></div>
       {showAudioDescModal && (
         <AudioDescModal
           dynamicFields={audioCategories}
@@ -396,17 +469,28 @@ const ImageUpload = ({
           initialVoiceModel={selectedVoiceModel}
           onSave={handleAudioDescriptionSave}
           onClose={() => setShowAudioDescModal(false)}
-          mode="description" // Specify mode
+          mode="description"
         />
       )}
-      {/* Reuse AudioDescModal for Audio Prompt with mode="prompt" */}
       {showAudioPromptModal && (
         <AudioDescModal
           initialAudioDesc={audioPrompt}
           initialVoiceModel={selectedVoiceModelForPrompt}
           onSave={handleAudioPromptSave}
           onClose={() => setShowAudioPromptModal(false)}
-          mode="prompt" // Specify mode
+          mode="prompt"
+        />
+      )}
+      {showAudioMismatchModal && (
+        <ConfirmationModal
+          isOpen={showAudioMismatchModal}
+          onClose={handleCancelDueToMismatch}
+          onAction={handleProceedWithMismatch}
+          title="Audio Configuration Mismatch"
+          confirmationText="Adjacent sections have different audio configurations. This may result in inconsistent audio experience. Do you want to proceed?"
+          cancelButtonText="Cancel"
+          actionButtonText="Proceed Anyway"
+          showInputField={false}
         />
       )}
     </div>

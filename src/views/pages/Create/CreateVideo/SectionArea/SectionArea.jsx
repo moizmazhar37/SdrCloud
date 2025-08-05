@@ -9,6 +9,7 @@ import { getAudioCategories } from "../helpers";
 import AudioDescModal from "src/Common/AudioDescModal/AudioDescModal";
 import useUploadAudio from "./hooks/useUploadAudio";
 import { toast } from "react-toastify";
+import ConfirmationModal from "src/Common/ConfirmationModal/ConfirmationModal";
 
 const SectionArea = ({
   initialOptions,
@@ -32,14 +33,52 @@ const SectionArea = ({
   const [audioPrompt, setAudioPrompt] = useState("");
   const [selectedVoiceModel, setSelectedVoiceModel] = useState(null);
   const [selectedVoiceModelForPrompt, setSelectedVoiceModelForPrompt] = useState(null);
+  const [showAudioMismatchModal, setShowAudioMismatchModal] = useState(false); // New state for audio mismatch
+  const [pendingAudioAction, setPendingAudioAction] = useState(null); // Track which action triggered the modal
+  
   const { uploadAudio, uploading, error, audioUrl } = useUploadAudio();
-
   let audioCategories = getAudioCategories(sheetData);
   const audioInputRef = useRef(null);
+
+  // Helper function to check if a section has audio
+  const hasSectionAudio = (sectionSequence) => {
+    const section = sectionData[sectionSequence];
+    if (!section) return false;
+    
+    return !!(
+      section.audio || 
+      (section.audio_description && section.audio_accent) ||
+      (section.audio_prompt && section.audio_prompt_accent)
+    );
+  };
+
+  // Check if current section has audio
+  const hasCurrentSectionAudio = () => {
+    return !!(audioFile || (audioDescription && selectedVoiceModel) || (audioPrompt && selectedVoiceModelForPrompt));
+  };
 
   const handleAudioUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
+    
+    // Check if there's an audio mismatch with adjacent sections
+    const currentHasAudio = hasCurrentSectionAudio();
+    
+    // If we're adding audio and there's a mismatch with adjacent sections
+    if (!currentHasAudio && (sections.some(seq => hasSectionAudio(seq)))) {
+      setPendingAudioAction("upload");
+      setShowAudioMismatchModal(true);
+      return;
+    }
+    
+    // If we're replacing audio and there's a mismatch with adjacent sections
+    if (currentHasAudio && (sections.some(seq => !hasSectionAudio(seq)))) {
+      setPendingAudioAction("upload");
+      setShowAudioMismatchModal(true);
+      return;
+    }
+    
+    // If no mismatch, proceed directly
     const uploadedUrl = await uploadAudio({
       file,
       templateId,
@@ -54,16 +93,78 @@ const SectionArea = ({
     }
   };
 
+  const handleRequestDescription = () => {
+    // Check if there's an audio mismatch with adjacent sections
+    const currentHasAudio = hasCurrentSectionAudio();
+    
+    // If we're adding audio and there's a mismatch with adjacent sections
+    if (!currentHasAudio && (sections.some(seq => hasSectionAudio(seq)))) {
+      setPendingAudioAction("description");
+      setShowAudioMismatchModal(true);
+      return;
+    }
+    
+    // If we're replacing audio and there's a mismatch with adjacent sections
+    if (currentHasAudio && (sections.some(seq => !hasSectionAudio(seq)))) {
+      setPendingAudioAction("description");
+      setShowAudioMismatchModal(true);
+      return;
+    }
+    
+    // If no mismatch, proceed directly
+    setShowAudioDescModal(true);
+  };
+
+  const handleRequestPrompt = () => {
+    // Check if there's an audio mismatch with adjacent sections
+    const currentHasAudio = hasCurrentSectionAudio();
+    
+    // If we're adding audio and there's a mismatch with adjacent sections
+    if (!currentHasAudio && (sections.some(seq => hasSectionAudio(seq)))) {
+      setPendingAudioAction("prompt");
+      setShowAudioMismatchModal(true);
+      return;
+    }
+    
+    // If we're replacing audio and there's a mismatch with adjacent sections
+    if (currentHasAudio && (sections.some(seq => !hasSectionAudio(seq)))) {
+      setPendingAudioAction("prompt");
+      setShowAudioMismatchModal(true);
+      return;
+    }
+    
+    // If no mismatch, proceed directly
+    setShowAudioPromptModal(true);
+  };
+
+  const handleProceedWithMismatch = () => {
+    setShowAudioMismatchModal(false);
+    // Proceed with the original action
+    if (pendingAudioAction === "upload") {
+      audioInputRef.current?.click();
+    } else if (pendingAudioAction === "description") {
+      setShowAudioDescModal(true);
+    } else if (pendingAudioAction === "prompt") {
+      setShowAudioPromptModal(true);
+    }
+    setPendingAudioAction(null);
+  };
+
+  const handleCancelDueToMismatch = () => {
+    setShowAudioMismatchModal(false);
+    setPendingAudioAction(null);
+  };
+
+  const handleUploadAudio = () => {
+    audioInputRef.current?.click();
+  };
+
   const handleAddDescription = () => {
     setShowAudioDescModal(true);
   };
 
   const handleAddPrompt = () => {
     setShowAudioPromptModal(true);
-  };
-
-  const handleUploadAudio = () => {
-    audioInputRef.current?.click();
   };
 
   const handleAudioDescriptionSave = async (descriptionData) => {
@@ -147,12 +248,21 @@ const SectionArea = ({
 
   const renderSection = (sequence) => {
     const currentSectionData = sectionData[sequence];
+    
+    // Check audio status of adjacent sections
+    const leftSectionSequence = sequence - 1;
+    const rightSectionSequence = sequence + 1;
+    const hasLeftSectionAudio = hasSectionAudio(leftSectionSequence);
+    const hasRightSectionAudio = hasSectionAudio(rightSectionSequence);
+
     if (elementsList?.length > 0 && currentSectionData) {
       return (
         <SectionView
           sectionData={currentSectionData}
           type={type}
           onViewSection={handleViewSection}
+          hasLeftSectionAudio={hasLeftSectionAudio}
+          hasRightSectionAudio={hasRightSectionAudio}
         />
       );
     }
@@ -218,14 +328,13 @@ const SectionArea = ({
                 </button>
                 <button
                   className={`${styles.descriptionButton} ${audioDescription ? styles.active : ""}`}
-                  onClick={handleAddDescription}
+                  onClick={handleRequestDescription}
                 >
                   Add Audio Description
                 </button>
-                {/* New Audio Prompt Button */}
                 <button
                   className={`${styles.descriptionButton} ${audioPrompt ? styles.active : ""}`}
-                  onClick={handleAddPrompt}
+                  onClick={handleRequestPrompt}
                 >
                   Add Audio Prompt
                 </button>
@@ -263,6 +372,19 @@ const SectionArea = ({
           onSave={handleAudioPromptSave}
           onClose={() => setShowAudioPromptModal(false)}
           mode="prompt" // Specify mode
+        />
+      )}
+      {/* Audio Mismatch Warning Modal */}
+      {showAudioMismatchModal && (
+        <ConfirmationModal
+          isOpen={showAudioMismatchModal}
+          onClose={handleCancelDueToMismatch}
+          onAction={handleProceedWithMismatch}
+          title="Audio Configuration Mismatch"
+          confirmationText="Adjacent sections have different audio configurations. This may result in inconsistent audio experience. Do you want to proceed?"
+          cancelButtonText="Cancel"
+          actionButtonText="Proceed Anyway"
+          showInputField={false}
         />
       )}
       <input
