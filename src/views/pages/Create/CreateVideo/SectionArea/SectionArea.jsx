@@ -9,7 +9,6 @@ import { getAudioCategories } from "../helpers";
 import AudioDescModal from "src/Common/AudioDescModal/AudioDescModal";
 import useUploadAudio from "./hooks/useUploadAudio";
 import { toast } from "react-toastify";
-import ConfirmationModal from "src/Common/ConfirmationModal/ConfirmationModal";
 
 const SectionArea = ({
   initialOptions,
@@ -20,7 +19,6 @@ const SectionArea = ({
   type = "video",
   onViewSection,
   sheetData = null,
-  templateData=null,
 }) => {
   const history = useHistory();
   const [sections, setSections] = useState([]);
@@ -29,77 +27,28 @@ const SectionArea = ({
   const [audioFile, setAudioFile] = useState(null);
   const [audioFileName, setAudioFileName] = useState("");
   const [showAudioDescModal, setShowAudioDescModal] = useState(false);
+  const [showAudioPromptModal, setShowAudioPromptModal] = useState(false);
   const [audioDescription, setAudioDescription] = useState("");
+  const [audioPrompt, setAudioPrompt] = useState("");
   const [selectedVoiceModel, setSelectedVoiceModel] = useState(null);
+  const [selectedVoiceModelForPrompt, setSelectedVoiceModelForPrompt] = useState(null);
   const { uploadAudio, uploading, error, audioUrl } = useUploadAudio();
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [pendingAction, setPendingAction] = useState(null); // "upload" or "description"
-
 
   let audioCategories = getAudioCategories(sheetData);
-
   const audioInputRef = useRef(null);
-
-    const voiceModels = [
-    {
-      name: "Natasha",
-      dev_name: "en-AU-NatashaNeural",
-      url: "https://storage.googleapis.com/static-data-for-sdrc/uploads/e0653e5d-a70a-41e0-9706-4764f27ae886/en-AU-NatashaNeural_20250522071439.mp3",
-    },
-    {
-      name: "William",
-      dev_name: "en-AU-WilliamNeural",
-      url: "https://storage.googleapis.com/static-data-for-sdrc/uploads/e0653e5d-a70a-41e0-9706-4764f27ae886/en-AU-WilliamNeural_20250522071508.mp3",
-    },
-    {
-      name: "Liam",
-      dev_name: "en-CA-LiamNeural",
-      url: "https://storage.googleapis.com/static-data-for-sdrc/uploads/e0653e5d-a70a-41e0-9706-4764f27ae886/en-CA-LiamNeural_20250522071530.mp3",
-    },
-    {
-      name: "Sonia",
-      dev_name: "en-GB-SoniaNeural",
-      url: "https://storage.googleapis.com/static-data-for-sdrc/uploads/e0653e5d-a70a-41e0-9706-4764f27ae886/en-GB-SoniaNeural_20250522071548.mp3",
-    },
-    {
-      name: "Aria",
-      dev_name: "en-US-AriaNeural",
-      url: "https://storage.googleapis.com/static-data-for-sdrc/uploads/e0653e5d-a70a-41e0-9706-4764f27ae886/en-US-AriaNeural_20250522071610.mp3",
-    },
-  ];
-
-  const confirmAction = (type) => {
-    setPendingAction(type); // store what to do after confirmation
-    setShowConfirmModal(true);
-  };
-
-  const handleModalConfirm = () => {
-    setShowConfirmModal(false);
-    if (pendingAction === "upload") {
-      handleUploadAudio();
-    } else if (pendingAction === "description") {
-      handleAddDescription();
-    }
-    setPendingAction(null);
-  };
-
-  const handleModalClose = () => {
-    setShowConfirmModal(false);
-    setPendingAction(null);
-  };
 
   const handleAudioUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-
     const uploadedUrl = await uploadAudio({
       file,
       templateId,
-      audioDescription,
+      audioDescription: "",
     });
-
     if (uploadedUrl) {
       toast.success("Audio uploaded successfully!");
+      setAudioFile(uploadedUrl);
+      setAudioFileName(file.name);
     } else {
       toast.error(error || "Failed to upload audio. Please try again.");
     }
@@ -107,6 +56,10 @@ const SectionArea = ({
 
   const handleAddDescription = () => {
     setShowAudioDescModal(true);
+  };
+
+  const handleAddPrompt = () => {
+    setShowAudioPromptModal(true);
   };
 
   const handleUploadAudio = () => {
@@ -117,23 +70,19 @@ const SectionArea = ({
     setAudioDescription(descriptionData.audioDesc);
     setSelectedVoiceModel(descriptionData.selectedVoiceModel);
     setShowAudioDescModal(false);
-
     if (!templateId || !descriptionData.audioDesc) {
       toast.error("Missing template or audio description");
       return;
     }
-
     const uploadedUrl = await uploadAudio({
       file: null,
       templateId,
       audioDescription: descriptionData?.audioDesc,
       voiceModel: descriptionData?.selectedVoiceModel?.dev_name,
     });
-
-    console.log(descriptionData)
+    console.log(descriptionData);
     setAudioFileName(descriptionData?.audioDesc);
     setAudioFile(uploadedUrl);
-
     if (uploadedUrl) {
       toast.success("Audio description uploaded successfully!");
     } else {
@@ -141,14 +90,29 @@ const SectionArea = ({
     }
   };
 
-    const findVoiceModelByDevName = (devName) => {
-    return voiceModels.find((model) => model.dev_name === devName) || null;
+  const handleAudioPromptSave = async (promptData) => {
+    setAudioPrompt(promptData.audioDesc);
+    setSelectedVoiceModelForPrompt(promptData.selectedVoiceModel);
+    setShowAudioPromptModal(false);
+    if (!templateId || !promptData.audioDesc) {
+      toast.error("Missing template or audio prompt");
+      return;
+    }
+    const uploadedUrl = await uploadAudio({
+      file: null,
+      templateId,
+      audioDescription: promptData?.audioDesc,
+      voiceModel: promptData?.selectedVoiceModel?.dev_name,
+    });
+    console.log(promptData);
+    setAudioFileName(promptData?.audioDesc);
+    setAudioFile(uploadedUrl);
+    if (uploadedUrl) {
+      toast.success("Audio prompt uploaded successfully!");
+    } else {
+      toast.error(error || "Failed to upload audio prompt.");
+    }
   };
-
-  const voiceModel = templateData?.audioAccent
-        ? findVoiceModelByDevName(templateData.audioAccent)
-        : null;
-
 
   useEffect(() => {
     if (templateId && elementsList?.length > 0) {
@@ -156,15 +120,11 @@ const SectionArea = ({
         acc[element.sequence] = element;
         return acc;
       }, {});
-
       const sortedSequences = Object.keys(sectionMap)
         .map(Number)
         .sort((a, b) => a - b);
-
       setSections(sortedSequences);
       setSectionData(sectionMap);
-      setAudioDescription(templateData?.audio || "");
-      setSelectedVoiceModel(voiceModel || null);
     } else {
       setSections([]);
       setSectionData({});
@@ -187,7 +147,6 @@ const SectionArea = ({
 
   const renderSection = (sequence) => {
     const currentSectionData = sectionData[sequence];
-
     if (elementsList?.length > 0 && currentSectionData) {
       return (
         <SectionView
@@ -197,7 +156,6 @@ const SectionArea = ({
         />
       );
     }
-
     return (
       <div className={styles.sectionContent}>
         <div className={styles.sectionLabel}>Section {sequence}</div>
@@ -235,7 +193,6 @@ const SectionArea = ({
           }
         />
       </div>
-
       <div className={styles.sectionsWrapper}>
         {sections.map((sequence) => (
           <div key={`section-${sequence}`} className={styles.sectionWrapper}>
@@ -244,7 +201,6 @@ const SectionArea = ({
           </div>
         ))}
       </div>
-
       <div className={styles.actions}>
         <button onClick={addNewSection} className={styles.addSectionButton}>
           + Add New Section
@@ -255,17 +211,23 @@ const SectionArea = ({
               <div className={styles.audioActions}>
                 <button
                   className={styles.uploadButton}
-                  onClick={() => confirmAction("upload")}
+                  onClick={handleUploadAudio}
                   disabled={uploading}
                 >
                   {uploading ? "Saving Audio..." : "Upload Audio"}
                 </button>
-
                 <button
                   className={`${styles.descriptionButton} ${audioDescription ? styles.active : ""}`}
-                  onClick={() => confirmAction("description")}
+                  onClick={handleAddDescription}
                 >
                   Add Audio Description
+                </button>
+                {/* New Audio Prompt Button */}
+                <button
+                  className={`${styles.descriptionButton} ${audioPrompt ? styles.active : ""}`}
+                  onClick={handleAddPrompt}
+                >
+                  Add Audio Prompt
                 </button>
               </div>
             </div>
@@ -290,6 +252,17 @@ const SectionArea = ({
           initialVoiceModel={selectedVoiceModel}
           onSave={handleAudioDescriptionSave}
           onClose={() => setShowAudioDescModal(false)}
+          mode="description" // Specify mode
+        />
+      )}
+      {/* Reuse AudioDescModal for Audio Prompt with mode="prompt" */}
+      {showAudioPromptModal && (
+        <AudioDescModal
+          initialAudioDesc={audioPrompt}
+          initialVoiceModel={selectedVoiceModelForPrompt}
+          onSave={handleAudioPromptSave}
+          onClose={() => setShowAudioPromptModal(false)}
+          mode="prompt" // Specify mode
         />
       )}
       <input
@@ -299,19 +272,7 @@ const SectionArea = ({
         onChange={handleAudioUpload}
         style={{ display: "none" }}
       />
-      <ConfirmationModal
-        isOpen={showConfirmModal}
-        onClose={handleModalClose}
-        onAction={handleModalConfirm}
-        title="Override Existing Section Audio?"
-        confirmationText="Any audio used in sections will be overridden. This audio will be used for the entire video."
-        cancelButtonText="Cancel"
-        actionButtonText="Proceed"
-        showInputField={false}
-      />
     </div>
-
-
   );
 };
 

@@ -7,16 +7,14 @@ const AudioDescModal = ({
   onClose,
   initialAudioDesc = "",
   initialVoiceModel = null,
+  mode = "description", // New prop: "description" or "prompt"
 }) => {
   const [audioDesc, setAudioDesc] = useState(initialAudioDesc);
   const [selectedFields, setSelectedFields] = useState([]);
-  const [selectedVoiceModel, setSelectedVoiceModel] =
-    useState(initialVoiceModel);
+  const [selectedVoiceModel, setSelectedVoiceModel] = useState(initialVoiceModel);
   const audioRef = useRef(null);
-
   const [estimatedDuration, setEstimatedDuration] = useState(0);
   const [charLimit, setCharLimit] = useState(1000);
-  const [showVoiceModelWarning, setShowVoiceModelWarning] = useState(false);
 
   const voiceModels = [
     {
@@ -46,7 +44,6 @@ const AudioDescModal = ({
     },
   ];
 
-
   const VOICE_RATES = {
     "en-AU-NatashaNeural": 0.068,
     "en-AU-WilliamNeural": 0.070,
@@ -54,7 +51,6 @@ const AudioDescModal = ({
     "en-GB-SoniaNeural": 0.071,
     "en-US-AriaNeural": 0.066,
   };
-
   const PAUSE_DELAYS = {
     '.': 0.5,
     ',': 0.2,
@@ -67,26 +63,19 @@ const AudioDescModal = ({
     '-': 0.1,
   };
 
-
   const MAX_AUDIO_DURATION_SECONDS = 3600;
-
 
   const calculateEstimatedDuration = (text, model) => {
     if (!model || !model.dev_name) return { duration: 0, charLimit: 0 };
-
     const rate = VOICE_RATES[model.dev_name] || 0.07;
-
     // Calculate character-based duration
     const chars = text.replace(/\s/g, "").length;
-
     // Calculate punctuation delay
     const punctuationDelay = text.split("").reduce((acc, char) => {
       return acc + (PAUSE_DELAYS[char] || 0);
     }, 0);
-
     const duration = parseFloat((chars * rate + punctuationDelay).toFixed(2));
     const maxChars = Math.floor((MAX_AUDIO_DURATION_SECONDS - punctuationDelay) / rate);
-
     return {
       duration,
       charLimit: maxChars > 0 ? maxChars : 0
@@ -99,7 +88,6 @@ const AudioDescModal = ({
     setCharLimit(charLimit);
   }, [audioDesc, selectedVoiceModel]);
 
-
   // Initialize state with initial values
   useEffect(() => {
     setAudioDesc(initialAudioDesc);
@@ -107,19 +95,12 @@ const AudioDescModal = ({
   }, [initialAudioDesc, initialVoiceModel]);
 
   const handleFieldSelect = (field) => {
-    if (!selectedVoiceModel) {
-      setShowVoiceModelWarning(true);
-      return;
-    }
-
     setSelectedFields([...selectedFields, `[${field}]`]);
     setAudioDesc(audioDesc + `[${field}]`);
-    setShowVoiceModelWarning(false);
   };
 
   const handleVoiceModelSelect = (model) => {
     setSelectedVoiceModel(model);
-
     // Play audio
     if (audioRef.current) {
       audioRef.current.src = model.url;
@@ -136,53 +117,56 @@ const AudioDescModal = ({
     });
   };
 
+  // Determine title and placeholder based on mode
+  const modalTitle = mode === "prompt" ? "Add Audio Prompt" : "Add Audio Description";
+  const placeholderText = mode === "prompt" 
+    ? "Enter your audio prompt here..." 
+    : "Enter your audio description here...";
+
+  // Conditionally show dynamic fields and duration based on mode
+  const showDynamicFields = mode === "description";
+  const showDurationInfo = mode === "description";
+
   return (
     <div className={styles.modal}>
       <div className={styles.modalContent}>
         <div className={styles.header}>
-          <h2>Add Audio Description</h2>
+          <h2>{modalTitle}</h2>
         </div>
-
         <div className={styles.body}>
-          <div className={styles.leftSection}>
+          <div className={styles.leftSection} style={{ width: mode === "prompt" ? "100%" : "70%" }}>
             <textarea
               className={styles.audioDescInput}
               value={audioDesc}
               maxLength={charLimit}
               onChange={(e) => {
-                if (!selectedVoiceModel) {
-                  setShowVoiceModelWarning(true);
-                  return;
-                }
-                setAudioDesc(e.target.value);
-                setShowVoiceModelWarning(false);
+                const newValue = e.target.value;
+                setAudioDesc(newValue);
               }}
-              placeholder="Enter your audio description here..."
-              disabled={!selectedVoiceModel}
+              placeholder={placeholderText}
             />
-            {showVoiceModelWarning && (
-              <div className={styles.warningText}>Please select a voice model first.</div>
+            {showDurationInfo && (
+              <div className={styles.durationInfo}>
+                Estimated Audio Duration: <strong>{estimatedDuration}s</strong>
+              </div>
             )}
-            <div className={styles.durationInfo}>
-              Estimated Audio Duration: <strong>{estimatedDuration}s</strong>
-            </div>
           </div>
-
-          <div className={styles.rightSection}>
-            <div className={styles.fieldList}>
-              {dynamicFields.map((field, index) => (
-                <button
-                  key={index}
-                  className={styles.fieldButton}
-                  onClick={() => handleFieldSelect(field)}
-                >
-                  {field}
-                </button>
-              ))}
+          {showDynamicFields && (
+            <div className={styles.rightSection}>
+              <div className={styles.fieldList}>
+                {dynamicFields.map((field, index) => (
+                  <button
+                    key={index}
+                    className={styles.fieldButton}
+                    onClick={() => handleFieldSelect(field)}
+                  >
+                    {field}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
-
         {/* Voice Models Section */}
         <div className={styles.voiceModelsSection}>
           <h3 className={styles.sectionTitle}>Select Voice Model</h3>
@@ -201,7 +185,6 @@ const AudioDescModal = ({
             ))}
           </div>
         </div>
-
         <div className={styles.footer}>
           <button className={styles.cancelButton} onClick={onClose}>
             Cancel
@@ -210,7 +193,6 @@ const AudioDescModal = ({
             Save
           </button>
         </div>
-
         {/* Hidden audio element for playback */}
         <audio ref={audioRef} style={{ display: "none" }} />
       </div>
