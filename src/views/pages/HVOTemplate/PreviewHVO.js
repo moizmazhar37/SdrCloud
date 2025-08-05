@@ -408,6 +408,7 @@ function PreviewHVO(props) {
   const [hoveredContact, setHoveredContact] = useState(false);
   const handleMouseEnterContact = () => setHoveredContact(true);
   const handleMouseLeaveContact = () => setHoveredContact(false);
+  const [showVideo, setShowVideo] = useState(false);
 
   const getAccountData = async () => {
     try {
@@ -597,6 +598,7 @@ function PreviewHVO(props) {
                     >
                       {(() => {
                         const heroImg = item?.values?.hero_img;
+                        const thumbnail = item?.values?.thumbnail;
                         
                         // Helper functions
                         const isVideoFile = (url) => {
@@ -629,27 +631,39 @@ function PreviewHVO(props) {
                           return url;
                         };
 
-                        // Render logic
+                        // Render logic for videos and images
                         if (heroImg && (isVideoFile(heroImg) || isYouTubeLink(heroImg) || isGoogleDriveLink(heroImg))) {
                           if (isVideoFile(heroImg)) {
                             return (
-                              <video
-                                src={heroImg}
-                                controls
-                                autoPlay
-                                loop
-                                muted
-                                playsInline
+                              <div
                                 style={{
                                   marginTop: "60px",
                                   maxWidth: "100%",
-                                  maxHeight: "400px",
                                   width: "100%",
-                                  height: "auto",
+                                  height: "400px",
+                                  backgroundColor: "#000",
                                   borderRadius: "10px",
+                                  overflow: "hidden",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
                                 }}
                                 data-aos="zoom-in"
-                              />
+                              >
+                                <video
+                                  src={heroImg}
+                                  poster={thumbnail}
+                                  controls
+                                  loop
+                                  muted
+                                  playsInline
+                                  style={{
+                                    width: "100%",
+                                    height: "100%",
+                                    objectFit: "contain",
+                                  }}
+                                />
+                              </div>
                             );
                           } else if (isYouTubeLink(heroImg)) {
                             return (
