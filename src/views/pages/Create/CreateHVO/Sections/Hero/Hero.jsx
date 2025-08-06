@@ -49,6 +49,9 @@ const HeroSection = ({
   const [heroImg, setHeroImg] = useState("");
   const [heroImgPreview, setHeroImgPreview] = useState("");
   const [file, setFile] = useState(null);
+  const [thumbnail, setThumbnail] = useState("");
+  const [thumbnailPreview, setThumbnailPreview] = useState("");
+  const [thumbnailFile, setThumbnailFile] = useState(null);
   const [headline1, setHeadline1] = useState("");
   const [headline1Color, setHeadline1Color] = useState("");
   const [headline1Size, setHeadline1Size] = useState("");
@@ -68,6 +71,7 @@ const HeroSection = ({
   const [demoUrl, setDemoUrl] = useState("");
 
   const fileInputRef = useRef(null);
+  const thumbnailInputRef = useRef(null);
   const { saveHeroSection, loading: saveLoading } = useSaveHeroSection();
   const { updateHeroSection, loading: updateLoading } = useUpdateHeroSection();
   const [isEditMode, setIsEditMode] = useState(false);
@@ -95,6 +99,8 @@ const HeroSection = ({
       setDemoButtonColor(initialData.demo_button_color || "");
       setDemoButtonTextColor(initialData.demo_button_text_color || "");
       setDemoUrl(initialData.dynamic_url_demo || "");
+      setThumbnail(initialData.thumbnail || "");
+      setThumbnailPreview(initialData.thumbnail || "");
       if (initialData.hero_img) {
         setHeroImg(initialData.hero_img);
         setHeroImgPreview(initialData.hero_img);
@@ -121,6 +127,27 @@ const HeroSection = ({
 
   const handleChooseClick = useCallback(() => {
     fileInputRef.current?.click();
+  }, []);
+
+  const handleThumbnailChange = useCallback((e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setThumbnailFile(file);
+      setThumbnail(file.name);
+      const url = URL.createObjectURL(file);
+      setThumbnailPreview(url);
+    }
+  }, []);
+
+  const handleThumbnailUrlChange = useCallback((e) => {
+    const url = e.target.value;
+    setThumbnailFile(null);
+    setThumbnail(url);
+    setThumbnailPreview(url);
+  }, []);
+
+  const handleThumbnailChooseClick = useCallback(() => {
+    thumbnailInputRef.current?.click();
   }, []);
 
   const handleSizeChange = useCallback(
@@ -159,6 +186,8 @@ const HeroSection = ({
       sequence,
       hero_img: !file && heroImg ? heroImg : "",
       file: file || null,
+      thumbnail: !thumbnailFile && thumbnail ? thumbnail : "",
+      thumbnailFile: thumbnailFile || null,
       headline1,
       headline1_size: parseInt(headline1Size) || null,
       headline1_color: headline1Color,
@@ -200,6 +229,8 @@ const HeroSection = ({
     sequence,
     heroImg,
     file,
+    thumbnail,
+    thumbnailFile,
     headline1,
     headline1Color,
     headline1Size,
@@ -292,6 +323,53 @@ const HeroSection = ({
                         borderRadius: "10px",
                       }}
                     />
+                  )}
+                </div>
+              )}
+
+              {/* Thumbnail Upload Section - Show only when video is uploaded */}
+              {(file?.type?.startsWith("video/") || (!file && /\.(mp4|webm|ogg)$/i.test(heroImgPreview))) && (
+                <div className={styles.thumbnailSection}>
+                  <label>Video Thumbnail (Optional)</label>
+                  <div className={styles.uploadGroup}>
+                    <InputField
+                      value={thumbnail}
+                      onChange={handleThumbnailUrlChange}
+                      placeholder="Paste Thumbnail Image URL"
+                    />
+                    <button
+                      className={styles.chooseButton}
+                      onClick={handleThumbnailChooseClick}
+                    >
+                      Choose Thumbnail
+                    </button>
+                    <input
+                      ref={thumbnailInputRef}
+                      type="file"
+                      accept="image/*"
+                      onChange={handleThumbnailChange}
+                      className={styles.hiddenInput}
+                    />
+                  </div>
+
+                  {thumbnailPreview && (
+                    <div className={styles.thumbnailPreviewContainer}>
+                      <p className={styles.thumbnailLabel}>Thumbnail Preview:</p>
+                      <img
+                        src={thumbnailPreview}
+                        alt="Thumbnail Preview"
+                        className={styles.thumbnailPreview}
+                        style={{
+                          maxWidth: "200px",
+                          maxHeight: "150px",
+                          width: "auto",
+                          height: "auto",
+                          objectFit: "cover",
+                          borderRadius: "8px",
+                          border: "2px solid #ddd",
+                        }}
+                      />
+                    </div>
                   )}
                 </div>
               )}

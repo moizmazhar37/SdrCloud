@@ -16,6 +16,8 @@ const DynamicURL = ({
   onSaveSuccess,
   onClose,
   editData,
+  hasLeftSectionAudio = false,
+  hasRightSectionAudio = false,
 }) => {
   const [selectedURL, setSelectedURL] = useState(editData?.value || "");
   const [duration, setDuration] = useState(editData?.duration || "");
@@ -30,58 +32,38 @@ const DynamicURL = ({
   const [selectedVoiceModel, setSelectedVoiceModel] = useState(
     editData?.audio_accent ? { dev_name: editData.audio_accent } : null
   );
+  const [audioPrompt, setAudioPrompt] = useState(editData?.audio_prompt || "");
+  const [selectedVoiceModelForPrompt, setSelectedVoiceModelForPrompt] = useState(
+    editData?.audio_prompt_accent ? { dev_name: editData.audio_prompt_accent } : null
+  );
   const [loading, setLoading] = useState(false);
   const [showAudioDescModal, setShowAudioDescModal] = useState(false);
-
+  const [showAudioPromptModal, setShowAudioPromptModal] = useState(false);
+  const [showAudioMismatchModal, setShowAudioMismatchModal] = useState(false);
+  const [pendingAudioAction, setPendingAudioAction] = useState(null);
+  
   const { createVideoSection } = useCreateVideoSection();
   const { updateVideoSection } = useUpdateVideoSection();
-
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [pendingAudioAction, setPendingAudioAction] = useState(null); // "upload" or "description"
-
-  const handleRequestAudioUpload = () => {
-    setPendingAudioAction("upload");
-    setShowConfirmModal(true);
-  };
-
-  const handleRequestAudioDescription = () => {
-    setPendingAudioAction("description");
-    setShowConfirmModal(true);
-  };
-
-  const handleConfirmAudioAction = () => {
-    setShowConfirmModal(false);
-
-    if (pendingAudioAction === "upload") {
-      document.getElementById("audioUpload").click(); // trigger file input
-    } else if (pendingAudioAction === "description") {
-      setShowAudioDescModal(true); // open description modal
-    }
-
-    setPendingAudioAction(null);
-  };
-
-  const handleCancelAudioAction = () => {
-    setShowConfirmModal(false);
-    setPendingAudioAction(null);
-  };
 
   // Initialize form with edit data if available
   useEffect(() => {
     if (editData) {
-      console.log("Setting edit data:", editData);
       setSelectedURL(editData.value || "");
       setDuration(editData.duration || "");
       setSelectedType(editData.scroll ? "Yes" : "No");
       setAudioFile(editData.audio || null);
       setAudioTitle(editData.audio?.name || "");
       setAudioDescription(editData.audio_description || "");
-
-      // Handle voice model - create object if audio_accent exists
       if (editData.audio_accent) {
         setSelectedVoiceModel({ dev_name: editData.audio_accent });
       } else {
         setSelectedVoiceModel(null);
+      }
+      setAudioPrompt(editData.audio_prompt || "");
+      if (editData.audio_prompt_accent) {
+        setSelectedVoiceModelForPrompt({ dev_name: editData.audio_prompt_accent });
+      } else {
+        setSelectedVoiceModelForPrompt(null);
       }
     }
   }, [editData]);
@@ -92,7 +74,6 @@ const DynamicURL = ({
   };
 
   const handleCategorySelect = (value) => {
-    console.log("Category selected:", value);
     setSelectedURL(value);
   };
 
@@ -104,14 +85,104 @@ const DynamicURL = ({
     }
   };
 
-  const handleAddDescription = () => {
+  // Check if current section has audio
+  const hasCurrentSectionAudio = () => {
+    return !!(audioFile || (audioDescription && selectedVoiceModel) || (audioPrompt && selectedVoiceModelForPrompt));
+  };
+
+  const handleRequestAudioUpload = () => {
+    // Check if there's an audio mismatch with adjacent sections
+    const currentHasAudio = hasCurrentSectionAudio();
+    
+    // If we're adding audio and there's a mismatch with adjacent sections
+    if (!currentHasAudio && (hasLeftSectionAudio || hasRightSectionAudio)) {
+      setPendingAudioAction("upload");
+      setShowAudioMismatchModal(true);
+      return;
+    }
+    
+    // If we're replacing audio and there's a mismatch with adjacent sections
+    if (currentHasAudio && (hasLeftSectionAudio !== currentHasAudio || hasRightSectionAudio !== currentHasAudio)) {
+      setPendingAudioAction("upload");
+      setShowAudioMismatchModal(true);
+      return;
+    }
+    
+    // If no mismatch, proceed directly
+    document.getElementById("audioUpload").click();
+  };
+
+  const handleRequestDescription = () => {
+    // Check if there's an audio mismatch with adjacent sections
+    const currentHasAudio = hasCurrentSectionAudio();
+    
+    // If we're adding audio and there's a mismatch with adjacent sections
+    if (!currentHasAudio && (hasLeftSectionAudio || hasRightSectionAudio)) {
+      setPendingAudioAction("description");
+      setShowAudioMismatchModal(true);
+      return;
+    }
+    
+    // If we're replacing audio and there's a mismatch with adjacent sections
+    if (currentHasAudio && (hasLeftSectionAudio !== currentHasAudio || hasRightSectionAudio !== currentHasAudio)) {
+      setPendingAudioAction("description");
+      setShowAudioMismatchModal(true);
+      return;
+    }
+    
+    // If no mismatch, proceed directly
     setShowAudioDescModal(true);
+  };
+
+  const handleRequestPrompt = () => {
+    // Check if there's an audio mismatch with adjacent sections
+    const currentHasAudio = hasCurrentSectionAudio();
+    
+    // If we're adding audio and there's a mismatch with adjacent sections
+    if (!currentHasAudio && (hasLeftSectionAudio || hasRightSectionAudio)) {
+      setPendingAudioAction("prompt");
+      setShowAudioMismatchModal(true);
+      return;
+    }
+    
+    // If we're replacing audio and there's a mismatch with adjacent sections
+    if (currentHasAudio && (hasLeftSectionAudio !== currentHasAudio || hasRightSectionAudio !== currentHasAudio)) {
+      setPendingAudioAction("prompt");
+      setShowAudioMismatchModal(true);
+      return;
+    }
+    
+    // If no mismatch, proceed directly
+    setShowAudioPromptModal(true);
+  };
+
+  const handleProceedWithMismatch = () => {
+    setShowAudioMismatchModal(false);
+    if (pendingAudioAction === "upload") {
+      document.getElementById("audioUpload").click();
+    } else if (pendingAudioAction === "description") {
+      setShowAudioDescModal(true);
+    } else if (pendingAudioAction === "prompt") {
+      setShowAudioPromptModal(true);
+    }
+    setPendingAudioAction(null);
+  };
+
+  const handleCancelDueToMismatch = () => {
+    setShowAudioMismatchModal(false);
+    setPendingAudioAction(null);
   };
 
   const handleAudioDescriptionSave = (descriptionData) => {
     setAudioDescription(descriptionData.audioDesc);
     setSelectedVoiceModel(descriptionData.selectedVoiceModel);
     setShowAudioDescModal(false);
+  };
+
+  const handleAudioPromptSave = (promptData) => {
+    setAudioPrompt(promptData.audioDesc);
+    setSelectedVoiceModelForPrompt(promptData.selectedVoiceModel);
+    setShowAudioPromptModal(false);
   };
 
   const scrollTypes = [
@@ -128,9 +199,7 @@ const DynamicURL = ({
       toast.error("Please fill in all required fields");
       return;
     }
-
     setLoading(true);
-
     const videoSectionData = {
       hvoTemplateId: templateId,
       sectionName: "Dynamic URL",
@@ -141,12 +210,13 @@ const DynamicURL = ({
       scroll: selectedType === "Yes",
       audioDescription: audioDescription,
       audioAccent: selectedVoiceModel?.dev_name || null,
+      audioPrompt: audioPrompt,
+      audioPromptAccent: selectedVoiceModelForPrompt?.dev_name || null,
       firstRowValue: null,
       isDynamic: true,
       value: selectedURL,
       audio: audioFile,
     };
-
     try {
       let response;
       if (editData) {
@@ -155,7 +225,6 @@ const DynamicURL = ({
       } else {
         response = await createVideoSection(videoSectionData);
       }
-
       if (response) {
         toast.success(
           editData
@@ -172,7 +241,6 @@ const DynamicURL = ({
     }
   };
 
-  // Find the matching option object for the selected URL
   const selectedOption = categories.find(
     (option) => option.value === selectedURL
   );
@@ -189,7 +257,6 @@ const DynamicURL = ({
               : `Dynamic URL | Element ${sectionNumber}`}
           </span>
         </div>
-
         <div className={styles.formContent}>
           <div className={styles.urlRow}>
             <div className={styles.urlSelect}>
@@ -204,7 +271,6 @@ const DynamicURL = ({
               />
             </div>
           </div>
-
           <div className={styles.controlRow}>
             <div className={styles.durationInput}>
               <label>
@@ -222,7 +288,6 @@ const DynamicURL = ({
                 placeholder="00"
               />
             </div>
-
             <div className={styles.scrollSelect}>
               <label>Scroll</label>
               <CategoryDropdown
@@ -235,14 +300,12 @@ const DynamicURL = ({
               />
             </div>
           </div>
-
           {audioTitle && (
             <div className={styles.audioTitle}>
               <p>Uploaded Audio: {audioTitle}</p>
             </div>
           )}
         </div>
-
         <div className={styles.audioControls}>
           <div className={styles.audioButtons}>
             <button
@@ -251,12 +314,21 @@ const DynamicURL = ({
             >
               Upload Audio
             </button>
-
             <button
-              className={`${styles.descriptionBtn} ${audioDescription ? styles.active : ""}`}
-              onClick={handleRequestAudioDescription}
+              className={`${styles.descriptionBtn} ${
+                audioDescription ? styles.active : ""
+              }`}
+              onClick={handleRequestDescription}
             >
               Add Audio Description
+            </button>
+            <button
+              className={`${styles.descriptionBtn} ${
+                audioPrompt ? styles.active : ""
+              }`}
+              onClick={handleRequestPrompt}
+            >
+              Add Audio Prompt
             </button>
           </div>
           <input
@@ -267,11 +339,11 @@ const DynamicURL = ({
             onChange={handleAudioUpload}
           />
         </div>
-
         <div className={styles.footer}>
           <button
-            className={`${styles.saveBtn} ${!isFormValid() || loading ? styles.disabled : ""
-              }`}
+            className={`${styles.saveBtn} ${
+              !isFormValid() || loading ? styles.disabled : ""
+            }`}
             onClick={handleSave}
             disabled={!isFormValid() || loading}
           >
@@ -282,7 +354,6 @@ const DynamicURL = ({
           </button>
         </div>
       </div>
-
       {showAudioDescModal && (
         <AudioDescModal
           dynamicFields={audioCategories}
@@ -290,17 +361,27 @@ const DynamicURL = ({
           initialVoiceModel={selectedVoiceModel}
           onSave={handleAudioDescriptionSave}
           onClose={() => setShowAudioDescModal(false)}
+          mode="description"
         />
       )}
-      {showConfirmModal && (
+      {showAudioPromptModal && (
+        <AudioDescModal
+          initialAudioDesc={audioPrompt}
+          initialVoiceModel={selectedVoiceModelForPrompt}
+          onSave={handleAudioPromptSave}
+          onClose={() => setShowAudioPromptModal(false)}
+          mode="prompt"
+        />
+      )}
+      {showAudioMismatchModal && (
         <ConfirmationModal
-          isOpen={showConfirmModal}
-          onClose={handleCancelAudioAction}
-          onAction={handleConfirmAudioAction}
-          title="Override Global Audio?"
-          confirmationText="Uploading section audio will remove the audio of the whole video."
+          isOpen={showAudioMismatchModal}
+          onClose={handleCancelDueToMismatch}
+          onAction={handleProceedWithMismatch}
+          title="Audio Configuration Mismatch"
+          confirmationText="Adjacent sections have different audio configurations. This may result in inconsistent audio experience. Do you want to proceed?"
           cancelButtonText="Cancel"
-          actionButtonText="Proceed"
+          actionButtonText="Proceed Anyway"
           showInputField={false}
         />
       )}

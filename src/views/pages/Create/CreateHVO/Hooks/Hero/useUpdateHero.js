@@ -21,6 +21,13 @@ const useUpdateHeroSection = () => {
         formData.append("hero_img", data.hero_img);
       }
 
+      // Append thumbnail file or URL
+      if (data.thumbnailFile) {
+        formData.append("thumbnailFile", data.thumbnailFile); // Thumbnail file
+      } else if (data.thumbnail) {
+        formData.append("thumbnail", data.thumbnail); // Thumbnail URL
+      }
+
       formData.append("hvoTemplateId", data.templateId || "");
       formData.append("sequence", data.sequence || 0);
 
