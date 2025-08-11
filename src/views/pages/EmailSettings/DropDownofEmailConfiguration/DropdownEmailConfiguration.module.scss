@@ -76,6 +76,33 @@
     drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
   margin-top: 0.25rem;
   border: 1px solid #e5e7eb;
+
+  /* Scrollable functionality */
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  /* Custom scrollbar styling */
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+
+    &:hover {
+      background: #a8a8a8;
+    }
+  }
+
+  /* For Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: #c1c1c1 #f1f1f1;
 }
 
 .item {
@@ -88,6 +115,8 @@
   transition: background-color 0.15s ease;
   background-color: white;
   color: #111827;
+  /* Prevent items from shrinking */
+  flex-shrink: 0;
 
   &:hover {
     background-color: #f9fafb;
@@ -136,5 +165,10 @@
   .arrow {
     width: 1rem;
     height: 1rem;
+  }
+
+  .menu {
+    /* Smaller max height on mobile */
+    max-height: 150px !important;
   }
 }
