@@ -327,52 +327,50 @@ const HeroSection = ({
                 </div>
               )}
 
-              {/* Thumbnail Upload Section - Show only when video is uploaded */}
-              {(file?.type?.startsWith("video/") || (!file && /\.(mp4|webm|ogg)$/i.test(heroImgPreview))) && (
-                <div className={styles.thumbnailSection}>
-                  <label>Video Thumbnail (Optional)</label>
-                  <div className={styles.uploadGroup}>
-                    <InputField
-                      value={thumbnail}
-                      onChange={handleThumbnailUrlChange}
-                      placeholder="Paste Thumbnail Image URL"
-                    />
-                    <button
-                      className={styles.chooseButton}
-                      onClick={handleThumbnailChooseClick}
-                    >
-                      Choose Thumbnail
-                    </button>
-                    <input
-                      ref={thumbnailInputRef}
-                      type="file"
-                      accept="image/*"
-                      onChange={handleThumbnailChange}
-                      className={styles.hiddenInput}
+              {/* Thumbnail Upload Section - Always visible */}
+              <div className={styles.thumbnailSection}>
+                <label>Thumbnail (Optional)</label>
+                <div className={styles.uploadGroup}>
+                  <InputField
+                    value={thumbnail}
+                    onChange={handleThumbnailUrlChange}
+                    placeholder="Paste Thumbnail Image URL"
+                  />
+                  <button
+                    className={styles.chooseButton}
+                    onClick={handleThumbnailChooseClick}
+                  >
+                    Choose Thumbnail
+                  </button>
+                  <input
+                    ref={thumbnailInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleThumbnailChange}
+                    className={styles.hiddenInput}
+                  />
+                </div>
+
+                {thumbnailPreview && (
+                  <div className={styles.thumbnailPreviewContainer}>
+                    <p className={styles.thumbnailLabel}>Thumbnail Preview:</p>
+                    <img
+                      src={thumbnailPreview}
+                      alt="Thumbnail Preview"
+                      className={styles.thumbnailPreview}
+                      style={{
+                        maxWidth: "200px",
+                        maxHeight: "150px",
+                        width: "auto",
+                        height: "auto",
+                        objectFit: "cover",
+                        borderRadius: "8px",
+                        border: "2px solid #ddd",
+                      }}
                     />
                   </div>
-
-                  {thumbnailPreview && (
-                    <div className={styles.thumbnailPreviewContainer}>
-                      <p className={styles.thumbnailLabel}>Thumbnail Preview:</p>
-                      <img
-                        src={thumbnailPreview}
-                        alt="Thumbnail Preview"
-                        className={styles.thumbnailPreview}
-                        style={{
-                          maxWidth: "200px",
-                          maxHeight: "150px",
-                          width: "auto",
-                          height: "auto",
-                          objectFit: "cover",
-                          borderRadius: "8px",
-                          border: "2px solid #ddd",
-                        }}
-                      />
-                    </div>
-                  )}
-                </div>
-              )}
+                )}
+              </div>
             </div>
             <div className={styles.selectSection}>
               <CategoryDropdown
