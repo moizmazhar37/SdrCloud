@@ -1,8 +1,6 @@
 import React, { useState, useRef } from "react";
 import styles from "./DropdownEmailConfiguration.module.scss";
 
-
-
 const DropdownEmailConfiguration = ({
   options = [
     { value: "asas", label: "asas" },
@@ -12,20 +10,21 @@ const DropdownEmailConfiguration = ({
   ],
   value,
   onChange,
-  placeholder = "Select optionf",
+  placeholder = "Select option",
   className = "",
+  maxHeight = 200, // Configurable max height, default 200px
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
- 
+
   const handleOptionClick = (optionValue) => {
     onChange(optionValue);
     setIsOpen(false);
   };
- 
+
   const selectedOption = options.find((option) => option.value === value);
   const displayText = selectedOption ? selectedOption.label : placeholder;
- 
+
   return (
     <div className={`${styles.dropdown} ${className}`} ref={dropdownRef}>
       <button
@@ -50,9 +49,13 @@ const DropdownEmailConfiguration = ({
           />
         </svg>
       </button>
- 
+
       {isOpen && (
-        <div className={styles.menu} role="listbox">
+        <div
+          className={styles.menu}
+          role="listbox"
+          style={{ maxHeight: `${maxHeight}px` }}
+        >
           {options.map((option, index) => (
             <div
               key={option.value}
@@ -80,5 +83,5 @@ const DropdownEmailConfiguration = ({
     </div>
   );
 };
- 
+
 export default DropdownEmailConfiguration;
