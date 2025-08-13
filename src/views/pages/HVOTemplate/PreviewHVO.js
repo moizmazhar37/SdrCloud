@@ -599,20 +599,29 @@ function PreviewHVO(props) {
                       {(() => {
                         const heroImg = item?.values?.hero_img;
                         const thumbnail = item?.values?.thumbnail;
-                        
+
                         // Helper functions
                         const isVideoFile = (url) => {
-                          return url && (url.endsWith(".mp4") || url.endsWith(".webm") || url.endsWith(".ogg"));
+                          return (
+                            url &&
+                            (url.endsWith(".mp4") ||
+                              url.endsWith(".webm") ||
+                              url.endsWith(".ogg"))
+                          );
                         };
-                        
+
                         const isYouTubeLink = (url) => {
-                          return url && (url.includes("youtube.com/watch") || url.includes("youtu.be/"));
+                          return (
+                            url &&
+                            (url.includes("youtube.com/watch") ||
+                              url.includes("youtu.be/"))
+                          );
                         };
-                        
+
                         const isGoogleDriveLink = (url) => {
                           return url && url.includes("drive.google.com");
                         };
-                        
+
                         const getYouTubeEmbedUrl = (url) => {
                           let videoId;
                           if (url.includes("youtube.com/watch")) {
@@ -620,19 +629,28 @@ function PreviewHVO(props) {
                           } else if (url.includes("youtu.be/")) {
                             videoId = url.split("youtu.be/")[1]?.split("?")[0];
                           }
-                          return videoId ? `https://www.youtube.com/embed/${videoId}` : url;
+                          return videoId
+                            ? `https://www.youtube.com/embed/${videoId}`
+                            : url;
                         };
-                        
+
                         const getGoogleDriveEmbedUrl = (url) => {
                           if (url.includes("/file/d/")) {
-                            const fileId = url.split("/file/d/")[1]?.split("/")[0];
+                            const fileId = url
+                              .split("/file/d/")[1]
+                              ?.split("/")[0];
                             return `https://drive.google.com/file/d/${fileId}/preview`;
                           }
                           return url;
                         };
 
                         // Render logic for videos and images
-                        if (heroImg && (isVideoFile(heroImg) || isYouTubeLink(heroImg) || isGoogleDriveLink(heroImg))) {
+                        if (
+                          heroImg &&
+                          (isVideoFile(heroImg) ||
+                            isYouTubeLink(heroImg) ||
+                            isGoogleDriveLink(heroImg))
+                        ) {
                           if (isVideoFile(heroImg)) {
                             return (
                               <div
@@ -701,7 +719,7 @@ function PreviewHVO(props) {
                             );
                           }
                         }
-                        
+
                         // Default image rendering
                         return (
                           <img
@@ -849,42 +867,46 @@ function PreviewHVO(props) {
                               color: item?.values?.body_text_color,
                               lineHeight: "30px",
                             }}
-                          dangerouslySetInnerHTML={{
+                            dangerouslySetInnerHTML={{
                               __html: item?.values?.body_text,
                             }}
                           />
                         )}
 
-                      {item?.values?.cta_button_text && 
-                        item?.values?.cta_button_text !== "None" && 
-                        item?.values?.cta_url && 
+                      {item?.values?.cta_button_text &&
+                        item?.values?.cta_button_text !== "None" &&
+                        item?.values?.cta_url &&
                         item?.values?.cta_url !== "None" && (
-                        <Button
-                          variant="contained"
-                          onClick={() => {
-                            const url = item?.values?.cta_url.startsWith('http') 
-                              ? item?.values?.cta_url 
-                              : `https://${item?.values?.cta_url}`;
-                            window.open(url, '_blank');
-                          }}
-                          style={{
-                            backgroundColor: item?.values?.cta_button_bg_color || "#0358AC",
-                            color: item?.values?.cta_button_text_color || "white",
-                            fontSize: "14px",
-                            fontWeight: 500,
-                            marginTop: "24px",
-                            padding: "12px 24px",
-                            textTransform: "none",
-                            borderRadius: "6px",
-                            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                            '&:hover': {
-                              opacity: 0.9,
-                            }
-                          }}
-                        >
-                          {item?.values?.cta_button_text}
-                        </Button>
-                      )}
+                          <Button
+                            variant="contained"
+                            onClick={() => {
+                              const url = item?.values?.cta_url.startsWith(
+                                "http"
+                              )
+                                ? item?.values?.cta_url
+                                : `https://${item?.values?.cta_url}`;
+                              window.open(url, "_blank");
+                            }}
+                            style={{
+                              backgroundColor:
+                                item?.values?.cta_button_bg_color || "#0358AC",
+                              color:
+                                item?.values?.cta_button_text_color || "white",
+                              fontSize: "14px",
+                              fontWeight: 500,
+                              marginTop: "24px",
+                              padding: "12px 24px",
+                              textTransform: "none",
+                              borderRadius: "6px",
+                              boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                              "&:hover": {
+                                opacity: 0.9,
+                              },
+                            }}
+                          >
+                            {item?.values?.cta_button_text}
+                          </Button>
+                        )}
                     </Grid>
                   </Grid>
                 </Container>
@@ -1008,42 +1030,46 @@ function PreviewHVO(props) {
                               color: item?.values?.body_text_color,
                               lineHeight: "30px",
                             }}
-                          dangerouslySetInnerHTML={{
+                            dangerouslySetInnerHTML={{
                               __html: item?.values?.body_text,
                             }}
                           />
                         )}
 
-                      {item?.values?.cta_button_text && 
-                        item?.values?.cta_button_text !== "None" && 
-                        item?.values?.cta_url && 
+                      {item?.values?.cta_button_text &&
+                        item?.values?.cta_button_text !== "None" &&
+                        item?.values?.cta_url &&
                         item?.values?.cta_url !== "None" && (
-                        <Button
-                          variant="contained"
-                          onClick={() => {
-                            const url = item?.values?.cta_url.startsWith('http') 
-                              ? item?.values?.cta_url 
-                              : `https://${item?.values?.cta_url}`;
-                            window.open(url, '_blank');
-                          }}
-                          style={{
-                            backgroundColor: item?.values?.cta_button_bg_color || "#0358AC",
-                            color: item?.values?.cta_button_text_color || "white",
-                            fontSize: "14px",
-                            fontWeight: 500,
-                            marginTop: "24px",
-                            padding: "12px 24px",
-                            textTransform: "none",
-                            borderRadius: "6px",
-                            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                            '&:hover': {
-                              opacity: 0.9,
-                            }
-                          }}
-                        >
-                          {item?.values?.cta_button_text}
-                        </Button>
-                      )}
+                          <Button
+                            variant="contained"
+                            onClick={() => {
+                              const url = item?.values?.cta_url.startsWith(
+                                "http"
+                              )
+                                ? item?.values?.cta_url
+                                : `https://${item?.values?.cta_url}`;
+                              window.open(url, "_blank");
+                            }}
+                            style={{
+                              backgroundColor:
+                                item?.values?.cta_button_bg_color || "#0358AC",
+                              color:
+                                item?.values?.cta_button_text_color || "white",
+                              fontSize: "14px",
+                              fontWeight: 500,
+                              marginTop: "24px",
+                              padding: "12px 24px",
+                              textTransform: "none",
+                              borderRadius: "6px",
+                              boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                              "&:hover": {
+                                opacity: 0.9,
+                              },
+                            }}
+                          >
+                            {item?.values?.cta_button_text}
+                          </Button>
+                        )}
                     </Grid>
                     <Grid item sm={6} xs={12} align="center">
                       <img
@@ -1364,11 +1390,12 @@ function PreviewHVO(props) {
                             {/* Find the header section to get logos */}
                             {(() => {
                               const headerSection = pageData?.find(
-                                (headerItem) => headerItem?.sectionName === "HEADER"
+                                (headerItem) =>
+                                  headerItem?.sectionName === "HEADER"
                               );
-                              
+
                               if (!headerSection) return null;
-                              
+
                               return (
                                 <>
                                   {headerSection?.values?.company_logo && (
@@ -1376,9 +1403,9 @@ function PreviewHVO(props) {
                                       src={headerSection.values.company_logo}
                                       alt="Company Logo"
                                       style={{
-                                        height: "40px",
+                                        height: "auto",
                                         width: "auto",
-                                        maxWidth: "80px",
+                                        maxWidth: "150px",
                                         objectFit: "contain",
                                       }}
                                     />
@@ -1387,8 +1414,10 @@ function PreviewHVO(props) {
                                     <>
                                       <span
                                         style={{
-                                          color: item?.values?.footer_text_color || "#666666",
-                                          fontSize: "20px",
+                                          color:
+                                            item?.values?.footer_text_color ||
+                                            "#666666",
+                                          fontSize: "24px",
                                           fontWeight: 500,
                                         }}
                                       >
@@ -1398,8 +1427,8 @@ function PreviewHVO(props) {
                                         src={headerSection.values.header_logo}
                                         alt="Partner Logo"
                                         style={{
-                                          height: "40px",
-                                          width: "40px",
+                                          height: "55px",
+                                          width: "55px",
                                           objectFit: "contain",
                                         }}
                                       />
@@ -1409,13 +1438,16 @@ function PreviewHVO(props) {
                               );
                             })()}
                           </Box>
-                          
+
                           {/* Powered by text */}
                           <Typography
                             variant="body2"
                             style={{
-                              color: item?.values?.footer_text_color || "#666666",
-                              fontSize: `${item?.values?.footer_text_size || "12"}px`,
+                              color:
+                                item?.values?.footer_text_color || "#666666",
+                              fontSize: `${
+                                item?.values?.footer_text_size || "12"
+                              }px`,
                               fontStyle: "italic",
                               opacity: 0.8,
                             }}
