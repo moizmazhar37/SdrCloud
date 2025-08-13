@@ -1345,16 +1345,84 @@ function PreviewHVO(props) {
                           )}
                       </Grid>
                       <Grid item sm={4} xs={12}>
-                        <Hidden xsDown>
-                          {" "}
+                        <Box
+                          style={{
+                            display: "flex",
+                            justifyContent: "flex-end",
+                            alignItems: "flex-start",
+                            flexDirection: "column",
+                            gap: "20px",
+                          }}
+                        >
                           <Box
                             style={{
                               display: "flex",
-                              justifyContent: "center",
                               alignItems: "center",
+                              gap: "15px",
                             }}
-                          ></Box>
-                        </Hidden>
+                          >
+                            {/* Find the header section to get logos */}
+                            {(() => {
+                              const headerSection = pageData?.find(
+                                (headerItem) => headerItem?.sectionName === "HEADER"
+                              );
+                              
+                              if (!headerSection) return null;
+                              
+                              return (
+                                <>
+                                  {headerSection?.values?.company_logo && (
+                                    <img
+                                      src={headerSection.values.company_logo}
+                                      alt="Company Logo"
+                                      style={{
+                                        height: "40px",
+                                        width: "auto",
+                                        maxWidth: "80px",
+                                        objectFit: "contain",
+                                      }}
+                                    />
+                                  )}
+                                  {headerSection?.values?.header_logo && (
+                                    <>
+                                      <span
+                                        style={{
+                                          color: item?.values?.footer_text_color || "#666666",
+                                          fontSize: "20px",
+                                          fontWeight: 500,
+                                        }}
+                                      >
+                                        +
+                                      </span>
+                                      <img
+                                        src={headerSection.values.header_logo}
+                                        alt="Partner Logo"
+                                        style={{
+                                          height: "40px",
+                                          width: "40px",
+                                          objectFit: "contain",
+                                        }}
+                                      />
+                                    </>
+                                  )}
+                                </>
+                              );
+                            })()}
+                          </Box>
+                          
+                          {/* Powered by text */}
+                          <Typography
+                            variant="body2"
+                            style={{
+                              color: item?.values?.footer_text_color || "#666666",
+                              fontSize: `${item?.values?.footer_text_size || "12"}px`,
+                              fontStyle: "italic",
+                              opacity: 0.8,
+                            }}
+                          >
+                            Powered by
+                          </Typography>
+                        </Box>
                       </Grid>
                     </Grid>
                   </Container>
