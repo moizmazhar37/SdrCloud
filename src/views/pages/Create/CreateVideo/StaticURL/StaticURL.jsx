@@ -34,6 +34,7 @@ const StaticURL = ({
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showAudioMismatchModal, setShowAudioMismatchModal] = useState(false);
   const [pendingAudioAction, setPendingAudioAction] = useState(null);
+  const [reverseScroll, setReverseScroll] = useState(false);
 
   const iframeRef = useRef(null);
   const audioInputRef = useRef(null);
@@ -77,6 +78,7 @@ const StaticURL = ({
       setUrl(editData.value || "https://www.");
       setDuration(editData.duration || "");
       setSelectedType(editData.scroll ? "Yes" : "No");
+      setReverseScroll(editData.reverse_scroll || false);
       setAudioFile(editData.audio || null);
       setAudioTitle(editData.audio?.name || "");
       setAudioDescription(editData.audio_description || "");
@@ -90,6 +92,7 @@ const StaticURL = ({
       setUrl("https://www.");
       setDuration("");
       setSelectedType("");
+      setReverseScroll(false);
       setAudioFile(null);
       setAudioTitle("");
       setAudioDescription("");
@@ -267,6 +270,7 @@ const StaticURL = ({
       duration: duration,
       audioEmbedded: !!audioFile,
       scroll: selectedType === "Yes",
+      reverse_scroll: selectedType === "Yes" ? reverseScroll : false,
       audioDescription: audioDescription,
       audioAccent: selectedVoiceModel?.dev_name || null,
       firstRowValue: null,
@@ -353,6 +357,18 @@ const StaticURL = ({
                 initialValue={editData?.scroll ? "Yes" : "No"}
               />
             </div>
+            {selectedType === "Yes" && (
+              <div className={styles.reverseScrollToggle}>
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={reverseScroll}
+                    onChange={(e) => setReverseScroll(e.target.checked)}
+                  />
+                  Reverse Scroll
+                </label>
+              </div>
+            )}
             <div className={styles.audioControls}>
               <div className={styles.audioButtons}>
                 <button

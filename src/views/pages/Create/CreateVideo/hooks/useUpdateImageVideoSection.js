@@ -16,6 +16,7 @@ const useUpdateVideoSection = () => {
       duration,
       audioEmbedded,
       scroll,
+      reverse_scroll,
       audioDescription,
       audioAccent,
       firstRowValue,
@@ -43,6 +44,8 @@ const useUpdateVideoSection = () => {
     if (duration) formData.append("duration", duration);
     if (scroll !== undefined)
       formData.append("scroll", scroll ? "true" : "false");
+    if (reverse_scroll !== undefined)
+      formData.append("reverse_scroll", reverse_scroll ? "true" : "false");
     if (firstRowValue) formData.append("first_row_value", firstRowValue);
     if (value) formData.append("value", value);
     if (link) formData.append("link", link);

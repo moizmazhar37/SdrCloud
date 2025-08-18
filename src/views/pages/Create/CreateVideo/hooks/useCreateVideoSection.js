@@ -14,6 +14,7 @@ const useCreateVideoSection = () => {
     duration = null,
     audioEmbedded = null,
     scroll = null,
+    reverse_scroll = null,
     audioDescription = null,
     audioAccent = null,
     firstRowValue = null,
@@ -37,6 +38,7 @@ const useCreateVideoSection = () => {
 
     formData.append("duration", duration || "");
     formData.append("scroll", scroll ? "true" : "false");
+    formData.append("reverse_scroll", reverse_scroll ? "true" : "false");
     formData.append("first_row_value", firstRowValue || "");
     formData.append("value", value || "");
     formData.append("link", link || "");

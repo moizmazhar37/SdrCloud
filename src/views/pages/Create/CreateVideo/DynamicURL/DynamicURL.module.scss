@@ -87,6 +87,30 @@
       color: #333;
     }
   }
+
+  .reverseScrollToggle {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-top: 8px;
+
+    label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: #333;
+      cursor: pointer;
+
+      input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+        accent-color: #0064b1;
+      }
+    }
+  }
 }
 
 .footer {
@@ -132,6 +156,12 @@
 @media (max-width: 760px) {
   .controlRow {
     flex-direction: column;
+
+    .durationInput,
+    .scrollSelect,
+    .reverseScrollToggle {
+      width: 100%;
+    }
   }
 }
 
