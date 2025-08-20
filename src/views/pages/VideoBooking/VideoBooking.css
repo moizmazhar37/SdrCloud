@@ -2,29 +2,157 @@
   min-height: 100vh;
   background: #ffffff;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 20px;
+  flex-direction: column;
+  padding: 20px;
   box-sizing: border-box;
+}
+
+.video-booking-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 40px;
+  gap: 20px;
+}
+
+.brand-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-self: center;
+  background: linear-gradient(135deg, rgba(3, 88, 172, 0.08) 0%, rgba(3, 88, 172, 0.05) 100%);
+  border: 2px solid #0358ac;
+  border-radius: 16px;
+  padding: 20px 32px;
+  box-shadow: 0 8px 32px rgba(3, 88, 172, 0.15);
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+}
+
+.brand-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #0358ac, transparent);
+  animation: shimmer 2s infinite;
+}
+
+.welcome-section {
+  text-align: left;
+  max-width: 600px;
+  background: linear-gradient(135deg, rgba(52, 152, 219, 0.1) 0%, rgba(155, 89, 182, 0.08) 100%);
+  border: 2px solid #3498db;
+  border-radius: 12px;
+  padding: 24px 40px;
+  box-shadow: 0 6px 24px rgba(52, 152, 219, 0.12);
+  backdrop-filter: blur(8px);
+  position: relative;
+  overflow: hidden;
+}
+
+.welcome-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #3498db, transparent);
+  animation: shimmer 2.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.brand-logo {
+  height: 70px;
+  width: auto;
+  filter: drop-shadow(0 4px 8px rgba(3, 88, 172, 0.2));
+}
+
+.welcome-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #2c3e50;
+  line-height: 1.3;
+  margin-bottom: 16px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.welcome-subtitle {
+  font-size: 16px;
+  color: #64748b;
+  line-height: 1.6;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 .video-booking-layout {
   display: grid;
-  grid-template-columns: 1fr 420px;
-  gap: 40px;
-  max-width: 1400px;
+  grid-template-columns: 1fr 400px;
+  gap: 60px;
+  max-width: 1500px;
   width: 100%;
-  align-items: center;
+  align-items: flex-start;
+  justify-content: center;
+  margin: 0 auto;
 }
 
 .video-section {
   background: #ffffff;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 40px;
+  justify-content: flex-start;
+  align-items: stretch;
+  padding: 0;
   position: relative;
+}
+
+.personalized-message-banner {
+  background: linear-gradient(135deg, rgba(230, 126, 34, 0.08) 0%, rgba(231, 76, 60, 0.05) 100%);
+  border: 2px solid #e67e22;
+  border-radius: 16px;
+  padding: 28px 32px;
+  margin-top: 32px;
+  box-shadow: 0 8px 32px rgba(230, 126, 34, 0.12);
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+}
+
+.personalized-message-banner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #e67e22, transparent);
+  animation: shimmer 3s infinite;
+}
+
+.personalized-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: #d35400;
+  margin: 0 0 12px 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  text-shadow: 0 2px 4px rgba(230, 126, 34, 0.1);
+}
+
+.personalized-subtitle {
+  font-size: 16px;
+  font-weight: 400;
+  color: #2c3e50;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.5;
 }
 
 .booking-section {
@@ -55,18 +183,47 @@
 @media (max-width: 1200px) {
   .video-booking-layout {
     grid-template-columns: 1fr 380px;
-    gap: 30px;
+    gap: 50px;
+    max-width: 1200px;
+  }
+  
+  .brand-logo {
+    height: 60px;
+  }
+  
+  .welcome-title {
+    font-size: 28px;
+  }
+  
+  .welcome-subtitle {
+    font-size: 15px;
+  }
+  
+  .personalized-title {
+    font-size: 24px;
+  }
+  
+  .brand-section {
+    padding: 18px 28px;
+  }
+  
+  .welcome-section {
+    padding: 20px 32px;
+  }
+  
+  .personalized-message-banner {
+    padding: 24px 28px;
   }
 }
 
 @media (max-width: 1024px) {
   .video-booking-container {
-    padding: 30px 15px;
+    padding: 20px 15px;
   }
   
   .video-booking-layout {
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 40px;
     align-items: flex-start;
   }
   
@@ -75,22 +232,92 @@
     justify-content: center;
   }
   
-  .video-section {
-    padding: 30px 20px;
+  .video-booking-header {
+    align-items: center;
+  }
+  
+  .brand-section {
+    padding: 16px 24px;
+  }
+  
+  .welcome-section {
+    padding: 18px 28px;
+    text-align: center;
+    max-width: none;
+  }
+  
+  .brand-logo {
+    height: 55px;
+  }
+  
+  .welcome-title {
+    font-size: 26px;
+  }
+  
+  .welcome-subtitle {
+    font-size: 15px;
+  }
+  
+  .personalized-title {
+    font-size: 22px;
+  }
+  
+  .personalized-message-banner {
+    padding: 22px 26px;
+    margin-top: 28px;
   }
 }
 
 @media (max-width: 768px) {
   .video-booking-container {
-    padding: 20px 10px;
+    padding: 15px 10px;
   }
   
   .video-booking-layout {
-    gap: 15px;
+    gap: 30px;
   }
   
-  .video-section {
-    padding: 25px 15px;
+  .video-booking-header {
+    margin-bottom: 30px;
+    gap: 16px;
+    align-items: center;
+  }
+  
+  .brand-section {
+    padding: 16px 20px;
+    border-radius: 12px;
+  }
+  
+  .welcome-section {
+    padding: 16px 24px;
+    border-radius: 10px;
+    text-align: center;
+    max-width: none;
+  }
+  
+  .brand-logo {
+    height: 50px;
+  }
+  
+  .welcome-title {
+    font-size: 22px;
+  }
+  
+  .welcome-subtitle {
+    font-size: 14px;
+  }
+  
+  .personalized-title {
+    font-size: 20px;
+  }
+  
+  .personalized-subtitle {
+    font-size: 15px;
+  }
+  
+  .personalized-message-banner {
+    padding: 20px 24px;
+    margin-top: 24px;
     border-radius: 12px;
   }
 }

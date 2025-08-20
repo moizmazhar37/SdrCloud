@@ -9,6 +9,7 @@ import { v4 as uuidv4 } from "uuid";
 import useTriggerCalendlyMeeting from "../CreateVideo/VideoPlayer/Hooks/useCalendlyTrigger";
 import VideoPlayerComponent from "./components/VideoPlayerComponent";
 import BookingCalendar from "./components/BookingCalendar";
+import logo from "../CreateVideo/VideoPlayer/logo.png";
 
 const VideoBooking = () => {
   const { customerId } = useParams();
@@ -24,7 +25,7 @@ const VideoBooking = () => {
     name: "",
     email: "",
   });
-  
+
   const videoRef = useRef(null);
   // Use provided customerId or default test ID
   const video_id = customerId || "5fa51948-ce8e-48c6-81ef-97123531a72f";
@@ -192,7 +193,10 @@ const VideoBooking = () => {
   };
 
   const handleNext = () => {
-    if (currentStep === 1 && (!bookingData.selectedDate || !bookingData.selectedTime)) {
+    if (
+      currentStep === 1 &&
+      (!bookingData.selectedDate || !bookingData.selectedTime)
+    ) {
       toast.error("Please select a date and time slot");
       return;
     }
@@ -212,7 +216,7 @@ const VideoBooking = () => {
       // Here you would typically send booking data to your API
       console.log("Booking confirmed:", bookingData);
       toast.success("Booking confirmed successfully!");
-      
+
       // Trigger calendly meeting if needed
       if (videoData?.tenant_id) {
         await triggerMeeting(videoData.tenant_id);
@@ -241,6 +245,19 @@ const VideoBooking = () => {
 
   return (
     <div className="video-booking-container">
+      <div className="video-booking-header">
+        <div className="brand-section">
+          <img src={logo} alt="SDRCloud" className="brand-logo" />
+        </div>
+        <div className="welcome-section">
+          <h1 className="welcome-title">
+            Your AI Marketing Machine
+          </h1>
+          <p className="welcome-subtitle">
+            Streamline your sales process with intelligent video personalization. Transform prospects into customers with our cutting-edge AI technology.
+          </p>
+        </div>
+      </div>
       <div className="video-booking-layout">
         <div className="video-section">
           <VideoPlayerComponent
@@ -248,6 +265,14 @@ const VideoBooking = () => {
             videoRef={videoRef}
             onVideoEvent={handleVideoEvent}
           />
+          <div className="personalized-message-banner">
+            <h2 className="personalized-title">
+              Ready to get started?
+            </h2>
+            <p className="personalized-subtitle">
+              Use the calendar on the right to schedule your discovery call. Choose a time that works best for you and let's discuss how we can help grow your business.
+            </p>
+          </div>
         </div>
         <div className="booking-section">
           <BookingCalendar
