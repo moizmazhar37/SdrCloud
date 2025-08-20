@@ -1,0 +1,514 @@
+/* Main Calendar Card */
+.booking-calendar {
+  background: #f8f9fa;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 30px;
+  margin: 20px 0;
+  max-width: 420px;
+  width: 100%;
+  border: 1px solid #e9ecef;
+}
+
+/* Step Indicator */
+.step-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #94a3b8;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.step.active {
+  color: #0358ac;
+}
+
+.step.completed {
+  color: #0358ac;
+}
+
+.step-number {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border: none;
+  outline: none;
+  color: #64748b;
+}
+
+.step.active .step-number {
+  background: #0358ac;
+  color: white;
+}
+
+.step.completed .step-number {
+  background: #0358ac;
+  color: white;
+}
+
+/* Back Button */
+.back-button {
+  background: none;
+  border: none;
+  color: #64748b;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 8px 0;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.2s;
+  font-weight: 500;
+}
+
+.back-button:hover {
+  color: #0358ac;
+}
+
+/* Calendar Section */
+.calendar-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.calendar-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #1e293b;
+  text-align: center;
+}
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding: 0 4px;
+}
+
+.nav-button {
+  background: none;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  color: #64748b;
+  padding: 4px 6px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.nav-button:hover {
+  color: #0358ac;
+  background: #f1f5f9;
+}
+
+.month-year {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.calendar-grid {
+  margin-bottom: 12px;
+}
+
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  margin-bottom: 6px;
+}
+
+.weekday {
+  text-align: center;
+  font-size: 11px;
+  color: #64748b;
+  padding: 6px 2px;
+  font-weight: 500;
+}
+
+.calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+}
+
+.calendar-day {
+  aspect-ratio: 1;
+  border: none;
+  background: #ffffff;
+  cursor: pointer;
+  font-size: 13px;
+  color: #1e293b;
+  border-radius: 4px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+}
+
+.calendar-day:hover:not(:disabled) {
+  background: #f1f5f9;
+  color: #0358ac;
+}
+
+.calendar-day.other-month {
+  color: #cbd5e1;
+}
+
+.calendar-day.today {
+  background: #0358ac;
+  color: white;
+  font-weight: 600;
+}
+
+.calendar-day.selected {
+  background: #0358ac;
+  color: white;
+  font-weight: 500;
+}
+
+.calendar-day:disabled {
+  cursor: not-allowed;
+  color: #cbd5e1;
+  background: #f8fafc;
+}
+
+.timezone-info {
+  text-align: center;
+  font-size: 11px;
+  color: #64748b;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+/* Time Slots */
+.time-slots {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin-bottom: 20px;
+}
+
+.time-slot {
+  padding: 6px 8px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 11px;
+  text-align: center;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+
+.time-slot:hover {
+  border-color: #0358ac;
+  background: #f0f7ff;
+  color: #0358ac;
+}
+
+.time-slot.selected {
+  background: #0358ac;
+  color: white;
+  border-color: #0358ac;
+}
+
+/* Next/Confirm Buttons - Matching exact blue from cal2.jpg */
+.next-button, .confirm-button {
+  width: 100%;
+  padding: 14px 20px;
+  background: #0358ac;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 20px;
+}
+
+.next-button:hover, .confirm-button:hover {
+  background: #024a94;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(3, 88, 172, 0.3);
+}
+
+.next-button:disabled {
+  background: #cbd5e1;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Details Section - Matching cal2.jpg exactly */
+.details-section {
+  display: flex;
+  flex-direction: column;
+  min-height: 400px;
+}
+
+.details-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  color: #1a1a1a;
+  text-align: left;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #1a1a1a;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 12px;
+  z-index: 1;
+  font-size: 16px;
+  color: #94a3b8;
+}
+
+.input-wrapper input {
+  width: 100%;
+  padding: 14px 14px 14px 44px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+  background: #ffffff;
+  transition: all 0.2s;
+  color: #1a1a1a;
+}
+
+.input-wrapper input:focus {
+  outline: none;
+  background: #ffffff;
+  border-color: #0358ac;
+  box-shadow: 0 0 0 2px rgba(3, 88, 172, 0.1);
+}
+
+.input-wrapper input::placeholder {
+  color: #94a3b8;
+}
+
+/* Reminder Section - Matching cal2.jpg styling */
+.reminder-section {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 24px 0;
+  padding: 16px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+
+.reminder-icon {
+  font-size: 18px;
+  color: #64748b;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.reminder-content strong {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 4px;
+  color: #1a1a1a;
+  font-weight: 600;
+}
+
+.reminder-content p {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Project Info Section - Matching cal2.jpg styling */
+.project-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 20px;
+  padding: 16px;
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.star-icon {
+  font-size: 16px;
+  color: #0358ac;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.project-info p {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Confirm Section - Matching cal3.jpg exactly */
+.confirm-section {
+  display: flex;
+  flex-direction: column;
+  min-height: 400px;
+}
+
+.confirm-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  color: #1a1a1a;
+  text-align: left;
+}
+
+.booking-summary {
+  margin-bottom: 30px;
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 0;
+  border: 1px solid #f1f5f9;
+}
+
+.summary-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.summary-item:last-child {
+  border-bottom: none;
+}
+
+.summary-icon {
+  font-size: 16px;
+  width: 20px;
+  color: #64748b;
+  flex-shrink: 0;
+}
+
+.summary-text {
+  font-size: 14px;
+  color: #1a1a1a;
+  font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .booking-calendar {
+    margin: 10px 0;
+    padding: 25px 20px;
+    max-width: 380px;
+  }
+  
+  .step-indicator {
+    gap: 20px;
+  }
+  
+  .step {
+    font-size: 12px;
+  }
+  
+  .step-number {
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+  }
+  
+  .time-slots {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  
+  .details-title, .confirm-title {
+    font-size: 22px;
+  }
+  
+  .calendar-title {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .booking-calendar {
+    padding: 20px 15px;
+    margin: 5px 0;
+  }
+  
+  .step-label {
+    display: none;
+  }
+  
+  .details-title, .confirm-title {
+    font-size: 20px;
+  }
+  
+  .time-slots {
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+  
+  .time-slot {
+    font-size: 11px;
+    padding: 8px 6px;
+  }
+  
+  .reminder-section, .project-info {
+    padding: 12px;
+  }
+  
+  .input-wrapper input {
+    padding: 12px 12px 12px 40px;
+  }
+  
+  .next-button, .confirm-button {
+    padding: 12px 16px;
+    font-size: 15px;
+  }
+}
