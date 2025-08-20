@@ -6,13 +6,16 @@ const BookingCalendar = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState("");
   const [userDetails, setUserDetails] = useState({ name: "", email: "" });
+  
+  // Calendar navigation state
+  const today = new Date();
+  const [currentMonth, setCurrentMonth] = useState(today.getMonth());
+  const [currentYear, setCurrentYear] = useState(today.getFullYear());
 
   // ---------- Calendar Data ----------
   const generateCalendarDates = () => {
-    const year = 2025;
-    const month = 7; // August (0-indexed)
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
+    const firstDay = new Date(currentYear, currentMonth, 1);
+    const lastDay = new Date(currentYear, currentMonth + 1, 0);
 
     // Start calendar on Sunday
     const startDate = new Date(firstDay);
@@ -48,10 +51,34 @@ const BookingCalendar = () => {
   ];
 
   const calendarDates = generateCalendarDates();
-  const today = new Date();
-  const currentMonth = 7; // August
+  
+  // Month names for display
+  const monthNames = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
 
   // ---------- Handlers ----------
+  const navigateMonth = (direction) => {
+    if (direction === 'next') {
+      if (currentMonth === 11) {
+        setCurrentMonth(0);
+        setCurrentYear(currentYear + 1);
+      } else {
+        setCurrentMonth(currentMonth + 1);
+      }
+    } else {
+      if (currentMonth === 0) {
+        setCurrentMonth(11);
+        setCurrentYear(currentYear - 1);
+      } else {
+        setCurrentMonth(currentMonth - 1);
+      }
+    }
+    // Clear selected date when navigating months
+    setSelectedDate(null);
+  };
+
   const handleDateSelect = (date) => {
     if (date.getMonth() === currentMonth && date >= today) {
       setSelectedDate(date);
@@ -96,9 +123,19 @@ const BookingCalendar = () => {
   const renderCalendarStep = () => (
     <div className={styles.calendarStep}>
       <div className={styles.calendarHeader}>
-        <button className={styles.navButton}>&lt;</button>
-        <h3>August 2025</h3>
-        <button className={styles.navButton}>&gt;</button>
+        <button 
+          className={styles.navButton}
+          onClick={() => navigateMonth('prev')}
+        >
+          &lt;
+        </button>
+        <h3>{monthNames[currentMonth]} {currentYear}</h3>
+        <button 
+          className={styles.navButton}
+          onClick={() => navigateMonth('next')}
+        >
+          &gt;
+        </button>
       </div>
 
       <div className={styles.calendar}>
