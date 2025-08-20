@@ -1,0 +1,493 @@
+// Variables
+$primary-color: #5cb3fd;
+$primary-dark : #4a9eff;
+$white        : #ffffff;
+$gray-light   : #f8f9fa;
+$gray-medium  : #e9ecef;
+$gray-dark    : #6c757d;
+$text-dark    : #212529;
+$text-light   : #6c757d;
+$border-radius: 12px;
+$box-shadow   : 0 4px 20px rgba(0, 0, 0, 0.08);
+$input-border : #e1e5e9;
+$reminder-bg  : #f8f9ff;
+
+.bookingCalendar {
+  max-width    : 400px;
+  margin       : 0 auto;
+  background   : $white;
+  border-radius: $border-radius;
+  box-shadow   : $box-shadow;
+  overflow     : hidden;
+  font-family  : -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  .header {
+    display      : flex;
+    align-items  : center;
+    padding      : 20px 30px;
+    border-bottom: 1px solid $gray-medium;
+    position     : relative;
+
+    .backButton {
+      background : none;
+      border     : none;
+      font-size  : 16px;
+      color      : $text-dark;
+      cursor     : pointer;
+      display    : flex;
+      align-items: center;
+      gap        : 8px;
+      padding    : 8px 0;
+      position   : absolute;
+      left       : 20px;
+
+      &:hover {
+        color: $primary-color;
+      }
+    }
+
+    .steps {
+      display        : flex;
+      justify-content: center;
+      gap            : 40px;
+      flex           : 1;
+
+      .step {
+        display    : flex;
+        align-items: center;
+        gap        : 8px;
+        color      : $text-light;
+
+        &.active {
+          color: $primary-color;
+
+          .stepNumber {
+            background: $primary-color;
+            color     : $white;
+          }
+        }
+
+        .stepNumber {
+          width          : 24px;
+          height         : 24px;
+          border-radius  : 50%;
+          background     : $gray-medium;
+          color          : $text-light;
+          display        : flex;
+          align-items    : center;
+          justify-content: center;
+          font-size      : 12px;
+          font-weight    : 600;
+        }
+
+        .stepLabel {
+          font-size  : 14px;
+          font-weight: 500;
+        }
+      }
+    }
+  }
+
+  .content {
+    padding: 30px;
+
+    .title {
+      font-size    : 24px;
+      font-weight  : 600;
+      color        : $text-dark;
+      text-align   : center;
+      margin-bottom: 30px;
+    }
+  }
+
+  // Calendar Step Styles
+  .calendarStep {
+    .calendarHeader {
+      display        : flex;
+      justify-content: space-between;
+      align-items    : center;
+      margin-bottom  : 20px;
+
+      h3 {
+        font-size  : 18px;
+        font-weight: 600;
+        color      : $text-dark;
+        margin     : 0;
+      }
+
+      .navButton {
+        background   : none;
+        border       : none;
+        font-size    : 18px;
+        color        : $text-dark;
+        cursor       : pointer;
+        padding      : 8px 12px;
+        border-radius: 4px;
+
+        &:hover {
+          background: $gray-light;
+        }
+      }
+    }
+
+    .calendar {
+      margin-bottom: 20px;
+
+      .weekDays {
+        display              : grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap                  : 4px;
+        margin-bottom        : 8px;
+
+        .weekDay {
+          text-align : center;
+          font-size  : 12px;
+          font-weight: 600;
+          color      : $text-light;
+          padding    : 8px;
+        }
+      }
+
+      .calendarGrid {
+        display              : grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap                  : 4px;
+
+        .dateButton {
+          aspect-ratio : 1;
+          border       : none;
+          background   : none;
+          border-radius: 4px;
+          cursor       : pointer;
+          font-size    : 14px;
+          color        : $text-dark;
+          transition   : all 0.2s ease;
+
+          &:hover:not(.disabled) {
+            background: $gray-light;
+          }
+
+          &.selected {
+            background: $primary-color;
+            color     : $white;
+          }
+
+          &.disabled {
+            color : $gray-medium;
+            cursor: not-allowed;
+          }
+        }
+      }
+    }
+
+    .timezone {
+      display        : flex;
+      align-items    : center;
+      gap            : 8px;
+      justify-content: center;
+      margin-bottom  : 20px;
+      font-size      : 14px;
+      color          : $text-light;
+
+      .timezoneIcon {
+        font-size: 16px;
+      }
+    }
+
+    .timeSlots {
+      display              : grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap                  : 8px;
+
+      .timeSlot {
+        padding      : 10px 12px;
+        border       : 1px solid $input-border;
+        border-radius: 8px;
+        background   : $white;
+        cursor       : pointer;
+        font-size    : 13px;
+        color        : $text-dark;
+        transition   : all 0.2s ease;
+        text-align   : center;
+
+        &:hover {
+          border-color: $primary-color;
+          background  : rgba($primary-color, 0.05);
+        }
+
+        &.selected {
+          border-color: $primary-color;
+          background  : $primary-color;
+          color       : $white;
+        }
+      }
+    }
+  }
+
+  // Details Step Styles
+  .detailsStep {
+    .inputGroup {
+      margin-bottom: 20px;
+
+      label {
+        display      : block;
+        font-size    : 14px;
+        font-weight  : 500;
+        color        : $text-dark;
+        margin-bottom: 8px;
+      }
+
+      .inputWrapper {
+        position   : relative;
+        display    : flex;
+        align-items: center;
+
+        .inputIcon {
+          position : absolute;
+          left     : 12px;
+          font-size: 16px;
+          color    : $text-light;
+          z-index  : 1;
+        }
+
+        .input {
+          width        : 100%;
+          padding      : 12px 16px 12px 40px;
+          border       : 1px solid $input-border;
+          border-radius: 8px;
+          font-size    : 14px;
+          color        : $text-dark;
+          background   : $gray-light;
+          transition   : all 0.2s ease;
+
+          &:focus {
+            outline     : none;
+            border-color: $primary-color;
+            background  : $white;
+            box-shadow  : 0 0 0 3px rgba($primary-color, 0.1);
+          }
+
+          &::placeholder {
+            color: $text-light;
+          }
+        }
+      }
+    }
+
+    .reminderBox {
+      display      : flex;
+      gap          : 12px;
+      padding      : 16px;
+      background   : $reminder-bg;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      border-left  : 3px solid $primary-color;
+
+      .reminderIcon {
+        font-size : 16px;
+        color     : $primary-color;
+        margin-top: 2px;
+      }
+
+      .reminderContent {
+        flex: 1;
+
+        strong {
+          font-weight  : 600;
+          color        : $text-dark;
+          margin-bottom: 4px;
+          display      : block;
+        }
+
+        p {
+          margin     : 0;
+          font-size  : 14px;
+          color      : $text-dark;
+          line-height: 1.4;
+        }
+      }
+    }
+
+    .projectNote {
+      display      : flex;
+      align-items  : flex-start;
+      gap          : 12px;
+      padding      : 16px;
+      background   : rgba($primary-color, 0.05);
+      border-radius: 8px;
+
+      .projectIcon {
+        font-size : 16px;
+        color     : $primary-color;
+        margin-top: 2px;
+      }
+
+      p {
+        margin     : 0;
+        font-size  : 14px;
+        color      : $text-dark;
+        line-height: 1.4;
+      }
+    }
+  }
+
+  // Confirmation Step Styles
+  .confirmationStep {
+    .bookingDetails {
+      background   : $gray-light;
+      border-radius: 8px;
+      padding      : 20px;
+      margin-bottom: 20px;
+
+      .detailItem {
+        display      : flex;
+        align-items  : center;
+        gap          : 12px;
+        margin-bottom: 12px;
+        font-size    : 14px;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+
+        .icon {
+          font-size: 16px;
+          width    : 20px;
+        }
+      }
+    }
+
+    .confirmButton {
+      width        : 100%;
+      padding      : 14px 20px;
+      background   : $primary-color;
+      color        : $white;
+      border       : none;
+      border-radius: 8px;
+      font-size    : 16px;
+      font-weight  : 600;
+      cursor       : pointer;
+      margin-bottom: 20px;
+      transition   : background-color 0.2s ease;
+
+      &:hover {
+        background: $primary-dark;
+      }
+    }
+
+    .reminder {
+      display      : flex;
+      gap          : 12px;
+      padding      : 16px;
+      background   : $reminder-bg;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      border-left  : 3px solid $primary-color;
+
+      .reminderIcon {
+        font-size : 16px;
+        color     : $primary-color;
+        margin-top: 2px;
+      }
+
+      .reminderContent {
+        flex: 1;
+
+        strong {
+          font-weight  : 600;
+          color        : $text-dark;
+          margin-bottom: 4px;
+          display      : block;
+        }
+
+        p {
+          margin     : 0;
+          font-size  : 14px;
+          color      : $text-dark;
+          line-height: 1.4;
+        }
+      }
+    }
+
+    .projectNote {
+      display      : flex;
+      align-items  : flex-start;
+      gap          : 12px;
+      padding      : 16px;
+      background   : rgba($primary-color, 0.05);
+      border-radius: 8px;
+
+      .projectIcon {
+        font-size : 16px;
+        color     : $primary-color;
+        margin-top: 2px;
+      }
+
+      p {
+        margin     : 0;
+        font-size  : 14px;
+        color      : $text-dark;
+        line-height: 1.4;
+      }
+    }
+  }
+
+  // Next Button
+  .nextButton {
+    width        : 100%;
+    padding      : 14px 20px;
+    background   : $primary-color;
+    color        : $white;
+    border       : none;
+    border-radius: 8px;
+    font-size    : 16px;
+    font-weight  : 500;
+    cursor       : pointer;
+    margin-top   : 20px;
+    transition   : all 0.2s ease;
+
+    &:hover:not(:disabled) {
+      background: $primary-dark;
+      transform : translateY(-1px);
+    }
+
+    &:disabled {
+      background: $gray-medium;
+      cursor    : not-allowed;
+      opacity   : 0.6;
+    }
+  }
+}
+
+// Responsive Design
+@media (max-width: 640px) {
+  .bookingCalendar {
+    margin: 0 16px;
+
+    .header {
+      padding: 16px 20px;
+
+      .steps {
+        gap: 20px;
+
+        .stepLabel {
+          display: none;
+        }
+      }
+    }
+
+    .content {
+      padding: 20px;
+
+      .title {
+        font-size: 20px;
+      }
+    }
+
+    .calendarStep {
+      .timeSlots {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  }
+}
