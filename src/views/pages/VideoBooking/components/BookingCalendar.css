@@ -1,24 +1,40 @@
 /* Main Calendar Card */
 .booking-calendar {
-  background: #f8f9fa;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  padding: 30px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(3, 88, 172, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06);
+  padding: 32px;
   margin: 20px 0;
   max-width: 420px;
   width: 100%;
-  border: 1px solid #e9ecef;
+  border: 1px solid rgba(3, 88, 172, 0.08);
+  position: relative;
+  overflow: hidden;
 }
+
 
 /* Step Indicator */
 .step-indicator {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 30px;
-  margin-bottom: 30px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid #f1f5f9;
+  gap: 32px;
+  margin: 20px 0 35px 0;
+  padding-bottom: 24px;
+  border-bottom: 2px solid #f1f5f9;
+  position: relative;
+}
+
+.step-indicator::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, #0358ac, #0a7bc4);
+  border-radius: 2px;
 }
 
 .step {
@@ -39,29 +55,38 @@
 }
 
 .step-number {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  background: #e2e8f0;
+  background: linear-gradient(135deg, #e2e8f0, #f1f5f9);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 13px;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  border: none;
+  font-size: 14px;
+  font-weight: 700;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid #e2e8f0;
   outline: none;
   color: #64748b;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 .step.active .step-number {
-  background: #0358ac;
+  background: linear-gradient(135deg, #0358ac, #0a7bc4);
   color: white;
+  border-color: #0358ac;
+  box-shadow: 0 4px 16px rgba(3, 88, 172, 0.3), 0 0 0 4px rgba(3, 88, 172, 0.1);
+  transform: scale(1.1);
 }
 
 .step.completed .step-number {
-  background: #0358ac;
+  background: linear-gradient(135deg, #0358ac, #0a7bc4);
   color: white;
+  border-color: #0358ac;
+  box-shadow: 0 2px 12px rgba(3, 88, 172, 0.25);
+  border: 2px solid #0358ac !important;
+  outline: none !important;
 }
 
 /* Back Button */
@@ -93,11 +118,15 @@
 }
 
 .calendar-title {
-  font-size: 20px;
-  font-weight: 600;
-  margin-bottom: 20px;
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 24px;
   color: #1e293b;
   text-align: center;
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .calendar-header {
@@ -109,25 +138,34 @@
 }
 
 .nav-button {
-  background: none;
-  border: none;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
   font-size: 14px;
   cursor: pointer;
   color: #64748b;
-  padding: 4px 6px;
-  border-radius: 4px;
-  transition: all 0.2s;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 500;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
 .nav-button:hover {
   color: #0358ac;
-  background: #f1f5f9;
+  background: linear-gradient(135deg, #f0f7ff, #e0f2fe);
+  border-color: #0358ac;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(3, 88, 172, 0.15);
 }
 
 .month-year {
-  font-size: 15px;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 700;
   color: #1e293b;
+  background: linear-gradient(135deg, #1e293b, #334155);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .calendar-grid {
@@ -157,22 +195,28 @@
 
 .calendar-day {
   aspect-ratio: 1;
-  border: none;
+  border: 1px solid transparent;
   background: #ffffff;
   cursor: pointer;
   font-size: 13px;
   color: #1e293b;
-  border-radius: 4px;
-  transition: all 0.2s;
+  border-radius: 8px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 32px;
+  min-height: 36px;
+  font-weight: 500;
+  position: relative;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
 .calendar-day:hover:not(:disabled) {
-  background: #f1f5f9;
+  background: linear-gradient(135deg, #f0f7ff, #e0f2fe);
   color: #0358ac;
+  border-color: rgba(3, 88, 172, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(3, 88, 172, 0.15);
 }
 
 .calendar-day.other-month {
@@ -180,15 +224,33 @@
 }
 
 .calendar-day.today {
-  background: #0358ac;
+  background: linear-gradient(135deg, #0358ac, #0a7bc4);
   color: white;
-  font-weight: 600;
+  font-weight: 700;
+  border-color: #0358ac;
+  box-shadow: 0 4px 16px rgba(3, 88, 172, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.2);
+  position: relative;
+}
+
+.calendar-day.today::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
 }
 
 .calendar-day.selected {
-  background: #0358ac;
+  background: linear-gradient(135deg, #0358ac, #0a7bc4);
   color: white;
-  font-weight: 500;
+  font-weight: 600;
+  border-color: #0358ac;
+  box-shadow: 0 6px 20px rgba(3, 88, 172, 0.3), 0 0 0 2px rgba(3, 88, 172, 0.1);
+  transform: scale(1.05);
 }
 
 .calendar-day:disabled {
@@ -217,48 +279,72 @@
 }
 
 .time-slot {
-  padding: 6px 8px;
+  padding: 10px 12px;
   border: 1px solid #e2e8f0;
   background: #ffffff;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 11px;
+  font-size: 12px;
   text-align: center;
-  transition: all 0.2s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-weight: 500;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  position: relative;
 }
 
 .time-slot:hover {
   border-color: #0358ac;
-  background: #f0f7ff;
+  background: linear-gradient(135deg, #f0f7ff, #e0f2fe);
   color: #0358ac;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(3, 88, 172, 0.15);
 }
 
 .time-slot.selected {
-  background: #0358ac;
+  background: linear-gradient(135deg, #0358ac, #0a7bc4);
   color: white;
   border-color: #0358ac;
+  box-shadow: 0 6px 20px rgba(3, 88, 172, 0.3), 0 0 0 2px rgba(3, 88, 172, 0.1);
+  transform: translateY(-2px);
 }
 
-/* Next/Confirm Buttons - Matching exact blue from cal2.jpg */
+/* Next/Confirm Buttons - Enhanced styling */
 .next-button, .confirm-button {
   width: 100%;
-  padding: 14px 20px;
-  background: #0358ac;
+  padding: 16px 24px;
+  background: linear-gradient(135deg, #0358ac, #0a7bc4);
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 12px;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s;
-  margin-top: 20px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-top: 24px;
+  box-shadow: 0 4px 16px rgba(3, 88, 172, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.next-button::before, .confirm-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.next-button:hover::before, .confirm-button:hover::before {
+  left: 100%;
 }
 
 .next-button:hover, .confirm-button:hover {
-  background: #024a94;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(3, 88, 172, 0.3);
+  background: linear-gradient(135deg, #024a94, #0969a1);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(3, 88, 172, 0.4);
 }
 
 .next-button:disabled {
