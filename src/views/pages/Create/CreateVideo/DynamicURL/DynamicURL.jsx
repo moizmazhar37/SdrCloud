@@ -4,6 +4,7 @@ import CategoryDropdown from "../CategoryDropdown/CategoryDropdown";
 import AudioDescModal from "src/Common/AudioDescModal/AudioDescModal";
 import useCreateVideoSection from "../hooks/useCreateVideoSection";
 import useUpdateVideoSection from "../hooks/useUpdateImageVideoSection";
+import useUploadAudio from "../SectionArea/hooks/useUploadAudio";
 import { toast } from "react-toastify";
 import InfoBox from "src/Common/InfoBox/InfoBox";
 import ConfirmationModal from "src/Common/ConfirmationModal/ConfirmationModal";
@@ -45,6 +46,7 @@ const DynamicURL = ({
   
   const { createVideoSection } = useCreateVideoSection();
   const { updateVideoSection } = useUpdateVideoSection();
+  const { uploadAudio, uploading, error } = useUploadAudio();
 
   // Initialize form with edit data if available
   useEffect(() => {
@@ -181,10 +183,28 @@ const DynamicURL = ({
     setShowAudioDescModal(false);
   };
 
-  const handleAudioPromptSave = (promptData) => {
+  const handleAudioPromptSave = async (promptData) => {
     setAudioPrompt(promptData.audioDesc);
     setSelectedVoiceModelForPrompt(promptData.selectedVoiceModel);
     setShowAudioPromptModal(false);
+    if (!templateId || !promptData.audioDesc) {
+      toast.error("Missing template or audio prompt");
+      return;
+    }
+    const uploadedUrl = await uploadAudio({
+      file: null,
+      templateId,
+      audioDescription: promptData?.audioDesc,
+      voiceModel: promptData?.selectedVoiceModel?.dev_name,
+      isPrompt: true,
+    });
+    setAudioTitle(promptData?.audioDesc);
+    setAudioFile(uploadedUrl);
+    if (uploadedUrl) {
+      toast.success("Audio prompt uploaded successfully!");
+    } else {
+      toast.error(error || "Failed to upload audio prompt.");
+    }
   };
 
   const scrollTypes = [
@@ -318,6 +338,18 @@ const DynamicURL = ({
           {audioTitle && (
             <div className={styles.audioTitle}>
               <p>Uploaded Audio: {audioTitle}</p>
+            </div>
+          )}
+          {audioPrompt && selectedVoiceModelForPrompt && (
+            <div className={styles.audioPromptBanner}>
+              <div className={styles.bannerIcon}>🎤</div>
+              <div className={styles.bannerContent}>
+                <div className={styles.bannerTitle}>Audio Prompt Active</div>
+                <div className={styles.bannerDetails}>
+                  <span className={styles.promptText}>"{audioPrompt.length > 50 ? audioPrompt.substring(0, 50) + '...' : audioPrompt}"</span>
+                  <span className={styles.voiceModel}>Voice: {selectedVoiceModelForPrompt.name}</span>
+                </div>
+              </div>
             </div>
           )}
         </div>

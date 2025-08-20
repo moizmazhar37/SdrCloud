@@ -4,6 +4,7 @@ import CategoryDropdown from "../CategoryDropdown/CategoryDropdown";
 import AudioDescModal from "src/Common/AudioDescModal/AudioDescModal";
 import useCreateVideoSection from "../hooks/useCreateVideoSection";
 import useUpdateVideoSection from "../hooks/useUpdateImageVideoSection";
+import useUploadAudio from "../SectionArea/hooks/useUploadAudio";
 import { toast } from "react-toastify";
 import InfoBox from "src/Common/InfoBox/InfoBox";
 import ConfirmationModal from "src/Common/ConfirmationModal/ConfirmationModal";
@@ -27,6 +28,8 @@ const StaticURL = ({
   const [audioTitle, setAudioTitle] = useState("");
   const [audioDescription, setAudioDescription] = useState("");
   const [selectedVoiceModel, setSelectedVoiceModel] = useState(null);
+  const [audioPrompt, setAudioPrompt] = useState("");
+  const [selectedVoiceModelForPrompt, setSelectedVoiceModelForPrompt] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [dropdownKey, setDropdownKey] = useState(0);
   const [showAudioDescModal, setShowAudioDescModal] = useState(false);
@@ -40,6 +43,7 @@ const StaticURL = ({
   const audioInputRef = useRef(null);
   const { createVideoSection, loading: createLoading } = useCreateVideoSection();
   const { updateVideoSection, loading: updateLoading } = useUpdateVideoSection();
+  const { uploadAudio, uploading, error } = useUploadAudio();
     
   const voiceModels = [
     {
@@ -240,8 +244,28 @@ const StaticURL = ({
     setShowAudioDescModal(false);
   };
 
-  const handleAudioPromptSave = (promptData) => {
+  const handleAudioPromptSave = async (promptData) => {
+    setAudioPrompt(promptData.audioDesc);
+    setSelectedVoiceModelForPrompt(promptData.selectedVoiceModel);
     setShowAudioPromptModal(false);
+    if (!templateId || !promptData.audioDesc) {
+      toast.error("Missing template or audio prompt");
+      return;
+    }
+    const uploadedUrl = await uploadAudio({
+      file: null,
+      templateId,
+      audioDescription: promptData?.audioDesc,
+      voiceModel: promptData?.selectedVoiceModel?.dev_name,
+      isPrompt: true,
+    });
+    setAudioTitle(promptData?.audioDesc);
+    setAudioFile(uploadedUrl);
+    if (uploadedUrl) {
+      toast.success("Audio prompt uploaded successfully!");
+    } else {
+      toast.error(error || "Failed to upload audio prompt.");
+    }
   };
 
   const scrollTypes = [
@@ -408,6 +432,18 @@ const StaticURL = ({
           {selectedVoiceModel && (
             <div className={styles.selectedVoiceModel}>
               <p>Selected Voice: {selectedVoiceModel.name}</p>
+            </div>
+          )}
+          {audioPrompt && selectedVoiceModelForPrompt && (
+            <div className={styles.audioPromptBanner}>
+              <div className={styles.bannerIcon}>🎤</div>
+              <div className={styles.bannerContent}>
+                <div className={styles.bannerTitle}>Audio Prompt Active</div>
+                <div className={styles.bannerDetails}>
+                  <span className={styles.promptText}>"{audioPrompt.length > 50 ? audioPrompt.substring(0, 50) + '...' : audioPrompt}"</span>
+                  <span className={styles.voiceModel}>Voice: {selectedVoiceModelForPrompt.name}</span>
+                </div>
+              </div>
             </div>
           )}
           {showPreview && (
