@@ -13,7 +13,7 @@ $input-border : #e1e5e9;
 $reminder-bg  : #f8f9ff;
 
 .bookingCalendar {
-  max-width    : 380px;
+  max-width    : 430px;
   margin       : 0;
   background   : $white;
   border-radius: $border-radius;
@@ -24,11 +24,11 @@ $reminder-bg  : #f8f9ff;
 
   .header {
     display      : flex;
-    align-items  : center;
-    padding      : 16px 24px;
+    flex-direction: column;
+    padding      : 20px 24px;
     border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-    position     : relative;
     background   : #fafbfc;
+    gap          : 16px;
 
     .backButton {
       background : none;
@@ -40,8 +40,7 @@ $reminder-bg  : #f8f9ff;
       align-items: center;
       gap        : 8px;
       padding    : 8px 0;
-      position   : absolute;
-      left       : 20px;
+      align-self : flex-start;
 
       &:hover {
         color: $primary-color;
@@ -50,15 +49,18 @@ $reminder-bg  : #f8f9ff;
 
     .steps {
       display        : flex;
-      justify-content: center;
-      gap            : 32px;
-      flex           : 1;
+      justify-content: space-between;
+      gap            : 24px;
+      width          : 100%;
 
       .step {
-        display    : flex;
-        align-items: center;
-        gap        : 8px;
-        color      : $text-light;
+        display       : flex;
+        flex-direction: column;
+        align-items   : center;
+        gap           : 8px;
+        color         : $text-light;
+        flex          : 1;
+        text-align    : center;
 
         &.active {
           color: $primary-color;
@@ -67,42 +69,49 @@ $reminder-bg  : #f8f9ff;
             background  : $primary-color;
             color       : $white;
             border-color: $primary-color;
-            transform   : scale(1.05);
+            transform   : scale(1.1);
+            box-shadow  : 0 4px 12px rgba($primary-color, 0.3);
           }
         }
 
         .stepNumber {
-          width          : 28px;
-          height         : 28px;
+          width          : 32px;
+          height         : 32px;
           border-radius  : 50%;
           background     : $gray-medium;
           color          : $text-light;
           display        : flex;
           align-items    : center;
           justify-content: center;
-          font-size      : 12px;
-          font-weight    : 600;
+          font-size      : 13px;
+          font-weight    : 700;
           border         : 2px solid transparent;
-          transition     : all 0.2s ease;
+          transition     : all 0.3s ease;
+          margin-bottom  : 4px;
         }
 
         .stepLabel {
-          font-size  : 14px;
-          font-weight: 500;
+          font-size  : 12px;
+          font-weight: 600;
+          white-space: nowrap;
+          max-width  : 100px;
+          overflow   : hidden;
+          text-overflow: ellipsis;
         }
       }
     }
   }
 
   .content {
-    padding: 24px;
+    padding: 28px 32px;
 
     .title {
-      font-size    : 22px;
-      font-weight  : 600;
+      font-size    : 24px;
+      font-weight  : 700;
       color        : $text-dark;
-      text-align   : left;
-      margin-bottom: 24px;
+      text-align   : center;
+      margin-bottom: 28px;
+      line-height  : 1.2;
     }
   }
 
@@ -466,24 +475,34 @@ $reminder-bg  : #f8f9ff;
 }
 
 // Responsive Design
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .bookingCalendar {
-    margin: 0 16px;
+    max-width: 100%;
 
     .header {
-      padding: 16px 20px;
+      padding: 18px 20px;
+      gap    : 12px;
 
       .steps {
-        gap: 20px;
+        gap: 16px;
 
-        .stepLabel {
-          display: none;
+        .step {
+          .stepLabel {
+            font-size: 11px;
+            max-width: 80px;
+          }
+          
+          .stepNumber {
+            width : 28px;
+            height: 28px;
+            font-size: 12px;
+          }
         }
       }
     }
 
     .content {
-      padding: 20px;
+      padding: 24px 20px;
 
       .title {
         font-size: 20px;
@@ -493,6 +512,28 @@ $reminder-bg  : #f8f9ff;
     .calendarStep {
       .timeSlots {
         grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .bookingCalendar {
+    .header {
+      .steps {
+        .step {
+          .stepLabel {
+            display: none;
+          }
+        }
+      }
+    }
+    
+    .content {
+      padding: 20px 16px;
+      
+      .title {
+        font-size: 18px;
       }
     }
   }

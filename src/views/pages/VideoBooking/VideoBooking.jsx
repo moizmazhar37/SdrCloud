@@ -246,16 +246,14 @@ const VideoBooking = () => {
   return (
     <div className="video-booking-container">
       <div className="video-booking-header">
-        <div className="brand-section">
+        <div className="header-content">
           <img src={logo} alt="SDRCloud" className="brand-logo" />
-        </div>
-        <div className="welcome-section">
-          <h1 className="welcome-title">
-            Your AI Marketing Machine
-          </h1>
-          <p className="welcome-subtitle">
-            Streamline your sales process with intelligent video personalization. Transform prospects into customers with our cutting-edge AI technology.
-          </p>
+          <div className="header-text">
+            <h1 className="main-title">Your AI Marketing Machine</h1>
+            <p className="main-subtitle">
+              Streamline your sales process with intelligent video personalization. Transform prospects into customers with our cutting-edge AI technology.
+            </p>
+          </div>
         </div>
       </div>
       <div className="video-booking-layout">
