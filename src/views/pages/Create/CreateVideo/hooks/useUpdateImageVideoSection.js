@@ -19,6 +19,7 @@ const useUpdateVideoSection = () => {
       reverse_scroll,
       audioDescription,
       audioAccent,
+      audioType,
       firstRowValue,
       value,
       link,
@@ -41,6 +42,7 @@ const useUpdateVideoSection = () => {
     if (audioDescription)
       formData.append("audio_description", audioDescription);
     if (audioAccent) formData.append("audio_accent", audioAccent);
+    if (audioType) formData.append("audio_type", audioType);
     if (duration) formData.append("duration", duration);
     if (scroll !== undefined)
       formData.append("scroll", scroll ? "true" : "false");

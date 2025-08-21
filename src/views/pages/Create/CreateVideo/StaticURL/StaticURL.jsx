@@ -4,7 +4,6 @@ import CategoryDropdown from "../CategoryDropdown/CategoryDropdown";
 import AudioDescModal from "src/Common/AudioDescModal/AudioDescModal";
 import useCreateVideoSection from "../hooks/useCreateVideoSection";
 import useUpdateVideoSection from "../hooks/useUpdateImageVideoSection";
-import useUploadAudio from "../SectionArea/hooks/useUploadAudio";
 import { toast } from "react-toastify";
 import InfoBox from "src/Common/InfoBox/InfoBox";
 import ConfirmationModal from "src/Common/ConfirmationModal/ConfirmationModal";
@@ -43,7 +42,6 @@ const StaticURL = ({
   const audioInputRef = useRef(null);
   const { createVideoSection, loading: createLoading } = useCreateVideoSection();
   const { updateVideoSection, loading: updateLoading } = useUpdateVideoSection();
-  const { uploadAudio, uploading, error } = useUploadAudio();
     
   const voiceModels = [
     {
@@ -244,28 +242,12 @@ const StaticURL = ({
     setShowAudioDescModal(false);
   };
 
-  const handleAudioPromptSave = async (promptData) => {
+  const handleAudioPromptSave = (promptData) => {
     setAudioPrompt(promptData.audioDesc);
     setSelectedVoiceModelForPrompt(promptData.selectedVoiceModel);
     setShowAudioPromptModal(false);
-    if (!templateId || !promptData.audioDesc) {
-      toast.error("Missing template or audio prompt");
-      return;
-    }
-    const uploadedUrl = await uploadAudio({
-      file: null,
-      templateId,
-      audioDescription: promptData?.audioDesc,
-      voiceModel: promptData?.selectedVoiceModel?.dev_name,
-      isPrompt: true,
-    });
     setAudioTitle(promptData?.audioDesc);
-    setAudioFile(uploadedUrl);
-    if (uploadedUrl) {
-      toast.success("Audio prompt uploaded successfully!");
-    } else {
-      toast.error(error || "Failed to upload audio prompt.");
-    }
+    toast.success("Audio prompt saved successfully!");
   };
 
   const scrollTypes = [
@@ -286,6 +268,20 @@ const StaticURL = ({
       toast.error("Please fill in all required fields");
       return;
     }
+    // Determine audio_type and audio_description based on input method
+    let audioType = null;
+    let finalAudioDescription = "";
+    
+    if (audioFile) {
+      audioType = "uploaded_audio";
+    } else if (audioPrompt && selectedVoiceModelForPrompt) {
+      audioType = "prompt";
+      finalAudioDescription = audioPrompt;
+    } else if (audioDescription && selectedVoiceModel) {
+      audioType = "description";
+      finalAudioDescription = audioDescription;
+    }
+
     const videoSectionData = {
       hvoTemplateId: templateId,
       sectionName: "Static URL",
@@ -295,8 +291,9 @@ const StaticURL = ({
       audioEmbedded: !!audioFile,
       scroll: selectedType === "Yes",
       reverse_scroll: selectedType === "Yes" ? reverseScroll : false,
-      audioDescription: audioDescription,
-      audioAccent: selectedVoiceModel?.dev_name || null,
+      audioDescription: finalAudioDescription,
+      audioAccent: selectedVoiceModel?.dev_name || selectedVoiceModelForPrompt?.dev_name || null,
+      audioType: audioType,
       firstRowValue: null,
       isDynamic: !!selectedCategory,
       value: url,
