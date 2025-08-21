@@ -254,6 +254,21 @@ const VideoUpload = ({
 
   const handleSave = async () => {
     if (!isFormValid()) return;
+    
+    // Determine audio_type and audio_description based on input method
+    let audioType = null;
+    let finalAudioDescription = "";
+    
+    if (audioFile) {
+      audioType = "uploaded_audio";
+    } else if (audioPrompt && selectedVoiceModelForPrompt) {
+      audioType = "prompt";
+      finalAudioDescription = audioPrompt;
+    } else if (audioDescription && selectedVoiceModel) {
+      audioType = "description";
+      finalAudioDescription = audioDescription;
+    }
+
     const videoSectionData = {
       hvoTemplateId: templateId,
       sectionName: selectedCategory || "VIDEO URL",
@@ -262,10 +277,9 @@ const VideoUpload = ({
       duration: duration,
       audioEmbedded: !!audioFile,
       scroll: scroll,
-      audioDescription: audioDescription,
-      audioAccent: selectedVoiceModel?.dev_name || null,
-      audioPrompt: audioPrompt,
-      audioPromptAccent: selectedVoiceModelForPrompt?.dev_name || null,
+      audioDescription: finalAudioDescription,
+      audioAccent: selectedVoiceModel?.dev_name || selectedVoiceModelForPrompt?.dev_name || null,
+      audioType: audioType,
       firstRowValue: null,
       isDynamic: !!selectedCategory,
       file: videoFile,

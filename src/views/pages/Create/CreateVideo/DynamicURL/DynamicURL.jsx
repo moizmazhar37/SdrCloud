@@ -204,6 +204,21 @@ const DynamicURL = ({
       return;
     }
     setLoading(true);
+    
+    // Determine audio_type and audio_description based on input method
+    let audioType = null;
+    let finalAudioDescription = "";
+    
+    if (audioFile) {
+      audioType = "uploaded_audio";
+    } else if (audioPrompt && selectedVoiceModelForPrompt) {
+      audioType = "prompt";
+      finalAudioDescription = audioPrompt;
+    } else if (audioDescription && selectedVoiceModel) {
+      audioType = "description";
+      finalAudioDescription = audioDescription;
+    }
+
     const videoSectionData = {
       hvoTemplateId: templateId,
       sectionName: "Dynamic URL",
@@ -213,10 +228,9 @@ const DynamicURL = ({
       audioEmbedded: !!audioFile,
       scroll: selectedType === "Yes",
       reverse_scroll: selectedType === "Yes" ? reverseScroll : false,
-      audioDescription: audioDescription,
-      audioAccent: selectedVoiceModel?.dev_name || null,
-      audioPrompt: audioPrompt,
-      audioPromptAccent: selectedVoiceModelForPrompt?.dev_name || null,
+      audioDescription: finalAudioDescription,
+      audioAccent: selectedVoiceModel?.dev_name || selectedVoiceModelForPrompt?.dev_name || null,
+      audioType: audioType,
       firstRowValue: null,
       isDynamic: true,
       value: selectedURL,
