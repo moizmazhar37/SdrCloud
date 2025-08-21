@@ -5,13 +5,12 @@ const getBackendUrl = () => {
   if (hostname.includes("staging")) {
     return "https://backend-283763506150.us-central1.run.app"; // Replace with your staging backend URL
   } else if (hostname.includes("localhost")) {
-    return "http://localhost:8000";
+    return "http://localhost:5600";
   } else {
     // Production/Live environment
     return "https://live-backend-283763506150.us-central1.run.app";
   }
 };
-// export const url = "https://backend-283763506150.us-central1.run.app";
 export const url = getBackendUrl();
 
 export const auth = `${url}/auth`;

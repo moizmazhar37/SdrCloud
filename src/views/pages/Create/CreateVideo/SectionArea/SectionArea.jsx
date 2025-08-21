@@ -204,6 +204,7 @@ const SectionArea = ({
       templateId,
       audioDescription: promptData?.audioDesc,
       voiceModel: promptData?.selectedVoiceModel?.dev_name,
+      isPrompt: true,
     });
     console.log(promptData);
     setAudioFileName(promptData?.audioDesc);

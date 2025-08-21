@@ -17,6 +17,7 @@ const useCreateVideoSection = () => {
     reverse_scroll = null,
     audioDescription = null,
     audioAccent = null,
+    audioType = null,
     firstRowValue = null,
     value = null,
     link = null,
@@ -35,6 +36,7 @@ const useCreateVideoSection = () => {
     formData.append("is_dynamic", isDynamic ? "true" : "false");
     formData.append("audio_description", audioDescription || "");
     formData.append("audio_accent", audioAccent || "");
+    formData.append("audio_type", audioType || "");
 
     formData.append("duration", duration || "");
     formData.append("scroll", scroll ? "true" : "false");

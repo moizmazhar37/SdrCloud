@@ -27,6 +27,8 @@ const StaticURL = ({
   const [audioTitle, setAudioTitle] = useState("");
   const [audioDescription, setAudioDescription] = useState("");
   const [selectedVoiceModel, setSelectedVoiceModel] = useState(null);
+  const [audioPrompt, setAudioPrompt] = useState("");
+  const [selectedVoiceModelForPrompt, setSelectedVoiceModelForPrompt] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [dropdownKey, setDropdownKey] = useState(0);
   const [showAudioDescModal, setShowAudioDescModal] = useState(false);
@@ -241,7 +243,11 @@ const StaticURL = ({
   };
 
   const handleAudioPromptSave = (promptData) => {
+    setAudioPrompt(promptData.audioDesc);
+    setSelectedVoiceModelForPrompt(promptData.selectedVoiceModel);
     setShowAudioPromptModal(false);
+    setAudioTitle(promptData?.audioDesc);
+    toast.success("Audio prompt saved successfully!");
   };
 
   const scrollTypes = [
@@ -262,6 +268,20 @@ const StaticURL = ({
       toast.error("Please fill in all required fields");
       return;
     }
+    // Determine audio_type and audio_description based on input method
+    let audioType = null;
+    let finalAudioDescription = "";
+    
+    if (audioFile) {
+      audioType = "uploaded_audio";
+    } else if (audioPrompt && selectedVoiceModelForPrompt) {
+      audioType = "prompt";
+      finalAudioDescription = audioPrompt;
+    } else if (audioDescription && selectedVoiceModel) {
+      audioType = "description";
+      finalAudioDescription = audioDescription;
+    }
+
     const videoSectionData = {
       hvoTemplateId: templateId,
       sectionName: "Static URL",
@@ -271,8 +291,9 @@ const StaticURL = ({
       audioEmbedded: !!audioFile,
       scroll: selectedType === "Yes",
       reverse_scroll: selectedType === "Yes" ? reverseScroll : false,
-      audioDescription: audioDescription,
-      audioAccent: selectedVoiceModel?.dev_name || null,
+      audioDescription: finalAudioDescription,
+      audioAccent: selectedVoiceModel?.dev_name || selectedVoiceModelForPrompt?.dev_name || null,
+      audioType: audioType,
       firstRowValue: null,
       isDynamic: !!selectedCategory,
       value: url,
@@ -408,6 +429,18 @@ const StaticURL = ({
           {selectedVoiceModel && (
             <div className={styles.selectedVoiceModel}>
               <p>Selected Voice: {selectedVoiceModel.name}</p>
+            </div>
+          )}
+          {audioPrompt && selectedVoiceModelForPrompt && (
+            <div className={styles.audioPromptBanner}>
+              <div className={styles.bannerIcon}>🎤</div>
+              <div className={styles.bannerContent}>
+                <div className={styles.bannerTitle}>Audio Prompt Active</div>
+                <div className={styles.bannerDetails}>
+                  <span className={styles.promptText}>"{audioPrompt.length > 50 ? audioPrompt.substring(0, 50) + '...' : audioPrompt}"</span>
+                  <span className={styles.voiceModel}>Voice: {selectedVoiceModelForPrompt.name}</span>
+                </div>
+              </div>
             </div>
           )}
           {showPreview && (

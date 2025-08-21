@@ -344,6 +344,14 @@ export const routes = [
 
   {
     exact: true,
+    path: "/video-booking/:customerId?",
+    component: lazy(() =>
+      import("src/views/pages/VideoBooking/VideoBooking")
+    ),
+  },
+
+  {
+    exact: true,
     path: "/book-meeting/:tenant_id",
     component: lazy(() => import("src/views/pages/Meeting/BookMeeting")),
   },
