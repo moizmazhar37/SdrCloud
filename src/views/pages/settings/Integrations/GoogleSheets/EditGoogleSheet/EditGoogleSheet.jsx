@@ -185,7 +185,12 @@ function EditGoogleSheet() {
                           <div className={styles.fieldContainer}>
                             <div className={styles.fieldRow}>
                               <div className={styles.dropdownContainer}>
-                                <p className={styles.title}>{item.value}</p>
+                                <p className={styles.title}>
+                                  {item.value}
+                                  {getRequiredFields(type).includes(item.value) && (
+                                    <span style={{ color: 'red' }}> Required</span>
+                                  )}
+                                </p>
                                 <select
                                   className={styles.dropdown}
                                   disabled={!isEditing}
