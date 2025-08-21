@@ -2,6 +2,53 @@
   width: 100%;
 }
 
+.audioPromptBanner {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  padding: 16px;
+  margin: 16px 0;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  color: white;
+  
+  .bannerIcon {
+    font-size: 24px;
+    margin-right: 12px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  }
+  
+  .bannerContent {
+    flex: 1;
+    
+    .bannerTitle {
+      font-weight: 600;
+      font-size: 16px;
+      margin-bottom: 4px;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+    
+    .bannerDetails {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      
+      .promptText {
+        font-size: 13px;
+        opacity: 0.9;
+        font-style: italic;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+      }
+      
+      .voiceModel {
+        font-size: 12px;
+        opacity: 0.8;
+        font-weight: 500;
+      }
+    }
+  }
+}
+
 .container {
   border: 1px solid rgb(240, 239, 239);
   border-radius: 6px;
@@ -87,6 +134,30 @@
       color: #333;
     }
   }
+
+  .reverseScrollToggle {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-top: 8px;
+
+    label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: #333;
+      cursor: pointer;
+
+      input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+        accent-color: #0064b1;
+      }
+    }
+  }
 }
 
 .footer {
@@ -132,6 +203,12 @@
 @media (max-width: 760px) {
   .controlRow {
     flex-direction: column;
+
+    .durationInput,
+    .scrollSelect,
+    .reverseScrollToggle {
+      width: 100%;
+    }
   }
 }
 

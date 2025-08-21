@@ -248,10 +248,27 @@ const VideoUpload = ({
     setAudioPrompt(promptData.audioDesc);
     setSelectedVoiceModelForPrompt(promptData.selectedVoiceModel);
     setShowAudioPromptModal(false);
+    setAudioFileName(promptData?.audioDesc);
+    toast.success("Audio prompt saved successfully!");
   };
 
   const handleSave = async () => {
     if (!isFormValid()) return;
+    
+    // Determine audio_type and audio_description based on input method
+    let audioType = null;
+    let finalAudioDescription = "";
+    
+    if (audioFile) {
+      audioType = "uploaded_audio";
+    } else if (audioPrompt && selectedVoiceModelForPrompt) {
+      audioType = "prompt";
+      finalAudioDescription = audioPrompt;
+    } else if (audioDescription && selectedVoiceModel) {
+      audioType = "description";
+      finalAudioDescription = audioDescription;
+    }
+
     const videoSectionData = {
       hvoTemplateId: templateId,
       sectionName: selectedCategory || "VIDEO URL",
@@ -260,10 +277,9 @@ const VideoUpload = ({
       duration: duration,
       audioEmbedded: !!audioFile,
       scroll: scroll,
-      audioDescription: audioDescription,
-      audioAccent: selectedVoiceModel?.dev_name || null,
-      audioPrompt: audioPrompt,
-      audioPromptAccent: selectedVoiceModelForPrompt?.dev_name || null,
+      audioDescription: finalAudioDescription,
+      audioAccent: selectedVoiceModel?.dev_name || selectedVoiceModelForPrompt?.dev_name || null,
+      audioType: audioType,
       firstRowValue: null,
       isDynamic: !!selectedCategory,
       file: videoFile,
@@ -422,9 +438,16 @@ const VideoUpload = ({
               <span>Selected Voice: {selectedVoiceModel.name}</span>
             </div>
           )}
-          {selectedVoiceModelForPrompt && (
-            <div className={styles.selectedVoiceModel}>
-              <span>Selected Voice for Prompt: {selectedVoiceModelForPrompt.name}</span>
+          {audioPrompt && selectedVoiceModelForPrompt && (
+            <div className={styles.audioPromptBanner}>
+              <div className={styles.bannerIcon}>🎤</div>
+              <div className={styles.bannerContent}>
+                <div className={styles.bannerTitle}>Audio Prompt Active</div>
+                <div className={styles.bannerDetails}>
+                  <span className={styles.promptText}>"{audioPrompt.length > 50 ? audioPrompt.substring(0, 50) + '...' : audioPrompt}"</span>
+                  <span className={styles.voiceModel}>Voice: {selectedVoiceModelForPrompt.name}</span>
+                </div>
+              </div>
             </div>
           )}
           <div className={styles.actionButtons}>

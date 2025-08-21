@@ -98,19 +98,6 @@ function EditGoogleSheet() {
       type === "HVO"
         ? hvoTypes.filter((t) => t.includes("(Required)"))
         : videoTypes.filter((t) => t.includes("(Required)"));
-
-    if (type === "HVO") {
-      ["First name", "Last name"].forEach((field) => {
-        if (!baseRequired.includes(field)) {
-          baseRequired.push(field);
-        }
-      });
-    } else {
-      if (!baseRequired.includes("Last name")) {
-        baseRequired.push("Last name");
-      }
-    }
-
     return baseRequired;
   };
 
@@ -185,7 +172,12 @@ function EditGoogleSheet() {
                           <div className={styles.fieldContainer}>
                             <div className={styles.fieldRow}>
                               <div className={styles.dropdownContainer}>
-                                <p className={styles.title}>{item.value}</p>
+                                <p className={styles.title}>
+                                  {item.value}
+                                  {getRequiredFields(type).includes(item.value) && (
+                                    <span style={{ color: 'red' }}> Required</span>
+                                  )}
+                                </p>
                                 <select
                                   className={styles.dropdown}
                                   disabled={!isEditing}

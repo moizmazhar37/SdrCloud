@@ -14,8 +14,10 @@ const useCreateVideoSection = () => {
     duration = null,
     audioEmbedded = null,
     scroll = null,
+    reverse_scroll = null,
     audioDescription = null,
     audioAccent = null,
+    audioType = null,
     firstRowValue = null,
     value = null,
     link = null,
@@ -29,17 +31,26 @@ const useCreateVideoSection = () => {
     formData.append("section_name", sectionName || "");
     formData.append("section_number", sectionNumber || "");
     formData.append("sequence", sequence || 1);
-
     formData.append("audio_embedded", audioEmbedded ? "true" : "false");
     formData.append("is_dynamic", isDynamic ? "true" : "false");
-    formData.append("audio_description", audioDescription || "");
-    formData.append("audio_accent", audioAccent || "");
-
     formData.append("duration", duration || "");
     formData.append("scroll", scroll ? "true" : "false");
+    formData.append("reverse_scroll", reverse_scroll ? "true" : "false");
     formData.append("first_row_value", firstRowValue || "");
     formData.append("value", value || "");
     formData.append("link", link || "");
+
+    // ✅ Append only if they are valid (not null, not empty, not "null")
+    if (audioDescription && audioDescription !== "null") {
+      formData.append("audio_description", audioDescription);
+    }
+    if (audioAccent && audioAccent !== "null") {
+      formData.append("audio_accent", audioAccent);
+    }
+    if (audioType && audioType !== "null") {
+      formData.append("audio_type", audioType);
+    }
+
     if (file) {
       formData.append("file", file);
     }

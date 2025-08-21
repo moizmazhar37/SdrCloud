@@ -12,7 +12,7 @@ const ConfirmationModal = ({
   actionButtonText = "Proceed",
   onAction,
   totalRecords = 0,
-  showInputField = true,
+  showInputField = false,
 }) => {
   const [inputValue, setInputValue] = useState("");
 
@@ -27,7 +27,7 @@ const ConfirmationModal = ({
   };
 
   const handleAction = () => {
-    onAction(showInputField ? Number(inputValue) || 0 : undefined);
+    onAction(showInputField ? Number(inputValue) || 0 : totalRecords);
   };
 
   return ReactDOM.createPortal(
@@ -36,7 +36,7 @@ const ConfirmationModal = ({
         {title && <h2 className={styles.modalTitle}>{title}</h2>}
 
         <div className={styles.modalBody}>
-          {showInputField && (
+          {showInputField ? (
             <div className={styles.inputSection}>
               <label htmlFor="recordsInput" className={styles.inputLabel}>
                 Number of Videos (Max: {totalRecords} rows in the sheet):
@@ -53,6 +53,12 @@ const ConfirmationModal = ({
               <small className={styles.helperText}>
                 Enter the number of rows to process. Max is {totalRecords}.
               </small>
+            </div>
+          ) : (
+            <div className={styles.inputSection}>
+              <p className={styles.allRowsMessage}>
+                This will create videos for all {totalRecords} rows in the sheet.
+              </p>
             </div>
           )}
 

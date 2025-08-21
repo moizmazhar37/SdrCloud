@@ -33,15 +33,21 @@ const DynamicURL = ({
     editData?.audio_accent ? { dev_name: editData.audio_accent } : null
   );
   const [audioPrompt, setAudioPrompt] = useState(editData?.audio_prompt || "");
-  const [selectedVoiceModelForPrompt, setSelectedVoiceModelForPrompt] = useState(
-    editData?.audio_prompt_accent ? { dev_name: editData.audio_prompt_accent } : null
-  );
+  const [selectedVoiceModelForPrompt, setSelectedVoiceModelForPrompt] =
+    useState(
+      editData?.audio_prompt_accent
+        ? { dev_name: editData.audio_prompt_accent }
+        : null
+    );
   const [loading, setLoading] = useState(false);
   const [showAudioDescModal, setShowAudioDescModal] = useState(false);
   const [showAudioPromptModal, setShowAudioPromptModal] = useState(false);
   const [showAudioMismatchModal, setShowAudioMismatchModal] = useState(false);
   const [pendingAudioAction, setPendingAudioAction] = useState(null);
-  
+  const [reverseScroll, setReverseScroll] = useState(
+    editData?.reverse_scroll || false
+  );
+
   const { createVideoSection } = useCreateVideoSection();
   const { updateVideoSection } = useUpdateVideoSection();
 
@@ -51,6 +57,7 @@ const DynamicURL = ({
       setSelectedURL(editData.value || "");
       setDuration(editData.duration || "");
       setSelectedType(editData.scroll ? "Yes" : "No");
+      setReverseScroll(editData.reverse_scroll || false);
       setAudioFile(editData.audio || null);
       setAudioTitle(editData.audio?.name || "");
       setAudioDescription(editData.audio_description || "");
@@ -61,7 +68,9 @@ const DynamicURL = ({
       }
       setAudioPrompt(editData.audio_prompt || "");
       if (editData.audio_prompt_accent) {
-        setSelectedVoiceModelForPrompt({ dev_name: editData.audio_prompt_accent });
+        setSelectedVoiceModelForPrompt({
+          dev_name: editData.audio_prompt_accent,
+        });
       } else {
         setSelectedVoiceModelForPrompt(null);
       }
@@ -87,27 +96,35 @@ const DynamicURL = ({
 
   // Check if current section has audio
   const hasCurrentSectionAudio = () => {
-    return !!(audioFile || (audioDescription && selectedVoiceModel) || (audioPrompt && selectedVoiceModelForPrompt));
+    return !!(
+      audioFile ||
+      (audioDescription && selectedVoiceModel) ||
+      (audioPrompt && selectedVoiceModelForPrompt)
+    );
   };
 
   const handleRequestAudioUpload = () => {
     // Check if there's an audio mismatch with adjacent sections
     const currentHasAudio = hasCurrentSectionAudio();
-    
+
     // If we're adding audio and there's a mismatch with adjacent sections
     if (!currentHasAudio && (hasLeftSectionAudio || hasRightSectionAudio)) {
       setPendingAudioAction("upload");
       setShowAudioMismatchModal(true);
       return;
     }
-    
+
     // If we're replacing audio and there's a mismatch with adjacent sections
-    if (currentHasAudio && (hasLeftSectionAudio !== currentHasAudio || hasRightSectionAudio !== currentHasAudio)) {
+    if (
+      currentHasAudio &&
+      (hasLeftSectionAudio !== currentHasAudio ||
+        hasRightSectionAudio !== currentHasAudio)
+    ) {
       setPendingAudioAction("upload");
       setShowAudioMismatchModal(true);
       return;
     }
-    
+
     // If no mismatch, proceed directly
     document.getElementById("audioUpload").click();
   };
@@ -115,21 +132,25 @@ const DynamicURL = ({
   const handleRequestDescription = () => {
     // Check if there's an audio mismatch with adjacent sections
     const currentHasAudio = hasCurrentSectionAudio();
-    
+
     // If we're adding audio and there's a mismatch with adjacent sections
     if (!currentHasAudio && (hasLeftSectionAudio || hasRightSectionAudio)) {
       setPendingAudioAction("description");
       setShowAudioMismatchModal(true);
       return;
     }
-    
+
     // If we're replacing audio and there's a mismatch with adjacent sections
-    if (currentHasAudio && (hasLeftSectionAudio !== currentHasAudio || hasRightSectionAudio !== currentHasAudio)) {
+    if (
+      currentHasAudio &&
+      (hasLeftSectionAudio !== currentHasAudio ||
+        hasRightSectionAudio !== currentHasAudio)
+    ) {
       setPendingAudioAction("description");
       setShowAudioMismatchModal(true);
       return;
     }
-    
+
     // If no mismatch, proceed directly
     setShowAudioDescModal(true);
   };
@@ -137,21 +158,25 @@ const DynamicURL = ({
   const handleRequestPrompt = () => {
     // Check if there's an audio mismatch with adjacent sections
     const currentHasAudio = hasCurrentSectionAudio();
-    
+
     // If we're adding audio and there's a mismatch with adjacent sections
     if (!currentHasAudio && (hasLeftSectionAudio || hasRightSectionAudio)) {
       setPendingAudioAction("prompt");
       setShowAudioMismatchModal(true);
       return;
     }
-    
+
     // If we're replacing audio and there's a mismatch with adjacent sections
-    if (currentHasAudio && (hasLeftSectionAudio !== currentHasAudio || hasRightSectionAudio !== currentHasAudio)) {
+    if (
+      currentHasAudio &&
+      (hasLeftSectionAudio !== currentHasAudio ||
+        hasRightSectionAudio !== currentHasAudio)
+    ) {
       setPendingAudioAction("prompt");
       setShowAudioMismatchModal(true);
       return;
     }
-    
+
     // If no mismatch, proceed directly
     setShowAudioPromptModal(true);
   };
@@ -183,6 +208,8 @@ const DynamicURL = ({
     setAudioPrompt(promptData.audioDesc);
     setSelectedVoiceModelForPrompt(promptData.selectedVoiceModel);
     setShowAudioPromptModal(false);
+    setAudioTitle(promptData?.audioDesc);
+    toast.success("Audio prompt saved successfully!");
   };
 
   const scrollTypes = [
@@ -200,6 +227,23 @@ const DynamicURL = ({
       return;
     }
     setLoading(true);
+
+    let audioType = null;
+    let finalAudioDescription = "";
+    let finalAudioAccent = null;
+
+    if (audioFile) {
+      audioType = "uploaded_audio";
+    } else if (audioPrompt && selectedVoiceModelForPrompt) {
+      audioType = "prompt";
+      finalAudioDescription = audioPrompt;
+      finalAudioAccent = selectedVoiceModelForPrompt?.dev_name || null;
+    } else if (audioDescription && selectedVoiceModel) {
+      audioType = "description";
+      finalAudioDescription = audioDescription;
+      finalAudioAccent = selectedVoiceModel?.dev_name || null;
+    }
+
     const videoSectionData = {
       hvoTemplateId: templateId,
       sectionName: "Dynamic URL",
@@ -208,15 +252,24 @@ const DynamicURL = ({
       duration: duration,
       audioEmbedded: !!audioFile,
       scroll: selectedType === "Yes",
-      audioDescription: audioDescription,
-      audioAccent: selectedVoiceModel?.dev_name || null,
-      audioPrompt: audioPrompt,
-      audioPromptAccent: selectedVoiceModelForPrompt?.dev_name || null,
+      reverse_scroll: selectedType === "Yes" ? reverseScroll : false,
       firstRowValue: null,
       isDynamic: true,
       value: selectedURL,
       audio: audioFile,
     };
+
+    // only include these if they have values
+    if (audioType) {
+      videoSectionData.audioType = audioType;
+    }
+    if (finalAudioDescription) {
+      videoSectionData.audioDescription = finalAudioDescription;
+    }
+    if (finalAudioAccent) {
+      videoSectionData.audioAccent = finalAudioAccent;
+    }
+
     try {
       let response;
       if (editData) {
@@ -299,10 +352,42 @@ const DynamicURL = ({
                 selectedValue={selectedType}
               />
             </div>
+            {selectedType === "Yes" && (
+              <div className={styles.reverseScrollToggle}>
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={reverseScroll}
+                    onChange={(e) => setReverseScroll(e.target.checked)}
+                  />
+                  Reverse Scroll
+                </label>
+              </div>
+            )}
           </div>
           {audioTitle && (
             <div className={styles.audioTitle}>
               <p>Uploaded Audio: {audioTitle}</p>
+            </div>
+          )}
+          {audioPrompt && selectedVoiceModelForPrompt && (
+            <div className={styles.audioPromptBanner}>
+              <div className={styles.bannerIcon}>🎤</div>
+              <div className={styles.bannerContent}>
+                <div className={styles.bannerTitle}>Audio Prompt Active</div>
+                <div className={styles.bannerDetails}>
+                  <span className={styles.promptText}>
+                    "
+                    {audioPrompt.length > 50
+                      ? audioPrompt.substring(0, 50) + "..."
+                      : audioPrompt}
+                    "
+                  </span>
+                  <span className={styles.voiceModel}>
+                    Voice: {selectedVoiceModelForPrompt.name}
+                  </span>
+                </div>
+              </div>
             </div>
           )}
         </div>
