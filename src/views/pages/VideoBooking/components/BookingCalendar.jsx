@@ -1,12 +1,13 @@
 import React, { useState } from "react";
+import { InlineWidget } from "react-calendly";
 import styles from "./BookingCalendar.module.scss";
 
-const BookingCalendar = () => {
+const BookingCalendar = ({ meetType, meetLink }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState("");
   const [userDetails, setUserDetails] = useState({ name: "", email: "" });
-  
+
   // Calendar navigation state
   const today = new Date();
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
@@ -51,16 +52,26 @@ const BookingCalendar = () => {
   ];
 
   const calendarDates = generateCalendarDates();
-  
+
   // Month names for display
   const monthNames = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
   ];
 
   // ---------- Handlers ----------
   const navigateMonth = (direction) => {
-    if (direction === 'next') {
+    if (direction === "next") {
       if (currentMonth === 11) {
         setCurrentMonth(0);
         setCurrentYear(currentYear + 1);
@@ -123,16 +134,18 @@ const BookingCalendar = () => {
   const renderCalendarStep = () => (
     <div className={styles.calendarStep}>
       <div className={styles.calendarHeader}>
-        <button 
+        <button
           className={styles.navButton}
-          onClick={() => navigateMonth('prev')}
+          onClick={() => navigateMonth("prev")}
         >
           &lt;
         </button>
-        <h3>{monthNames[currentMonth]} {currentYear}</h3>
-        <button 
+        <h3>
+          {monthNames[currentMonth]} {currentYear}
+        </h3>
+        <button
           className={styles.navButton}
-          onClick={() => navigateMonth('next')}
+          onClick={() => navigateMonth("next")}
         >
           &gt;
         </button>
@@ -277,71 +290,89 @@ const BookingCalendar = () => {
     </div>
   );
 
+  // ---------- Calendly Widget Render ----------
+  const renderCalendlyWidget = () => (
+    <div className={styles.calendlyContainer}>
+      <h2 className={styles.title}>Schedule your meeting</h2>
+      <InlineWidget
+        url="https://calendly.com/jamshaidkhalid?utm_content=5fa51948-ce8e-48c6-81ef-97123531a72f"
+        styles={{ height: "630px", width: "100%" }}
+      />
+    </div>
+  );
+
   // ---------- Render ----------
   return (
     <div className={styles.bookingCalendar}>
-      {/* Header */}
-      <div className={styles.header}>
-        {currentStep > 1 && (
-          <button className={styles.backButton} onClick={handleBackStep}>
-            ← Back
-          </button>
-        )}
+      {meetType === "calendly" ? (
+        renderCalendlyWidget()
+      ) : (
+        <>
+          {/* Header */}
+          <div className={styles.header}>
+            {currentStep > 1 && (
+              <button className={styles.backButton} onClick={handleBackStep}>
+                ← Back
+              </button>
+            )}
 
-        <div className={styles.steps}>
-          <div
-            className={`${styles.step} ${
-              currentStep >= 1 ? styles.active : ""
-            }`}
-          >
-            <span className={styles.stepNumber}>1</span>
-            <span className={styles.stepLabel}>Select Date & Time</span>
+            <div className={styles.steps}>
+              <div
+                className={`${styles.step} ${
+                  currentStep >= 1 ? styles.active : ""
+                }`}
+              >
+                <span className={styles.stepNumber}>1</span>
+                <span className={styles.stepLabel}>Select Date & Time</span>
+              </div>
+              <div
+                className={`${styles.step} ${
+                  currentStep >= 2 ? styles.active : ""
+                }`}
+              >
+                <span className={styles.stepNumber}>2</span>
+                <span className={styles.stepLabel}>Your Details</span>
+              </div>
+              <div
+                className={`${styles.step} ${
+                  currentStep >= 3 ? styles.active : ""
+                }`}
+              >
+                <span className={styles.stepNumber}>3</span>
+                <span className={styles.stepLabel}>Confirm</span>
+              </div>
+            </div>
           </div>
-          <div
-            className={`${styles.step} ${
-              currentStep >= 2 ? styles.active : ""
-            }`}
-          >
-            <span className={styles.stepNumber}>2</span>
-            <span className={styles.stepLabel}>Your Details</span>
+
+          {/* Content */}
+          <div className={styles.content}>
+            <h2 className={styles.title}>
+              {currentStep === 1 && "Schedule your meeting"}
+              {currentStep === 2 && "Enter your details"}
+              {currentStep === 3 && "Confirm Booking"}
+            </h2>
+
+            {currentStep === 1 && renderCalendarStep()}
+            {currentStep === 2 && renderDetailsStep()}
+            {currentStep === 3 && renderConfirmationStep()}
+
+            {/* Next Button */}
+            {currentStep < 3 && (
+              <button
+                className={styles.nextButton}
+                onClick={handleNextStep}
+                disabled={
+                  (currentStep === 1 && (!selectedDate || !selectedTime)) ||
+                  (currentStep === 2 &&
+                    (!userDetails.name || !userDetails.email))
+                }
+              >
+                Next
+              </button>
+            )}
           </div>
-          <div
-            className={`${styles.step} ${
-              currentStep >= 3 ? styles.active : ""
-            }`}
-          >
-            <span className={styles.stepNumber}>3</span>
-            <span className={styles.stepLabel}>Confirm</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Content */}
-      <div className={styles.content}>
-        <h2 className={styles.title}>
-          {currentStep === 1 && "Schedule your meeting"}
-          {currentStep === 2 && "Enter your details"}
-          {currentStep === 3 && "Confirm Booking"}
-        </h2>
-
-        {currentStep === 1 && renderCalendarStep()}
-        {currentStep === 2 && renderDetailsStep()}
-        {currentStep === 3 && renderConfirmationStep()}
-
-        {/* Next Button */}
-        {currentStep < 3 && (
-          <button
-            className={styles.nextButton}
-            onClick={handleNextStep}
-            disabled={
-              (currentStep === 1 && (!selectedDate || !selectedTime)) ||
-              (currentStep === 2 && (!userDetails.name || !userDetails.email))
-            }
-          >
-            Next
-          </button>
-        )}
-      </div>
+        </>
+      )}
     </div>
   );
 };

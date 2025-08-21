@@ -294,6 +294,8 @@ const VideoBooking = () => {
             onNext={handleNext}
             onBack={handleBack}
             onConfirm={handleBookingConfirm}
+            meetType={videoData?.meet_type}
+            meetLink={videoData?.meet_link}
           />
         </div>
       </div>
