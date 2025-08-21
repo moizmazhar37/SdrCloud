@@ -258,6 +258,18 @@ const VideoBooking = () => {
           </p>
         </div>
       </div>
+      
+      {videoData?.name && (
+        <div className="personalized-greeting">
+          <div className="greeting-content">
+            <div className="greeting-icon">👋</div>
+            <div className="greeting-text">
+              <h2>Hi {videoData.name}!</h2>
+              <p>We've prepared something special just for you. Take a look at the personalized video below and let's schedule a time to chat about how we can help grow your business.</p>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="video-booking-layout">
         <div className="video-section">
           <VideoPlayerComponent
