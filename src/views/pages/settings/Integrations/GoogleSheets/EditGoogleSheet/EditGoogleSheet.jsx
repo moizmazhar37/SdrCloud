@@ -98,19 +98,6 @@ function EditGoogleSheet() {
       type === "HVO"
         ? hvoTypes.filter((t) => t.includes("(Required)"))
         : videoTypes.filter((t) => t.includes("(Required)"));
-
-    if (type === "HVO") {
-      ["First name", "Last name"].forEach((field) => {
-        if (!baseRequired.includes(field)) {
-          baseRequired.push(field);
-        }
-      });
-    } else {
-      if (!baseRequired.includes("Last name")) {
-        baseRequired.push("Last name");
-      }
-    }
-
     return baseRequired;
   };
 
