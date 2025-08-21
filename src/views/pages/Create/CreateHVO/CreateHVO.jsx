@@ -114,6 +114,7 @@ const CreateHVO = () => {
   const ImageDropdownTypes = extractHvoCategories(data, [
     "Screenshot from URL",
     "Image URL",
+    "Video URL"
   ]);
   const dynamicVideos = extractKeywordList(data, ["Video URL"]);
 
