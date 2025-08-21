@@ -33,16 +33,21 @@ const DynamicURL = ({
     editData?.audio_accent ? { dev_name: editData.audio_accent } : null
   );
   const [audioPrompt, setAudioPrompt] = useState(editData?.audio_prompt || "");
-  const [selectedVoiceModelForPrompt, setSelectedVoiceModelForPrompt] = useState(
-    editData?.audio_prompt_accent ? { dev_name: editData.audio_prompt_accent } : null
-  );
+  const [selectedVoiceModelForPrompt, setSelectedVoiceModelForPrompt] =
+    useState(
+      editData?.audio_prompt_accent
+        ? { dev_name: editData.audio_prompt_accent }
+        : null
+    );
   const [loading, setLoading] = useState(false);
   const [showAudioDescModal, setShowAudioDescModal] = useState(false);
   const [showAudioPromptModal, setShowAudioPromptModal] = useState(false);
   const [showAudioMismatchModal, setShowAudioMismatchModal] = useState(false);
   const [pendingAudioAction, setPendingAudioAction] = useState(null);
-  const [reverseScroll, setReverseScroll] = useState(editData?.reverse_scroll || false);
-  
+  const [reverseScroll, setReverseScroll] = useState(
+    editData?.reverse_scroll || false
+  );
+
   const { createVideoSection } = useCreateVideoSection();
   const { updateVideoSection } = useUpdateVideoSection();
 
@@ -63,7 +68,9 @@ const DynamicURL = ({
       }
       setAudioPrompt(editData.audio_prompt || "");
       if (editData.audio_prompt_accent) {
-        setSelectedVoiceModelForPrompt({ dev_name: editData.audio_prompt_accent });
+        setSelectedVoiceModelForPrompt({
+          dev_name: editData.audio_prompt_accent,
+        });
       } else {
         setSelectedVoiceModelForPrompt(null);
       }
@@ -89,27 +96,35 @@ const DynamicURL = ({
 
   // Check if current section has audio
   const hasCurrentSectionAudio = () => {
-    return !!(audioFile || (audioDescription && selectedVoiceModel) || (audioPrompt && selectedVoiceModelForPrompt));
+    return !!(
+      audioFile ||
+      (audioDescription && selectedVoiceModel) ||
+      (audioPrompt && selectedVoiceModelForPrompt)
+    );
   };
 
   const handleRequestAudioUpload = () => {
     // Check if there's an audio mismatch with adjacent sections
     const currentHasAudio = hasCurrentSectionAudio();
-    
+
     // If we're adding audio and there's a mismatch with adjacent sections
     if (!currentHasAudio && (hasLeftSectionAudio || hasRightSectionAudio)) {
       setPendingAudioAction("upload");
       setShowAudioMismatchModal(true);
       return;
     }
-    
+
     // If we're replacing audio and there's a mismatch with adjacent sections
-    if (currentHasAudio && (hasLeftSectionAudio !== currentHasAudio || hasRightSectionAudio !== currentHasAudio)) {
+    if (
+      currentHasAudio &&
+      (hasLeftSectionAudio !== currentHasAudio ||
+        hasRightSectionAudio !== currentHasAudio)
+    ) {
       setPendingAudioAction("upload");
       setShowAudioMismatchModal(true);
       return;
     }
-    
+
     // If no mismatch, proceed directly
     document.getElementById("audioUpload").click();
   };
@@ -117,21 +132,25 @@ const DynamicURL = ({
   const handleRequestDescription = () => {
     // Check if there's an audio mismatch with adjacent sections
     const currentHasAudio = hasCurrentSectionAudio();
-    
+
     // If we're adding audio and there's a mismatch with adjacent sections
     if (!currentHasAudio && (hasLeftSectionAudio || hasRightSectionAudio)) {
       setPendingAudioAction("description");
       setShowAudioMismatchModal(true);
       return;
     }
-    
+
     // If we're replacing audio and there's a mismatch with adjacent sections
-    if (currentHasAudio && (hasLeftSectionAudio !== currentHasAudio || hasRightSectionAudio !== currentHasAudio)) {
+    if (
+      currentHasAudio &&
+      (hasLeftSectionAudio !== currentHasAudio ||
+        hasRightSectionAudio !== currentHasAudio)
+    ) {
       setPendingAudioAction("description");
       setShowAudioMismatchModal(true);
       return;
     }
-    
+
     // If no mismatch, proceed directly
     setShowAudioDescModal(true);
   };
@@ -139,21 +158,25 @@ const DynamicURL = ({
   const handleRequestPrompt = () => {
     // Check if there's an audio mismatch with adjacent sections
     const currentHasAudio = hasCurrentSectionAudio();
-    
+
     // If we're adding audio and there's a mismatch with adjacent sections
     if (!currentHasAudio && (hasLeftSectionAudio || hasRightSectionAudio)) {
       setPendingAudioAction("prompt");
       setShowAudioMismatchModal(true);
       return;
     }
-    
+
     // If we're replacing audio and there's a mismatch with adjacent sections
-    if (currentHasAudio && (hasLeftSectionAudio !== currentHasAudio || hasRightSectionAudio !== currentHasAudio)) {
+    if (
+      currentHasAudio &&
+      (hasLeftSectionAudio !== currentHasAudio ||
+        hasRightSectionAudio !== currentHasAudio)
+    ) {
       setPendingAudioAction("prompt");
       setShowAudioMismatchModal(true);
       return;
     }
-    
+
     // If no mismatch, proceed directly
     setShowAudioPromptModal(true);
   };
@@ -204,19 +227,21 @@ const DynamicURL = ({
       return;
     }
     setLoading(true);
-    
-    // Determine audio_type and audio_description based on input method
+
     let audioType = null;
     let finalAudioDescription = "";
-    
+    let finalAudioAccent = null;
+
     if (audioFile) {
       audioType = "uploaded_audio";
     } else if (audioPrompt && selectedVoiceModelForPrompt) {
       audioType = "prompt";
       finalAudioDescription = audioPrompt;
+      finalAudioAccent = selectedVoiceModelForPrompt?.dev_name || null;
     } else if (audioDescription && selectedVoiceModel) {
       audioType = "description";
       finalAudioDescription = audioDescription;
+      finalAudioAccent = selectedVoiceModel?.dev_name || null;
     }
 
     const videoSectionData = {
@@ -228,14 +253,23 @@ const DynamicURL = ({
       audioEmbedded: !!audioFile,
       scroll: selectedType === "Yes",
       reverse_scroll: selectedType === "Yes" ? reverseScroll : false,
-      audioDescription: finalAudioDescription,
-      audioAccent: selectedVoiceModel?.dev_name || selectedVoiceModelForPrompt?.dev_name || null,
-      audioType: audioType,
       firstRowValue: null,
       isDynamic: true,
       value: selectedURL,
       audio: audioFile,
     };
+
+    // only include these if they have values
+    if (audioType) {
+      videoSectionData.audioType = audioType;
+    }
+    if (finalAudioDescription) {
+      videoSectionData.audioDescription = finalAudioDescription;
+    }
+    if (finalAudioAccent) {
+      videoSectionData.audioAccent = finalAudioAccent;
+    }
+
     try {
       let response;
       if (editData) {
@@ -342,8 +376,16 @@ const DynamicURL = ({
               <div className={styles.bannerContent}>
                 <div className={styles.bannerTitle}>Audio Prompt Active</div>
                 <div className={styles.bannerDetails}>
-                  <span className={styles.promptText}>"{audioPrompt.length > 50 ? audioPrompt.substring(0, 50) + '...' : audioPrompt}"</span>
-                  <span className={styles.voiceModel}>Voice: {selectedVoiceModelForPrompt.name}</span>
+                  <span className={styles.promptText}>
+                    "
+                    {audioPrompt.length > 50
+                      ? audioPrompt.substring(0, 50) + "..."
+                      : audioPrompt}
+                    "
+                  </span>
+                  <span className={styles.voiceModel}>
+                    Voice: {selectedVoiceModelForPrompt.name}
+                  </span>
                 </div>
               </div>
             </div>

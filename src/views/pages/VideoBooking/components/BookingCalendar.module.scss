@@ -12,6 +12,22 @@ $box-shadow   : 0 4px 20px rgba(0, 0, 0, 0.08);
 $input-border : #e1e5e9;
 $reminder-bg  : #f8f9ff;
 
+// Calendly Container
+.calendlyContainer {
+  padding: 20px;
+  background: $white;
+  border-radius: $border-radius;
+  box-shadow: $box-shadow;
+  
+  .title {
+    text-align: center;
+    color: $text-dark;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+}
+
 // Smooth animations
 @keyframes slideInFade {
   from {
