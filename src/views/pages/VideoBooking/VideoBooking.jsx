@@ -7,6 +7,7 @@ import ApiConfig from "../../../config/APIConfig";
 import { videoTracking } from "src/config/APIConfig";
 import { v4 as uuidv4 } from "uuid";
 import useTriggerCalendlyMeeting from "../CreateVideo/VideoPlayer/Hooks/useCalendlyTrigger";
+import useTenantSlots from "./Hooks/useTenantSlots";
 import VideoPlayerComponent from "./components/VideoPlayerComponent";
 import BookingCalendar from "./components/BookingCalendar";
 import logo from "../CreateVideo/VideoPlayer/logo.png";
@@ -33,6 +34,7 @@ const VideoBooking = () => {
   const lastSentTimeRef = useRef(0);
 
   const { triggerMeeting } = useTriggerCalendlyMeeting();
+  const { data: tenantSlots, error: slotsError, loading: slotsLoading, refetch: refetchSlots } = useTenantSlots(videoData?.tenant_id);
 
   useEffect(() => {
     const fetchUserIP = async () => {
@@ -296,6 +298,10 @@ const VideoBooking = () => {
             onConfirm={handleBookingConfirm}
             meetType={videoData?.meet_type}
             meetLink={videoData?.meet_link}
+            tenantSlots={tenantSlots}
+            slotsLoading={slotsLoading}
+            slotsError={slotsError}
+            refetchSlots={refetchSlots}
           />
         </div>
       </div>
