@@ -37,8 +37,8 @@ const useTenantSlots = (tenant_id) => {
       setData(result);
       return result;
     } catch (err) {
+      console.error("Failed to fetch tenant slots:", err);
       setError(err.message || "Failed to fetch tenant slots");
-      throw err;
     } finally {
       setLoading(false);
     }

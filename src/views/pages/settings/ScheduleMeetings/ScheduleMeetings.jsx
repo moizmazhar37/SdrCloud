@@ -85,8 +85,49 @@ const ScheduleMeetings = () => {
 
   // Process existing slots when tenant slots data is loaded
   useEffect(() => {
-    if (tenantSlots?.slots) {
-      const grouped = {
+    if (tenantSlots?.slots && Array.isArray(tenantSlots.slots)) {
+      try {
+        const grouped = {
+          Monday: [],
+          Tuesday: [],
+          Wednesday: [],
+          Thursday: [],
+          Friday: [],
+          Saturday: [],
+          Sunday: [],
+        };
+
+        tenantSlots.slots.forEach((slot) => {
+          try {
+            const slotDate = new Date(slot);
+            if (isNaN(slotDate.getTime())) {
+              console.warn("Invalid date:", slot);
+              return;
+            }
+            
+            const dayOfWeek = slotDate.toLocaleDateString('en-US', { weekday: 'long' });
+            
+            if (grouped[dayOfWeek]) {
+              grouped[dayOfWeek].push({
+                utc: slot,
+                local: slotDate.toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })
+              });
+            }
+          } catch (slotError) {
+            console.error("Error processing slot:", slot, slotError);
+          }
+        });
+
+        setExistingSlots(grouped);
+      } catch (error) {
+        console.error("Error processing tenant slots:", error);
+      }
+    } else if (tenantSlots && !tenantSlots.slots) {
+      // API returned data but no slots array - reset to empty
+      setExistingSlots({
         Monday: [],
         Tuesday: [],
         Wednesday: [],
@@ -94,24 +135,7 @@ const ScheduleMeetings = () => {
         Friday: [],
         Saturday: [],
         Sunday: [],
-      };
-
-      tenantSlots.slots.forEach((slot) => {
-        const slotDate = new Date(slot);
-        const dayOfWeek = slotDate.toLocaleDateString('en-US', { weekday: 'long' });
-        
-        if (grouped[dayOfWeek]) {
-          grouped[dayOfWeek].push({
-            utc: slot,
-            local: slotDate.toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit",
-            })
-          });
-        }
       });
-
-      setExistingSlots(grouped);
     }
   }, [tenantSlots]);
 
@@ -228,12 +252,26 @@ const ScheduleMeetings = () => {
       <DynamicNavigator items={navs} />
       <div className={styles.scheduleMeetings}>
         <h1 className={styles.title}>Schedule Meetings</h1>
-        {/* <p className={styles.description}>
-          Set your availability for the next 7 days
-        </p> */}
+        
         <p className={styles.timezoneInfo}>
           Your timezone: {userTimezone || "Detecting..."}
         </p>
+
+        {/* Error handling */}
+        {slotsError && (
+          <div className={styles.errorMessage}>
+            <span className={styles.errorIcon}>⚠️</span>
+            <p>Failed to load existing slots. Please refresh the page or try again later.</p>
+          </div>
+        )}
+
+        {/* Loading state */}
+        {slotsLoading && (
+          <div className={styles.loadingMessage}>
+            <div className={styles.loadingSpinner}></div>
+            <p>Loading your time slots...</p>
+          </div>
+        )}
 
         <div className={styles.daysContainer}>
           {weekdays.map((day) => (
