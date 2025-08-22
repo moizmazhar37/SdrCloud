@@ -7,7 +7,7 @@ export const useSetAvailability = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const setAvailability = async ({ weekday, timeSlotsUtc }) => {
+  const setAvailability = async ({ weekday, time_slots_utc }) => {
     setLoading(true);
     setError(null);
 
@@ -21,7 +21,7 @@ export const useSetAvailability = () => {
         `${tenantMeeting}/set-availability/`,
         {
           weekday,
-          time_slots_utc: timeSlotsUtc,
+          time_slots_utc: time_slots_utc,
         },
         {
           headers: {

@@ -74,8 +74,8 @@ const ScheduleMeetings = () => {
     const localDate = new Date();
     localDate.setHours(parseInt(hour), parseInt(minute), 0, 0);
 
-    // Convert local time to UTC time
-    const utcTimeString = localDate.toISOString();
+    // Convert to UTC and extract only the time portion (HH:MM:SS.sssZ)
+    const utcTimeString = localDate.toISOString().split('T')[1]; // Gets "HH:MM:SS.sssZ"
 
     setTimeSlots((prev) => ({
       ...prev,
@@ -120,8 +120,12 @@ const ScheduleMeetings = () => {
   };
 
   // Format time to display in local timezone
-  const formatLocalTime = (dateString) => {
-    const date = new Date(dateString);
+  const formatLocalTime = (timeString) => {
+    // timeString is now in format "HH:MM:SS.sssZ"
+    // Create a date object for today with this UTC time
+    const today = new Date().toISOString().split('T')[0]; // Gets "YYYY-MM-DD"
+    const fullDateString = `${today}T${timeString}`;
+    const date = new Date(fullDateString);
     return date.toLocaleTimeString([], {
       hour: "2-digit",
       minute: "2-digit",
@@ -129,18 +133,29 @@ const ScheduleMeetings = () => {
   };
 
   // Format time to display in UTC
-  const formatUTCTime = (dateString) => {
-    const date = new Date(dateString);
-    return date.toUTCString().split(" ")[4].substring(0, 5);
+  const formatUTCTime = (timeString) => {
+    // timeString is already in UTC format "HH:MM:SS.sssZ"
+    return timeString.substring(0, 5); // Gets "HH:MM"
   };
 
   // Save time slots for a specific day
   const saveTimeSlots = async (day) => {
     try {
       setSavingDay(day);
+      
+      // Ensure all time slots are in the correct format (HH:MM:SS.sssZ)
+      const formattedTimeSlots = timeSlots[day].map(slot => {
+        // If slot contains 'T', it's a full datetime, extract time portion
+        if (slot.includes('T')) {
+          return slot.split('T')[1];
+        }
+        // Otherwise, it's already in time format
+        return slot;
+      });
+      
       const data = {
         weekday: day,
-        timeSlotsUtc: timeSlots[day],
+        time_slots_utc: formattedTimeSlots,
       };
 
       console.log("Sending data to API:", data);
