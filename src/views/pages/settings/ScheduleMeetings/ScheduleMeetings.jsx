@@ -2,8 +2,28 @@ import React, { useState, useEffect } from "react";
 import styles from "./ScheduleMeetings.module.scss";
 import DynamicNavigator from "src/Common/DynamicNavigator/DynamicNavigator";
 import { useSetAvailability } from "./Hooks/useSetAvailability";
+import useTenantSlots from "../../VideoBooking/Hooks/useTenantSlots";
 
 const ScheduleMeetings = () => {
+  const tenant_id = localStorage.getItem("tenant_id");
+  const {
+    data: tenantSlots,
+    error: slotsError,
+    loading: slotsLoading,
+    refetch: refetchSlots,
+  } = useTenantSlots(tenant_id);
+
+  // State for existing slots grouped by day
+  const [existingSlots, setExistingSlots] = useState({
+    Monday: [],
+    Tuesday: [],
+    Wednesday: [],
+    Thursday: [],
+    Friday: [],
+    Saturday: [],
+    Sunday: [],
+  });
+
   // Days of the week
   const weekdays = [
     "Monday",
@@ -63,6 +83,38 @@ const ScheduleMeetings = () => {
     setTimezoneOffset(offsetInMinutes);
   }, []);
 
+  // Process existing slots when tenant slots data is loaded
+  useEffect(() => {
+    if (tenantSlots?.slots) {
+      const grouped = {
+        Monday: [],
+        Tuesday: [],
+        Wednesday: [],
+        Thursday: [],
+        Friday: [],
+        Saturday: [],
+        Sunday: [],
+      };
+
+      tenantSlots.slots.forEach((slot) => {
+        const slotDate = new Date(slot);
+        const dayOfWeek = slotDate.toLocaleDateString('en-US', { weekday: 'long' });
+        
+        if (grouped[dayOfWeek]) {
+          grouped[dayOfWeek].push({
+            utc: slot,
+            local: slotDate.toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            })
+          });
+        }
+      });
+
+      setExistingSlots(grouped);
+    }
+  }, [tenantSlots]);
+
   // Function to add a time slot
   const addTimeSlot = (day) => {
     const { hour, minute } = currentTimeInputs[day];
@@ -75,7 +127,7 @@ const ScheduleMeetings = () => {
     localDate.setHours(parseInt(hour), parseInt(minute), 0, 0);
 
     // Convert to UTC and extract only the time portion (HH:MM:SS.sssZ)
-    const utcTimeString = localDate.toISOString().split('T')[1]; // Gets "HH:MM:SS.sssZ"
+    const utcTimeString = localDate.toISOString().split("T")[1]; // Gets "HH:MM:SS.sssZ"
 
     setTimeSlots((prev) => ({
       ...prev,
@@ -123,7 +175,7 @@ const ScheduleMeetings = () => {
   const formatLocalTime = (timeString) => {
     // timeString is now in format "HH:MM:SS.sssZ"
     // Create a date object for today with this UTC time
-    const today = new Date().toISOString().split('T')[0]; // Gets "YYYY-MM-DD"
+    const today = new Date().toISOString().split("T")[0]; // Gets "YYYY-MM-DD"
     const fullDateString = `${today}T${timeString}`;
     const date = new Date(fullDateString);
     return date.toLocaleTimeString([], {
@@ -142,17 +194,17 @@ const ScheduleMeetings = () => {
   const saveTimeSlots = async (day) => {
     try {
       setSavingDay(day);
-      
+
       // Ensure all time slots are in the correct format (HH:MM:SS.sssZ)
-      const formattedTimeSlots = timeSlots[day].map(slot => {
+      const formattedTimeSlots = timeSlots[day].map((slot) => {
         // If slot contains 'T', it's a full datetime, extract time portion
-        if (slot.includes('T')) {
-          return slot.split('T')[1];
+        if (slot.includes("T")) {
+          return slot.split("T")[1];
         }
         // Otherwise, it's already in time format
         return slot;
       });
-      
+
       const data = {
         weekday: day,
         time_slots_utc: formattedTimeSlots,
@@ -160,6 +212,9 @@ const ScheduleMeetings = () => {
 
       console.log("Sending data to API:", data);
       await setAvailability(data);
+      
+      // Refetch slots after successful save
+      await refetchSlots();
     } catch (err) {
       console.error("Error saving time slots:", err);
     } finally {
@@ -188,7 +243,9 @@ const ScheduleMeetings = () => {
               </div>
               <div className={styles.timeSelectionArea}>
                 <div className={styles.timePickerContainer}>
-                  <label className={styles.timePickerLabel}>Add Availability Time</label>
+                  <label className={styles.timePickerLabel}>
+                    Add Availability Time
+                  </label>
                   <div className={styles.timePickerWrapper}>
                     <div className={styles.timeInputGroup}>
                       <input
@@ -224,31 +281,62 @@ const ScheduleMeetings = () => {
                 </div>
 
                 <div className={styles.selectedTimesSection}>
-                  <h3 className={styles.sectionTitle}>Time Slots</h3>
-                  {timeSlots[day].length === 0 ? (
-                    <p className={styles.noTimes}>No times selected</p>
-                  ) : (
-                    <ul className={styles.timeSlotsList}>
-                      {timeSlots[day].map((slot, index) => (
-                        <li key={index} className={styles.timeSlot}>
-                          <div className={styles.timeInfo}>
-                            <span className={styles.localTime}>
-                              {formatLocalTime(slot)}
-                            </span>
-                            <span className={styles.utcTime}>
-                              {formatUTCTime(slot)} UTC
-                            </span>
-                          </div>
-                          <button
-                            className={styles.removeButton}
-                            onClick={() => removeTimeSlot(day, index)}
-                          >
-                            ×
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
+                  {/* Existing Slots */}
+                  {existingSlots[day].length > 0 && (
+                    <div className={styles.existingSlotsSection}>
+                      <h3 className={styles.sectionTitle}>
+                        <span className={styles.existingIcon}>🗓️</span>
+                        Current Slots
+                      </h3>
+                      <ul className={styles.timeSlotsList}>
+                        {existingSlots[day].map((slot, index) => (
+                          <li key={`existing-${index}`} className={`${styles.timeSlot} ${styles.existingSlot}`}>
+                            <div className={styles.timeInfo}>
+                              <span className={styles.localTime}>
+                                {slot.local}
+                              </span>
+                              <span className={styles.utcTime}>
+                                {new Date(slot.utc).toISOString().split('T')[1].substring(0, 5)} UTC
+                              </span>
+                            </div>
+                            <span className={styles.existingLabel}>Saved</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   )}
+                  
+                  {/* New Slots */}
+                  <div className={styles.newSlotsSection}>
+                    <h3 className={styles.sectionTitle}>
+                      <span className={styles.newIcon}>⚡</span>
+                      New Time Slots
+                    </h3>
+                    {timeSlots[day].length === 0 ? (
+                      <p className={styles.noTimes}>No new times selected</p>
+                    ) : (
+                      <ul className={styles.timeSlotsList}>
+                        {timeSlots[day].map((slot, index) => (
+                          <li key={index} className={`${styles.timeSlot} ${styles.newSlot}`}>
+                            <div className={styles.timeInfo}>
+                              <span className={styles.localTime}>
+                                {formatLocalTime(slot)}
+                              </span>
+                              <span className={styles.utcTime}>
+                                {formatUTCTime(slot)} UTC
+                              </span>
+                            </div>
+                            <button
+                              className={styles.removeButton}
+                              onClick={() => removeTimeSlot(day, index)}
+                            >
+                              ×
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
                 </div>
               </div>
               <div className={styles.saveButtonContainer}>
