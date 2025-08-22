@@ -7,7 +7,13 @@ const useUploadAudio = () => {
   const [error, setError] = useState(null);
   const [audioUrl, setAudioUrl] = useState(null);
 
-  const uploadAudio = async ({ file, templateId, audioDescription, voiceModel, isPrompt = false }) => {
+  const uploadAudio = async ({
+    file,
+    templateId,
+    audioDescription,
+    voiceModel,
+    isPrompt = false,
+  }) => {
     if (!file && !audioDescription) {
       setError("Either audio file or audio description is required.");
       return null;
@@ -23,7 +29,7 @@ const useUploadAudio = () => {
 
     try {
       const formData = new FormData();
-      
+
       // Determine audio_type based on input
       let audioType = "";
       if (file) {
@@ -33,13 +39,13 @@ const useUploadAudio = () => {
         audioType = "prompt";
         formData.append("audio_description", audioDescription);
       } else if (audioDescription) {
-        audioType = "audio_description";
+        audioType = "description";
         formData.append("audio_description", audioDescription);
       }
-      
+
       // Add audio_type to form data
       formData.append("audio_type", audioType);
-      
+
       if (voiceModel) formData.append("audio_accent", voiceModel);
 
       const token = localStorage.getItem("token");

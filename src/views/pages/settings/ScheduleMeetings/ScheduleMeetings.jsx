@@ -74,8 +74,8 @@ const ScheduleMeetings = () => {
     const localDate = new Date();
     localDate.setHours(parseInt(hour), parseInt(minute), 0, 0);
 
-    // Convert local time to UTC time
-    const utcTimeString = localDate.toISOString();
+    // Convert to UTC and extract only the time portion (HH:MM:SS.sssZ)
+    const utcTimeString = localDate.toISOString().split('T')[1]; // Gets "HH:MM:SS.sssZ"
 
     setTimeSlots((prev) => ({
       ...prev,
@@ -120,8 +120,12 @@ const ScheduleMeetings = () => {
   };
 
   // Format time to display in local timezone
-  const formatLocalTime = (dateString) => {
-    const date = new Date(dateString);
+  const formatLocalTime = (timeString) => {
+    // timeString is now in format "HH:MM:SS.sssZ"
+    // Create a date object for today with this UTC time
+    const today = new Date().toISOString().split('T')[0]; // Gets "YYYY-MM-DD"
+    const fullDateString = `${today}T${timeString}`;
+    const date = new Date(fullDateString);
     return date.toLocaleTimeString([], {
       hour: "2-digit",
       minute: "2-digit",
@@ -129,18 +133,29 @@ const ScheduleMeetings = () => {
   };
 
   // Format time to display in UTC
-  const formatUTCTime = (dateString) => {
-    const date = new Date(dateString);
-    return date.toUTCString().split(" ")[4].substring(0, 5);
+  const formatUTCTime = (timeString) => {
+    // timeString is already in UTC format "HH:MM:SS.sssZ"
+    return timeString.substring(0, 5); // Gets "HH:MM"
   };
 
   // Save time slots for a specific day
   const saveTimeSlots = async (day) => {
     try {
       setSavingDay(day);
+      
+      // Ensure all time slots are in the correct format (HH:MM:SS.sssZ)
+      const formattedTimeSlots = timeSlots[day].map(slot => {
+        // If slot contains 'T', it's a full datetime, extract time portion
+        if (slot.includes('T')) {
+          return slot.split('T')[1];
+        }
+        // Otherwise, it's already in time format
+        return slot;
+      });
+      
       const data = {
         weekday: day,
-        timeSlotsUtc: timeSlots[day],
+        time_slots_utc: formattedTimeSlots,
       };
 
       console.log("Sending data to API:", data);
@@ -173,7 +188,7 @@ const ScheduleMeetings = () => {
               </div>
               <div className={styles.timeSelectionArea}>
                 <div className={styles.timePickerContainer}>
-                  <label>Add Availability Time (Your Local Time)</label>
+                  <label className={styles.timePickerLabel}>Add Availability Time</label>
                   <div className={styles.timePickerWrapper}>
                     <div className={styles.timeInputGroup}>
                       <input
@@ -183,6 +198,7 @@ const ScheduleMeetings = () => {
                         value={currentTimeInputs[day].hour}
                         onChange={(e) => handleHourChange(day, e.target.value)}
                         className={styles.timeInput}
+                        placeholder="HH"
                       />
                       <span className={styles.timeSeparator}>:</span>
                       <input
@@ -194,6 +210,7 @@ const ScheduleMeetings = () => {
                           handleMinuteChange(day, e.target.value)
                         }
                         className={styles.timeInput}
+                        placeholder="MM"
                       />
                     </div>
                   </div>
@@ -207,19 +224,21 @@ const ScheduleMeetings = () => {
                 </div>
 
                 <div className={styles.selectedTimesSection}>
-                  <h3>Selected Time Slots:</h3>
+                  <h3 className={styles.sectionTitle}>Time Slots</h3>
                   {timeSlots[day].length === 0 ? (
                     <p className={styles.noTimes}>No times selected</p>
                   ) : (
                     <ul className={styles.timeSlotsList}>
                       {timeSlots[day].map((slot, index) => (
                         <li key={index} className={styles.timeSlot}>
-                          <span className={styles.localTime}>
-                            {formatLocalTime(slot)} (Your time)
-                          </span>
-                          <span className={styles.utcTime}>
-                            {formatUTCTime(slot)} UTC
-                          </span>
+                          <div className={styles.timeInfo}>
+                            <span className={styles.localTime}>
+                              {formatLocalTime(slot)}
+                            </span>
+                            <span className={styles.utcTime}>
+                              {formatUTCTime(slot)} UTC
+                            </span>
+                          </div>
                           <button
                             className={styles.removeButton}
                             onClick={() => removeTimeSlot(day, index)}
