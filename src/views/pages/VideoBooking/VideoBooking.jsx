@@ -8,6 +8,7 @@ import { videoTracking } from "src/config/APIConfig";
 import { v4 as uuidv4 } from "uuid";
 import useTriggerCalendlyMeeting from "../CreateVideo/VideoPlayer/Hooks/useCalendlyTrigger";
 import useTenantSlots from "./Hooks/useTenantSlots";
+import useCreateMeeting from "./Hooks/useCreateMeeting";
 import VideoPlayerComponent from "./components/VideoPlayerComponent";
 import BookingCalendar from "./components/BookingCalendar";
 import logo from "../CreateVideo/VideoPlayer/logo.png";
@@ -35,6 +36,7 @@ const VideoBooking = () => {
 
   const { triggerMeeting } = useTriggerCalendlyMeeting();
   const { data: tenantSlots, error: slotsError, loading: slotsLoading, refetch: refetchSlots } = useTenantSlots(videoData?.tenant_id);
+  const { createMeeting, loading: meetingLoading, error: meetingError } = useCreateMeeting();
 
   useEffect(() => {
     const fetchUserIP = async () => {
@@ -213,19 +215,86 @@ const VideoBooking = () => {
     setCurrentStep(currentStep - 1);
   };
 
+  const convertToUTC = (selectedDate, selectedTime) => {
+    // Find the matching UTC slot from tenantSlots
+    if (videoData?.meet_type === "google" && tenantSlots?.slots) {
+      const selectedDateStr = selectedDate.toLocaleDateString('en-CA'); // YYYY-MM-DD format
+      
+      // Filter slots for the selected date
+      const daySlots = tenantSlots.slots.filter(slot => {
+        const slotDate = new Date(slot);
+        const slotDateStr = slotDate.toLocaleDateString('en-CA');
+        return slotDateStr === selectedDateStr;
+      });
+      
+      // Find the matching slot by comparing the converted time
+      const matchingSlot = daySlots.find(slot => {
+        const slotDate = new Date(slot);
+        const localTime = slotDate.toLocaleTimeString('en-US', {
+          hour: 'numeric',
+          minute: '2-digit',
+          hour12: true
+        });
+        return localTime === selectedTime;
+      });
+      
+      if (matchingSlot) {
+        return matchingSlot; // Return the original UTC string
+      }
+    }
+    
+    // Fallback for non-google meet types (convert local time to UTC)
+    const [time, period] = selectedTime.split(' ');
+    const [hours, minutes] = time.split(':');
+    let hour24 = parseInt(hours);
+    
+    if (period === 'PM' && hour24 !== 12) {
+      hour24 += 12;
+    } else if (period === 'AM' && hour24 === 12) {
+      hour24 = 0;
+    }
+    
+    const dateTime = new Date(selectedDate);
+    dateTime.setHours(hour24, parseInt(minutes), 0, 0);
+    
+    return dateTime.toISOString();
+  };
+
   const handleBookingConfirm = async () => {
     try {
-      // Here you would typically send booking data to your API
-      console.log("Booking confirmed:", bookingData);
-      toast.success("Booking confirmed successfully!");
-
-      // Trigger calendly meeting if needed
-      if (videoData?.tenant_id) {
-        await triggerMeeting(videoData.tenant_id);
+      if (videoData?.meet_type === "google" && videoData?.tenant_id) {
+        // Convert selected date/time back to UTC for API
+        const startTimeUtc = convertToUTC(bookingData.selectedDate, bookingData.selectedTime);
+        
+        const meetingData = {
+          tenant_id: videoData.tenant_id,
+          email: bookingData.email,
+          start_time_utc: startTimeUtc,
+          name: bookingData.name
+        };
+        
+        await createMeeting(meetingData);
+        toast.success("Meeting scheduled successfully!");
+      } else {
+        // Trigger calendly meeting for non-google meet types
+        if (videoData?.tenant_id) {
+          await triggerMeeting(videoData.tenant_id);
+        }
+        toast.success("Booking confirmed successfully!");
       }
+      
+      console.log("Booking confirmed:", bookingData);
     } catch (err) {
       console.error("Error confirming booking:", err);
-      toast.error("Failed to confirm booking");
+      
+      // Show more specific error message
+      if (err.message.includes("invalid_grant")) {
+        toast.error("Google Calendar authentication error. Please contact support to reconnect your calendar.");
+      } else if (err.message.includes("Error creating event")) {
+        toast.error("Unable to create calendar event. Please try again or contact support.");
+      } else {
+        toast.error(err.message || "Failed to confirm booking");
+      }
     }
   };
 
@@ -302,6 +371,8 @@ const VideoBooking = () => {
             slotsLoading={slotsLoading}
             slotsError={slotsError}
             refetchSlots={refetchSlots}
+            meetingLoading={meetingLoading}
+            meetingError={meetingError}
           />
         </div>
       </div>
