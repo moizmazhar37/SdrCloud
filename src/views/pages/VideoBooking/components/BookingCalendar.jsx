@@ -2,11 +2,25 @@ import React, { useState } from "react";
 import { InlineWidget } from "react-calendly";
 import styles from "./BookingCalendar.module.scss";
 
-const BookingCalendar = ({ meetType, meetLink }) => {
-  const [currentStep, setCurrentStep] = useState(1);
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [selectedTime, setSelectedTime] = useState("");
-  const [userDetails, setUserDetails] = useState({ name: "", email: "" });
+const BookingCalendar = ({ 
+  meetType, 
+  meetLink, 
+  tenantSlots, 
+  slotsLoading, 
+  slotsError, 
+  refetchSlots,
+  currentStep,
+  bookingData,
+  setBookingData,
+  onNext,
+  onBack,
+  onConfirm,
+  meetingLoading,
+  meetingError
+}) => {
+  // Use props for state management when using parent component state
+  const selectedDate = bookingData?.selectedDate;
+  const selectedTime = bookingData?.selectedTime;
 
   // Calendar navigation state
   const today = new Date();
@@ -36,20 +50,53 @@ const BookingCalendar = ({ meetType, meetLink }) => {
     return dates;
   };
 
-  const timeSlots = [
-    "10:00 AM",
-    "10:30 AM",
-    "11:00 AM",
-    "11:30 AM",
-    "12:00 PM",
-    "12:30 PM",
-    "1:00 PM",
-    "1:30 PM",
-    "2:00 PM",
-    "2:30 PM",
-    "3:00 PM",
-    "3:30 PM",
-  ];
+  // Function to filter UTC slots for selected date
+  const getFilteredTimeSlots = () => {
+    if (meetType === "google" && tenantSlots?.slots && selectedDate) {
+      // Get the selected date in YYYY-MM-DD format in local timezone
+      const selectedDateStr = selectedDate.toLocaleDateString('en-CA'); // YYYY-MM-DD format
+      
+      // Filter slots for the selected date
+      const filteredSlots = tenantSlots.slots.filter(slot => {
+        const slotDate = new Date(slot);
+        const slotDateStr = slotDate.toLocaleDateString('en-CA'); // YYYY-MM-DD format
+        return slotDateStr === selectedDateStr;
+      });
+
+      // Convert UTC slots to local time format
+      return filteredSlots.map(slot => {
+        const slotDate = new Date(slot);
+        return slotDate.toLocaleTimeString('en-US', {
+          hour: 'numeric',
+          minute: '2-digit',
+          hour12: true
+        });
+      });
+    }
+    
+    if (meetType === "google") {
+      // For google meet type, only show slots when date is selected and slots are available
+      return [];
+    }
+    
+    // Default time slots for non-google meet types
+    return [
+      "10:00 AM",
+      "10:30 AM", 
+      "11:00 AM",
+      "11:30 AM",
+      "12:00 PM",
+      "12:30 PM",
+      "1:00 PM",
+      "1:30 PM",
+      "2:00 PM",
+      "2:30 PM",
+      "3:00 PM",
+      "3:30 PM",
+    ];
+  };
+
+  const timeSlots = getFilteredTimeSlots();
 
   const calendarDates = generateCalendarDates();
 
@@ -87,31 +134,29 @@ const BookingCalendar = ({ meetType, meetLink }) => {
       }
     }
     // Clear selected date when navigating months
-    setSelectedDate(null);
+    setBookingData(prev => ({ ...prev, selectedDate: null, selectedTime: null }));
   };
 
   const handleDateSelect = (date) => {
     if (date.getMonth() === currentMonth && date >= today) {
-      setSelectedDate(date);
+      setBookingData(prev => ({ ...prev, selectedDate: date, selectedTime: null }));
     }
   };
 
-  const handleTimeSelect = (time) => setSelectedTime(time);
+  const handleTimeSelect = (time) => {
+    setBookingData(prev => ({ ...prev, selectedTime: time }));
+  };
 
   const handleNextStep = () => {
-    if (currentStep === 1 && selectedDate && selectedTime) {
-      setCurrentStep(2);
-    } else if (currentStep === 2 && userDetails.name && userDetails.email) {
-      setCurrentStep(3);
-    }
+    onNext();
   };
 
   const handleBackStep = () => {
-    if (currentStep > 1) setCurrentStep(currentStep - 1);
+    onBack();
   };
 
   const handleInputChange = (field, value) => {
-    setUserDetails((prev) => ({ ...prev, [field]: value }));
+    setBookingData(prev => ({ ...prev, [field]: value }));
   };
 
   const formatSelectedDate = () => {
@@ -181,19 +226,21 @@ const BookingCalendar = ({ meetType, meetLink }) => {
         <span>Asia/Karachi</span>
       </div>
 
-      <div className={styles.timeSlots}>
-        {timeSlots.map((time) => (
-          <button
-            key={time}
-            className={`${styles.timeSlot} ${
-              selectedTime === time ? styles.selected : ""
-            }`}
-            onClick={() => handleTimeSelect(time)}
-          >
-            {time}
-          </button>
-        ))}
-      </div>
+      {timeSlots.length > 0 && (
+        <div className={styles.timeSlots}>
+          {timeSlots.map((time) => (
+            <button
+              key={time}
+              className={`${styles.timeSlot} ${
+                selectedTime === time ? styles.selected : ""
+              }`}
+              onClick={() => handleTimeSelect(time)}
+            >
+              {time}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 
@@ -207,7 +254,7 @@ const BookingCalendar = ({ meetType, meetLink }) => {
           <input
             type="text"
             id="name"
-            value={userDetails.name}
+            value={bookingData?.name || ""}
             onChange={(e) => handleInputChange("name", e.target.value)}
             placeholder="Test"
             className={styles.input}
@@ -222,7 +269,7 @@ const BookingCalendar = ({ meetType, meetLink }) => {
           <input
             type="email"
             id="email"
-            value={userDetails.email}
+            value={bookingData?.email || ""}
             onChange={(e) => handleInputChange("email", e.target.value)}
             placeholder="testok@redcoast.co"
             className={styles.input}
@@ -254,11 +301,11 @@ const BookingCalendar = ({ meetType, meetLink }) => {
       <div className={styles.bookingDetails}>
         <div className={styles.detailItem}>
           <span className={styles.icon}>👤</span>
-          <span>{userDetails.name}</span>
+          <span>{bookingData?.name}</span>
         </div>
         <div className={styles.detailItem}>
           <span className={styles.icon}>✉️</span>
-          <span>{userDetails.email}</span>
+          <span>{bookingData?.email}</span>
         </div>
         <div className={styles.detailItem}>
           <span className={styles.icon}>📅</span>
@@ -270,7 +317,13 @@ const BookingCalendar = ({ meetType, meetLink }) => {
         </div>
       </div>
 
-      <button className={styles.confirmButton}>Confirm</button>
+      <button 
+        className={styles.confirmButton} 
+        onClick={onConfirm}
+        disabled={meetingLoading}
+      >
+        {meetingLoading ? "Scheduling..." : "Confirm"}
+      </button>
 
       <div className={styles.reminder}>
         <div className={styles.reminderIcon}>ℹ️</div>
@@ -364,7 +417,7 @@ const BookingCalendar = ({ meetType, meetLink }) => {
                 disabled={
                   (currentStep === 1 && (!selectedDate || !selectedTime)) ||
                   (currentStep === 2 &&
-                    (!userDetails.name || !userDetails.email))
+                    (!bookingData?.name || !bookingData?.email))
                 }
               >
                 Next

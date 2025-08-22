@@ -1,85 +1,125 @@
 .scheduleMeetings {
   width: 100%;
-  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 24px;
   box-sizing: border-box;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
     Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 
   .title {
-    font-size: 28px;
-    font-weight: 500;
-    color: #333;
-    margin: 0 0 10px 0;
+    font-size: 32px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0 0 8px 0;
+    text-align: center;
   }
 
   .description {
     font-size: 16px;
     color: #666;
-    margin: 0 0 30px 0;
+    margin: 0 0 32px 0;
+    text-align: center;
+  }
+
+  .timezoneInfo {
+    font-size: 14px;
+    color: #666;
+    text-align: center;
+    margin-bottom: 40px;
+    padding: 12px 24px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 3px solid #0456b3;
   }
 
   .daysContainer {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
     width: 100%;
 
     .dayCard {
-      background: #fff;
-      border-radius: 4px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      background: #ffffff;
+      border: 1px solid #e9ecef;
+      border-radius: 12px;
       overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      margin-bottom: 20px;
+      transition: all 0.2s ease-in-out;
+
+      &:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        border-color: #dee2e6;
+      }
 
       .dayHeader {
-        background: #ececec;
-        color: white;
-        padding: 16px 20px;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        padding: 20px 24px;
+        border-bottom: 1px solid #e9ecef;
 
         h2 {
           margin: 0;
-          font-size: 22px;
-          font-weight: 500;
-          color: black;
+          font-size: 20px;
+          font-weight: 600;
+          color: #2c3e50;
+          display: flex;
+          align-items: center;
+
+          &:before {
+            content: "";
+            display: inline-block;
+            width: 4px;
+            height: 20px;
+            background: #0456b3;
+            border-radius: 2px;
+            margin-right: 12px;
+          }
         }
       }
 
       .timeSelectionArea {
-        padding: 20px;
+        padding: 24px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 32px;
+        align-items: start;
 
         .timePickerContainer {
-          margin-bottom: 20px;
-
-          label {
+          .timePickerLabel {
             display: block;
-            font-size: 16px;
-            color: #333;
-            margin-bottom: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #495057;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
           }
 
           .timePickerWrapper {
-            margin-bottom: 15px;
+            margin-bottom: 16px;
 
             .timeInputGroup {
               display: flex;
               align-items: center;
-              background: #f8f8f8;
-              border: 1px solid #ddd;
-              border-radius: 4px;
-              padding: 0 10px;
-              max-width: 100%;
-              width: 97%;
-              height: 44px;
+              background: #ffffff;
+              border: 2px solid #e9ecef;
+              border-radius: 8px;
+              padding: 12px 16px;
+              transition: all 0.2s ease-in-out;
+
+              &:focus-within {
+                border-color: #0456b3;
+                box-shadow: 0 0 0 3px rgba(4, 86, 179, 0.1);
+              }
 
               .timeInput {
-                width: 40px;
+                width: 50px;
                 height: 36px;
                 border: none;
                 outline: none;
                 text-align: center;
                 font-size: 18px;
+                font-weight: 500;
+                color: #2c3e50;
                 background: transparent;
                 -moz-appearance: textfield;
 
@@ -88,80 +128,129 @@
                   -webkit-appearance: none;
                   margin: 0;
                 }
+
+                &::placeholder {
+                  color: #adb5bd;
+                }
               }
 
               .timeSeparator {
-                font-size: 18px;
-                font-weight: bold;
-                margin: 0 5px;
-              }
-
-              .timeZone {
-                margin-left: 10px;
-                color: #666;
-                font-size: 14px;
+                font-size: 20px;
+                font-weight: 600;
+                margin: 0 8px;
+                color: #6c757d;
               }
             }
           }
 
           .addTimeButton {
             width: 100%;
-            background: #0456b3;
+            background: linear-gradient(135deg, #0456b3 0%, #034089 100%);
             color: white;
             border: none;
-            border-radius: 4px;
-            padding: 12px;
-            font-size: 16px;
+            border-radius: 8px;
+            padding: 14px 20px;
+            font-size: 14px;
+            font-weight: 600;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: all 0.2s ease-in-out;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
 
             &:hover {
-              background: #034089;
+              transform: translateY(-1px);
+              box-shadow: 0 4px 12px rgba(4, 86, 179, 0.3);
+            }
+
+            &:active {
+              transform: translateY(0);
             }
           }
         }
 
         .selectedTimesSection {
-          h3 {
-            font-size: 16px;
-            color: #333;
-            margin: 0 0 10px 0;
-            font-weight: 500;
+          .sectionTitle {
+            font-size: 14px;
+            font-weight: 600;
+            color: #495057;
+            margin: 0 0 16px 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
           }
 
           .noTimes {
-            color: #888;
+            color: #6c757d;
             font-style: italic;
             margin: 0;
+            padding: 20px;
+            text-align: center;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 2px dashed #dee2e6;
           }
 
           .timeSlotsList {
             list-style: none;
             padding: 0;
             margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
 
             .timeSlot {
               display: flex;
               justify-content: space-between;
               align-items: center;
-              padding: 8px 12px;
-              background: #f5f5f5;
-              border-radius: 4px;
-              margin-bottom: 8px;
+              padding: 12px 16px;
+              background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+              border: 1px solid #e9ecef;
+              border-radius: 8px;
+              transition: all 0.2s ease-in-out;
+
+              &:hover {
+                border-color: #0456b3;
+                transform: translateX(2px);
+              }
+
+              .timeInfo {
+                display: flex;
+                flex-direction: column;
+                gap: 2px;
+              }
+
+              .localTime {
+                font-size: 16px;
+                font-weight: 600;
+                color: #2c3e50;
+              }
+
+              .utcTime {
+                font-size: 12px;
+                color: #6c757d;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+              }
 
               .removeButton {
-                background: none;
-                border: none;
-                color: #666;
-                font-size: 18px;
+                background: #ffffff;
+                border: 1px solid #dee2e6;
+                color: #6c757d;
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
                 cursor: pointer;
-                padding: 0;
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                font-size: 16px;
+                font-weight: bold;
+                transition: all 0.2s ease-in-out;
 
                 &:hover {
-                  color: #ff0000;
+                  background: #dc3545;
+                  border-color: #dc3545;
+                  color: white;
+                  transform: scale(1.1);
                 }
               }
             }
@@ -170,23 +259,38 @@
       }
 
       .saveButtonContainer {
-        padding: 15px 20px;
-        margin-top: auto;
-        border-top: 1px solid #eee;
+        padding: 20px 24px;
+        background: #f8f9fa;
+        border-top: 1px solid #e9ecef;
         text-align: right;
 
         .saveButton {
-          background: #0456b3;
+          background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
           color: white;
           border: none;
-          border-radius: 4px;
-          padding: 10px 20px;
-          font-size: 16px;
+          border-radius: 8px;
+          padding: 12px 24px;
+          font-size: 14px;
+          font-weight: 600;
           cursor: pointer;
-          transition: background 0.2s;
+          transition: all 0.2s ease-in-out;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
 
           &:hover {
-            background: #034089;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+          }
+
+          &:active {
+            transform: translateY(0);
+          }
+
+          &:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
           }
         }
       }
@@ -195,47 +299,153 @@
 }
 
 /* Responsiveness fixes */
-@media screen and (max-width: 1200px) {
-  .scheduleMeetings {
-    .daysContainer {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-}
-
 @media screen and (max-width: 992px) {
   .scheduleMeetings {
+    padding: 24px 16px;
+
     .daysContainer {
-      grid-template-columns: 1fr;
+      .dayCard {
+        .timeSelectionArea {
+          grid-template-columns: 1fr;
+          gap: 24px;
+        }
+      }
     }
   }
 }
 
-@media screen and (max-width: 576px) {
+@media screen and (max-width: 768px) {
   .scheduleMeetings {
-    padding: 15px;
+    padding: 20px 16px;
+
+    .title {
+      font-size: 28px;
+    }
+
+    .daysContainer {
+      gap: 20px;
+
+      .dayCard {
+        .dayHeader {
+          padding: 16px 20px;
+
+          h2 {
+            font-size: 18px;
+
+            &:before {
+              width: 3px;
+              height: 18px;
+              margin-right: 10px;
+            }
+          }
+        }
+
+        .timeSelectionArea {
+          padding: 20px;
+
+          .timePickerContainer {
+            .timePickerWrapper {
+              .timeInputGroup {
+                padding: 10px 14px;
+
+                .timeInput {
+                  width: 45px;
+                  font-size: 16px;
+                }
+
+                .timeSeparator {
+                  font-size: 18px;
+                }
+              }
+            }
+
+            .addTimeButton {
+              padding: 12px 16px;
+              font-size: 13px;
+            }
+          }
+
+          .selectedTimesSection {
+            .timeSlotsList {
+              .timeSlot {
+                padding: 10px 14px;
+
+                .timeInfo {
+                  .localTime {
+                    font-size: 15px;
+                  }
+
+                  .utcTime {
+                    font-size: 11px;
+                  }
+                }
+
+                .removeButton {
+                  width: 28px;
+                  height: 28px;
+                  font-size: 14px;
+                }
+              }
+            }
+          }
+        }
+
+        .saveButtonContainer {
+          padding: 16px 20px;
+
+          .saveButton {
+            padding: 10px 20px;
+            font-size: 13px;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .scheduleMeetings {
+    padding: 16px 12px;
 
     .title {
       font-size: 24px;
     }
 
-    .description {
-      font-size: 14px;
-      margin-bottom: 20px;
+    .timezoneInfo {
+      padding: 10px 16px;
+      font-size: 13px;
     }
 
     .daysContainer {
+      gap: 16px;
+
       .dayCard {
         .dayHeader {
-          padding: 12px 15px;
+          padding: 12px 16px;
 
           h2 {
-            font-size: 18px;
+            font-size: 16px;
           }
         }
 
         .timeSelectionArea {
-          padding: 15px;
+          padding: 16px;
+
+          .timePickerContainer {
+            .timePickerLabel {
+              font-size: 13px;
+            }
+          }
+
+          .selectedTimesSection {
+            .sectionTitle {
+              font-size: 13px;
+            }
+          }
+        }
+
+        .saveButtonContainer {
+          padding: 12px 16px;
         }
       }
     }
