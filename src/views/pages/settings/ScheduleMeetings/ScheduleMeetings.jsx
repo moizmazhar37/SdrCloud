@@ -173,7 +173,7 @@ const ScheduleMeetings = () => {
               </div>
               <div className={styles.timeSelectionArea}>
                 <div className={styles.timePickerContainer}>
-                  <label>Add Availability Time (Your Local Time)</label>
+                  <label className={styles.timePickerLabel}>Add Availability Time</label>
                   <div className={styles.timePickerWrapper}>
                     <div className={styles.timeInputGroup}>
                       <input
@@ -183,6 +183,7 @@ const ScheduleMeetings = () => {
                         value={currentTimeInputs[day].hour}
                         onChange={(e) => handleHourChange(day, e.target.value)}
                         className={styles.timeInput}
+                        placeholder="HH"
                       />
                       <span className={styles.timeSeparator}>:</span>
                       <input
@@ -194,6 +195,7 @@ const ScheduleMeetings = () => {
                           handleMinuteChange(day, e.target.value)
                         }
                         className={styles.timeInput}
+                        placeholder="MM"
                       />
                     </div>
                   </div>
@@ -207,19 +209,21 @@ const ScheduleMeetings = () => {
                 </div>
 
                 <div className={styles.selectedTimesSection}>
-                  <h3>Selected Time Slots:</h3>
+                  <h3 className={styles.sectionTitle}>Time Slots</h3>
                   {timeSlots[day].length === 0 ? (
                     <p className={styles.noTimes}>No times selected</p>
                   ) : (
                     <ul className={styles.timeSlotsList}>
                       {timeSlots[day].map((slot, index) => (
                         <li key={index} className={styles.timeSlot}>
-                          <span className={styles.localTime}>
-                            {formatLocalTime(slot)} (Your time)
-                          </span>
-                          <span className={styles.utcTime}>
-                            {formatUTCTime(slot)} UTC
-                          </span>
+                          <div className={styles.timeInfo}>
+                            <span className={styles.localTime}>
+                              {formatLocalTime(slot)}
+                            </span>
+                            <span className={styles.utcTime}>
+                              {formatUTCTime(slot)} UTC
+                            </span>
+                          </div>
                           <button
                             className={styles.removeButton}
                             onClick={() => removeTimeSlot(day, index)}
