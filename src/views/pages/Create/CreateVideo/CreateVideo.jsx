@@ -66,6 +66,33 @@ const CreateVideo = () => {
   const videoCategories = extractCategories(data, "Video URL");
   const audioCategories = getAudioCategories(data);
 
+  let prospects = sectionData?.prospects || 0;
+
+  const {
+    refetch: refetchSections,
+    trigger: sectionUpdateTrigger,
+  } = useGetSections(templateId, saveTriggered);
+
+  const {
+    refetch: refetchSheets,
+    trigger: sheetsUpdateTrigger,
+  } = useGetSheets();
+
+  useEffect(() => {
+    if (saveTriggered) {
+      refetchSections();
+      refetchSheets();
+    }
+  }, [saveTriggered]);
+
+  const { data: initialSheetData } = useGetSheetData(templateId, saveTriggered);
+
+  useEffect(() => {
+    if (initialSheetData) {
+      setIsSheetConnected(Boolean(initialSheetData.sheet));
+    }
+  }, [initialSheetData]);
+
   const resetAllStates = () => {
     setActiveForm(null);
     setEditingSection(null);
@@ -261,7 +288,11 @@ const CreateVideo = () => {
         onClose={handleModalClose}
         title="Confirm Video Creation"
         totalRecords={totalRecords}
-        confirmationText="Are you sure you want to create a Video with this template? This also means that the emails will be sent!"
+        confirmationText={
+          prospects === 0
+            ? `Are you sure you want to create a Video with this template? This will create ${totalRecords} videos.`
+            : `You already have ${prospects} prospects for this template. Please check prospects of this template before proceeding, otherwise prospects will be created again from this sheet of ${totalRecords} rows and any existing generated prospect will be overwritten.`
+        }
         onAction={handleProceed}
       />
     </div>

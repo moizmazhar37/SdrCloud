@@ -70,6 +70,9 @@ const CreateHVO = () => {
     refetch: refetchSections,
   } = useHvoSections(templateId, sectionUpdateTrigger);
 
+  let prospects = sectionData?.prospects || 0;
+  let totalRecords = sectionData?.sheet?.totalRecords || 0;
+
   const { handleCreateVideo, isLoading: isCreatingHVO } = useCreateHVO();
 
   // Check for templateId in URL on initial load
@@ -372,13 +375,17 @@ const CreateHVO = () => {
           showInputField={false}
           onClose={() => setIsConfirmationOpen(false)}
           title="Confirm HVO Creation"
-          confirmationText="Are you sure you want to create a HVO with this template? This also means that the emails will be sent!"
+          confirmationText={
+            prospects === 0
+              ? `Are you sure you want to create a Video with this template? This will create ${totalRecords} HVOs.`
+              : `You already have ${totalRecords} prospects for this template. Please check prospects of this template before proceeding, otherwise prospects will be created again from this sheet of ${totalRecords} rows and any existing generated prospect will be overwritten.`
+          }
           actionButtonText="Create"
           onAction={(rowsToCreate) => {
             confirmAndCreateHVO(templateId);
             setIsConfirmationOpen(false);
           }}
-          totalRecords={data?.length || 10} // You can adjust this as needed
+          totalRecords={totalRecords}
         />
       )}
     </div>
