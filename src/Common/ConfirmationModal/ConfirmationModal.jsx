@@ -36,31 +36,6 @@ const ConfirmationModal = ({
         {title && <h2 className={styles.modalTitle}>{title}</h2>}
 
         <div className={styles.modalBody}>
-          {showInputField ? (
-            <div className={styles.inputSection}>
-              <label htmlFor="recordsInput" className={styles.inputLabel}>
-                Number of Videos (Max: {totalRecords} rows in the sheet):
-              </label>
-              <input
-                id="recordsInput"
-                type="number"
-                max={totalRecords}
-                value={inputValue}
-                onChange={handleInputChange}
-                className={styles.inputField}
-                placeholder={`Enter up to ${totalRecords}`}
-              />
-              <small className={styles.helperText}>
-                Enter the number of rows to process. Max is {totalRecords}.
-              </small>
-            </div>
-          ) : (
-            <div className={styles.inputSection}>
-              <p className={styles.allRowsMessage}>
-                This will create videos for all {totalRecords} rows in the sheet.
-              </p>
-            </div>
-          )}
 
           {confirmationText && (
             <p className={styles.confirmText}>{confirmationText}</p>

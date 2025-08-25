@@ -261,7 +261,7 @@ const CreateVideo = () => {
         onClose={handleModalClose}
         title="Confirm Video Creation"
         totalRecords={totalRecords}
-        confirmationText="Are you sure you want to create a Video with this template? This also means that the emails will be sent!"
+        confirmationText={`Are you sure you want to create a Video with this template? This will create ${totalRecords} videos.`}
         onAction={handleProceed}
       />
     </div>
