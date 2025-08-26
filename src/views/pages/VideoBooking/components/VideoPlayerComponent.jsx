@@ -23,14 +23,15 @@ const VideoPlayerComponent = ({ videoData, videoRef, onVideoEvent }) => {
             </video>
           )}
         </div>
-        
+
         {/* Message Section */}
         <div className="message-section">
           <h1 className="message-title">
-            Your personalized message from {videoData?.company || "Acme Inc."}
+            Your personalized message {videoData?.company}
           </h1>
           <p className="message-subtitle">
-            We've prepared this short video to walk you through our proposal. Please book a time to chat with us below.
+            We've prepared this short video to walk you through our proposal.
+            Please book a time to chat with us below.
           </p>
         </div>
       </div>
